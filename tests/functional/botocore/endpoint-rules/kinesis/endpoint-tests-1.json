@@ -1487,7 +1487,7 @@
         {
             "documentation": "ResourceARN as StreamARN test: Invalid ARN: Kinesis ARNs only support stream arn types",
             "expect": {
-                "error": "Invalid ARN: Unsupported resource type `accesspoint`. Expected: stream or channel"
+                "error": "Invalid ARN: Unsupported resource type `accesspoint`. Expected: stream, channel, or queue."
             },
             "params": {
                 "Region": "us-east-1",
@@ -1838,7 +1838,7 @@
         {
             "documentation": "ResourceARN as ConsumerARN test: Invalid ARN: Kinesis ARNs only support stream arn/consumer arn types",
             "expect": {
-                "error": "Invalid ARN: Unsupported resource type `accesspoint`. Expected: stream or channel"
+                "error": "Invalid ARN: Unsupported resource type `accesspoint`. Expected: stream, channel, or queue."
             },
             "params": {
                 "Region": "us-east-1",
@@ -2103,7 +2103,7 @@
         {
             "documentation": "ResourceARN as ChannelARN test: Invalid ARN: unsupported resource type",
             "expect": {
-                "error": "Invalid ARN: Unsupported resource type `accesspoint`. Expected: stream or channel"
+                "error": "Invalid ARN: Unsupported resource type `accesspoint`. Expected: stream, channel, or queue."
             },
             "params": {
                 "Region": "us-east-1",
@@ -3379,6 +3379,93 @@
             }
         },
         {
+            "documentation": "ResourceARN with queue type: basic control endpoint",
+            "expect": {
+                "endpoint": {
+                    "url": "https://myQueueId.control-kinesis-queues.us-east-1.amazonaws.com"
+                }
+            },
+            "operationInputs": [
+                {
+                    "builtInParams": {
+                        "AWS::Region": "us-east-1"
+                    },
+                    "operationName": "PutResourcePolicy",
+                    "operationParams": {
+                        "ResourceARN": "arn:aws:kinesis:us-east-1:123456789012:queue/myQueueId",
+                        "Policy": "{}"
+                    }
+                }
+            ],
+            "params": {
+                "Region": "us-east-1",
+                "UseFIPS": false,
+                "UseDualStack": false,
+                "OperationType": "control",
+                "ResourceARN": "arn:aws:kinesis:us-east-1:123456789012:queue/myQueueId"
+            }
+        },
+        {
+            "documentation": "ResourceARN with queue type: FIPS",
+            "expect": {
+                "endpoint": {
+                    "url": "https://myQueueId.control-kinesis-queues-fips.us-east-1.amazonaws.com"
+                }
+            },
+            "params": {
+                "Region": "us-east-1",
+                "UseFIPS": true,
+                "UseDualStack": false,
+                "OperationType": "control",
+                "ResourceARN": "arn:aws:kinesis:us-east-1:123456789012:queue/myQueueId"
+            }
+        },
+        {
+            "documentation": "ResourceARN with queue type: DualStack",
+            "expect": {
+                "endpoint": {
+                    "url": "https://myQueueId.control-kinesis-queues.us-west-2.api.aws"
+                }
+            },
+            "operationInputs": [
+                {
+                    "builtInParams": {
+                        "AWS::Region": "us-west-2",
+                        "AWS::UseDualStack": true
+                    },
+                    "operationName": "TagResource",
+                    "operationParams": {
+                        "ResourceARN": "arn:aws:kinesis:us-west-2:123456789012:queue/myQueueId",
+                        "Tags": {
+                            "key1": "value1"
+                        }
+                    }
+                }
+            ],
+            "params": {
+                "Region": "us-west-2",
+                "UseFIPS": false,
+                "UseDualStack": true,
+                "OperationType": "control",
+                "ResourceARN": "arn:aws:kinesis:us-west-2:123456789012:queue/myQueueId"
+            }
+        },
+        {
+            "documentation": "ResourceARN with channel type: basic control endpoint",
+            "expect": {
+                "endpoint": {
+                    "url": "https://apu0zt8ge6utbndxe.control-kinesis.us-east-1.amazonaws.com"
+                }
+            },
+            "params": {
+                "Region": "us-east-1",
+                "UseFIPS": false,
+                "UseDualStack": false,
+                "OperationType": "control",
+                "ResourceARN": "arn:aws:kinesis:us-east-1:298091445058:channel/apu0zt8ge6utbndxe"
+            }
+        },
+        {
             "documentation": "Account Id with account id endpoint mode disabled",
             "expect": {
                 "endpoint": {
@@ -4571,6 +4658,1103 @@
                 "OperationType": "control",
                 "AccountId": "123456789012",
                 "AccountIdEndpointMode": "disabled"
+            }
+        },
+        {
+            "documentation": "QueueARN: basic endpoint resolution with control operation type",
+            "expect": {
+                "endpoint": {
+                    "url": "https://myQueueId.control-kinesis-queues.us-east-1.amazonaws.com"
+                }
+            },
+            "operationInputs": [
+                {
+                    "builtInParams": {
+                        "AWS::Region": "us-east-1"
+                    },
+                    "operationName": "DescribeQueue",
+                    "operationParams": {
+                        "QueueARN": "arn:aws:kinesis:us-east-1:123456789012:queue/myQueueId"
+                    }
+                }
+            ],
+            "params": {
+                "Region": "us-east-1",
+                "UseFIPS": false,
+                "UseDualStack": false,
+                "OperationType": "control",
+                "ResourceType": "queue",
+                "QueueARN": "arn:aws:kinesis:us-east-1:123456789012:queue/myQueueId"
+            }
+        },
+        {
+            "documentation": "QueueARN: endpoint with FIPS",
+            "expect": {
+                "endpoint": {
+                    "url": "https://myQueueId.control-kinesis-queues-fips.us-east-1.amazonaws.com"
+                }
+            },
+            "operationInputs": [
+                {
+                    "builtInParams": {
+                        "AWS::Region": "us-east-1",
+                        "AWS::UseFIPS": true
+                    },
+                    "operationName": "UpdateQueue",
+                    "operationParams": {
+                        "QueueARN": "arn:aws:kinesis:us-east-1:123456789012:queue/myQueueId",
+                        "QueueAttributes": {
+                            "VisibilityTimeoutSeconds": 30
+                        }
+                    }
+                }
+            ],
+            "params": {
+                "Region": "us-east-1",
+                "UseFIPS": true,
+                "UseDualStack": false,
+                "OperationType": "control",
+                "ResourceType": "queue",
+                "QueueARN": "arn:aws:kinesis:us-east-1:123456789012:queue/myQueueId"
+            }
+        },
+        {
+            "documentation": "QueueARN: endpoint with DualStack",
+            "expect": {
+                "endpoint": {
+                    "url": "https://myQueueId.control-kinesis-queues.us-east-1.api.aws"
+                }
+            },
+            "operationInputs": [
+                {
+                    "builtInParams": {
+                        "AWS::Region": "us-east-1",
+                        "AWS::UseDualStack": true
+                    },
+                    "operationName": "DeleteQueue",
+                    "operationParams": {
+                        "QueueARN": "arn:aws:kinesis:us-east-1:123456789012:queue/myQueueId"
+                    }
+                }
+            ],
+            "params": {
+                "Region": "us-east-1",
+                "UseFIPS": false,
+                "UseDualStack": true,
+                "OperationType": "control",
+                "ResourceType": "queue",
+                "QueueARN": "arn:aws:kinesis:us-east-1:123456789012:queue/myQueueId"
+            }
+        },
+        {
+            "documentation": "QueueARN: endpoint with FIPS and DualStack",
+            "expect": {
+                "endpoint": {
+                    "url": "https://myQueueId.control-kinesis-queues-fips.us-east-1.api.aws"
+                }
+            },
+            "params": {
+                "Region": "us-east-1",
+                "UseFIPS": true,
+                "UseDualStack": true,
+                "OperationType": "control",
+                "ResourceType": "queue",
+                "QueueARN": "arn:aws:kinesis:us-east-1:123456789012:queue/myQueueId"
+            }
+        },
+        {
+            "documentation": "QueueARN: data operation type",
+            "expect": {
+                "endpoint": {
+                    "url": "https://abc123def456.data-kinesis-queues.us-west-2.amazonaws.com"
+                }
+            },
+            "operationInputs": [
+                {
+                    "builtInParams": {
+                        "AWS::Region": "us-west-2"
+                    },
+                    "operationName": "ReceiveQueueRecords",
+                    "operationParams": {
+                        "QueueARN": "arn:aws:kinesis:us-west-2:123456789012:queue/abc123def456"
+                    }
+                }
+            ],
+            "params": {
+                "Region": "us-west-2",
+                "UseFIPS": false,
+                "UseDualStack": false,
+                "OperationType": "data",
+                "ResourceType": "queue",
+                "QueueARN": "arn:aws:kinesis:us-west-2:123456789012:queue/abc123def456"
+            }
+        },
+        {
+            "documentation": "QueueARN: data operation type with FIPS",
+            "expect": {
+                "endpoint": {
+                    "url": "https://abc123def456.data-kinesis-queues-fips.us-east-1.amazonaws.com"
+                }
+            },
+            "operationInputs": [
+                {
+                    "builtInParams": {
+                        "AWS::Region": "us-east-1",
+                        "AWS::UseFIPS": true
+                    },
+                    "operationName": "AcknowledgeQueueRecords",
+                    "operationParams": {
+                        "QueueARN": "arn:aws:kinesis:us-east-1:123456789012:queue/abc123def456",
+                        "Entries": [
+                            {
+                                "ReceiptHandle": "handle1"
+                            }
+                        ]
+                    }
+                }
+            ],
+            "params": {
+                "Region": "us-east-1",
+                "UseFIPS": true,
+                "UseDualStack": false,
+                "OperationType": "data",
+                "ResourceType": "queue",
+                "QueueARN": "arn:aws:kinesis:us-east-1:123456789012:queue/abc123def456"
+            }
+        },
+        {
+            "documentation": "QueueARN: data operation type with DualStack",
+            "expect": {
+                "endpoint": {
+                    "url": "https://abc123def456.data-kinesis-queues.us-west-2.api.aws"
+                }
+            },
+            "operationInputs": [
+                {
+                    "builtInParams": {
+                        "AWS::Region": "us-west-2",
+                        "AWS::UseDualStack": true
+                    },
+                    "operationName": "UpdateQueueRecordsVisibility",
+                    "operationParams": {
+                        "QueueARN": "arn:aws:kinesis:us-west-2:123456789012:queue/abc123def456",
+                        "Entries": [
+                            {
+                                "ReceiptHandle": "handle1",
+                                "VisibilityTimeoutSeconds": 30
+                            }
+                        ]
+                    }
+                }
+            ],
+            "params": {
+                "Region": "us-west-2",
+                "UseFIPS": false,
+                "UseDualStack": true,
+                "OperationType": "data",
+                "ResourceType": "queue",
+                "QueueARN": "arn:aws:kinesis:us-west-2:123456789012:queue/abc123def456"
+            }
+        },
+        {
+            "documentation": "QueueARN: VPCE endpoint override is respected as-is",
+            "expect": {
+                "endpoint": {
+                    "url": "https://my-vpce-xyz.vpce.amazonaws.com"
+                }
+            },
+            "params": {
+                "Region": "us-east-1",
+                "UseFIPS": false,
+                "UseDualStack": false,
+                "OperationType": "control",
+                "ResourceType": "queue",
+                "QueueARN": "arn:aws:kinesis:us-east-1:123456789012:queue/myQueueId",
+                "Endpoint": "https://my-vpce-xyz.vpce.amazonaws.com"
+            }
+        },
+        {
+            "documentation": "Invalid QueueARN: wrong arn type",
+            "expect": {
+                "error": "Invalid ARN: QueueARN only supports `queue` ARN types, found: `stream`."
+            },
+            "params": {
+                "Region": "us-east-1",
+                "UseFIPS": false,
+                "UseDualStack": false,
+                "OperationType": "control",
+                "ResourceType": "queue",
+                "QueueARN": "arn:aws:kinesis:us-east-1:123456789012:stream/test-stream"
+            }
+        },
+        {
+            "documentation": "Invalid QueueARN: missing queue id",
+            "expect": {
+                "error": "Invalid ARN: Missing queue id."
+            },
+            "params": {
+                "Region": "us-east-1",
+                "UseFIPS": false,
+                "UseDualStack": false,
+                "OperationType": "control",
+                "ResourceType": "queue",
+                "QueueARN": "arn:aws:kinesis:us-east-1:123456789012:queue"
+            }
+        },
+        {
+            "documentation": "Invalid QueueARN: non-kinesis service",
+            "expect": {
+                "error": "Invalid ARN: The ARN was not for the Kinesis service, found: sqs."
+            },
+            "params": {
+                "Region": "us-east-1",
+                "UseFIPS": false,
+                "UseDualStack": false,
+                "OperationType": "control",
+                "ResourceType": "queue",
+                "QueueARN": "arn:aws:sqs:us-east-1:123456789012:queue/myQueueId"
+            }
+        },
+        {
+            "documentation": "Queue AccountId: basic endpoint with AccountId",
+            "expect": {
+                "endpoint": {
+                    "properties": {
+                        "metricValues": [
+                            "O"
+                        ]
+                    },
+                    "url": "https://123456789012.control-kinesis-queues.us-east-1.amazonaws.com"
+                }
+            },
+            "operationInputs": [
+                {
+                    "builtInParams": {
+                        "AWS::Region": "us-east-1",
+                        "AWS::Auth::AccountId": "123456789012",
+                        "AWS::Auth::AccountIdEndpointMode": "preferred"
+                    },
+                    "operationName": "CreateQueue",
+                    "operationParams": {
+                        "QueueName": "test-queue",
+                        "StreamConfigurationList": [
+                            {
+                                "StreamARN": "arn:aws:kinesis:us-east-1:123456789012:stream/test-stream"
+                            }
+                        ]
+                    }
+                }
+            ],
+            "params": {
+                "Region": "us-east-1",
+                "UseFIPS": false,
+                "UseDualStack": false,
+                "OperationType": "control",
+                "AccountId": "123456789012",
+                "AccountIdEndpointMode": "preferred",
+                "ResourceType": "queue"
+            }
+        },
+        {
+            "documentation": "Queue AccountId: endpoint with FIPS",
+            "expect": {
+                "endpoint": {
+                    "properties": {
+                        "metricValues": [
+                            "O"
+                        ]
+                    },
+                    "url": "https://123456789012.control-kinesis-queues-fips.us-east-1.amazonaws.com"
+                }
+            },
+            "operationInputs": [
+                {
+                    "builtInParams": {
+                        "AWS::Region": "us-east-1",
+                        "AWS::Auth::AccountId": "123456789012",
+                        "AWS::Auth::AccountIdEndpointMode": "preferred",
+                        "AWS::UseFIPS": true
+                    },
+                    "operationName": "ListQueues"
+                }
+            ],
+            "params": {
+                "Region": "us-east-1",
+                "UseFIPS": true,
+                "UseDualStack": false,
+                "OperationType": "control",
+                "AccountId": "123456789012",
+                "AccountIdEndpointMode": "preferred",
+                "ResourceType": "queue"
+            }
+        },
+        {
+            "documentation": "Queue AccountId: endpoint with DualStack",
+            "expect": {
+                "endpoint": {
+                    "properties": {
+                        "metricValues": [
+                            "O"
+                        ]
+                    },
+                    "url": "https://123456789012.control-kinesis-queues.us-west-2.api.aws"
+                }
+            },
+            "params": {
+                "Region": "us-west-2",
+                "UseFIPS": false,
+                "UseDualStack": true,
+                "OperationType": "control",
+                "AccountId": "123456789012",
+                "AccountIdEndpointMode": "preferred",
+                "ResourceType": "queue"
+            }
+        },
+        {
+            "documentation": "Queue AccountId: endpoint with FIPS and DualStack",
+            "expect": {
+                "endpoint": {
+                    "properties": {
+                        "metricValues": [
+                            "O"
+                        ]
+                    },
+                    "url": "https://123456789012.control-kinesis-queues-fips.us-east-1.api.aws"
+                }
+            },
+            "params": {
+                "Region": "us-east-1",
+                "UseFIPS": true,
+                "UseDualStack": true,
+                "OperationType": "control",
+                "AccountId": "123456789012",
+                "AccountIdEndpointMode": "preferred",
+                "ResourceType": "queue"
+            }
+        },
+        {
+            "documentation": "QueueARN: regular endpoint override is respected as-is",
+            "expect": {
+                "endpoint": {
+                    "url": "https://kinesis-queues.us-east-1.amazonaws.com"
+                }
+            },
+            "params": {
+                "Region": "us-east-1",
+                "UseFIPS": false,
+                "UseDualStack": false,
+                "OperationType": "control",
+                "ResourceType": "queue",
+                "QueueARN": "arn:aws:kinesis:us-east-1:123456789012:queue/myQueueId",
+                "Endpoint": "https://kinesis-queues.us-east-1.amazonaws.com"
+            }
+        },
+        {
+            "documentation": "Queue AccountId: disabled mode falls back to regional queue endpoint",
+            "expect": {
+                "endpoint": {
+                    "url": "https://kinesis-queues.us-east-1.amazonaws.com"
+                }
+            },
+            "operationInputs": [
+                {
+                    "builtInParams": {
+                        "AWS::Region": "us-east-1",
+                        "AWS::Auth::AccountId": "123456789012",
+                        "AWS::Auth::AccountIdEndpointMode": "disabled"
+                    },
+                    "operationName": "CreateQueue",
+                    "operationParams": {
+                        "QueueName": "test-queue",
+                        "StreamConfigurationList": [
+                            {
+                                "StreamARN": "arn:aws:kinesis:us-east-1:123456789012:stream/test-stream"
+                            }
+                        ]
+                    }
+                }
+            ],
+            "params": {
+                "Region": "us-east-1",
+                "UseFIPS": false,
+                "UseDualStack": false,
+                "OperationType": "control",
+                "AccountId": "123456789012",
+                "AccountIdEndpointMode": "disabled",
+                "ResourceType": "queue"
+            }
+        },
+        {
+            "documentation": "Queue AccountId: disabled mode with FIPS falls back to regional queue FIPS endpoint",
+            "expect": {
+                "endpoint": {
+                    "url": "https://kinesis-queues-fips.us-east-1.amazonaws.com"
+                }
+            },
+            "operationInputs": [
+                {
+                    "builtInParams": {
+                        "AWS::Region": "us-east-1",
+                        "AWS::Auth::AccountId": "123456789012",
+                        "AWS::Auth::AccountIdEndpointMode": "disabled",
+                        "AWS::UseFIPS": true
+                    },
+                    "operationName": "ListQueues"
+                }
+            ],
+            "params": {
+                "Region": "us-east-1",
+                "UseFIPS": true,
+                "UseDualStack": false,
+                "OperationType": "control",
+                "AccountId": "123456789012",
+                "AccountIdEndpointMode": "disabled",
+                "ResourceType": "queue"
+            }
+        },
+        {
+            "documentation": "Queue AccountId: disabled mode with DualStack falls back to regional queue DualStack endpoint",
+            "expect": {
+                "endpoint": {
+                    "url": "https://kinesis-queues.us-east-1.api.aws"
+                }
+            },
+            "operationInputs": [
+                {
+                    "builtInParams": {
+                        "AWS::Region": "us-east-1",
+                        "AWS::Auth::AccountId": "123456789012",
+                        "AWS::Auth::AccountIdEndpointMode": "disabled",
+                        "AWS::UseDualStack": true
+                    },
+                    "operationName": "CreateQueue",
+                    "operationParams": {
+                        "QueueName": "test-queue",
+                        "StreamConfigurationList": [
+                            {
+                                "StreamARN": "arn:aws:kinesis:us-east-1:123456789012:stream/test-stream"
+                            }
+                        ]
+                    }
+                }
+            ],
+            "params": {
+                "Region": "us-east-1",
+                "UseFIPS": false,
+                "UseDualStack": true,
+                "OperationType": "control",
+                "AccountId": "123456789012",
+                "AccountIdEndpointMode": "disabled",
+                "ResourceType": "queue"
+            }
+        },
+        {
+            "documentation": "Queue AccountId: disabled mode with FIPS and DualStack falls back to regional queue FIPS DualStack endpoint",
+            "expect": {
+                "endpoint": {
+                    "url": "https://kinesis-queues-fips.us-east-1.api.aws"
+                }
+            },
+            "operationInputs": [
+                {
+                    "builtInParams": {
+                        "AWS::Region": "us-east-1",
+                        "AWS::Auth::AccountId": "123456789012",
+                        "AWS::Auth::AccountIdEndpointMode": "disabled",
+                        "AWS::UseFIPS": true,
+                        "AWS::UseDualStack": true
+                    },
+                    "operationName": "ListQueues"
+                }
+            ],
+            "params": {
+                "Region": "us-east-1",
+                "UseFIPS": true,
+                "UseDualStack": true,
+                "OperationType": "control",
+                "AccountId": "123456789012",
+                "AccountIdEndpointMode": "disabled",
+                "ResourceType": "queue"
+            }
+        },
+        {
+            "documentation": "ResourceARN with queue type: missing queue id errors",
+            "expect": {
+                "error": "Invalid ARN: Missing queue id."
+            },
+            "params": {
+                "Region": "us-east-1",
+                "UseFIPS": false,
+                "UseDualStack": false,
+                "OperationType": "control",
+                "ResourceARN": "arn:aws:kinesis:us-east-1:123456789012:queue"
+            }
+        },
+        {
+            "documentation": "ResourceARN with channel type: missing channel id errors",
+            "expect": {
+                "error": "Invalid ARN: Missing channel id."
+            },
+            "params": {
+                "Region": "us-east-1",
+                "UseFIPS": false,
+                "UseDualStack": false,
+                "OperationType": "control",
+                "ResourceARN": "arn:aws:kinesis:us-east-1:123456789012:channel"
+            }
+        },
+        {
+            "documentation": "ResourceARN with unsupported type: consumer type is rejected",
+            "expect": {
+                "error": "Invalid ARN: Unsupported resource type `consumer`. Expected: stream, channel, or queue."
+            },
+            "params": {
+                "Region": "us-east-1",
+                "UseFIPS": false,
+                "UseDualStack": false,
+                "OperationType": "control",
+                "ResourceARN": "arn:aws:kinesis:us-east-1:123456789012:consumer/test-consumer"
+            }
+        },
+        {
+            "documentation": "QueueARN and StreamARN both set: StreamARN wins by rule ordering today (ResourceType is not yet authoritative on the stream path; revisit if a both-ARN API is introduced)",
+            "expect": {
+                "endpoint": {
+                    "url": "https://123.control-kinesis.us-east-1.amazonaws.com"
+                }
+            },
+            "params": {
+                "Region": "us-east-1",
+                "UseFIPS": false,
+                "UseDualStack": false,
+                "OperationType": "control",
+                "StreamARN": "arn:aws:kinesis:us-east-1:123:stream/test-stream",
+                "ResourceType": "queue",
+                "QueueARN": "arn:aws:kinesis:us-east-1:123456789012:queue/myQueueId"
+            }
+        },
+        {
+            "documentation": "QueueARN set but ResourceType absent: errors instead of misrouting to the default kinesis endpoint",
+            "expect": {
+                "error": "Invalid Configuration: ResourceType must be \"queue\" when QueueARN is set."
+            },
+            "params": {
+                "Region": "us-east-1",
+                "UseFIPS": false,
+                "UseDualStack": false,
+                "OperationType": "control",
+                "QueueARN": "arn:aws:kinesis:us-east-1:123456789012:queue/myQueueId"
+            }
+        },
+        {
+            "documentation": "QueueARN set but ResourceType is not queue:  errors instead of misrouting to the default kinesis endpoint",
+            "expect": {
+                "error": "Invalid Configuration: ResourceType must be \"queue\" when QueueARN is set."
+            },
+            "params": {
+                "Region": "us-east-1",
+                "UseFIPS": false,
+                "UseDualStack": false,
+                "OperationType": "control",
+                "ResourceType": "stream",
+                "QueueARN": "arn:aws:kinesis:us-east-1:123456789012:queue/myQueueId"
+            }
+        },
+        {
+            "documentation": "AccountId without ResourceType: non-queue account endpoint is unchanged (no -queues suffix)",
+            "expect": {
+                "endpoint": {
+                    "properties": {
+                        "metricValues": [
+                            "O"
+                        ]
+                    },
+                    "url": "https://123456789012.control-kinesis.us-east-1.amazonaws.com"
+                }
+            },
+            "params": {
+                "Region": "us-east-1",
+                "UseFIPS": false,
+                "UseDualStack": false,
+                "OperationType": "control",
+                "AccountId": "123456789012",
+                "AccountIdEndpointMode": "preferred"
+            }
+        },
+        {
+            "documentation": "Queue AccountId: required mode with no AccountId errors",
+            "expect": {
+                "error": "AccountIdEndpointMode is required but no AccountID was provided or able to be loaded"
+            },
+            "params": {
+                "Region": "us-east-1",
+                "UseFIPS": false,
+                "UseDualStack": false,
+                "OperationType": "control",
+                "AccountIdEndpointMode": "required",
+                "ResourceType": "queue"
+            }
+        },
+        {
+            "documentation": "QueueARN: OperationType not set errors",
+            "expect": {
+                "error": "Operation Type is not set. Please contact service team for resolution."
+            },
+            "params": {
+                "Region": "us-east-1",
+                "UseFIPS": false,
+                "UseDualStack": false,
+                "ResourceType": "queue",
+                "QueueARN": "arn:aws:kinesis:us-east-1:123456789012:queue/myQueueId"
+            }
+        },
+        {
+            "documentation": "QueueARN: aws-iso region falls back to regional queue endpoint",
+            "expect": {
+                "endpoint": {
+                    "url": "https://kinesis-queues.us-iso-east-1.c2s.ic.gov"
+                }
+            },
+            "params": {
+                "Region": "us-iso-east-1",
+                "UseFIPS": false,
+                "UseDualStack": false,
+                "OperationType": "control",
+                "ResourceType": "queue",
+                "QueueARN": "arn:aws-iso:kinesis:us-iso-east-1:123456789012:queue/myQueueId"
+            }
+        },
+        {
+            "documentation": "QueueARN: aws-iso-b region falls back to regional queue endpoint",
+            "expect": {
+                "endpoint": {
+                    "url": "https://kinesis-queues.us-isob-east-1.sc2s.sgov.gov"
+                }
+            },
+            "params": {
+                "Region": "us-isob-east-1",
+                "UseFIPS": false,
+                "UseDualStack": false,
+                "OperationType": "control",
+                "ResourceType": "queue",
+                "QueueARN": "arn:aws-iso-b:kinesis:us-isob-east-1:123456789012:queue/myQueueId"
+            }
+        },
+        {
+            "documentation": "Queue AccountId in aws-iso: disabled mode falls back to regional queue endpoint",
+            "expect": {
+                "endpoint": {
+                    "url": "https://kinesis-queues.us-iso-east-1.c2s.ic.gov"
+                }
+            },
+            "params": {
+                "Region": "us-iso-east-1",
+                "UseFIPS": false,
+                "UseDualStack": false,
+                "OperationType": "control",
+                "AccountId": "123456789012",
+                "AccountIdEndpointMode": "disabled",
+                "ResourceType": "queue"
+            }
+        },
+        {
+            "documentation": "ResourceARN with queue type in aws-iso: falls back to regional queue endpoint",
+            "expect": {
+                "endpoint": {
+                    "url": "https://kinesis-queues.us-iso-east-1.c2s.ic.gov"
+                }
+            },
+            "params": {
+                "Region": "us-iso-east-1",
+                "UseFIPS": false,
+                "UseDualStack": false,
+                "OperationType": "control",
+                "ResourceARN": "arn:aws-iso:kinesis:us-iso-east-1:123456789012:queue/myQueueId"
+            }
+        },
+        {
+            "documentation": "ResourceARN with queue type in aws-iso-b: falls back to regional queue endpoint",
+            "expect": {
+                "endpoint": {
+                    "url": "https://kinesis-queues.us-isob-east-1.sc2s.sgov.gov"
+                }
+            },
+            "params": {
+                "Region": "us-isob-east-1",
+                "UseFIPS": false,
+                "UseDualStack": false,
+                "OperationType": "control",
+                "ResourceARN": "arn:aws-iso-b:kinesis:us-isob-east-1:123456789012:queue/myQueueId"
+            }
+        },
+        {
+            "documentation": "Queue AccountId in aws-iso: preferred mode falls back to regional queue endpoint",
+            "expect": {
+                "endpoint": {
+                    "url": "https://kinesis-queues.us-iso-east-1.c2s.ic.gov"
+                }
+            },
+            "params": {
+                "Region": "us-iso-east-1",
+                "UseFIPS": false,
+                "UseDualStack": false,
+                "OperationType": "control",
+                "AccountId": "123456789012",
+                "AccountIdEndpointMode": "preferred",
+                "ResourceType": "queue"
+            }
+        },
+        {
+            "documentation": "QueueARN: aws-iso region with FIPS falls back to regional queue FIPS endpoint",
+            "expect": {
+                "endpoint": {
+                    "url": "https://kinesis-queues-fips.us-iso-east-1.c2s.ic.gov"
+                }
+            },
+            "params": {
+                "Region": "us-iso-east-1",
+                "UseFIPS": true,
+                "UseDualStack": false,
+                "OperationType": "control",
+                "ResourceType": "queue",
+                "QueueARN": "arn:aws-iso:kinesis:us-iso-east-1:123456789012:queue/myQueueId"
+            }
+        },
+        {
+            "documentation": "ResourceARN with queue type in aws-iso with FIPS: falls back to regional queue FIPS endpoint",
+            "expect": {
+                "endpoint": {
+                    "url": "https://kinesis-queues-fips.us-iso-east-1.c2s.ic.gov"
+                }
+            },
+            "params": {
+                "Region": "us-iso-east-1",
+                "UseFIPS": true,
+                "UseDualStack": false,
+                "OperationType": "control",
+                "ResourceARN": "arn:aws-iso:kinesis:us-iso-east-1:123456789012:queue/myQueueId"
+            }
+        },
+        {
+            "documentation": "QueueARN: aws-iso region with DualStack falls back to regional queue DualStack endpoint",
+            "expect": {
+                "endpoint": {
+                    "url": "https://kinesis-queues.us-iso-east-1.api.aws.ic.gov"
+                }
+            },
+            "params": {
+                "Region": "us-iso-east-1",
+                "UseFIPS": false,
+                "UseDualStack": true,
+                "OperationType": "control",
+                "ResourceType": "queue",
+                "QueueARN": "arn:aws-iso:kinesis:us-iso-east-1:123456789012:queue/myQueueId"
+            }
+        },
+        {
+            "documentation": "QueueARN: aws-iso region with FIPS and DualStack falls back to regional queue FIPS DualStack endpoint",
+            "expect": {
+                "endpoint": {
+                    "url": "https://kinesis-queues-fips.us-iso-east-1.api.aws.ic.gov"
+                }
+            },
+            "params": {
+                "Region": "us-iso-east-1",
+                "UseFIPS": true,
+                "UseDualStack": true,
+                "OperationType": "control",
+                "ResourceType": "queue",
+                "QueueARN": "arn:aws-iso:kinesis:us-iso-east-1:123456789012:queue/myQueueId"
+            }
+        },
+        {
+            "documentation": "ResourceARN with queue type in aws-iso with DualStack: falls back to regional queue DualStack endpoint",
+            "expect": {
+                "endpoint": {
+                    "url": "https://kinesis-queues.us-iso-east-1.api.aws.ic.gov"
+                }
+            },
+            "params": {
+                "Region": "us-iso-east-1",
+                "UseFIPS": false,
+                "UseDualStack": true,
+                "OperationType": "control",
+                "ResourceARN": "arn:aws-iso:kinesis:us-iso-east-1:123456789012:queue/myQueueId"
+            }
+        },
+        {
+            "documentation": "ResourceARN with queue type in aws-iso with FIPS and DualStack: falls back to regional queue FIPS DualStack endpoint",
+            "expect": {
+                "endpoint": {
+                    "url": "https://kinesis-queues-fips.us-iso-east-1.api.aws.ic.gov"
+                }
+            },
+            "params": {
+                "Region": "us-iso-east-1",
+                "UseFIPS": true,
+                "UseDualStack": true,
+                "OperationType": "control",
+                "ResourceARN": "arn:aws-iso:kinesis:us-iso-east-1:123456789012:queue/myQueueId"
+            }
+        },
+        {
+            "documentation": "Queue AccountId in aws-iso: preferred mode with FIPS falls back to regional queue FIPS endpoint",
+            "expect": {
+                "endpoint": {
+                    "url": "https://kinesis-queues-fips.us-iso-east-1.c2s.ic.gov"
+                }
+            },
+            "params": {
+                "Region": "us-iso-east-1",
+                "UseFIPS": true,
+                "UseDualStack": false,
+                "OperationType": "control",
+                "AccountId": "123456789012",
+                "AccountIdEndpointMode": "preferred",
+                "ResourceType": "queue"
+            }
+        },
+        {
+            "documentation": "Queue AccountId in aws-iso: disabled mode with FIPS falls back to regional queue FIPS endpoint",
+            "expect": {
+                "endpoint": {
+                    "url": "https://kinesis-queues-fips.us-iso-east-1.c2s.ic.gov"
+                }
+            },
+            "params": {
+                "Region": "us-iso-east-1",
+                "UseFIPS": true,
+                "UseDualStack": false,
+                "OperationType": "control",
+                "AccountId": "123456789012",
+                "AccountIdEndpointMode": "disabled",
+                "ResourceType": "queue"
+            }
+        },
+        {
+            "documentation": "ResourceARN with channel type in aws-iso: falls back to default kinesis endpoint",
+            "expect": {
+                "endpoint": {
+                    "url": "https://kinesis.us-iso-east-1.c2s.ic.gov"
+                }
+            },
+            "params": {
+                "Region": "us-iso-east-1",
+                "UseFIPS": false,
+                "UseDualStack": false,
+                "OperationType": "control",
+                "ResourceARN": "arn:aws-iso:kinesis:us-iso-east-1:123456789012:channel/myChannelId"
+            }
+        },
+        {
+            "documentation": "ResourceARN with channel type in aws-iso with FIPS: falls back to default kinesis FIPS endpoint",
+            "expect": {
+                "endpoint": {
+                    "url": "https://kinesis-fips.us-iso-east-1.c2s.ic.gov"
+                }
+            },
+            "params": {
+                "Region": "us-iso-east-1",
+                "UseFIPS": true,
+                "UseDualStack": false,
+                "OperationType": "control",
+                "ResourceARN": "arn:aws-iso:kinesis:us-iso-east-1:123456789012:channel/myChannelId"
+            }
+        },
+        {
+            "documentation": "ChannelARN in aws-iso: falls back to default kinesis endpoint",
+            "expect": {
+                "endpoint": {
+                    "url": "https://kinesis.us-iso-east-1.c2s.ic.gov"
+                }
+            },
+            "params": {
+                "Region": "us-iso-east-1",
+                "UseFIPS": false,
+                "UseDualStack": false,
+                "OperationType": "control",
+                "ChannelARN": "arn:aws-iso:kinesis:us-iso-east-1:123456789012:channel/myChannelId"
+            }
+        },
+        {
+            "documentation": "ChannelARN in aws-iso with FIPS: falls back to default kinesis FIPS endpoint",
+            "expect": {
+                "endpoint": {
+                    "url": "https://kinesis-fips.us-iso-east-1.c2s.ic.gov"
+                }
+            },
+            "params": {
+                "Region": "us-iso-east-1",
+                "UseFIPS": true,
+                "UseDualStack": false,
+                "OperationType": "control",
+                "ChannelARN": "arn:aws-iso:kinesis:us-iso-east-1:123456789012:channel/myChannelId"
+            }
+        },
+        {
+            "documentation": "ResourceARN queue in aws-iso: non-kinesis service should error",
+            "expect": {
+                "error": "Invalid ARN: The ARN was not for the Kinesis service, found: sqs."
+            },
+            "params": {
+                "Region": "us-iso-east-1",
+                "UseFIPS": false,
+                "UseDualStack": false,
+                "OperationType": "control",
+                "ResourceARN": "arn:aws-iso:sqs:us-iso-east-1:123456789012:queue/myQueueId"
+            }
+        },
+        {
+            "documentation": "ResourceARN queue in aws-iso: partition mismatch should error",
+            "expect": {
+                "error": "Partition: aws from ARN doesn't match with partition name: aws-iso."
+            },
+            "params": {
+                "Region": "us-iso-east-1",
+                "UseFIPS": false,
+                "UseDualStack": false,
+                "OperationType": "control",
+                "ResourceARN": "arn:aws:kinesis:us-east-1:123456789012:queue/myQueueId"
+            }
+        },
+        {
+            "documentation": "ResourceARN queue in aws-iso: missing queue id should error",
+            "expect": {
+                "error": "Invalid ARN: Missing queue id."
+            },
+            "params": {
+                "Region": "us-iso-east-1",
+                "UseFIPS": false,
+                "UseDualStack": false,
+                "OperationType": "control",
+                "ResourceARN": "arn:aws-iso:kinesis:us-iso-east-1:123456789012:queue"
+            }
+        },
+        {
+            "documentation": "ResourceARN queue in aws-iso: invalid account id should error",
+            "expect": {
+                "error": "Invalid ARN: Invalid account id."
+            },
+            "params": {
+                "Region": "us-iso-east-1",
+                "UseFIPS": false,
+                "UseDualStack": false,
+                "OperationType": "control",
+                "ResourceARN": "arn:aws-iso:kinesis:us-iso-east-1:invalid..account:queue/myQueueId"
+            }
+        },
+        {
+            "documentation": "ResourceARN queue in aws-iso: OperationType not set should error",
+            "expect": {
+                "error": "Operation Type is not set. Please contact service team for resolution."
+            },
+            "params": {
+                "Region": "us-iso-east-1",
+                "UseFIPS": false,
+                "UseDualStack": false,
+                "ResourceARN": "arn:aws-iso:kinesis:us-iso-east-1:123456789012:queue/myQueueId"
+            }
+        },
+        {
+            "documentation": "ResourceARN queue in aws-iso: invalid queue id should error",
+            "expect": {
+                "error": "Invalid ARN: Invalid queue id."
+            },
+            "params": {
+                "Region": "us-iso-east-1",
+                "UseFIPS": false,
+                "UseDualStack": false,
+                "OperationType": "control",
+                "ResourceARN": "arn:aws-iso:kinesis:us-iso-east-1:123456789012:queue/invalid.queue.id"
+            }
+        },
+        {
+            "documentation": "StreamARN in aws-iso with DualStack: falls back to default kinesis DualStack endpoint",
+            "expect": {
+                "endpoint": {
+                    "url": "https://kinesis.us-iso-east-1.api.aws.ic.gov"
+                }
+            },
+            "params": {
+                "Region": "us-iso-east-1",
+                "UseFIPS": false,
+                "UseDualStack": true,
+                "OperationType": "control",
+                "StreamARN": "arn:aws-iso:kinesis:us-iso-east-1:123:stream/test-stream"
+            }
+        },
+        {
+            "documentation": "StreamARN in aws-iso with FIPS and DualStack: falls back to default kinesis FIPS DualStack endpoint",
+            "expect": {
+                "endpoint": {
+                    "url": "https://kinesis-fips.us-iso-east-1.api.aws.ic.gov"
+                }
+            },
+            "params": {
+                "Region": "us-iso-east-1",
+                "UseFIPS": true,
+                "UseDualStack": true,
+                "OperationType": "control",
+                "StreamARN": "arn:aws-iso:kinesis:us-iso-east-1:123:stream/test-stream"
+            }
+        },
+        {
+            "documentation": "StreamARN in aws-iso: missing ARN type falls back to default kinesis endpoint",
+            "expect": {
+                "endpoint": {
+                    "url": "https://kinesis.us-iso-east-1.c2s.ic.gov"
+                }
+            },
+            "params": {
+                "Region": "us-iso-east-1",
+                "UseFIPS": false,
+                "UseDualStack": false,
+                "OperationType": "control",
+                "StreamARN": "arn:aws-iso:kinesis:us-iso-east-1:123456789012:"
+            }
+        },
+        {
+            "documentation": "QueueARN: partition mismatch errors",
+            "expect": {
+                "error": "Partition: aws-cn from ARN doesn't match with partition name: aws."
+            },
+            "params": {
+                "Region": "us-east-1",
+                "UseFIPS": false,
+                "UseDualStack": false,
+                "OperationType": "control",
+                "ResourceType": "queue",
+                "QueueARN": "arn:aws-cn:kinesis:cn-north-1:123456789012:queue/myQueueId"
+            }
+        },
+        {
+            "documentation": "ResourceARN with queue type: FIPS and DualStack",
+            "expect": {
+                "endpoint": {
+                    "url": "https://myQueueId.control-kinesis-queues-fips.us-east-1.api.aws"
+                }
+            },
+            "params": {
+                "Region": "us-east-1",
+                "UseFIPS": true,
+                "UseDualStack": true,
+                "OperationType": "control",
+                "ResourceARN": "arn:aws:kinesis:us-east-1:123456789012:queue/myQueueId"
+            }
+        },
+        {
+            "documentation": "ResourceARN with queue type: data operation type",
+            "expect": {
+                "endpoint": {
+                    "url": "https://myQueueId.data-kinesis-queues.us-west-2.amazonaws.com"
+                }
+            },
+            "params": {
+                "Region": "us-west-2",
+                "UseFIPS": false,
+                "UseDualStack": false,
+                "OperationType": "data",
+                "ResourceARN": "arn:aws:kinesis:us-west-2:123456789012:queue/myQueueId"
             }
         }
     ],

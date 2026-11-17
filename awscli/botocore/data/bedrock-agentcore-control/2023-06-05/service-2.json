@@ -1256,6 +1256,25 @@
       "documentation":"<p>Deletes a workload identity.</p>",
       "idempotent":true
     },
+    "GetAgentInsightStore":{
+      "name":"GetAgentInsightStore",
+      "http":{
+        "method":"GET",
+        "requestUri":"/agent-insight-stores/{agentInsightStoreId}",
+        "responseCode":200
+      },
+      "input":{"shape":"GetAgentInsightStoreRequest"},
+      "output":{"shape":"GetAgentInsightStoreResponse"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Returns the account's service-defined default Agent Insight Store. The logical default exists for every enrolled account; its backing state may be initialized on first access.</p>",
+      "readonly":true
+    },
     "GetAgentRuntime":{
       "name":"GetAgentRuntime",
       "http":{
@@ -1932,6 +1951,24 @@
       "documentation":"<p>Retrieves information about a workload identity.</p>",
       "readonly":true
     },
+    "ListAgentInsightStores":{
+      "name":"ListAgentInsightStores",
+      "http":{
+        "method":"POST",
+        "requestUri":"/agent-insight-stores",
+        "responseCode":200
+      },
+      "input":{"shape":"ListAgentInsightStoresRequest"},
+      "output":{"shape":"ListAgentInsightStoresResponse"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Lists the account's service-defined default Agent Insight Store. The singleton backing state may be initialized on first access.</p>",
+      "readonly":true
+    },
     "ListAgentRuntimeEndpoints":{
       "name":"ListAgentRuntimeEndpoints",
       "http":{
@@ -2156,8 +2193,8 @@
     "ListDatasetExamples":{
       "name":"ListDatasetExamples",
       "http":{
-        "method":"GET",
-        "requestUri":"/datasets/{datasetId}/examples",
+        "method":"POST",
+        "requestUri":"/datasets/{datasetId}/examples/list",
         "responseCode":200
       },
       "input":{"shape":"ListDatasetExamplesRequest"},
@@ -2170,14 +2207,14 @@
         {"shape":"ThrottlingException"},
         {"shape":"InternalServerException"}
       ],
-      "documentation":"<p> Returns paginated examples from the dataset. The server embeds the resolved version in the pagination token. Once pagination begins, all subsequent pages are pinned to that version regardless of concurrent mutations. </p>",
+      "documentation":"<p> Returns paginated examples from the dataset. The server embeds the resolved version in the pagination token. Once pagination begins, all subsequent pages are pinned to that version regardless of concurrent mutations. A request with a pagination token can omit <code>datasetVersion</code>. If it sets a version that differs from the token's version, the request fails with a <code>ValidationException</code>. </p>",
       "readonly":true
     },
     "ListDatasetVersions":{
       "name":"ListDatasetVersions",
       "http":{
-        "method":"GET",
-        "requestUri":"/datasets/{datasetId}/versions",
+        "method":"POST",
+        "requestUri":"/datasets/{datasetId}/versions/list",
         "responseCode":200
       },
       "input":{"shape":"ListDatasetVersionsRequest"},
@@ -2195,8 +2232,8 @@
     "ListDatasets":{
       "name":"ListDatasets",
       "http":{
-        "method":"GET",
-        "requestUri":"/datasets",
+        "method":"POST",
+        "requestUri":"/datasets/list",
         "responseCode":200
       },
       "input":{"shape":"ListDatasetsRequest"},
@@ -2856,6 +2893,27 @@
         {"shape":"InternalServerException"}
       ],
       "documentation":"<p>Removes the specified tags from the specified resource.</p> <note> <p>This feature is currently available only for AgentCore Runtime, Browser, Browser Profile, Code Interpreter tool, and Gateway.</p> </note>",
+      "idempotent":true
+    },
+    "UpdateAgentInsightStore":{
+      "name":"UpdateAgentInsightStore",
+      "http":{
+        "method":"PUT",
+        "requestUri":"/agent-insight-stores/{agentInsightStoreId}",
+        "responseCode":202
+      },
+      "input":{"shape":"UpdateAgentInsightStoreRequest"},
+      "output":{"shape":"UpdateAgentInsightStoreResponse"},
+      "errors":[
+        {"shape":"ServiceQuotaExceededException"},
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ConflictException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Updates the enablement status or encryption configuration of an Agent Insight Store.</p>",
       "idempotent":true
     },
     "UpdateAgentRuntime":{
@@ -3584,6 +3642,109 @@
       "type":"string",
       "max":256,
       "min":1
+    },
+    "AgentInsightStoreArn":{
+      "type":"string",
+      "pattern":"arn:aws(-[a-z]+)*:bedrock-agentcore:[a-z0-9-]+:[0-9]{12}:agent-insight-store\\/[a-z0-9-]{1,64}"
+    },
+    "AgentInsightStoreEnablementStatus":{
+      "type":"string",
+      "enum":[
+        "ENABLED",
+        "DISABLED"
+      ]
+    },
+    "AgentInsightStoreEncryptionConfiguration":{
+      "type":"structure",
+      "required":["mode"],
+      "members":{
+        "mode":{
+          "shape":"AgentInsightStoreEncryptionMode",
+          "documentation":"<p>Specifies the encryption mode used to protect new Agent Insights.</p>"
+        },
+        "kmsKeyArn":{
+          "shape":"KmsKeyArn",
+          "documentation":"<p>Specifies the Amazon Resource Name (ARN) of the customer managed AWS KMS key that you use to encrypt new Agent Insights. This field is required when <code>mode</code> is <code>CUSTOMER_MANAGED_KMS</code> and cannot be specified when <code>mode</code> is <code>AWS_OWNED_KMS_KEY</code>.</p>"
+        }
+      },
+      "documentation":"<p>Contains the encryption mode and key configuration used to encrypt new Agent Insights in an Agent Insight Store.</p>"
+    },
+    "AgentInsightStoreEncryptionMode":{
+      "type":"string",
+      "documentation":"<p>Specifies the encryption mode used to protect new Agent Insights. Valid values:</p> <dl> <dt>AWS_OWNED_KMS_KEY</dt> <dd> <p>Uses an AWS owned key.</p> </dd> <dt>CUSTOMER_MANAGED_KMS</dt> <dd> <p>Uses a customer managed AWS Key Management Service (AWS KMS) key.</p> </dd> </dl>",
+      "enum":[
+        "AWS_OWNED_KMS_KEY",
+        "CUSTOMER_MANAGED_KMS"
+      ]
+    },
+    "AgentInsightStoreFailureReason":{
+      "type":"string",
+      "max":2048,
+      "min":0,
+      "sensitive":true
+    },
+    "AgentInsightStoreId":{
+      "type":"string",
+      "documentation":"<p>Service-defined identifier for an Agent Insight Store.</p>",
+      "max":64,
+      "min":1,
+      "pattern":"[a-z0-9-]+"
+    },
+    "AgentInsightStoreStatus":{
+      "type":"string",
+      "enum":[
+        "ACTIVE",
+        "UPDATING",
+        "INACTIVE",
+        "ERROR"
+      ]
+    },
+    "AgentInsightStoreSummary":{
+      "type":"structure",
+      "required":[
+        "agentInsightStoreArn",
+        "agentInsightStoreId",
+        "status",
+        "enablementStatus",
+        "encryptionConfiguration",
+        "createdAt",
+        "updatedAt"
+      ],
+      "members":{
+        "agentInsightStoreArn":{
+          "shape":"AgentInsightStoreArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the Agent Insight Store.</p>"
+        },
+        "agentInsightStoreId":{
+          "shape":"AgentInsightStoreId",
+          "documentation":"<p>The unique identifier of the Agent Insight Store.</p>"
+        },
+        "status":{
+          "shape":"AgentInsightStoreStatus",
+          "documentation":"<p>The current lifecycle status of the Agent Insight Store. Valid values:</p> <dl> <dt>ACTIVE</dt> <dd> <p>The store is available.</p> </dd> <dt>UPDATING</dt> <dd> <p>The service is applying a requested change.</p> </dd> <dt>INACTIVE</dt> <dd> <p>The store does not accept new Agent Insights.</p> </dd> <dt>ERROR</dt> <dd> <p>The store requires intervention.</p> </dd> </dl>"
+        },
+        "enablementStatus":{
+          "shape":"AgentInsightStoreEnablementStatus",
+          "documentation":"<p>Specifies whether the Agent Insight Store accepts new Agent Insights. The default value is enabled.</p>"
+        },
+        "encryptionConfiguration":{
+          "shape":"AgentInsightStoreEncryptionConfiguration",
+          "documentation":"<p>Specifies the encryption mode and key configuration that encrypts new Agent Insights and protects the data at rest.</p>"
+        },
+        "createdAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The date and time when the Agent Insight Store was created.</p>"
+        },
+        "updatedAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The date and time when the Agent Insight Store was last updated.</p>"
+        }
+      },
+      "documentation":"<p>Contains summary information about an Agent Insight Store.</p>"
+    },
+    "AgentInsightStoreSummaryList":{
+      "type":"list",
+      "member":{"shape":"AgentInsightStoreSummary"}
     },
     "AgentManagedRuntimeType":{
       "type":"string",
@@ -6428,11 +6589,7 @@
     },
     "CreateDatasetRequest":{
       "type":"structure",
-      "required":[
-        "datasetName",
-        "source",
-        "schemaType"
-      ],
+      "required":["datasetName"],
       "members":{
         "clientToken":{
           "shape":"ClientToken",
@@ -8548,6 +8705,10 @@
       "member":{"shape":"SensitiveJson"},
       "documentation":"<p> A list of dataset examples. Each element is a free-form JSON document whose structure is defined by the dataset's schema type. </p>"
     },
+    "DatasetGenerationId":{
+      "type":"string",
+      "pattern":"[a-zA-Z][a-zA-Z0-9-_]{0,99}-[a-zA-Z0-9]{10}"
+    },
     "DatasetId":{
       "type":"string",
       "pattern":"[a-zA-Z0-9_-]{1,110}"
@@ -8585,7 +8746,6 @@
         "datasetId",
         "datasetName",
         "status",
-        "schemaType",
         "exampleCount",
         "createdAt",
         "updatedAt"
@@ -8623,6 +8783,10 @@
           "shape":"Long",
           "documentation":"<p> The number of examples in the dataset. </p>"
         },
+        "exampleCountByField":{
+          "shape":"ExampleCountByField",
+          "documentation":"<p> The number of examples that have each field, for the DRAFT. Absent when the counts are unknown. </p>"
+        },
         "createdAt":{
           "shape":"Timestamp",
           "documentation":"<p> The timestamp when the dataset was created. </p>"
@@ -8658,6 +8822,10 @@
         "exampleCount":{
           "shape":"Long",
           "documentation":"<p> The number of examples in this version. </p>"
+        },
+        "exampleCountByField":{
+          "shape":"ExampleCountByField",
+          "documentation":"<p> The number of examples that have each field, for this version. Absent when the counts are unknown. </p>"
         },
         "createdAt":{
           "shape":"Timestamp",
@@ -10734,6 +10902,97 @@
         "CustomDerived"
       ]
     },
+    "ExampleCountByField":{
+      "type":"structure",
+      "required":[
+        "turns",
+        "input",
+        "actorProfile"
+      ],
+      "members":{
+        "turns":{
+          "shape":"Long",
+          "documentation":"<p> The number of examples that have <code>turns</code>. </p>"
+        },
+        "input":{
+          "shape":"Long",
+          "documentation":"<p> The number of examples that have <code>input</code>. </p>"
+        },
+        "actorProfile":{
+          "shape":"Long",
+          "documentation":"<p> The number of examples that have <code>actor_profile</code>. </p>"
+        }
+      },
+      "documentation":"<p> The number of examples that have each field. An example can have more than one of these fields, so the counts can add up to more than <code>exampleCount</code>. </p>"
+    },
+    "ExampleCountByFieldCondition":{
+      "type":"structure",
+      "members":{
+        "anyOf":{
+          "shape":"ExampleFieldList",
+          "documentation":"<p> The fields to count. An example counts if it has at least one of these fields. Required. </p>"
+        },
+        "min":{
+          "shape":"ExampleCountByFieldConditionMinLong",
+          "documentation":"<p> The minimum count, inclusive. </p>"
+        },
+        "max":{
+          "shape":"ExampleCountByFieldConditionMaxLong",
+          "documentation":"<p> The maximum count, inclusive. </p>"
+        }
+      },
+      "documentation":"<p> A condition on the number of examples that have the given fields. The count includes each example that has at least one of the fields in <code>anyOf</code>. </p>"
+    },
+    "ExampleCountByFieldConditionList":{
+      "type":"list",
+      "member":{"shape":"ExampleCountByFieldCondition"},
+      "documentation":"<p> A list of example count conditions. A resource matches if it meets at least one condition. </p>",
+      "max":3,
+      "min":1
+    },
+    "ExampleCountByFieldConditionMaxLong":{
+      "type":"long",
+      "box":true,
+      "min":0
+    },
+    "ExampleCountByFieldConditionMinLong":{
+      "type":"long",
+      "box":true,
+      "min":0
+    },
+    "ExampleField":{
+      "type":"string",
+      "documentation":"<p> A field that a dataset example can have. </p>",
+      "enum":[
+        "TURNS",
+        "INPUT",
+        "ACTOR_PROFILE"
+      ]
+    },
+    "ExampleFieldCondition":{
+      "type":"structure",
+      "members":{
+        "anyOf":{
+          "shape":"ExampleFieldList",
+          "documentation":"<p> Matches examples that have at least one of these fields. Required. </p>"
+        }
+      },
+      "documentation":"<p> A condition on the fields of an example. </p>"
+    },
+    "ExampleFieldConditionList":{
+      "type":"list",
+      "member":{"shape":"ExampleFieldCondition"},
+      "documentation":"<p> A list of example field conditions. An example matches if it meets at least one condition. </p>",
+      "max":3,
+      "min":1
+    },
+    "ExampleFieldList":{
+      "type":"list",
+      "member":{"shape":"ExampleField"},
+      "documentation":"<p> A list of example fields. </p>",
+      "max":3,
+      "min":1
+    },
     "ExampleId":{
       "type":"string",
       "max":256,
@@ -11484,6 +11743,64 @@
       "type":"string",
       "max":1024,
       "min":1
+    },
+    "GetAgentInsightStoreRequest":{
+      "type":"structure",
+      "required":["agentInsightStoreId"],
+      "members":{
+        "agentInsightStoreId":{
+          "shape":"AgentInsightStoreId",
+          "documentation":"<p>Specifies the unique identifier of the Agent Insight Store to retrieve.</p>",
+          "location":"uri",
+          "locationName":"agentInsightStoreId"
+        }
+      }
+    },
+    "GetAgentInsightStoreResponse":{
+      "type":"structure",
+      "required":[
+        "agentInsightStoreArn",
+        "agentInsightStoreId",
+        "status",
+        "enablementStatus",
+        "encryptionConfiguration",
+        "createdAt",
+        "updatedAt"
+      ],
+      "members":{
+        "agentInsightStoreArn":{
+          "shape":"AgentInsightStoreArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the Agent Insight Store.</p>"
+        },
+        "agentInsightStoreId":{
+          "shape":"AgentInsightStoreId",
+          "documentation":"<p>The unique identifier of the Agent Insight Store.</p>"
+        },
+        "status":{
+          "shape":"AgentInsightStoreStatus",
+          "documentation":"<p>The current lifecycle status of the Agent Insight Store. Valid values:</p> <dl> <dt>ACTIVE</dt> <dd> <p>The store is available.</p> </dd> <dt>UPDATING</dt> <dd> <p>The service is applying a requested change.</p> </dd> <dt>INACTIVE</dt> <dd> <p>The store does not accept new Agent Insights.</p> </dd> <dt>ERROR</dt> <dd> <p>The store requires intervention.</p> </dd> </dl>"
+        },
+        "enablementStatus":{
+          "shape":"AgentInsightStoreEnablementStatus",
+          "documentation":"<p>Specifies whether the Agent Insight Store accepts new Agent Insights. The default value is enabled.</p>"
+        },
+        "encryptionConfiguration":{
+          "shape":"AgentInsightStoreEncryptionConfiguration",
+          "documentation":"<p>Specifies the encryption mode and key configuration that encrypts new Agent Insights and protects the data at rest.</p>"
+        },
+        "createdAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The date and time when the Agent Insight Store was created.</p>"
+        },
+        "updatedAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The date and time when the Agent Insight Store was last updated.</p>"
+        },
+        "failureReason":{
+          "shape":"AgentInsightStoreFailureReason",
+          "documentation":"<p>Describes the failure that prevented the Agent Insight Store from reaching its requested lifecycle status.</p>"
+        }
+      }
     },
     "GetAgentRuntimeEndpointRequest":{
       "type":"structure",
@@ -12282,7 +12599,6 @@
         "datasetVersion",
         "datasetName",
         "status",
-        "schemaType",
         "exampleCount",
         "createdAt",
         "updatedAt"
@@ -12331,6 +12647,10 @@
         "exampleCount":{
           "shape":"Long",
           "documentation":"<p> The number of examples in the DRAFT. </p>"
+        },
+        "exampleCountByField":{
+          "shape":"ExampleCountByField",
+          "documentation":"<p> The number of examples that have each field, for the resolved version. Absent when the counts are unknown. </p>"
         },
         "downloadUrl":{
           "shape":"DownloadUrl",
@@ -16279,6 +16599,48 @@
       },
       "documentation":"<p>The configuration details returned for a LinkedIn OAuth2 provider, including the client ID and OAuth2 discovery information.</p>"
     },
+    "ListAgentInsightStoresRequest":{
+      "type":"structure",
+      "members":{
+        "nextToken":{
+          "shape":"ListAgentInsightStoresRequestNextTokenString",
+          "documentation":"<p>If the total number of results is greater than the <code>maxResults</code> value provided in the request, enter the token returned in the <code>nextToken</code> field in the response in this field to return the next batch of results.</p>",
+          "location":"querystring",
+          "locationName":"nextToken"
+        },
+        "maxResults":{
+          "shape":"ListAgentInsightStoresRequestMaxResultsInteger",
+          "documentation":"<p>The maximum number of results to return in the response. If the total number of results is greater than this value, use the token returned in the response in the <code>nextToken</code> field when making another request to return the next batch of results.</p>",
+          "location":"querystring",
+          "locationName":"maxResults"
+        }
+      }
+    },
+    "ListAgentInsightStoresRequestMaxResultsInteger":{
+      "type":"integer",
+      "box":true,
+      "max":100,
+      "min":1
+    },
+    "ListAgentInsightStoresRequestNextTokenString":{
+      "type":"string",
+      "max":2048,
+      "min":0
+    },
+    "ListAgentInsightStoresResponse":{
+      "type":"structure",
+      "required":["agentInsightStores"],
+      "members":{
+        "agentInsightStores":{
+          "shape":"AgentInsightStoreSummaryList",
+          "documentation":"<p>The Agent Insight Store summaries.</p>"
+        },
+        "nextToken":{
+          "shape":"String",
+          "documentation":"<p>If the total number of results is greater than the <code>maxResults</code> value provided in the request, use this token when making another request in the <code>nextToken</code> field to return the next batch of results.</p>"
+        }
+      }
+    },
     "ListAgentRuntimeEndpointsRequest":{
       "type":"structure",
       "required":["agentRuntimeId"],
@@ -16709,6 +17071,27 @@
         }
       }
     },
+    "ListDatasetExamplesFilter":{
+      "type":"structure",
+      "members":{
+        "generationIds":{
+          "shape":"ListDatasetExamplesFilterGenerationIdsList",
+          "documentation":"<p> Returns only examples created by this dataset generation. Specify one ID. </p>"
+        },
+        "exampleFields":{
+          "shape":"ExampleFieldConditionList",
+          "documentation":"<p> Returns only examples that meet at least one of these conditions. Examples last written before example field filtering was available never match. </p>"
+        }
+      },
+      "documentation":"<p> A filter for <code>ListDatasetExamples</code>. </p>"
+    },
+    "ListDatasetExamplesFilterGenerationIdsList":{
+      "type":"list",
+      "member":{"shape":"DatasetGenerationId"},
+      "documentation":"<p> A list of dataset generation IDs. </p>",
+      "max":1,
+      "min":1
+    },
     "ListDatasetExamplesRequest":{
       "type":"structure",
       "required":["datasetId"],
@@ -16721,21 +17104,19 @@
         },
         "datasetVersion":{
           "shape":"DatasetVersion",
-          "documentation":"<p> Version to paginate: \"DRAFT\" or a version number. Defaults to DRAFT if absent. Only used on the first request; for subsequent pages, the version is extracted from the pagination token. </p>",
-          "location":"querystring",
-          "locationName":"datasetVersion"
+          "documentation":"<p> Version to paginate: \"DRAFT\" or a version number. Defaults to DRAFT if absent on the first request. With a pagination token, the version comes from the token: you can omit this member, and a value that differs from the token's version is rejected with a <code>ValidationException</code>. </p>"
+        },
+        "filter":{
+          "shape":"ListDatasetExamplesFilter",
+          "documentation":"<p> A filter to apply to the examples. </p>"
         },
         "maxResults":{
           "shape":"ListDatasetExamplesRequestMaxResultsInteger",
-          "documentation":"<p> Maximum number of examples to return per page. </p>",
-          "location":"querystring",
-          "locationName":"maxResults"
+          "documentation":"<p> Maximum number of examples to return per page. </p>"
         },
         "nextToken":{
           "shape":"ListDatasetExamplesRequestNextTokenString",
-          "documentation":"<p> The token for the next page of results. </p>",
-          "location":"querystring",
-          "locationName":"nextToken"
+          "documentation":"<p> The token for the next page of results. </p>"
         }
       }
     },
@@ -16781,6 +17162,16 @@
         }
       }
     },
+    "ListDatasetVersionsFilter":{
+      "type":"structure",
+      "members":{
+        "exampleCountByField":{
+          "shape":"ExampleCountByFieldConditionList",
+          "documentation":"<p> Returns only versions whose example counts meet at least one of these conditions. </p>"
+        }
+      },
+      "documentation":"<p> A filter for <code>ListDatasetVersions</code>. </p>"
+    },
     "ListDatasetVersionsRequest":{
       "type":"structure",
       "required":["datasetId"],
@@ -16791,17 +17182,17 @@
           "location":"uri",
           "locationName":"datasetId"
         },
+        "filter":{
+          "shape":"ListDatasetVersionsFilter",
+          "documentation":"<p> A filter to apply to the dataset versions. </p>"
+        },
         "nextToken":{
-          "shape":"String",
-          "documentation":"<p> The token for the next page of results. </p>",
-          "location":"querystring",
-          "locationName":"nextToken"
+          "shape":"ListDatasetVersionsRequestNextTokenString",
+          "documentation":"<p> The token for the next page of results. </p>"
         },
         "maxResults":{
           "shape":"ListDatasetVersionsRequestMaxResultsInteger",
-          "documentation":"<p> The maximum number of versions to return per page. </p>",
-          "location":"querystring",
-          "locationName":"maxResults"
+          "documentation":"<p> The maximum number of versions to return per page. </p>"
         }
       }
     },
@@ -16810,6 +17201,11 @@
       "box":true,
       "max":100,
       "min":1
+    },
+    "ListDatasetVersionsRequestNextTokenString":{
+      "type":"string",
+      "max":2048,
+      "min":0
     },
     "ListDatasetVersionsResponse":{
       "type":"structure",
@@ -16825,20 +17221,30 @@
         }
       }
     },
+    "ListDatasetsFilter":{
+      "type":"structure",
+      "members":{
+        "exampleCountByField":{
+          "shape":"ExampleCountByFieldConditionList",
+          "documentation":"<p> Returns only datasets whose DRAFT example counts meet at least one of these conditions. </p>"
+        }
+      },
+      "documentation":"<p> A filter for <code>ListDatasets</code>. </p>"
+    },
     "ListDatasetsRequest":{
       "type":"structure",
       "members":{
+        "filter":{
+          "shape":"ListDatasetsFilter",
+          "documentation":"<p> A filter to apply to the datasets. </p>"
+        },
         "nextToken":{
           "shape":"ListDatasetsRequestNextTokenString",
-          "documentation":"<p> The token for the next page of results. </p>",
-          "location":"querystring",
-          "locationName":"nextToken"
+          "documentation":"<p> The token for the next page of results. </p>"
         },
         "maxResults":{
           "shape":"ListDatasetsRequestMaxResultsInteger",
-          "documentation":"<p> The maximum number of datasets to return per page. </p>",
-          "location":"querystring",
-          "locationName":"maxResults"
+          "documentation":"<p> The maximum number of datasets to return per page. </p>"
         }
       }
     },
@@ -23377,6 +23783,67 @@
     "UntagResourceResponse":{
       "type":"structure",
       "members":{}
+    },
+    "UpdateAgentInsightStoreRequest":{
+      "type":"structure",
+      "required":["agentInsightStoreId"],
+      "members":{
+        "clientToken":{
+          "shape":"ClientToken",
+          "documentation":"<p>A unique, case-sensitive identifier to ensure that the API request completes no more than one time. If you don't specify this field, a value is randomly generated for you. If this token matches a previous request, the service ignores the request, but doesn't return an error. For more information, see <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/APIReference/Run_Instance_Idempotency.html\">Ensuring idempotency</a>.</p>",
+          "idempotencyToken":true
+        },
+        "agentInsightStoreId":{
+          "shape":"AgentInsightStoreId",
+          "documentation":"<p>Specifies the unique identifier of the Agent Insight Store to update.</p>",
+          "location":"uri",
+          "locationName":"agentInsightStoreId"
+        },
+        "enablementStatus":{
+          "shape":"AgentInsightStoreEnablementStatus",
+          "documentation":"<p>Specifies whether the Agent Insight Store accepts new Agent Insights. If you don't specify this parameter, the store's current enablement setting remains unchanged.</p>"
+        },
+        "encryptionConfiguration":{
+          "shape":"AgentInsightStoreEncryptionConfiguration",
+          "documentation":"<p>Specifies the encryption mode and key configuration to use for new Agent Insights. If you don't specify this parameter, the store's current encryption configuration remains unchanged.</p>"
+        }
+      }
+    },
+    "UpdateAgentInsightStoreResponse":{
+      "type":"structure",
+      "required":[
+        "agentInsightStoreArn",
+        "agentInsightStoreId",
+        "status",
+        "enablementStatus",
+        "updatedAt"
+      ],
+      "members":{
+        "agentInsightStoreArn":{
+          "shape":"AgentInsightStoreArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the updated Agent Insight Store.</p>"
+        },
+        "agentInsightStoreId":{
+          "shape":"AgentInsightStoreId",
+          "documentation":"<p>The unique identifier of the updated Agent Insight Store.</p>"
+        },
+        "status":{
+          "shape":"AgentInsightStoreStatus",
+          "documentation":"<p>The lifecycle status of the Agent Insight Store after the update request. Valid values:</p> <dl> <dt>ACTIVE</dt> <dd> <p>The store is available.</p> </dd> <dt>UPDATING</dt> <dd> <p>The service is applying a requested change.</p> </dd> <dt>INACTIVE</dt> <dd> <p>The store does not accept new Agent Insights.</p> </dd> <dt>ERROR</dt> <dd> <p>The store requires intervention.</p> </dd> </dl>"
+        },
+        "enablementStatus":{
+          "shape":"AgentInsightStoreEnablementStatus",
+          "documentation":"<p>Specifies whether the Agent Insight Store accepts new Agent Insights after the update request.</p>"
+        },
+        "updatedAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The date and time when the Agent Insight Store was last updated.</p>"
+        },
+        "failureReason":{
+          "shape":"AgentInsightStoreFailureReason",
+          "documentation":"<p>Describes the failure that prevented the Agent Insight Store from reaching its requested lifecycle status.</p>"
+        }
+      }
     },
     "UpdateAgentRuntimeEndpointRequest":{
       "type":"structure",

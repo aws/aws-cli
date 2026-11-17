@@ -130,6 +130,27 @@
       "documentation":"<p>Creates an access token for a DNS view. Access tokens provide token-based authentication for DNS-over-HTTPS (DoH) and DNS-over-TLS (DoT) connections to the Route 53 Global Resolver.</p> <important> <p>Route 53 Global Resolver is a global service that supports resolvers in multiple Amazon Web Services Regions but you must specify the US East (Ohio) Region to create, update, or otherwise work with Route 53 Global Resolver resources. That is, for example, specify <code>--region us-east-2</code> on Amazon Web Services CLI commands.</p> </important>",
       "idempotent":true
     },
+    "CreateCoreNetworkEndpoint":{
+      "name":"CreateCoreNetworkEndpoint",
+      "http":{
+        "method":"POST",
+        "requestUri":"/core-network-endpoints",
+        "responseCode":200
+      },
+      "input":{"shape":"CreateCoreNetworkEndpointInput"},
+      "output":{"shape":"CreateCoreNetworkEndpointOutput"},
+      "errors":[
+        {"shape":"InternalServerException"},
+        {"shape":"ValidationException"},
+        {"shape":"ConflictException"},
+        {"shape":"ServiceQuotaExceededException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ResourceNotFoundException"}
+      ],
+      "documentation":"<p>Creates a core network endpoint, which enables DNS resolution for Amazon Web Services Cloud WAN core network segments. The endpoint connects a Route 53 Global Resolver to an Amazon Web Services Cloud WAN core network so that resources attached to the core network can send DNS queries to the resolver.</p> <important> <p>Route 53 Global Resolver is a global service that supports resolvers in multiple Amazon Web Services Regions, but you must specify the US East (Ohio) Region to create, update, or otherwise work with Route 53 Global Resolver resources. That is, for example, specify <code>--region us-east-2</code> on Amazon Web Services CLI commands.</p> </important>",
+      "idempotent":true
+    },
     "CreateDNSView":{
       "name":"CreateDNSView",
       "http":{
@@ -251,6 +272,26 @@
         {"shape":"ResourceNotFoundException"}
       ],
       "documentation":"<p>Deletes an access token. This operation cannot be undone.</p> <important> <p>Route 53 Global Resolver is a global service that supports resolvers in multiple Amazon Web Services Regions but you must specify the US East (Ohio) Region to create, update, or otherwise work with Route 53 Global Resolver resources. That is, for example, specify <code>--region us-east-2</code> on Amazon Web Services CLI commands.</p> </important>",
+      "idempotent":true
+    },
+    "DeleteCoreNetworkEndpoint":{
+      "name":"DeleteCoreNetworkEndpoint",
+      "http":{
+        "method":"DELETE",
+        "requestUri":"/core-network-endpoints/{coreNetworkEndpointId}",
+        "responseCode":200
+      },
+      "input":{"shape":"DeleteCoreNetworkEndpointInput"},
+      "output":{"shape":"DeleteCoreNetworkEndpointOutput"},
+      "errors":[
+        {"shape":"InternalServerException"},
+        {"shape":"ValidationException"},
+        {"shape":"ConflictException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ResourceNotFoundException"}
+      ],
+      "documentation":"<p>Deletes a core network endpoint. This operation cannot be undone.</p> <important> <p>Route 53 Global Resolver is a global service that supports resolvers in multiple Amazon Web Services Regions, but you must specify the US East (Ohio) Region to create, update, or otherwise work with Route 53 Global Resolver resources. That is, for example, specify <code>--region us-east-2</code> on Amazon Web Services CLI commands.</p> </important>",
       "idempotent":true
     },
     "DeleteDNSView":{
@@ -433,6 +474,25 @@
       "documentation":"<p>Retrieves information about an access token.</p> <important> <p>Route 53 Global Resolver is a global service that supports resolvers in multiple Amazon Web Services Regions but you must specify the US East (Ohio) Region to create, update, or otherwise work with Route 53 Global Resolver resources. That is, for example, specify <code>--region us-east-2</code> on Amazon Web Services CLI commands.</p> </important>",
       "readonly":true
     },
+    "GetCoreNetworkEndpoint":{
+      "name":"GetCoreNetworkEndpoint",
+      "http":{
+        "method":"GET",
+        "requestUri":"/core-network-endpoints/{coreNetworkEndpointId}",
+        "responseCode":200
+      },
+      "input":{"shape":"GetCoreNetworkEndpointInput"},
+      "output":{"shape":"GetCoreNetworkEndpointOutput"},
+      "errors":[
+        {"shape":"InternalServerException"},
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ResourceNotFoundException"}
+      ],
+      "documentation":"<p>Retrieves information about a core network endpoint.</p> <important> <p>Route 53 Global Resolver is a global service that supports resolvers in multiple Amazon Web Services Regions, but you must specify the US East (Ohio) Region to create, update, or otherwise work with Route 53 Global Resolver resources. That is, for example, specify <code>--region us-east-2</code> on Amazon Web Services CLI commands.</p> </important>",
+      "readonly":true
+    },
     "GetDNSView":{
       "name":"GetDNSView",
       "http":{
@@ -604,6 +664,24 @@
       "documentation":"<p>Lists all access tokens for a DNS view with pagination support.</p> <important> <p>Route 53 Global Resolver is a global service that supports resolvers in multiple Amazon Web Services Regions but you must specify the US East (Ohio) Region to create, update, or otherwise work with Route 53 Global Resolver resources. That is, for example, specify <code>--region us-east-2</code> on Amazon Web Services CLI commands.</p> </important>",
       "readonly":true
     },
+    "ListCoreNetworkEndpoints":{
+      "name":"ListCoreNetworkEndpoints",
+      "http":{
+        "method":"GET",
+        "requestUri":"/core-network-endpoints",
+        "responseCode":200
+      },
+      "input":{"shape":"ListCoreNetworkEndpointsInput"},
+      "output":{"shape":"ListCoreNetworkEndpointsOutput"},
+      "errors":[
+        {"shape":"InternalServerException"},
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ThrottlingException"}
+      ],
+      "documentation":"<p>Lists the core network endpoints in your Amazon Web Services account, with pagination support.</p> <important> <p>Route 53 Global Resolver is a global service that supports resolvers in multiple Amazon Web Services Regions, but you must specify the US East (Ohio) Region to create, update, or otherwise work with Route 53 Global Resolver resources. That is, for example, specify <code>--region us-east-2</code> on Amazon Web Services CLI commands.</p> </important>",
+      "readonly":true
+    },
     "ListDNSViews":{
       "name":"ListDNSViews",
       "http":{
@@ -763,7 +841,10 @@
       "input":{"shape":"ListTagsForResourceRequest"},
       "output":{"shape":"ListTagsForResourceResponse"},
       "errors":[
-        {"shape":"ResourceNotFoundException"}
+        {"shape":"InternalServerException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"}
       ],
       "documentation":"<p>Lists the tags associated with a Route 53 Global Resolver resource.</p> <important> <p>Route 53 Global Resolver is a global service that supports resolvers in multiple Amazon Web Services Regions but you must specify the US East (Ohio) Region to create, update, or otherwise work with Route 53 Global Resolver resources. That is, for example, specify <code>--region us-east-2</code> on Amazon Web Services CLI commands.</p> </important>"
     },
@@ -777,9 +858,12 @@
       "input":{"shape":"TagResourceRequest"},
       "output":{"shape":"TagResourceResponse"},
       "errors":[
+        {"shape":"InternalServerException"},
         {"shape":"ValidationException"},
         {"shape":"ServiceQuotaExceededException"},
-        {"shape":"ResourceNotFoundException"}
+        {"shape":"AccessDeniedException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"}
       ],
       "documentation":"<p>Adds or updates tags for a Route 53 Global Resolver resource. Tags are key-value pairs that help you organize and identify your resources.</p> <important> <p>Route 53 Global Resolver is a global service that supports resolvers in multiple Amazon Web Services Regions but you must specify the US East (Ohio) Region to create, update, or otherwise work with Route 53 Global Resolver resources. That is, for example, specify <code>--region us-east-2</code> on Amazon Web Services CLI commands.</p> </important>"
     },
@@ -793,8 +877,11 @@
       "input":{"shape":"UntagResourceRequest"},
       "output":{"shape":"UntagResourceResponse"},
       "errors":[
+        {"shape":"InternalServerException"},
         {"shape":"ValidationException"},
-        {"shape":"ResourceNotFoundException"}
+        {"shape":"AccessDeniedException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"}
       ],
       "documentation":"<p>Removes tags from a Route 53 Global Resolver resource.</p> <important> <p>Route 53 Global Resolver is a global service that supports resolvers in multiple Amazon Web Services Regions but you must specify the US East (Ohio) Region to create, update, or otherwise work with Route 53 Global Resolver resources. That is, for example, specify <code>--region us-east-2</code> on Amazon Web Services CLI commands.</p> </important>"
     },
@@ -838,6 +925,27 @@
         {"shape":"ResourceNotFoundException"}
       ],
       "documentation":"<p>Updates the configuration of an access token.</p> <important> <p>Route 53 Global Resolver is a global service that supports resolvers in multiple Amazon Web Services Regions but you must specify the US East (Ohio) Region to create, update, or otherwise work with Route 53 Global Resolver resources. That is, for example, specify <code>--region us-east-2</code> on Amazon Web Services CLI commands.</p> </important>",
+      "idempotent":true
+    },
+    "UpdateCoreNetworkEndpoint":{
+      "name":"UpdateCoreNetworkEndpoint",
+      "http":{
+        "method":"PATCH",
+        "requestUri":"/core-network-endpoints/{coreNetworkEndpointId}",
+        "responseCode":200
+      },
+      "input":{"shape":"UpdateCoreNetworkEndpointInput"},
+      "output":{"shape":"UpdateCoreNetworkEndpointOutput"},
+      "errors":[
+        {"shape":"InternalServerException"},
+        {"shape":"ValidationException"},
+        {"shape":"ConflictException"},
+        {"shape":"ServiceQuotaExceededException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ResourceNotFoundException"}
+      ],
+      "documentation":"<p>Updates the configuration of a core network endpoint. You can change the name and modify the IP addresses that the endpoint uses for DNS resolution.</p> <important> <p>Route 53 Global Resolver is a global service that supports resolvers in multiple Amazon Web Services Regions, but you must specify the US East (Ohio) Region to create, update, or otherwise work with Route 53 Global Resolver resources. That is, for example, specify <code>--region us-east-2</code> on Amazon Web Services CLI commands.</p> </important>",
       "idempotent":true
     },
     "UpdateDNSView":{
@@ -967,10 +1075,8 @@
       "type":"structure",
       "required":[
         "arn",
-        "cidr",
         "createdAt",
         "id",
-        "ipAddressType",
         "dnsViewId",
         "protocol",
         "status",
@@ -984,6 +1090,10 @@
         "cidr":{
           "shape":"Cidr",
           "documentation":"<p>The CIDR block that defines the IP address range for the access source.</p>"
+        },
+        "coreNetworkEndpointId":{
+          "shape":"ResourceId",
+          "documentation":"<p>The ID of the core network endpoint associated with this access source.</p>"
         },
         "createdAt":{
           "shape":"ISO8601TimeString",
@@ -1008,6 +1118,10 @@
         "protocol":{
           "shape":"DnsProtocol",
           "documentation":"<p>The protocol used by the access source.</p>"
+        },
+        "segment":{
+          "shape":"SegmentName",
+          "documentation":"<p>The name of the segment associated with this access source.</p>"
         },
         "status":{
           "shape":"CRResourceStatus",
@@ -1672,7 +1786,7 @@
     "Cidr":{
       "type":"string",
       "max":43,
-      "min":1
+      "min":0
     },
     "ClientToken":{
       "type":"string",
@@ -1711,10 +1825,142 @@
       },
       "exception":true
     },
+    "CoreNetworkEndpointDnsIpInputItem":{
+      "type":"structure",
+      "required":[
+        "dnsLabel",
+        "regionScope"
+      ],
+      "members":{
+        "ipv4Address":{
+          "shape":"IPv4Address",
+          "documentation":"<p>The IPv4 address for the core network endpoint to receive DNS queries.</p>"
+        },
+        "ipv6Address":{
+          "shape":"IPv6Address",
+          "documentation":"<p>The IPv6 address for the core network endpoint to receive DNS queries.</p>"
+        },
+        "dnsLabel":{
+          "shape":"DnsLabel",
+          "documentation":"<p>The DNS label to associate with the IP address.</p>"
+        },
+        "regionScope":{
+          "shape":"RegionScopeType",
+          "documentation":"<p>Indicates whether the IP address applies to all Amazon Web Services Regions or only to the specific Regions that you identify. When the value is <code>REGIONAL</code>, the Regions are listed in the <code>regions</code> field.</p>"
+        },
+        "regions":{
+          "shape":"Regions",
+          "documentation":"<p>The Amazon Web Services Regions in which the IP address applies when the region scope is <code>REGIONAL</code>.</p>"
+        }
+      },
+      "documentation":"<p>A DNS IP address configuration that you provide when you create a core network endpoint. Each item specifies an IP address for the endpoint to receive DNS queries, along with its DNS label, and the scope and Amazon Web Services Regions in which the address applies.</p>"
+    },
+    "CoreNetworkEndpointDnsIpInputItems":{
+      "type":"list",
+      "member":{"shape":"CoreNetworkEndpointDnsIpInputItem"}
+    },
+    "CoreNetworkEndpointDnsIpItem":{
+      "type":"structure",
+      "required":[
+        "dnsLabel",
+        "regionScope"
+      ],
+      "members":{
+        "ipv4Address":{
+          "shape":"IPv4Address",
+          "documentation":"<p>The IPv4 address that the core network endpoint uses to receive DNS queries.</p>"
+        },
+        "ipv6Address":{
+          "shape":"IPv6Address",
+          "documentation":"<p>The IPv6 address that the core network endpoint uses to receive DNS queries.</p>"
+        },
+        "dnsLabel":{
+          "shape":"DnsLabel",
+          "documentation":"<p>The DNS label associated with the IP address.</p>"
+        },
+        "dnsName":{
+          "shape":"DnsName",
+          "documentation":"<p>The fully qualified DNS name associated with the IP address.</p>"
+        },
+        "regionScope":{
+          "shape":"RegionScopeType",
+          "documentation":"<p>Indicates whether the IP address applies to all Amazon Web Services Regions or only to the specific Regions that you identify. When the value is <code>REGIONAL</code>, the Regions are listed in the <code>regions</code> field.</p>"
+        },
+        "regions":{
+          "shape":"Regions",
+          "documentation":"<p>The Amazon Web Services Regions in which the IP address applies when the region scope is <code>REGIONAL</code>.</p>"
+        }
+      },
+      "documentation":"<p>A DNS IP address configuration returned for a core network endpoint. Each item describes an IP address that the endpoint uses to receive DNS queries, along with its DNS label and name, and the scope and Amazon Web Services Regions in which the address applies.</p>"
+    },
+    "CoreNetworkEndpointDnsIpItems":{
+      "type":"list",
+      "member":{"shape":"CoreNetworkEndpointDnsIpItem"}
+    },
+    "CoreNetworkEndpoints":{
+      "type":"list",
+      "member":{"shape":"CoreNetworkEndpointsItem"}
+    },
+    "CoreNetworkEndpointsItem":{
+      "type":"structure",
+      "required":[
+        "arn",
+        "availableRegions",
+        "coreNetworkArn",
+        "createdAt",
+        "globalResolverId",
+        "id",
+        "ipAddresses",
+        "status",
+        "updatedAt"
+      ],
+      "members":{
+        "arn":{
+          "shape":"ResourceArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the core network endpoint.</p>"
+        },
+        "availableRegions":{
+          "shape":"Regions",
+          "documentation":"<p>The Amazon Web Services Regions in which the core network endpoint is available.</p>"
+        },
+        "coreNetworkArn":{
+          "shape":"ResourceArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the Cloud WAN core network that the endpoint connects to.</p>"
+        },
+        "createdAt":{
+          "shape":"ISO8601TimeString",
+          "documentation":"<p>The date and time when the core network endpoint was created.</p>"
+        },
+        "globalResolverId":{
+          "shape":"ResourceId",
+          "documentation":"<p>The identifier of the Route 53 Global Resolver that the core network endpoint is associated with.</p>"
+        },
+        "id":{
+          "shape":"ResourceId",
+          "documentation":"<p>The unique identifier of the core network endpoint.</p>"
+        },
+        "ipAddresses":{
+          "shape":"CoreNetworkEndpointDnsIpItems",
+          "documentation":"<p>The DNS IP addresses that the core network endpoint uses to receive DNS queries.</p>"
+        },
+        "name":{
+          "shape":"ResourceName",
+          "documentation":"<p>The name of the core network endpoint.</p>"
+        },
+        "status":{
+          "shape":"CRResourceStatus",
+          "documentation":"<p>The current status of the core network endpoint.</p>"
+        },
+        "updatedAt":{
+          "shape":"ISO8601TimeString",
+          "documentation":"<p>The date and time when the core network endpoint was last updated.</p>"
+        }
+      },
+      "documentation":"<p>Summary information about a core network endpoint. Route 53 Global Resolver returns one of these items for each endpoint in the response to a <code>ListCoreNetworkEndpoints</code> request. Each item describes the endpoint's identifiers, the Global Resolver and Cloud WAN core network that it connects, its DNS IP addresses, and its current status.</p>"
+    },
     "CreateAccessSourceInput":{
       "type":"structure",
       "required":[
-        "cidr",
         "dnsViewId",
         "protocol"
       ],
@@ -1730,11 +1976,19 @@
         },
         "ipAddressType":{
           "shape":"IpAddressType",
-          "documentation":"<p>The IP address type for this access source. Valid values are IPv4 and IPv6 (if the Route 53 Global Resolver supports dual-stack).</p>"
+          "documentation":"<p>The IP address type for this access source. Valid values are IPV4, IPV6, and NONE. If you provide a CIDR range, this defaults to IPV4; otherwise it defaults to NONE.</p>"
         },
         "name":{
           "shape":"ResourceNameShort",
           "documentation":"<p>A descriptive name for the access source.</p>"
+        },
+        "coreNetworkEndpointId":{
+          "shape":"ResourceId",
+          "documentation":"<p>The ID of the core network endpoint to associate with this access source.</p>"
+        },
+        "segment":{
+          "shape":"SegmentName",
+          "documentation":"<p>The name of the segment to associate with this access source.</p>"
         },
         "dnsViewId":{
           "shape":"ResourceId",
@@ -1754,10 +2008,8 @@
       "type":"structure",
       "required":[
         "arn",
-        "cidr",
         "createdAt",
         "id",
-        "ipAddressType",
         "dnsViewId",
         "protocol",
         "status",
@@ -1782,7 +2034,15 @@
         },
         "ipAddressType":{
           "shape":"IpAddressType",
-          "documentation":"<p>The IP address type for this access source (IPv4 or IPv6).</p>"
+          "documentation":"<p>The IP address type for this access source. Valid values are IPV4, IPV6, and NONE.</p>"
+        },
+        "coreNetworkEndpointId":{
+          "shape":"ResourceId",
+          "documentation":"<p>The ID of the core network endpoint associated with this access source.</p>"
+        },
+        "segment":{
+          "shape":"SegmentName",
+          "documentation":"<p>The name of the segment associated with this access source.</p>"
         },
         "name":{
           "shape":"ResourceNameShort",
@@ -1882,6 +2142,97 @@
         "value":{
           "shape":"AccessTokenValue",
           "documentation":"<p>The access token value. This token should be included in DoH and DoT requests for authentication. Keep this value secure as it provides access to your Route 53 Global Resolver.</p>"
+        }
+      }
+    },
+    "CreateCoreNetworkEndpointInput":{
+      "type":"structure",
+      "required":[
+        "coreNetworkArn",
+        "globalResolverId",
+        "ipAddresses"
+      ],
+      "members":{
+        "clientToken":{
+          "shape":"ClientToken",
+          "documentation":"<p>A unique, case-sensitive identifier that ensures the request is idempotent. Making the same request multiple times with the same <code>clientToken</code> produces the same result every time.</p>",
+          "idempotencyToken":true
+        },
+        "coreNetworkArn":{
+          "shape":"ResourceArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the Amazon Web Services Cloud WAN core network to connect to this endpoint.</p>"
+        },
+        "globalResolverId":{
+          "shape":"ResourceId",
+          "documentation":"<p>The ID of the Route 53 Global Resolver to associate with this core network endpoint.</p>"
+        },
+        "ipAddresses":{
+          "shape":"CoreNetworkEndpointDnsIpInputItems",
+          "documentation":"<p>The IP addresses that the core network endpoint uses to resolve DNS queries within the Amazon Web Services Cloud WAN core network.</p>"
+        },
+        "name":{
+          "shape":"ResourceName",
+          "documentation":"<p>A descriptive name for the core network endpoint.</p>"
+        },
+        "tags":{
+          "shape":"Tags",
+          "documentation":"<p>An array of user-defined keys and optional values that you can use to categorize and organize the core network endpoint.</p>"
+        }
+      }
+    },
+    "CreateCoreNetworkEndpointOutput":{
+      "type":"structure",
+      "required":[
+        "arn",
+        "availableRegions",
+        "coreNetworkArn",
+        "createdAt",
+        "globalResolverId",
+        "id",
+        "ipAddresses",
+        "status",
+        "updatedAt"
+      ],
+      "members":{
+        "arn":{
+          "shape":"ResourceArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the core network endpoint.</p>"
+        },
+        "availableRegions":{
+          "shape":"Regions",
+          "documentation":"<p>The Amazon Web Services Regions in which the core network endpoint is available.</p>"
+        },
+        "coreNetworkArn":{
+          "shape":"ResourceArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the Amazon Web Services Cloud WAN core network connected to the endpoint.</p>"
+        },
+        "createdAt":{
+          "shape":"ISO8601TimeString",
+          "documentation":"<p>The date and time when the core network endpoint was created.</p>"
+        },
+        "globalResolverId":{
+          "shape":"ResourceId",
+          "documentation":"<p>The ID of the Route 53 Global Resolver associated with the core network endpoint.</p>"
+        },
+        "id":{
+          "shape":"ResourceId",
+          "documentation":"<p>The unique identifier of the core network endpoint.</p>"
+        },
+        "ipAddresses":{
+          "shape":"CoreNetworkEndpointDnsIpItems",
+          "documentation":"<p>The IP addresses that the core network endpoint uses to resolve DNS queries within the Amazon Web Services Cloud WAN core network.</p>"
+        },
+        "name":{
+          "shape":"ResourceName",
+          "documentation":"<p>The name of the core network endpoint.</p>"
+        },
+        "status":{
+          "shape":"CRResourceStatus",
+          "documentation":"<p>The current status of the core network endpoint.</p>"
+        },
+        "updatedAt":{
+          "shape":"ISO8601TimeString",
+          "documentation":"<p>The date and time when the core network endpoint was last updated.</p>"
         }
       }
     },
@@ -2247,6 +2598,10 @@
           "shape":"GlobalResolverIpAddressType",
           "documentation":"<p>The IP address type for the Route 53 Global Resolver. Valid values are IPV4 (default) or DUAL_STACK for both IPv4 and IPv6 support.</p>"
         },
+        "publicIpStatus":{
+          "shape":"PublicIpStatus",
+          "documentation":"<p>Specifies the public IP connectivity to configure for the Route 53 Global Resolver. Public IP addresses let DNS clients send queries to the resolver over the internet. Valid values are the following:</p> <ul> <li> <p> <code>ENABLED_RESERVED</code> - Public IP connectivity is enabled, and the global anycast public IP addresses are reserved for the Route 53 Global Resolver.</p> </li> <li> <p> <code>DISABLED_RESERVED</code> - Public IP connectivity is disabled, and the global anycast public IP addresses remain reserved for the Route 53 Global Resolver.</p> </li> <li> <p> <code>DISABLED_RELEASED</code> - Public IP connectivity is disabled, and the global anycast public IP addresses are released.</p> </li> </ul>"
+        },
         "name":{
           "shape":"ResourceName",
           "documentation":"<p>A descriptive name for the Route 53 Global Resolver instance. Maximum length of 64 characters.</p>"
@@ -2307,6 +2662,10 @@
         "ipAddressType":{
           "shape":"GlobalResolverIpAddressType",
           "documentation":"<p>The IP address type configured for the Route 53 Global Resolver (IPV4 or DUAL_STACK).</p>"
+        },
+        "publicIpStatus":{
+          "shape":"PublicIpStatus",
+          "documentation":"<p>The public IP connectivity configured for the Route 53 Global Resolver. Public IP addresses let DNS clients send queries to the resolver over the internet. Valid values are the following:</p> <ul> <li> <p> <code>ENABLED_RESERVED</code> - Public IP connectivity is enabled, and the global anycast public IP addresses are reserved for the Route 53 Global Resolver.</p> </li> <li> <p> <code>DISABLED_RESERVED</code> - Public IP connectivity is disabled, and the global anycast public IP addresses remain reserved for the Route 53 Global Resolver.</p> </li> <li> <p> <code>DISABLED_RELEASED</code> - Public IP connectivity is disabled, and the global anycast public IP addresses are released.</p> </li> </ul>"
         },
         "ipv4Addresses":{
           "shape":"IPv4Addresses",
@@ -2425,10 +2784,8 @@
       "type":"structure",
       "required":[
         "arn",
-        "cidr",
         "createdAt",
         "id",
-        "ipAddressType",
         "dnsViewId",
         "protocol",
         "status",
@@ -2443,6 +2800,10 @@
           "shape":"Cidr",
           "documentation":"<p>The IP address or CIDR range of the deleted access source.</p>"
         },
+        "coreNetworkEndpointId":{
+          "shape":"ResourceId",
+          "documentation":"<p>The ID of the core network endpoint associated with this access source.</p>"
+        },
         "createdAt":{
           "shape":"ISO8601TimeString",
           "documentation":"<p>The date and time when the access source was originally created.</p>"
@@ -2453,7 +2814,7 @@
         },
         "ipAddressType":{
           "shape":"IpAddressType",
-          "documentation":"<p>The IP address type of the deleted access source (IPv4 or IPv6).</p>"
+          "documentation":"<p>The IP address type of the deleted access source. Valid values are IPV4, IPV6, and NONE.</p>"
         },
         "name":{
           "shape":"ResourceNameShort",
@@ -2466,6 +2827,10 @@
         "protocol":{
           "shape":"DnsProtocol",
           "documentation":"<p>The DNS protocol that was permitted for the deleted access source.</p>"
+        },
+        "segment":{
+          "shape":"SegmentName",
+          "documentation":"<p>The name of the segment associated with this access source.</p>"
         },
         "status":{
           "shape":"CRResourceStatus",
@@ -2508,6 +2873,74 @@
         "deletedAt":{
           "shape":"ISO8601TimeString",
           "documentation":"<p>The date and time when the access token was deleted.</p>"
+        }
+      }
+    },
+    "DeleteCoreNetworkEndpointInput":{
+      "type":"structure",
+      "required":["coreNetworkEndpointId"],
+      "members":{
+        "coreNetworkEndpointId":{
+          "shape":"ResourceId",
+          "documentation":"<p>The unique identifier of the core network endpoint to delete.</p>",
+          "location":"uri",
+          "locationName":"coreNetworkEndpointId"
+        }
+      }
+    },
+    "DeleteCoreNetworkEndpointOutput":{
+      "type":"structure",
+      "required":[
+        "arn",
+        "availableRegions",
+        "coreNetworkArn",
+        "createdAt",
+        "globalResolverId",
+        "id",
+        "ipAddresses",
+        "status",
+        "updatedAt"
+      ],
+      "members":{
+        "arn":{
+          "shape":"ResourceArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the deleted core network endpoint.</p>"
+        },
+        "availableRegions":{
+          "shape":"Regions",
+          "documentation":"<p>The Amazon Web Services Regions in which the deleted core network endpoint was available.</p>"
+        },
+        "coreNetworkArn":{
+          "shape":"ResourceArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the Amazon Web Services Cloud WAN core network that was connected to the deleted endpoint.</p>"
+        },
+        "createdAt":{
+          "shape":"ISO8601TimeString",
+          "documentation":"<p>The date and time when the core network endpoint was originally created.</p>"
+        },
+        "globalResolverId":{
+          "shape":"ResourceId",
+          "documentation":"<p>The ID of the Route 53 Global Resolver that was associated with the deleted core network endpoint.</p>"
+        },
+        "id":{
+          "shape":"ResourceId",
+          "documentation":"<p>The unique identifier of the deleted core network endpoint.</p>"
+        },
+        "ipAddresses":{
+          "shape":"CoreNetworkEndpointDnsIpItems",
+          "documentation":"<p>The IP addresses that the deleted core network endpoint used to resolve DNS queries within the Amazon Web Services Cloud WAN core network.</p>"
+        },
+        "name":{
+          "shape":"ResourceName",
+          "documentation":"<p>The name of the deleted core network endpoint.</p>"
+        },
+        "status":{
+          "shape":"CRResourceStatus",
+          "documentation":"<p>The final status of the deleted core network endpoint.</p>"
+        },
+        "updatedAt":{
+          "shape":"ISO8601TimeString",
+          "documentation":"<p>The date and time when the core network endpoint was last updated before deletion.</p>"
         }
       }
     },
@@ -2960,6 +3393,16 @@
         "DICTIONARY_DGA"
       ]
     },
+    "DnsLabel":{
+      "type":"string",
+      "max":32,
+      "min":1
+    },
+    "DnsName":{
+      "type":"string",
+      "max":256,
+      "min":1
+    },
     "DnsProtocol":{
       "type":"string",
       "enum":[
@@ -3263,10 +3706,8 @@
       "type":"structure",
       "required":[
         "arn",
-        "cidr",
         "createdAt",
         "id",
-        "ipAddressType",
         "dnsViewId",
         "protocol",
         "status",
@@ -3280,6 +3721,10 @@
         "cidr":{
           "shape":"Cidr",
           "documentation":"<p>The IP range for the rule's parameters in CIDR notation.</p>"
+        },
+        "coreNetworkEndpointId":{
+          "shape":"ResourceId",
+          "documentation":"<p>The ID of the core network endpoint associated with this access source.</p>"
         },
         "createdAt":{
           "shape":"ISO8601TimeString",
@@ -3304,6 +3749,10 @@
         "protocol":{
           "shape":"DnsProtocol",
           "documentation":"<p>The protocol determines how data is transmitted to a Global Resolver instance.</p>"
+        },
+        "segment":{
+          "shape":"SegmentName",
+          "documentation":"<p>The name of the segment associated with this access source.</p>"
         },
         "status":{
           "shape":"CRResourceStatus",
@@ -3384,6 +3833,74 @@
         "value":{
           "shape":"AccessTokenValue",
           "documentation":"<p>The value of the token.</p>"
+        }
+      }
+    },
+    "GetCoreNetworkEndpointInput":{
+      "type":"structure",
+      "required":["coreNetworkEndpointId"],
+      "members":{
+        "coreNetworkEndpointId":{
+          "shape":"ResourceId",
+          "documentation":"<p>The unique identifier of the core network endpoint to retrieve information about.</p>",
+          "location":"uri",
+          "locationName":"coreNetworkEndpointId"
+        }
+      }
+    },
+    "GetCoreNetworkEndpointOutput":{
+      "type":"structure",
+      "required":[
+        "arn",
+        "availableRegions",
+        "coreNetworkArn",
+        "createdAt",
+        "globalResolverId",
+        "id",
+        "ipAddresses",
+        "status",
+        "updatedAt"
+      ],
+      "members":{
+        "arn":{
+          "shape":"ResourceArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the core network endpoint.</p>"
+        },
+        "availableRegions":{
+          "shape":"Regions",
+          "documentation":"<p>The Amazon Web Services Regions in which the core network endpoint is available.</p>"
+        },
+        "coreNetworkArn":{
+          "shape":"ResourceArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the Amazon Web Services Cloud WAN core network connected to the endpoint.</p>"
+        },
+        "createdAt":{
+          "shape":"ISO8601TimeString",
+          "documentation":"<p>The date and time when the core network endpoint was created.</p>"
+        },
+        "globalResolverId":{
+          "shape":"ResourceId",
+          "documentation":"<p>The ID of the Route 53 Global Resolver associated with the core network endpoint.</p>"
+        },
+        "id":{
+          "shape":"ResourceId",
+          "documentation":"<p>The unique identifier of the core network endpoint.</p>"
+        },
+        "ipAddresses":{
+          "shape":"CoreNetworkEndpointDnsIpItems",
+          "documentation":"<p>The IP addresses that the core network endpoint uses to resolve DNS queries within the Amazon Web Services Cloud WAN core network.</p>"
+        },
+        "name":{
+          "shape":"ResourceName",
+          "documentation":"<p>The name of the core network endpoint.</p>"
+        },
+        "status":{
+          "shape":"CRResourceStatus",
+          "documentation":"<p>The current status of the core network endpoint.</p>"
+        },
+        "updatedAt":{
+          "shape":"ISO8601TimeString",
+          "documentation":"<p>The date and time when the core network endpoint was last updated.</p>"
         }
       }
     },
@@ -3712,6 +4229,10 @@
         "ipAddressType":{
           "shape":"GlobalResolverIpAddressType",
           "documentation":"<p>The IP address type configured for the Global Resolver.</p>"
+        },
+        "publicIpStatus":{
+          "shape":"PublicIpStatus",
+          "documentation":"<p>The public IP connectivity configured for the Route 53 Global Resolver. Public IP addresses let DNS clients send queries to the resolver over the internet. Valid values are the following:</p> <ul> <li> <p> <code>ENABLED_RESERVED</code> - Public IP connectivity is enabled, and the global anycast public IP addresses are reserved for the Route 53 Global Resolver.</p> </li> <li> <p> <code>DISABLED_RESERVED</code> - Public IP connectivity is disabled, and the global anycast public IP addresses remain reserved for the Route 53 Global Resolver.</p> </li> <li> <p> <code>DISABLED_RELEASED</code> - Public IP connectivity is disabled, and the global anycast public IP addresses are released.</p> </li> </ul>"
         }
       }
     },
@@ -3893,6 +4414,10 @@
         "ipAddressType":{
           "shape":"GlobalResolverIpAddressType",
           "documentation":"<p>The IP address type configured for the global resolver.</p>"
+        },
+        "publicIpStatus":{
+          "shape":"PublicIpStatus",
+          "documentation":"<p>The public IP connectivity configured for the Route 53 Global Resolver. Public IP addresses let DNS clients send queries to the resolver over the internet. Valid values are the following:</p> <ul> <li> <p> <code>ENABLED_RESERVED</code> - Public IP connectivity is enabled, and the global anycast public IP addresses are reserved for the Route 53 Global Resolver.</p> </li> <li> <p> <code>DISABLED_RESERVED</code> - Public IP connectivity is disabled, and the global anycast public IP addresses remain reserved for the Route 53 Global Resolver.</p> </li> <li> <p> <code>DISABLED_RELEASED</code> - Public IP connectivity is disabled, and the global anycast public IP addresses are released.</p> </li> </ul>"
         }
       },
       "documentation":"<p>Summary information about a global resolver.</p>"
@@ -4063,7 +4588,8 @@
       "type":"string",
       "enum":[
         "IPV4",
-        "IPV6"
+        "IPV6",
+        "NONE"
       ]
     },
     "ListAccessSourcesInput":{
@@ -4098,7 +4624,7 @@
         },
         "accessSources":{
           "shape":"AccessSources",
-          "documentation":"<p>An array containing information about the access sources, such as the ID, CIDR etc.</p>"
+          "documentation":"<p>An array containing information about the access sources, such as the ID and CIDR.</p>"
         }
       }
     },
@@ -4144,6 +4670,42 @@
         }
       }
     },
+    "ListCoreNetworkEndpointsInput":{
+      "type":"structure",
+      "members":{
+        "maxResults":{
+          "shape":"Integer",
+          "documentation":"<p>The maximum number of results to retrieve in a single call.</p>",
+          "location":"querystring",
+          "locationName":"max_results"
+        },
+        "nextToken":{
+          "shape":"String",
+          "documentation":"<p>A pagination token used for large sets of results that can't be returned in a single response.</p>",
+          "location":"querystring",
+          "locationName":"next_token"
+        },
+        "filters":{
+          "shape":"Filters",
+          "documentation":"<p>Values to filter the results.</p>",
+          "location":"querystring"
+        }
+      }
+    },
+    "ListCoreNetworkEndpointsOutput":{
+      "type":"structure",
+      "required":["coreNetworkEndpoints"],
+      "members":{
+        "nextToken":{
+          "shape":"String",
+          "documentation":"<p>A pagination token used for large sets of results that can't be returned in a single response. Provide this token in the next call to get the results not returned in this call.</p>"
+        },
+        "coreNetworkEndpoints":{
+          "shape":"CoreNetworkEndpoints",
+          "documentation":"<p>An array of information about the core network endpoints.</p>"
+        }
+      }
+    },
     "ListDNSViewsInput":{
       "type":"structure",
       "required":["globalResolverId"],
@@ -4178,7 +4740,7 @@
         },
         "dnsViews":{
           "shape":"DNSViews",
-          "documentation":"<p>An array of information about the DNS views, such as whether DNSSEC is enabled, creation time, etc.</p>"
+          "documentation":"<p>An array of information about the DNS views, such as whether DNSSEC is enabled and the creation time.</p>"
         }
       }
     },
@@ -4499,10 +5061,26 @@
         "DELETING"
       ]
     },
+    "PublicIpStatus":{
+      "type":"string",
+      "enum":[
+        "ENABLED_RESERVED",
+        "DISABLED_RESERVED",
+        "DISABLED_RELEASED"
+      ]
+    },
     "Region":{
       "type":"string",
       "max":32,
       "min":0
+    },
+    "RegionScopeType":{
+      "type":"string",
+      "documentation":"<p>Indicates the scope of Amazon Web Services Regions that a DNS IP address of a core network endpoint applies to. Valid values are the following:</p> <ul> <li> <p> <code>ALL</code> - The IP address applies to all Amazon Web Services Regions in which the core network endpoint is available.</p> </li> <li> <p> <code>REGIONAL</code> - The IP address applies only to the specific Amazon Web Services Regions that you identify in the <code>regions</code> field.</p> </li> </ul>",
+      "enum":[
+        "ALL",
+        "REGIONAL"
+      ]
     },
     "Regions":{
       "type":"list",
@@ -4560,6 +5138,11 @@
         "senderFault":true
       },
       "exception":true
+    },
+    "SegmentName":{
+      "type":"string",
+      "max":256,
+      "min":1
     },
     "ServiceQuotaExceededException":{
       "type":"structure",
@@ -4794,6 +5377,10 @@
           "shape":"Cidr",
           "documentation":"<p>The CIDR block for the access source.</p>"
         },
+        "dnsViewId":{
+          "shape":"ResourceId",
+          "documentation":"<p>The ID of the DNS view to associate with this access source.</p>"
+        },
         "ipAddressType":{
           "shape":"IpAddressType",
           "documentation":"<p>The IP address type for the access source.</p>"
@@ -4812,10 +5399,8 @@
       "type":"structure",
       "required":[
         "arn",
-        "cidr",
         "createdAt",
         "id",
-        "ipAddressType",
         "dnsViewId",
         "protocol",
         "status",
@@ -4829,6 +5414,10 @@
         "cidr":{
           "shape":"Cidr",
           "documentation":"<p>The CIDR block of the updated access source.</p>"
+        },
+        "coreNetworkEndpointId":{
+          "shape":"ResourceId",
+          "documentation":"<p>The ID of the core network endpoint associated with this access source.</p>"
         },
         "createdAt":{
           "shape":"ISO8601TimeString",
@@ -4853,6 +5442,10 @@
         "protocol":{
           "shape":"DnsProtocol",
           "documentation":"<p>The protocol of the updated access source.</p>"
+        },
+        "segment":{
+          "shape":"SegmentName",
+          "documentation":"<p>The name of the segment associated with this access source.</p>"
         },
         "status":{
           "shape":"CRResourceStatus",
@@ -4897,6 +5490,82 @@
         "name":{
           "shape":"ResourceNameShort",
           "documentation":"<p>The name of the token.</p>"
+        }
+      }
+    },
+    "UpdateCoreNetworkEndpointInput":{
+      "type":"structure",
+      "required":["coreNetworkEndpointId"],
+      "members":{
+        "coreNetworkEndpointId":{
+          "shape":"ResourceId",
+          "documentation":"<p>The unique identifier of the core network endpoint to update.</p>",
+          "location":"uri",
+          "locationName":"coreNetworkEndpointId"
+        },
+        "name":{
+          "shape":"ResourceName",
+          "documentation":"<p>The name of the core network endpoint.</p>"
+        },
+        "updateIpAddresses":{
+          "shape":"UpdateIpAddressList",
+          "documentation":"<p>The IP address changes to apply to the core network endpoint. Use this parameter to add or remove the IP addresses that the endpoint uses to resolve DNS queries within the Amazon Web Services Cloud WAN core network.</p>"
+        }
+      }
+    },
+    "UpdateCoreNetworkEndpointOutput":{
+      "type":"structure",
+      "required":[
+        "arn",
+        "availableRegions",
+        "coreNetworkArn",
+        "createdAt",
+        "globalResolverId",
+        "id",
+        "ipAddresses",
+        "status",
+        "updatedAt"
+      ],
+      "members":{
+        "arn":{
+          "shape":"ResourceArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the updated core network endpoint.</p>"
+        },
+        "availableRegions":{
+          "shape":"Regions",
+          "documentation":"<p>The Amazon Web Services Regions in which the updated core network endpoint is available.</p>"
+        },
+        "coreNetworkArn":{
+          "shape":"ResourceArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the Amazon Web Services Cloud WAN core network connected to the updated endpoint.</p>"
+        },
+        "createdAt":{
+          "shape":"ISO8601TimeString",
+          "documentation":"<p>The date and time when the core network endpoint was originally created.</p>"
+        },
+        "globalResolverId":{
+          "shape":"ResourceId",
+          "documentation":"<p>The ID of the Route 53 Global Resolver associated with the updated core network endpoint.</p>"
+        },
+        "id":{
+          "shape":"ResourceId",
+          "documentation":"<p>The unique identifier of the updated core network endpoint.</p>"
+        },
+        "ipAddresses":{
+          "shape":"CoreNetworkEndpointDnsIpItems",
+          "documentation":"<p>The IP addresses that the updated core network endpoint uses to resolve DNS queries within the Amazon Web Services Cloud WAN core network.</p>"
+        },
+        "name":{
+          "shape":"ResourceName",
+          "documentation":"<p>The name of the updated core network endpoint.</p>"
+        },
+        "status":{
+          "shape":"CRResourceStatus",
+          "documentation":"<p>The current status of the updated core network endpoint.</p>"
+        },
+        "updatedAt":{
+          "shape":"ISO8601TimeString",
+          "documentation":"<p>The date and time when the core network endpoint was last updated.</p>"
         }
       }
     },
@@ -5212,6 +5881,10 @@
           "shape":"GlobalResolverIpAddressType",
           "documentation":"<p>The IP address type for the Global Resolver. Valid values are IPV4 or DUAL_STACK for both IPv4 and IPv6 support.</p>"
         },
+        "publicIpStatus":{
+          "shape":"PublicIpStatus",
+          "documentation":"<p>Specifies the public IP connectivity to configure for the Route 53 Global Resolver. Public IP addresses let DNS clients send queries to the resolver over the internet. Valid values are the following:</p> <ul> <li> <p> <code>ENABLED_RESERVED</code> - Public IP connectivity is enabled, and the global anycast public IP addresses are reserved for the Route 53 Global Resolver.</p> </li> <li> <p> <code>DISABLED_RESERVED</code> - Public IP connectivity is disabled, and the global anycast public IP addresses remain reserved for the Route 53 Global Resolver.</p> </li> <li> <p> <code>DISABLED_RELEASED</code> - Public IP connectivity is disabled, and the global anycast public IP addresses are released.</p> </li> </ul>"
+        },
         "regions":{
           "shape":"Regions",
           "documentation":"<p>The list of Amazon Web Services Regions where the Global Resolver will operate. The resolver will be distributed across these Regions to provide global availability and low-latency DNS resolution.</p>"
@@ -5288,6 +5961,10 @@
         "ipAddressType":{
           "shape":"GlobalResolverIpAddressType",
           "documentation":"<p>The IP address type configured for the updated Global Resolver.</p>"
+        },
+        "publicIpStatus":{
+          "shape":"PublicIpStatus",
+          "documentation":"<p>The public IP connectivity configured for the Route 53 Global Resolver. Public IP addresses let DNS clients send queries to the resolver over the internet. Valid values are the following:</p> <ul> <li> <p> <code>ENABLED_RESERVED</code> - Public IP connectivity is enabled, and the global anycast public IP addresses are reserved for the Route 53 Global Resolver.</p> </li> <li> <p> <code>DISABLED_RESERVED</code> - Public IP connectivity is disabled, and the global anycast public IP addresses remain reserved for the Route 53 Global Resolver.</p> </li> <li> <p> <code>DISABLED_RELEASED</code> - Public IP connectivity is disabled, and the global anycast public IP addresses are released.</p> </li> </ul>"
         }
       }
     },
@@ -5353,6 +6030,50 @@
           "documentation":"<p>The operational status of the private hosted zone association.</p>"
         }
       }
+    },
+    "UpdateIpAddressEntry":{
+      "type":"structure",
+      "required":["operation"],
+      "members":{
+        "operation":{
+          "shape":"UpdateIpAddressOperation",
+          "documentation":"<p>The operation to perform on the IP address. Valid values are <code>ADD</code>, <code>REMOVE</code>, and <code>UPDATE</code>.</p>"
+        },
+        "ipv4Address":{
+          "shape":"IPv4Address",
+          "documentation":"<p>The IPv4 address that the operation acts on.</p>"
+        },
+        "ipv6Address":{
+          "shape":"IPv6Address",
+          "documentation":"<p>The IPv6 address that the operation acts on.</p>"
+        },
+        "dnsLabel":{
+          "shape":"DnsLabel",
+          "documentation":"<p>The DNS label associated with the IP address.</p>"
+        },
+        "regionScope":{
+          "shape":"RegionScopeType",
+          "documentation":"<p>Indicates whether the IP address applies to all Amazon Web Services Regions or only to the specific Regions that you identify. When the value is <code>REGIONAL</code>, the Regions are listed in the <code>regions</code> field.</p>"
+        },
+        "regions":{
+          "shape":"Regions",
+          "documentation":"<p>The Amazon Web Services Regions in which the IP address applies when the region scope is <code>REGIONAL</code>.</p>"
+        }
+      },
+      "documentation":"<p>A single change to apply to the DNS IP addresses of a core network endpoint when you update it. Each entry specifies the operation to perform and the IP address details that the operation acts on.</p>"
+    },
+    "UpdateIpAddressList":{
+      "type":"list",
+      "member":{"shape":"UpdateIpAddressEntry"}
+    },
+    "UpdateIpAddressOperation":{
+      "type":"string",
+      "documentation":"<p>The type of change to apply to a DNS IP address of a core network endpoint during an update. Valid values are the following:</p> <ul> <li> <p> <code>ADD</code> - Adds a new DNS IP address to the core network endpoint.</p> </li> <li> <p> <code>REMOVE</code> - Removes an existing DNS IP address from the core network endpoint.</p> </li> <li> <p> <code>UPDATE</code> - Updates the configuration of an existing DNS IP address on the core network endpoint.</p> </li> </ul>",
+      "enum":[
+        "ADD",
+        "REMOVE",
+        "UPDATE"
+      ]
     },
     "ValidationException":{
       "type":"structure",

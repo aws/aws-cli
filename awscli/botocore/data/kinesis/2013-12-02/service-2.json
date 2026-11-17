@@ -16,6 +16,48 @@
     "auth":["aws.auth#sigv4"]
   },
   "operations":{
+    "AcknowledgeDeadLetterQueueRecords":{
+      "name":"AcknowledgeDeadLetterQueueRecords",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"AcknowledgeDeadLetterQueueRecordsInput"},
+      "output":{"shape":"AcknowledgeDeadLetterQueueRecordsOutput"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"InternalFailureException"},
+        {"shape":"InvalidArgumentException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"}
+      ],
+      "documentation":"<p>Acknowledges up to 10 dead-letter records in the specified queue, so the queue doesn't return them again. The result for each entry is reported individually in the response.</p> <p>Acknowledging a record does not affect the record in the data stream. That record remains available to stream consumers and to other queues on the same stream for the rest of its retention period.</p> <p>Because the request can result in a combination of successful and unsuccessful entries, check the <code>Failed</code> list even when the call returns an HTTP status code of <code>200</code>.</p>",
+      "staticContextParams":{
+        "OperationType":{"value":"data"},
+        "ResourceType":{"value":"queue"}
+      }
+    },
+    "AcknowledgeQueueRecords":{
+      "name":"AcknowledgeQueueRecords",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"AcknowledgeQueueRecordsInput"},
+      "output":{"shape":"AcknowledgeQueueRecordsOutput"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"InternalFailureException"},
+        {"shape":"InvalidArgumentException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"}
+      ],
+      "documentation":"<p>Acknowledges up to 10 records from the specified queue. After a record is acknowledged, the queue does not deliver it again. The result for each entry is reported individually in the response.</p> <p>Acknowledging a record does not affect the record in the data stream. That record remains available to stream consumers and to other queues on the same stream for the rest of its retention period.</p> <p>Because the request can result in a combination of successful and unsuccessful entries, check the <code>Failed</code> list even when the call returns an HTTP status code of <code>200</code>.</p> <p>On rare occasions, you can receive a record again after you acknowledge it. Design your queue consumer to be idempotent, so that processing the same record more than once is safe.</p>",
+      "staticContextParams":{
+        "OperationType":{"value":"data"},
+        "ResourceType":{"value":"queue"}
+      }
+    },
     "AddTagsToStream":{
       "name":"AddTagsToStream",
       "http":{
@@ -60,6 +102,29 @@
       "documentation":"<p>Creates a channel that delivers records from a Kinesis data stream to a destination. A channel reads records from the specified stream and writes them to streaming tables on Apache Iceberg (Amazon S3 Tables) or to a general purpose Amazon S3 bucket.</p> <p>You must specify either <code>S3DestinationConfiguration</code> or <code>S3TablesDestinationConfiguration</code>, but not both.</p> <p>To use this operation, you must have permission to pass the specified service execution IAM role to Amazon Kinesis Data Streams (the <code>iam:PassRole</code> permission on that role).</p> <p>Creating a channel is an asynchronous operation. Upon receiving the request, Amazon Kinesis Data Streams returns immediately with the channel in the <code>CREATING</code> state. After provisioning is complete, Amazon Kinesis Data Streams sets the state to <code>ACTIVE</code>. You can use <a>DescribeChannel</a> to check the current state.</p> <p>This operation is only supported for data streams with the on-demand capacity mode.</p> <p>This operation has a call limit of 5 transactions per second (TPS) for each Amazon Web Services account. Exceeding 5 TPS results in a <code>LimitExceededException</code>.</p>",
       "staticContextParams":{
         "OperationType":{"value":"control"}
+      }
+    },
+    "CreateQueue":{
+      "name":"CreateQueue",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"CreateQueueInput"},
+      "output":{"shape":"CreateQueueOutput"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"ResourceInUseException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"LimitExceededException"},
+        {"shape":"InvalidArgumentException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"InternalFailureException"}
+      ],
+      "documentation":"<p>Creates a queue on the specified data stream. A queue delivers records from the stream to a queue consumer, tracks the delivery state of each record, and redelivers any record that is not acknowledged before its visibility timeout expires.</p> <p>A queue does not extend how long the stream keeps a record. When a record reaches the end of the data stream's retention period, the queue stops delivering it.</p> <p>Your queue consumer calls <a>ReceiveQueueRecords</a> to receive up to 10 records at a time. After it processes records, it calls <a>AcknowledgeQueueRecords</a> so the queue does not deliver them again.</p> <p>Queues are supported only on data streams in on-demand capacity mode.</p> <p>Creating a queue does not change how producers write to the stream, and it does not change how existing stream consumers read from it. A queue counts as a registered consumer on the stream and shares the stream's registered consumer limit with enhanced fan-out consumers: 20 on On-demand Standard and 50 on On-demand Advantage.</p> <p>Use <code>StartingPosition</code> to set the position in the stream where delivery begins. The default is <code>LATEST</code>.</p> <p> <code>CreateQueue</code> is an asynchronous operation. Upon receiving a <code>CreateQueue</code> request, Amazon Kinesis Data Streams immediately returns a queue description with a <code>QueueStatus</code> of <code>CREATING</code>. After the queue is created, Kinesis Data Streams sets the <code>QueueStatus</code> to <code>ACTIVE</code>. You can begin receiving records after the queue is <code>ACTIVE</code>. Use <a>DescribeQueue</a> to check the status of the queue.</p> <p>Each queue has built-in dead-letter handling. When a record has been received <code>MaxReceiveCount</code> times without being acknowledged, it becomes a dead-letter record, and <a>ReceiveQueueRecords</a> no longer returns it. You work with dead-letter records through a separate set of operations that use the same queue ARN: <a>ReceiveDeadLetterQueueRecords</a>, <a>AcknowledgeDeadLetterQueueRecords</a>, <a>UpdateDeadLetterQueueRecordsVisibility</a>, and <a>RestoreDeadLetterQueueRecords</a>.</p> <p>Dead-letter handling is enabled by default, with a <code>MaxReceiveCount</code> of 6. To use a different value, or to turn dead-letter handling off, specify <code>DeadLetterConfiguration</code> in <code>QueueAttributes</code>.</p>",
+      "staticContextParams":{
+        "OperationType":{"value":"control"},
+        "ResourceType":{"value":"queue"}
       }
     },
     "CreateStream":{
@@ -118,6 +183,27 @@
         "OperationType":{"value":"control"}
       }
     },
+    "DeleteQueue":{
+      "name":"DeleteQueue",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"DeleteQueueInput"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"LimitExceededException"},
+        {"shape":"InvalidArgumentException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"InternalFailureException"}
+      ],
+      "documentation":"<p>Deletes the specified queue. Records that are in flight when you delete the queue are not delivered again, and receipt handles issued by the queue stop being valid.</p> <p>Deleting a queue does not delete the data stream the queue was created on, and does not delete any records in that stream. Those records remain available to stream consumers and to other queues on the same stream for the rest of their retention period.</p> <p> <code>DeleteQueue</code> is an asynchronous operation. Upon receiving a <code>DeleteQueue</code> request, Amazon Kinesis Data Streams sets the <code>QueueStatus</code> to <code>DELETING</code>. The queue is deleted when the operation completes. A queue in the <code>DELETING</code> state does not deliver records.</p> <p>You must delete every queue on a data stream before you can delete the stream, or switch it from on-demand to provisioned capacity mode.</p>",
+      "staticContextParams":{
+        "OperationType":{"value":"control"},
+        "ResourceType":{"value":"queue"}
+      }
+    },
     "DeleteResourcePolicy":{
       "name":"DeleteResourcePolicy",
       "http":{
@@ -126,13 +212,15 @@
       },
       "input":{"shape":"DeleteResourcePolicyInput"},
       "errors":[
+        {"shape":"ValidationException"},
         {"shape":"AccessDeniedException"},
         {"shape":"ResourceNotFoundException"},
         {"shape":"LimitExceededException"},
         {"shape":"InvalidArgumentException"},
-        {"shape":"ResourceInUseException"}
+        {"shape":"ResourceInUseException"},
+        {"shape":"InternalFailureException"}
       ],
-      "documentation":"<p>Delete a policy for the specified data stream or consumer. Request patterns can be one of the following:</p> <ul> <li> <p>Data stream pattern: <code>arn:aws.*:kinesis:.*:\\d{12}:.*stream/\\S+</code> </p> </li> <li> <p>Consumer pattern: <code>^(arn):aws.*:kinesis:.*:\\d{12}:.*stream\\/[a-zA-Z0-9_.-]+\\/consumer\\/[a-zA-Z0-9_.-]+:[0-9]+</code> </p> </li> </ul>",
+      "documentation":"<p>Delete a policy for the specified data stream, consumer, or queue. Request patterns can be one of the following:</p> <ul> <li> <p>Data stream pattern: <code>arn:aws.*:kinesis:.*:\\d{12}:.*stream/\\S+</code> </p> </li> <li> <p>Consumer pattern: <code>^(arn):aws.*:kinesis:.*:\\d{12}:.*stream\\/[a-zA-Z0-9_.-]+\\/consumer\\/[a-zA-Z0-9_.-]+:[0-9]+</code> </p> </li> <li> <p>Queue pattern: <code>arn:aws.*:kinesis:.*:\\d{12}:queue/\\S+</code> </p> </li> </ul>",
       "staticContextParams":{
         "OperationType":{"value":"control"}
       }
@@ -151,7 +239,7 @@
         {"shape":"InvalidArgumentException"},
         {"shape":"AccessDeniedException"}
       ],
-      "documentation":"<p>Deletes a Kinesis data stream and all its shards and data. You must shut down any applications that are operating on the stream before you delete the stream. If an application attempts to operate on a deleted stream, it receives the exception <code>ResourceNotFoundException</code>.</p> <note> <p>When invoking this API, you must use either the <code>StreamARN</code> or the <code>StreamName</code> parameter, or both. It is recommended that you use the <code>StreamARN</code> input parameter when you invoke this API.</p> </note> <p>If the stream is in the <code>ACTIVE</code> state, you can delete it. After a <code>DeleteStream</code> request, the specified stream is in the <code>DELETING</code> state until Kinesis Data Streams completes the deletion.</p> <p> <b>Note:</b> Kinesis Data Streams might continue to accept data read and write operations, such as <a>PutRecord</a>, <a>PutRecords</a>, and <a>GetRecords</a>, on a stream in the <code>DELETING</code> state until the stream deletion is complete.</p> <p>When you delete a stream, any shards in that stream are also deleted, and any tags are dissociated from the stream.</p> <p>You can use the <a>DescribeStreamSummary</a> operation to check the state of the stream, which is returned in <code>StreamStatus</code>.</p> <p> <a>DeleteStream</a> has a limit of five transactions per second per account.</p>",
+      "documentation":"<p>Deletes a Kinesis data stream and all its shards and data. You must shut down any applications that are operating on the stream before you delete the stream. If an application attempts to operate on a deleted stream, it receives the exception <code>ResourceNotFoundException</code>.</p> <note> <p>When invoking this API, you must use either the <code>StreamARN</code> or the <code>StreamName</code> parameter, or both. It is recommended that you use the <code>StreamARN</code> input parameter when you invoke this API.</p> </note> <p>If the stream is in the <code>ACTIVE</code> state, you can delete it. After a <code>DeleteStream</code> request, the specified stream is in the <code>DELETING</code> state until Kinesis Data Streams completes the deletion.</p> <p> <b>Note:</b> Kinesis Data Streams might continue to accept data read and write operations, such as <a>PutRecord</a>, <a>PutRecords</a>, and <a>GetRecords</a>, on a stream in the <code>DELETING</code> state until the stream deletion is complete.</p> <p>When you delete a stream, any shards in that stream are also deleted, and any tags are dissociated from the stream.</p> <p>Before you can delete a data stream that has queues, you must delete every queue on the stream with <a>DeleteQueue</a>.</p> <p>You can use the <a>DescribeStreamSummary</a> operation to check the state of the stream, which is returned in <code>StreamStatus</code>.</p> <p> <a>DeleteStream</a> has a limit of five transactions per second per account.</p>",
       "staticContextParams":{
         "OperationType":{"value":"control"}
       }
@@ -224,6 +312,28 @@
       "documentation":"<p>Describes the shard limits and usage for the account.</p> <p>If you update your account limits, the old limits might be returned for a few minutes.</p> <p>This operation has a limit of one transaction per second per account.</p>",
       "staticContextParams":{
         "OperationType":{"value":"control"}
+      }
+    },
+    "DescribeQueue":{
+      "name":"DescribeQueue",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"DescribeQueueInput"},
+      "output":{"shape":"DescribeQueueOutput"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"LimitExceededException"},
+        {"shape":"InvalidArgumentException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"InternalFailureException"}
+      ],
+      "documentation":"<p>Returns a description of the specified queue, including its status, the data stream it delivers records from, and its configuration attributes.</p>",
+      "staticContextParams":{
+        "OperationType":{"value":"control"},
+        "ResourceType":{"value":"queue"}
       }
     },
     "DescribeStream":{
@@ -359,13 +469,15 @@
       "input":{"shape":"GetResourcePolicyInput"},
       "output":{"shape":"GetResourcePolicyOutput"},
       "errors":[
+        {"shape":"ValidationException"},
         {"shape":"AccessDeniedException"},
         {"shape":"ResourceNotFoundException"},
         {"shape":"LimitExceededException"},
         {"shape":"InvalidArgumentException"},
-        {"shape":"ResourceInUseException"}
+        {"shape":"ResourceInUseException"},
+        {"shape":"InternalFailureException"}
       ],
-      "documentation":"<p>Returns a policy attached to the specified data stream or consumer. Request patterns can be one of the following:</p> <ul> <li> <p>Data stream pattern: <code>arn:aws.*:kinesis:.*:\\d{12}:.*stream/\\S+</code> </p> </li> <li> <p> Consumer pattern: <code>^(arn):aws.*:kinesis:.*:\\d{12}:.*stream\\/[a-zA-Z0-9_.-]+\\/consumer\\/[a-zA-Z0-9_.-]+:[0-9]+</code> </p> </li> </ul>",
+      "documentation":"<p>Returns a policy attached to the specified data stream, consumer, or queue. Request patterns can be one of the following:</p> <ul> <li> <p>Data stream pattern: <code>arn:aws.*:kinesis:.*:\\d{12}:.*stream/\\S+</code> </p> </li> <li> <p> Consumer pattern: <code>^(arn):aws.*:kinesis:.*:\\d{12}:.*stream\\/[a-zA-Z0-9_.-]+\\/consumer\\/[a-zA-Z0-9_.-]+:[0-9]+</code> </p> </li> <li> <p>Queue pattern: <code>arn:aws.*:kinesis:.*:\\d{12}:queue/\\S+</code> </p> </li> </ul>",
       "staticContextParams":{
         "OperationType":{"value":"control"}
       }
@@ -429,6 +541,28 @@
       "readonly":true,
       "staticContextParams":{
         "OperationType":{"value":"control"}
+      }
+    },
+    "ListQueues":{
+      "name":"ListQueues",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"ListQueuesInput"},
+      "output":{"shape":"ListQueuesOutput"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"ExpiredNextTokenException"},
+        {"shape":"LimitExceededException"},
+        {"shape":"InvalidArgumentException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"InternalFailureException"}
+      ],
+      "documentation":"<p>Returns a summary of each queue in the Amazon Web Services account and Region used by the request. Use <code>StreamFilter</code> to list only the queues on a particular data stream.</p> <p>If the response contains a <code>NextToken</code>, more queues are available. Call <code>ListQueues</code> again with that value to retrieve the next page.</p>",
+      "staticContextParams":{
+        "OperationType":{"value":"control"},
+        "ResourceType":{"value":"queue"}
       }
     },
     "ListShards":{
@@ -499,13 +633,15 @@
       "input":{"shape":"ListTagsForResourceInput"},
       "output":{"shape":"ListTagsForResourceOutput"},
       "errors":[
+        {"shape":"ValidationException"},
         {"shape":"ResourceNotFoundException"},
         {"shape":"ResourceInUseException"},
         {"shape":"InvalidArgumentException"},
         {"shape":"LimitExceededException"},
-        {"shape":"AccessDeniedException"}
+        {"shape":"AccessDeniedException"},
+        {"shape":"InternalFailureException"}
       ],
-      "documentation":"<p>List all tags added to the specified Kinesis resource. Each tag is a label consisting of a user-defined key and value. Tags can help you manage, identify, organize, search for, and filter resources.</p> <p>For more information about tagging Kinesis resources, see <a href=\"https://docs.aws.amazon.com/streams/latest/dev/tagging.html\">Tag your Amazon Kinesis Data Streams resources</a>.</p>",
+      "documentation":"<p>List all tags added to the specified Kinesis resource. Each tag is a label consisting of a user-defined key and value. Tags can help you manage, identify, organize, search for, and filter resources.</p> <p>The Kinesis resource can be a data stream, a queue, or an enhanced fan-out consumer.</p> <p>For more information about tagging Kinesis resources, see <a href=\"https://docs.aws.amazon.com/streams/latest/dev/tagging.html\">Tag your Amazon Kinesis Data Streams resources</a>.</p>",
       "staticContextParams":{
         "OperationType":{"value":"control"}
       }
@@ -611,15 +747,71 @@
       },
       "input":{"shape":"PutResourcePolicyInput"},
       "errors":[
+        {"shape":"ValidationException"},
         {"shape":"AccessDeniedException"},
         {"shape":"ResourceNotFoundException"},
         {"shape":"LimitExceededException"},
         {"shape":"InvalidArgumentException"},
-        {"shape":"ResourceInUseException"}
+        {"shape":"ResourceInUseException"},
+        {"shape":"InternalFailureException"}
       ],
-      "documentation":"<p>Attaches a resource-based policy to a data stream or registered consumer. If you are using an identity other than the root user of the Amazon Web Services account that owns the resource, the calling identity must have the <code>PutResourcePolicy</code> permissions on the specified Kinesis Data Streams resource and belong to the owner's account in order to use this operation. If you don't have <code>PutResourcePolicy</code> permissions, Amazon Kinesis Data Streams returns a <code>403 Access Denied error</code>. If you receive a <code>ResourceNotFoundException</code>, check to see if you passed a valid stream or consumer resource. </p> <p> Request patterns can be one of the following:</p> <ul> <li> <p>Data stream pattern: <code>arn:aws.*:kinesis:.*:\\d{12}:.*stream/\\S+</code> </p> </li> <li> <p>Consumer pattern: <code>^(arn):aws.*:kinesis:.*:\\d{12}:.*stream\\/[a-zA-Z0-9_.-]+\\/consumer\\/[a-zA-Z0-9_.-]+:[0-9]+</code> </p> </li> </ul> <p>For more information, see <a href=\"https://docs.aws.amazon.com/streams/latest/dev/controlling-access.html\">Controlling Access to Amazon Kinesis Data Streams Resources Using IAM</a>.</p>",
+      "documentation":"<p>Attaches a resource-based policy to a data stream, a queue, or an enhanced fan-out consumer. If you are using an identity other than the root user of the Amazon Web Services account that owns the resource, the calling identity must have the <code>PutResourcePolicy</code> permissions on the specified Kinesis Data Streams resource and belong to the owner's account in order to use this operation. If you don't have <code>PutResourcePolicy</code> permissions, Amazon Kinesis Data Streams returns a <code>403 Access Denied error</code>. If you receive a <code>ResourceNotFoundException</code>, check to see if you passed a valid stream or consumer resource. </p> <p> Request patterns can be one of the following:</p> <ul> <li> <p>Data stream pattern: <code>arn:aws.*:kinesis:.*:\\d{12}:.*stream/\\S+</code> </p> </li> <li> <p>Consumer pattern: <code>^(arn):aws.*:kinesis:.*:\\d{12}:.*stream\\/[a-zA-Z0-9_.-]+\\/consumer\\/[a-zA-Z0-9_.-]+:[0-9]+</code> </p> </li> <li> <p>Queue pattern: <code>arn:aws.*:kinesis:.*:\\d{12}:queue/\\S+</code> </p> </li> </ul> <p>For more information, see <a href=\"https://docs.aws.amazon.com/streams/latest/dev/controlling-access.html\">Controlling Access to Amazon Kinesis Data Streams Resources Using IAM</a>.</p>",
       "staticContextParams":{
         "OperationType":{"value":"control"}
+      }
+    },
+    "ReceiveDeadLetterQueueRecords":{
+      "name":"ReceiveDeadLetterQueueRecords",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"ReceiveDeadLetterQueueRecordsInput"},
+      "output":{"shape":"ReceiveDeadLetterQueueRecordsOutput"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"InternalFailureException"},
+        {"shape":"InvalidArgumentException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"KMSAccessDeniedException"},
+        {"shape":"KMSDisabledException"},
+        {"shape":"KMSInvalidStateException"},
+        {"shape":"KMSNotFoundException"},
+        {"shape":"KMSOptInRequired"},
+        {"shape":"KMSThrottlingException"},
+        {"shape":"ThrottlingException"}
+      ],
+      "documentation":"<p>Receives up to 10 dead-letter records from the specified queue. Each queue has built-in dead-letter handling: when a record has been received <code>MaxReceiveCount</code> times without being acknowledged, it becomes a dead-letter record, which usually means your queue consumer could not process it. The dead-letter record stays in the same queue, and <a>ReceiveQueueRecords</a> no longer returns it.</p> <p>Dead-letter records carry the same data and partition key as when they were first delivered, and are returned with a receipt handle. Use the receipt handle to acknowledge the record with <a>AcknowledgeDeadLetterQueueRecords</a>, which discards it, to change its visibility with <a>UpdateDeadLetterQueueRecordsVisibility</a>, or to restore it with <a>RestoreDeadLetterQueueRecords</a>, which returns it to the normal receive path so that <a>ReceiveQueueRecords</a> can return it again.</p> <p>Use this operation to inspect the records your queue consumer could not process, so you can correct the cause and then either acknowledge or restore them.</p> <p>A queue delivers dead-letter records while it is in the <code>ACTIVE</code> state.</p>",
+      "staticContextParams":{
+        "OperationType":{"value":"data"},
+        "ResourceType":{"value":"queue"}
+      }
+    },
+    "ReceiveQueueRecords":{
+      "name":"ReceiveQueueRecords",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"ReceiveQueueRecordsInput"},
+      "output":{"shape":"ReceiveQueueRecordsOutput"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"InternalFailureException"},
+        {"shape":"InvalidArgumentException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"KMSAccessDeniedException"},
+        {"shape":"KMSDisabledException"},
+        {"shape":"KMSInvalidStateException"},
+        {"shape":"KMSNotFoundException"},
+        {"shape":"KMSOptInRequired"},
+        {"shape":"KMSThrottlingException"},
+        {"shape":"ThrottlingException"}
+      ],
+      "documentation":"<p>Receives up to 10 records from the specified queue. Each record is returned with a receipt handle, which is the identifier you use to acknowledge the record or change its visibility.</p> <p>A record returned by <code>ReceiveQueueRecords</code> becomes in flight: it is not visible to any consumer instance for the duration of its visibility timeout, so subsequent receive requests do not return it while your queue consumer processes it. Acknowledge the record with <a>AcknowledgeQueueRecords</a> when you finish processing it. A record that is not acknowledged before its visibility timeout expires becomes visible in the queue again and can be received by any consumer instance.</p> <p>Use <code>WaitTimeSeconds</code> to control how long the call waits for a record to become visible before returning. If a record becomes visible sooner, the call returns sooner. If the wait time expires and no records are visible, the call returns an empty list of records.</p> <p>Records are not necessarily received in the order they were written to the data stream.</p> <p>A queue delivers records while it is in the <code>ACTIVE</code> state.</p> <p>On rare occasions, a queue can deliver a record more than once. Design your queue consumer to be idempotent, so that processing the same record more than once is safe.</p>",
+      "staticContextParams":{
+        "OperationType":{"value":"data"},
+        "ResourceType":{"value":"queue"}
       }
     },
     "RegisterStreamConsumer":{
@@ -636,7 +828,7 @@
         {"shape":"ResourceInUseException"},
         {"shape":"ResourceNotFoundException"}
       ],
-      "documentation":"<p>Registers a consumer with a Kinesis data stream. When you use this operation, the consumer you register can then call <a>SubscribeToShard</a> to receive data from the stream using enhanced fan-out, at a rate of up to 2 MiB per second for every shard you subscribe to. This rate is unaffected by the total number of consumers that read from the same stream.</p> <p>You can add tags to the registered consumer when making a <code>RegisterStreamConsumer</code> request by setting the <code>Tags</code> parameter. If you pass the <code>Tags</code> parameter, in addition to having the <code>kinesis:RegisterStreamConsumer</code> permission, you must also have the <code>kinesis:TagResource</code> permission for the consumer that will be registered. Tags will take effect from the <code>CREATING</code> status of the consumer.</p> <p>With On-demand Advantage streams, you can register up to 50 consumers per stream to use Enhanced Fan-out. With On-demand Standard and Provisioned streams, you can register up to 20 consumers per stream to use Enhanced Fan-out. A given consumer can only be registered with one stream at a time.</p> <p>For an example of how to use this operation, see <a href=\"https://docs.aws.amazon.com/streams/latest/dev/building-enhanced-consumers-api.html\">Enhanced Fan-Out Using the Kinesis Data Streams API</a>.</p> <p>The use of this operation has a limit of five transactions per second per account. Also, only 5 consumers can be created simultaneously. In other words, you cannot have more than 5 consumers in a <code>CREATING</code> status at the same time. Registering a 6th consumer while there are 5 in a <code>CREATING</code> status results in a <code>LimitExceededException</code>.</p>",
+      "documentation":"<p>Registers a consumer with a Kinesis data stream. When you use this operation, the consumer you register can then call <a>SubscribeToShard</a> to receive data from the stream using enhanced fan-out, at a rate of up to 2 MiB per second for every shard you subscribe to. This rate is unaffected by the total number of consumers that read from the same stream.</p> <p>You can add tags to the registered consumer when making a <code>RegisterStreamConsumer</code> request by setting the <code>Tags</code> parameter. If you pass the <code>Tags</code> parameter, in addition to having the <code>kinesis:RegisterStreamConsumer</code> permission, you must also have the <code>kinesis:TagResource</code> permission for the consumer that will be registered. Tags will take effect from the <code>CREATING</code> status of the consumer.</p> <p>With On-demand Advantage streams, you can register up to 50 consumers per stream to use enhanced fan-out. With On-demand Standard and Provisioned streams, you can register up to 20 consumers per stream to use enhanced fan-out. Queues share this limit with enhanced fan-out consumers: both count as registered consumers on the stream. A given consumer can only be registered with one stream at a time.</p> <p>For an example of how to use this operation, see <a href=\"https://docs.aws.amazon.com/streams/latest/dev/building-enhanced-consumers-api.html\">Develop enhanced fan-out consumers with the Amazon Web Services SDK for Java</a>.</p> <p>The use of this operation has a limit of five transactions per second per account. Also, only 5 consumers can be created simultaneously. In other words, you cannot have more than 5 consumers in a <code>CREATING</code> status at the same time. Registering a 6th consumer while there are 5 in a <code>CREATING</code> status results in a <code>LimitExceededException</code>.</p>",
       "staticContextParams":{
         "OperationType":{"value":"control"}
       }
@@ -658,6 +850,27 @@
       "documentation":"<p>Removes tags from the specified Kinesis data stream. Removed tags are deleted and cannot be recovered after this operation successfully completes.</p> <note> <p>When invoking this API, you must use either the <code>StreamARN</code> or the <code>StreamName</code> parameter, or both. It is recommended that you use the <code>StreamARN</code> input parameter when you invoke this API.</p> </note> <p>If you specify a tag that does not exist, it is ignored.</p> <p> <a>RemoveTagsFromStream</a> has a limit of five transactions per second per account.</p>",
       "staticContextParams":{
         "OperationType":{"value":"control"}
+      }
+    },
+    "RestoreDeadLetterQueueRecords":{
+      "name":"RestoreDeadLetterQueueRecords",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"RestoreDeadLetterQueueRecordsInput"},
+      "output":{"shape":"RestoreDeadLetterQueueRecordsOutput"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"InternalFailureException"},
+        {"shape":"InvalidArgumentException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"}
+      ],
+      "documentation":"<p>Restores up to 10 dead-letter records in the specified queue. Restoring a record clears its dead-letter state and resets its receive count, so <a>ReceiveQueueRecords</a> can return it again, up to <code>MaxReceiveCount</code> times before it becomes a dead-letter record again. The result for each entry is reported individually in the response.</p> <p>Restore records after you have corrected the condition that prevented your queue consumer from processing them.</p> <p>Because the request can result in a combination of successful and unsuccessful entries, check the <code>Failed</code> list even when the call returns an HTTP status code of <code>200</code>.</p>",
+      "staticContextParams":{
+        "OperationType":{"value":"data"},
+        "ResourceType":{"value":"queue"}
       }
     },
     "SplitShard":{
@@ -740,7 +953,7 @@
         {"shape":"AccessDeniedException"},
         {"shape":"DryRunOperationException"}
       ],
-      "documentation":"<p>This operation establishes an HTTP/2 connection between the consumer you specify in the <code>ConsumerARN</code> parameter and the shard you specify in the <code>ShardId</code> parameter. After the connection is successfully established, Kinesis Data Streams pushes records from the shard to the consumer over this connection. Before you call this operation, call <a>RegisterStreamConsumer</a> to register the consumer with Kinesis Data Streams.</p> <p>When the <code>SubscribeToShard</code> call succeeds, your consumer starts receiving events of type <a>SubscribeToShardEvent</a> over the HTTP/2 connection for up to 5 minutes, after which time you need to call <code>SubscribeToShard</code> again to renew the subscription if you want to continue to receive records.</p> <p>You can make one call to <code>SubscribeToShard</code> per second per registered consumer per shard. For example, if you have a 4000 shard stream and two registered stream consumers, you can make one <code>SubscribeToShard</code> request per second for each combination of shard and registered consumer, allowing you to subscribe both consumers to all 4000 shards in one second. </p> <p>If you call <code>SubscribeToShard</code> again with the same <code>ConsumerARN</code> and <code>ShardId</code> within 5 seconds of a successful call, you'll get a <code>ResourceInUseException</code>. If you call <code>SubscribeToShard</code> 5 seconds or more after a successful call, the second call takes over the subscription and the previous connection expires or fails with a <code>ResourceInUseException</code>.</p> <p>For an example of how to use this operation, see <a href=\"https://docs.aws.amazon.com/streams/latest/dev/building-enhanced-consumers-api.html\">Enhanced Fan-Out Using the Kinesis Data Streams API</a>.</p>",
+      "documentation":"<p>This operation establishes an HTTP/2 connection between the consumer you specify in the <code>ConsumerARN</code> parameter and the shard you specify in the <code>ShardId</code> parameter. After the connection is successfully established, Kinesis Data Streams pushes records from the shard to the consumer over this connection. Before you call this operation, call <a>RegisterStreamConsumer</a> to register the consumer with Kinesis Data Streams.</p> <p>When the <code>SubscribeToShard</code> call succeeds, your consumer starts receiving events of type <a>SubscribeToShardEvent</a> over the HTTP/2 connection for up to 5 minutes, after which time you need to call <code>SubscribeToShard</code> again to renew the subscription if you want to continue to receive records.</p> <p>You can make one call to <code>SubscribeToShard</code> per second per registered consumer per shard. For example, if you have a 4000 shard stream and two registered stream consumers, you can make one <code>SubscribeToShard</code> request per second for each combination of shard and registered consumer, allowing you to subscribe both consumers to all 4000 shards in one second. </p> <p>If you call <code>SubscribeToShard</code> again with the same <code>ConsumerARN</code> and <code>ShardId</code> within 5 seconds of a successful call, you'll get a <code>ResourceInUseException</code>. If you call <code>SubscribeToShard</code> 5 seconds or more after a successful call, the second call takes over the subscription and the previous connection expires or fails with a <code>ResourceInUseException</code>.</p> <p>For an example of how to use this operation, see <a href=\"https://docs.aws.amazon.com/streams/latest/dev/building-enhanced-consumers-api.html\">Develop enhanced fan-out consumers with the Amazon Web Services SDK for Java</a>.</p>",
       "staticContextParams":{
         "OperationType":{"value":"data"}
       }
@@ -753,13 +966,15 @@
       },
       "input":{"shape":"TagResourceInput"},
       "errors":[
+        {"shape":"ValidationException"},
         {"shape":"ResourceNotFoundException"},
         {"shape":"ResourceInUseException"},
         {"shape":"InvalidArgumentException"},
         {"shape":"LimitExceededException"},
-        {"shape":"AccessDeniedException"}
+        {"shape":"AccessDeniedException"},
+        {"shape":"InternalFailureException"}
       ],
-      "documentation":"<p>Adds or updates tags for the specified Kinesis resource. Each tag is a label consisting of a user-defined key and value. Tags can help you manage, identify, organize, search for, and filter resources. You can assign up to 50 tags to a Kinesis resource.</p>",
+      "documentation":"<p>Adds or updates tags for the specified Kinesis resource. Each tag is a label consisting of a user-defined key and value. Tags can help you manage, identify, organize, search for, and filter resources. You can assign up to 50 tags to a Kinesis resource.</p> <p>The Kinesis resource can be a data stream, a queue, or an enhanced fan-out consumer.</p>",
       "staticContextParams":{
         "OperationType":{"value":"control"}
       }
@@ -772,13 +987,15 @@
       },
       "input":{"shape":"UntagResourceInput"},
       "errors":[
+        {"shape":"ValidationException"},
         {"shape":"ResourceNotFoundException"},
         {"shape":"ResourceInUseException"},
         {"shape":"InvalidArgumentException"},
         {"shape":"LimitExceededException"},
-        {"shape":"AccessDeniedException"}
+        {"shape":"AccessDeniedException"},
+        {"shape":"InternalFailureException"}
       ],
-      "documentation":"<p>Removes tags from the specified Kinesis resource. Removed tags are deleted and can't be recovered after this operation completes successfully.</p>",
+      "documentation":"<p>Removes tags from the specified Kinesis resource. Removed tags are deleted and can't be recovered after this operation completes successfully.</p> <p>The Kinesis resource can be a data stream, a queue, or an enhanced fan-out consumer.</p>",
       "staticContextParams":{
         "OperationType":{"value":"control"}
       }
@@ -822,6 +1039,27 @@
         "OperationType":{"value":"control"}
       }
     },
+    "UpdateDeadLetterQueueRecordsVisibility":{
+      "name":"UpdateDeadLetterQueueRecordsVisibility",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"UpdateDeadLetterQueueRecordsVisibilityInput"},
+      "output":{"shape":"UpdateDeadLetterQueueRecordsVisibilityOutput"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"InternalFailureException"},
+        {"shape":"InvalidArgumentException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"}
+      ],
+      "documentation":"<p>Changes the visibility timeout of up to 10 dead-letter records that you have received from the specified queue but not yet acknowledged. The result for each entry is reported individually in the response.</p> <p>Because the request can result in a combination of successful and unsuccessful entries, check the <code>Failed</code> list even when the call returns an HTTP status code of <code>200</code>.</p>",
+      "staticContextParams":{
+        "OperationType":{"value":"data"},
+        "ResourceType":{"value":"queue"}
+      }
+    },
     "UpdateMaxRecordSize":{
       "name":"UpdateMaxRecordSize",
       "http":{
@@ -840,6 +1078,50 @@
       "documentation":"<p>This allows you to update the <code>MaxRecordSize</code> of a single record that you can write to, and read from a stream. You can ingest and digest single records up to 10240 KiB.</p>",
       "staticContextParams":{
         "OperationType":{"value":"control"}
+      }
+    },
+    "UpdateQueue":{
+      "name":"UpdateQueue",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"UpdateQueueInput"},
+      "output":{"shape":"UpdateQueueOutput"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"ResourceInUseException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"LimitExceededException"},
+        {"shape":"InvalidArgumentException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"InternalFailureException"}
+      ],
+      "documentation":"<p>Updates the configuration attributes of the specified queue. You can change the queue's visibility timeout, its dead-letter handling configuration, or both.</p> <p>A new visibility timeout applies to records received after the update completes. Records that are already in flight keep the visibility timeout they were received with. To change the visibility timeout of a record that is already in flight, use <a>UpdateQueueRecordsVisibility</a>.</p> <p> <code>UpdateQueue</code> is an asynchronous operation. Upon receiving an <code>UpdateQueue</code> request, Amazon Kinesis Data Streams sets the <code>QueueStatus</code> to <code>UPDATING</code>, and sets it back to <code>ACTIVE</code> when the update is complete. You can continue to receive and acknowledge records while the queue is <code>UPDATING</code>.</p> <p>You can't change the data stream or the starting position of a queue after you create it. To read from a different stream or position, create a new queue.</p>",
+      "staticContextParams":{
+        "OperationType":{"value":"control"},
+        "ResourceType":{"value":"queue"}
+      }
+    },
+    "UpdateQueueRecordsVisibility":{
+      "name":"UpdateQueueRecordsVisibility",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"UpdateQueueRecordsVisibilityInput"},
+      "output":{"shape":"UpdateQueueRecordsVisibilityOutput"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"InternalFailureException"},
+        {"shape":"InvalidArgumentException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"}
+      ],
+      "documentation":"<p>Changes the visibility timeout of up to 10 records that you have received from the specified queue but not yet acknowledged. The result for each entry is reported individually in the response.</p> <p>Extend the visibility timeout of a record when your queue consumer needs more time to finish processing it, so the record does not become visible and get redelivered while it is still being processed. Set the visibility timeout to <code>0</code> to make a record visible in the queue immediately, so that it can be received again without waiting for its current timeout to expire.</p> <p>Because the request can result in a combination of successful and unsuccessful entries, check the <code>Failed</code> list even when the call returns an HTTP status code of <code>200</code>.</p>",
+      "staticContextParams":{
+        "OperationType":{"value":"data"},
+        "ResourceType":{"value":"queue"}
       }
     },
     "UpdateShardCount":{
@@ -877,7 +1159,7 @@
         {"shape":"ResourceNotFoundException"},
         {"shape":"ValidationException"}
       ],
-      "documentation":"<p> Updates the capacity mode of the data stream. Currently, in Kinesis Data Streams, you can choose between an <b>on-demand</b> capacity mode and a <b>provisioned</b> capacity mode for your data stream. </p> <p>If you'd still like to proactively scale your on-demand data stream’s capacity, you can unlock the warm throughput feature for on-demand data streams by enabling <code>MinimumThroughputBillingCommitment</code> for your account. Once your account has <code>MinimumThroughputBillingCommitment</code> enabled, you can specify the warm throughput in MiB per second that your stream can support in writes.</p>",
+      "documentation":"<p> Updates the capacity mode of the data stream. Currently, in Kinesis Data Streams, you can choose between an <b>on-demand</b> capacity mode and a <b>provisioned</b> capacity mode for your data stream. </p> <p>If you'd still like to proactively scale your on-demand data stream’s capacity, you can unlock the warm throughput feature for on-demand data streams by enabling <code>MinimumThroughputBillingCommitment</code> for your account. Once your account has <code>MinimumThroughputBillingCommitment</code> enabled, you can specify the warm throughput in MiB per second that your stream can support in writes.</p> <p>You can't switch a data stream from on-demand to provisioned capacity mode while the stream has one or more queues. Delete the queues with <a>DeleteQueue</a> before you change the capacity mode.</p>",
       "staticContextParams":{
         "OperationType":{"value":"control"}
       }
@@ -933,6 +1215,192 @@
       "documentation":"<p>Specifies that you do not have the permissions required to perform this operation.</p>",
       "exception":true
     },
+    "AcknowledgeDeadLetterQueueRecordsErrorEntry":{
+      "type":"structure",
+      "required":[
+        "ReceiptHandle",
+        "ErrorCode"
+      ],
+      "members":{
+        "ReceiptHandle":{
+          "shape":"ReceiptHandle",
+          "documentation":"<p>The receipt handle of the record that was not acknowledged.</p>"
+        },
+        "ErrorCode":{
+          "shape":"ErrorCode",
+          "documentation":"<p>A code identifying the type of failure. One of <code>ResourceNotFoundException</code>, <code>InvalidArgumentException</code>, <code>ThrottlingException</code>, or <code>InternalFailureException</code>.</p>"
+        },
+        "ErrorMessage":{
+          "shape":"ErrorMessage",
+          "documentation":"<p>A description of the cause of the failure.</p>"
+        }
+      },
+      "documentation":"<p>A dead-letter record that was not acknowledged, and why.</p>"
+    },
+    "AcknowledgeDeadLetterQueueRecordsErrorEntryList":{
+      "type":"list",
+      "member":{"shape":"AcknowledgeDeadLetterQueueRecordsErrorEntry"}
+    },
+    "AcknowledgeDeadLetterQueueRecordsInput":{
+      "type":"structure",
+      "required":[
+        "QueueARN",
+        "Entries"
+      ],
+      "members":{
+        "QueueARN":{
+          "shape":"QueueARN",
+          "documentation":"<p>The ARN of the queue whose dead-letter records are acknowledged.</p>",
+          "contextParam":{"name":"QueueARN"}
+        },
+        "Entries":{
+          "shape":"AcknowledgeDeadLetterQueueRecordsRequestEntryList",
+          "documentation":"<p>The dead-letter records to acknowledge, identified by their receipt handles.</p>"
+        }
+      }
+    },
+    "AcknowledgeDeadLetterQueueRecordsOutput":{
+      "type":"structure",
+      "required":[
+        "Successful",
+        "Failed"
+      ],
+      "members":{
+        "Successful":{
+          "shape":"AcknowledgeDeadLetterQueueRecordsResultEntryList",
+          "documentation":"<p>The records that were acknowledged.</p>"
+        },
+        "Failed":{
+          "shape":"AcknowledgeDeadLetterQueueRecordsErrorEntryList",
+          "documentation":"<p>The records that were not acknowledged, each with the reason the entry failed.</p>"
+        }
+      }
+    },
+    "AcknowledgeDeadLetterQueueRecordsRequestEntry":{
+      "type":"structure",
+      "required":["ReceiptHandle"],
+      "members":{
+        "ReceiptHandle":{
+          "shape":"ReceiptHandle",
+          "documentation":"<p>The receipt handle of the record to acknowledge, as returned by <a>ReceiveDeadLetterQueueRecords</a>.</p>"
+        }
+      },
+      "documentation":"<p>A dead-letter record to acknowledge, identified by its receipt handle.</p>"
+    },
+    "AcknowledgeDeadLetterQueueRecordsRequestEntryList":{
+      "type":"list",
+      "member":{"shape":"AcknowledgeDeadLetterQueueRecordsRequestEntry"},
+      "max":10,
+      "min":1
+    },
+    "AcknowledgeDeadLetterQueueRecordsResultEntry":{
+      "type":"structure",
+      "required":["ReceiptHandle"],
+      "members":{
+        "ReceiptHandle":{
+          "shape":"ReceiptHandle",
+          "documentation":"<p>The receipt handle of the record that was acknowledged.</p>"
+        }
+      },
+      "documentation":"<p>A dead-letter record that was acknowledged.</p>"
+    },
+    "AcknowledgeDeadLetterQueueRecordsResultEntryList":{
+      "type":"list",
+      "member":{"shape":"AcknowledgeDeadLetterQueueRecordsResultEntry"}
+    },
+    "AcknowledgeQueueRecordsErrorEntry":{
+      "type":"structure",
+      "required":[
+        "ReceiptHandle",
+        "ErrorCode"
+      ],
+      "members":{
+        "ReceiptHandle":{
+          "shape":"ReceiptHandle",
+          "documentation":"<p>The receipt handle of the record that was not acknowledged.</p>"
+        },
+        "ErrorCode":{
+          "shape":"ErrorCode",
+          "documentation":"<p>A code identifying the type of failure. One of <code>ResourceNotFoundException</code>, <code>InvalidArgumentException</code>, <code>ThrottlingException</code>, or <code>InternalFailureException</code>.</p>"
+        },
+        "ErrorMessage":{
+          "shape":"ErrorMessage",
+          "documentation":"<p>A description of the cause of the failure.</p>"
+        }
+      },
+      "documentation":"<p>A record that was not acknowledged, and why.</p>"
+    },
+    "AcknowledgeQueueRecordsErrorEntryList":{
+      "type":"list",
+      "member":{"shape":"AcknowledgeQueueRecordsErrorEntry"}
+    },
+    "AcknowledgeQueueRecordsInput":{
+      "type":"structure",
+      "required":[
+        "QueueARN",
+        "Entries"
+      ],
+      "members":{
+        "QueueARN":{
+          "shape":"QueueARN",
+          "documentation":"<p>The ARN of the queue the records were received from.</p>",
+          "contextParam":{"name":"QueueARN"}
+        },
+        "Entries":{
+          "shape":"AcknowledgeQueueRecordsRequestEntryList",
+          "documentation":"<p>The records to acknowledge, identified by their receipt handles.</p>"
+        }
+      }
+    },
+    "AcknowledgeQueueRecordsOutput":{
+      "type":"structure",
+      "required":[
+        "Successful",
+        "Failed"
+      ],
+      "members":{
+        "Successful":{
+          "shape":"AcknowledgeQueueRecordsResultEntryList",
+          "documentation":"<p>The records that were acknowledged.</p>"
+        },
+        "Failed":{
+          "shape":"AcknowledgeQueueRecordsErrorEntryList",
+          "documentation":"<p>The records that were not acknowledged, each with the reason the entry failed.</p>"
+        }
+      }
+    },
+    "AcknowledgeQueueRecordsRequestEntry":{
+      "type":"structure",
+      "required":["ReceiptHandle"],
+      "members":{
+        "ReceiptHandle":{
+          "shape":"ReceiptHandle",
+          "documentation":"<p>The receipt handle of the record to acknowledge, as returned by <a>ReceiveQueueRecords</a>.</p>"
+        }
+      },
+      "documentation":"<p>A record to acknowledge, identified by its receipt handle.</p>"
+    },
+    "AcknowledgeQueueRecordsRequestEntryList":{
+      "type":"list",
+      "member":{"shape":"AcknowledgeQueueRecordsRequestEntry"},
+      "max":10,
+      "min":1
+    },
+    "AcknowledgeQueueRecordsResultEntry":{
+      "type":"structure",
+      "required":["ReceiptHandle"],
+      "members":{
+        "ReceiptHandle":{
+          "shape":"ReceiptHandle",
+          "documentation":"<p>The receipt handle of the record that was acknowledged.</p>"
+        }
+      },
+      "documentation":"<p>A record that was acknowledged.</p>"
+    },
+    "AcknowledgeQueueRecordsResultEntryList":{
+      "type":"list",
+      "member":{"shape":"AcknowledgeQueueRecordsResultEntry"}
+    },
     "AddTagsToStreamInput":{
       "type":"structure",
       "required":["Tags"],
@@ -958,6 +1426,7 @@
       },
       "documentation":"<p>Represents the input for <code>AddTagsToStream</code>.</p>"
     },
+    "ApproximateArrivalTimestamp":{"type":"timestamp"},
     "BooleanObject":{"type":"boolean"},
     "BucketARN":{
       "type":"string",
@@ -1461,6 +1930,41 @@
         }
       }
     },
+    "CreateQueueInput":{
+      "type":"structure",
+      "required":[
+        "QueueName",
+        "StreamConfigurationList"
+      ],
+      "members":{
+        "QueueName":{
+          "shape":"QueueName",
+          "documentation":"<p>A name for the queue. The name is scoped to the Amazon Web Services account and Region used by the request, so two queues in different accounts, or in the same account and different Regions, can have the same name.</p>"
+        },
+        "StreamConfigurationList":{
+          "shape":"QueueStreamConfigurationList",
+          "documentation":"<p>The data stream the queue delivers records from, and the position in that stream where delivery begins. The list must contain exactly one entry, because a queue delivers records from a single data stream.</p>"
+        },
+        "QueueAttributes":{
+          "shape":"QueueAttributes",
+          "documentation":"<p>The configuration attributes for the queue, including its visibility timeout and its dead-letter handling configuration.</p>"
+        },
+        "Tags":{
+          "shape":"TagMap",
+          "documentation":"<p>A set of up to 50 key-value pairs to apply to the queue. You can also add, change, and remove tags after the queue is created with <a>TagResource</a> and <a>UntagResource</a>.</p>"
+        }
+      }
+    },
+    "CreateQueueOutput":{
+      "type":"structure",
+      "required":["QueueDescription"],
+      "members":{
+        "QueueDescription":{
+          "shape":"QueueDescription",
+          "documentation":"<p>A description of the queue that was created.</p>"
+        }
+      }
+    },
     "CreateStreamInput":{
       "type":"structure",
       "required":["StreamName"],
@@ -1502,6 +2006,21 @@
       "min":0
     },
     "DataFreshnessInSeconds":{"type":"integer"},
+    "DeadLetterConfiguration":{
+      "type":"structure",
+      "required":["TargetType"],
+      "members":{
+        "TargetType":{
+          "shape":"TargetType",
+          "documentation":"<p>Whether dead-letter handling is enabled for the queue. <code>BUILT_IN</code> enables it: when a record has been received <code>MaxReceiveCount</code> times without being acknowledged, it becomes a dead-letter record and <a>ReceiveQueueRecords</a> no longer returns it. <code>NONE</code> disables it, and an unacknowledged record continues to be redelivered until it is acknowledged or its retention period ends.</p>"
+        },
+        "MaxReceiveCount":{
+          "shape":"MaxReceiveCount",
+          "documentation":"<p>The number of times a record can be received without being acknowledged before it becomes a dead-letter record. Required when <code>TargetType</code> is <code>BUILT_IN</code>. A queue that you create without <code>DeadLetterConfiguration</code> gets a <code>MaxReceiveCount</code> of 6.</p>"
+        }
+      },
+      "documentation":"<p>The dead-letter handling configuration for a queue. Each queue has built-in dead-letter handling. When a record has been received <code>MaxReceiveCount</code> times without being acknowledged, it becomes a dead-letter record, and <a>ReceiveQueueRecords</a> no longer returns it. The dead-letter record stays in the same queue, and you work with it through <a>ReceiveDeadLetterQueueRecords</a>, <a>AcknowledgeDeadLetterQueueRecords</a>, <a>UpdateDeadLetterQueueRecordsVisibility</a>, and <a>RestoreDeadLetterQueueRecords</a>, which use the same queue ARN.</p> <p>Dead-letter handling is enabled by default, with a <code>MaxReceiveCount</code> of 6. To use a different value, or to turn dead-letter handling off, specify this configuration in <code>QueueAttributes</code>.</p>"
+    },
     "DeadLetterQueueS3Configuration":{
       "type":"structure",
       "required":[
@@ -1560,13 +2079,24 @@
         }
       }
     },
+    "DeleteQueueInput":{
+      "type":"structure",
+      "required":["QueueARN"],
+      "members":{
+        "QueueARN":{
+          "shape":"QueueARN",
+          "documentation":"<p>The ARN of the queue to delete.</p>",
+          "contextParam":{"name":"QueueARN"}
+        }
+      }
+    },
     "DeleteResourcePolicyInput":{
       "type":"structure",
       "required":["ResourceARN"],
       "members":{
         "ResourceARN":{
           "shape":"ResourceARN",
-          "documentation":"<p>The Amazon Resource Name (ARN) of the data stream or consumer.</p>",
+          "documentation":"<p>The Amazon Resource Name (ARN) of a data stream, a queue, or an enhanced fan-out consumer.</p>",
           "contextParam":{"name":"ResourceARN"}
         },
         "StreamId":{
@@ -1585,7 +2115,7 @@
         },
         "EnforceConsumerDeletion":{
           "shape":"BooleanObject",
-          "documentation":"<p>If this parameter is unset (<code>null</code>) or if you set it to <code>false</code>, and the stream has registered consumers, the call to <code>DeleteStream</code> fails with a <code>ResourceInUseException</code>. </p>"
+          "documentation":"<p>If this parameter is unset (<code>null</code>) or if you set it to <code>false</code>, and the stream has registered enhanced fan-out consumers, the call to <code>DeleteStream</code> fails with a <code>ResourceInUseException</code>.</p> <p>If you set it to <code>true</code>, <code>DeleteStream</code> deletes the stream and every consumer registered with it.</p> <p>This parameter does not apply to queues. A stream that has queues cannot be deleted until every queue on it is deleted with <a>DeleteQueue</a>, whatever this parameter is set to.</p>"
         },
         "StreamARN":{
           "shape":"StreamARN",
@@ -1694,6 +2224,27 @@
         "ChannelCountLimit":{
           "shape":"ChannelCountObject",
           "documentation":"<p>The maximum number of channels allowed in the account.</p>"
+        }
+      }
+    },
+    "DescribeQueueInput":{
+      "type":"structure",
+      "required":["QueueARN"],
+      "members":{
+        "QueueARN":{
+          "shape":"QueueARN",
+          "documentation":"<p>The ARN of the queue to describe.</p>",
+          "contextParam":{"name":"QueueARN"}
+        }
+      }
+    },
+    "DescribeQueueOutput":{
+      "type":"structure",
+      "required":["QueueDescription"],
+      "members":{
+        "QueueDescription":{
+          "shape":"QueueDescription",
+          "documentation":"<p>A description of the queue.</p>"
         }
       }
     },
@@ -1932,6 +2483,7 @@
       "documentation":"<p>The pagination token passed to the operation is expired.</p>",
       "exception":true
     },
+    "FirstReceiveTimestamp":{"type":"timestamp"},
     "GSRSchemaARN":{
       "type":"string",
       "max":512,
@@ -2001,7 +2553,7 @@
       "members":{
         "ResourceARN":{
           "shape":"ResourceARN",
-          "documentation":"<p>The Amazon Resource Name (ARN) of the data stream or consumer.</p>",
+          "documentation":"<p>The Amazon Resource Name (ARN) of a data stream, a queue, or an enhanced fan-out consumer.</p>",
           "contextParam":{"name":"ResourceARN"}
         },
         "StreamId":{
@@ -2161,7 +2713,7 @@
           "documentation":"<p>A message that provides information about the error.</p>"
         }
       },
-      "documentation":"<p>The request was rejected because the specified customer master key (CMK) isn't enabled.</p>",
+      "documentation":"<p>The request was rejected because the specified KMS key isn't enabled.</p>",
       "exception":true
     },
     "KMSInvalidStateException":{
@@ -2257,6 +2809,42 @@
         "NextToken":{
           "shape":"NextToken",
           "documentation":"<p>The pagination token to use in a subsequent call to retrieve the next page of results. This value is <code>null</code> when there are no more results to return.</p>"
+        }
+      }
+    },
+    "ListQueuesInput":{
+      "type":"structure",
+      "members":{
+        "MaxResults":{
+          "shape":"ListQueuesInputLimit",
+          "documentation":"<p>The maximum number of queue summaries to return in one response. The response might contain fewer summaries than this value, and might contain a <code>NextToken</code> even when it contains fewer.</p>"
+        },
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>The <code>NextToken</code> returned by a previous <code>ListQueues</code> request. Use it to retrieve the next page of queue summaries.</p>"
+        },
+        "StreamFilter":{
+          "shape":"QueueStreamFilterList",
+          "documentation":"<p>Lists only the queues created on the specified data stream.</p>"
+        }
+      }
+    },
+    "ListQueuesInputLimit":{
+      "type":"integer",
+      "max":10000,
+      "min":1
+    },
+    "ListQueuesOutput":{
+      "type":"structure",
+      "required":["QueueSummaries"],
+      "members":{
+        "QueueSummaries":{
+          "shape":"QueueSummaryList",
+          "documentation":"<p>A summary of each queue that matched the request.</p>"
+        },
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>The token to pass to the next <code>ListQueues</code> request to retrieve the next page of queue summaries. This member is absent when no more queues are available.</p>"
         }
       }
     },
@@ -2487,6 +3075,11 @@
         }
       },
       "documentation":"<p>Represents the output for <code>ListTagsForStream</code>.</p>"
+    },
+    "MaxReceiveCount":{
+      "type":"integer",
+      "max":1000,
+      "min":1
     },
     "MaxRecordSizeInKiB":{
       "type":"integer",
@@ -2855,7 +3448,7 @@
       "members":{
         "ResourceARN":{
           "shape":"ResourceARN",
-          "documentation":"<p>The Amazon Resource Name (ARN) of the data stream or consumer.</p>",
+          "documentation":"<p>The Amazon Resource Name (ARN) of a data stream, a queue, or an enhanced fan-out consumer.</p>",
           "contextParam":{"name":"ResourceARN"}
         },
         "StreamId":{
@@ -2868,6 +3461,340 @@
           "documentation":"<p>Details of the resource policy. It must include the identity of the principal and the actions allowed on this resource. This is formatted as a JSON string.</p>"
         }
       }
+    },
+    "QueueARN":{
+      "type":"string",
+      "max":2048,
+      "min":1,
+      "pattern":"arn:aws.*:kinesis:.*:\\d{12}:queue/\\S+"
+    },
+    "QueueAttributes":{
+      "type":"structure",
+      "members":{
+        "VisibilityTimeoutSeconds":{
+          "shape":"VisibilityTimeoutSeconds",
+          "documentation":"<p>The duration, in seconds, that a record is in flight and not visible to any consumer instance after it is received. A record that is not acknowledged before this duration elapses becomes visible in the queue again and can be received by any consumer instance. If you omit this attribute when you create a queue, the queue uses 30 seconds.</p>"
+        },
+        "DeadLetterConfiguration":{
+          "shape":"DeadLetterConfiguration",
+          "documentation":"<p>The dead-letter handling configuration for the queue. If you omit this attribute, dead-letter handling is enabled with a <code>MaxReceiveCount</code> of 6. If you specify it with a <code>TargetType</code> of <code>BUILT_IN</code>, you must also specify <code>MaxReceiveCount</code>.</p>"
+        }
+      },
+      "documentation":"<p>The configuration attributes for a queue.</p>"
+    },
+    "QueueCountObject":{
+      "type":"integer",
+      "max":1000000,
+      "min":0
+    },
+    "QueueDescription":{
+      "type":"structure",
+      "required":[
+        "QueueName",
+        "QueueARN",
+        "QueueStatus",
+        "QueueCreationTimestamp",
+        "StreamConfigurationList"
+      ],
+      "members":{
+        "QueueName":{
+          "shape":"QueueName",
+          "documentation":"<p>The name of the queue.</p>"
+        },
+        "QueueARN":{
+          "shape":"QueueARN",
+          "documentation":"<p>The ARN of the queue. The resource identifier in the ARN is generated when the queue is created and is not derived from <code>QueueName</code>. Use the returned <code>QueueARN</code> to identify the queue in subsequent requests.</p>"
+        },
+        "QueueStatus":{
+          "shape":"QueueStatus",
+          "documentation":"<p>The current status of the queue.</p>"
+        },
+        "QueueCreationTimestamp":{
+          "shape":"Timestamp",
+          "documentation":"<p>The time the queue was created.</p>"
+        },
+        "StreamConfigurationList":{
+          "shape":"QueueStreamConfigurationList",
+          "documentation":"<p>The data stream the queue delivers records from, and the position in that stream where delivery begins. The list contains exactly one entry, because a queue delivers records from a single data stream.</p>"
+        },
+        "QueueAttributes":{
+          "shape":"QueueAttributes",
+          "documentation":"<p>The configuration attributes of the queue.</p>"
+        }
+      },
+      "documentation":"<p>A description of a queue. Returned by <a>CreateQueue</a>, <a>UpdateQueue</a>, and <a>DescribeQueue</a>.</p>"
+    },
+    "QueueName":{
+      "type":"string",
+      "max":128,
+      "min":1,
+      "pattern":"[a-zA-Z0-9_.-]+"
+    },
+    "QueueRecord":{
+      "type":"structure",
+      "required":[
+        "ReceiptHandle",
+        "RecordId",
+        "Data",
+        "ApproximateArrivalTimestamp",
+        "FirstReceiveTimestamp",
+        "ReceiveCount"
+      ],
+      "members":{
+        "ReceiptHandle":{
+          "shape":"ReceiptHandle",
+          "documentation":"<p>The identifier you use to acknowledge this record, change its visibility, or restore it after it becomes a dead-letter record. A new receipt handle is issued each time the record is received.</p>"
+        },
+        "RecordId":{
+          "shape":"RecordId",
+          "documentation":"<p>The unique identifier of the record. This value stays the same across every delivery of the record, and it is the same in every queue on the stream that delivers the record. To identify a single delivery, use <code>ReceiptHandle</code> instead.</p>"
+        },
+        "PartitionKey":{
+          "shape":"PartitionKey",
+          "documentation":"<p>The partition key the record was written to the data stream with.</p>"
+        },
+        "Data":{
+          "shape":"Data",
+          "documentation":"<p>The data blob of the record. Amazon Kinesis Data Streams does not inspect, interpret, or change the data.</p>"
+        },
+        "ApproximateArrivalTimestamp":{
+          "shape":"ApproximateArrivalTimestamp",
+          "documentation":"<p>The approximate time the record arrived in the data stream. The difference between this value and the current time is how long the record took to reach your queue consumer.</p>"
+        },
+        "FirstReceiveTimestamp":{
+          "shape":"FirstReceiveTimestamp",
+          "documentation":"<p>The approximate time the record was first received from the queue.</p>"
+        },
+        "ReceiveCount":{
+          "shape":"ReceiveCount",
+          "documentation":"<p>The number of times this record has been received without being acknowledged.</p>"
+        }
+      },
+      "documentation":"<p>A data stream record, as delivered through a queue.</p>"
+    },
+    "QueueRecordList":{
+      "type":"list",
+      "member":{"shape":"QueueRecord"}
+    },
+    "QueueStartingPosition":{
+      "type":"structure",
+      "required":["Type"],
+      "members":{
+        "Type":{
+          "shape":"QueueStartingPositionType",
+          "documentation":"<p>You can set the starting position to one of the following values:</p> <p> <code>LATEST</code>: Delivers records that arrive after you create the queue. This is the default.</p> <p> <code>TRIM_HORIZON</code>: Start delivering at the last untrimmed record in the stream, which is the oldest record the stream still retains.</p> <p> <code>AT_TIMESTAMP</code>: Delivers records that arrive at or after a time stamp that you provide.</p>"
+        },
+        "Timestamp":{
+          "shape":"Timestamp",
+          "documentation":"<p>The approximate time from which the queue begins delivering records. Records that arrive at approximately this time or later are delivered.</p> <p>In a request, specify this value only when <code>Type</code> is <code>AT_TIMESTAMP</code>. It is required in that case, and specifying it for any other type returns a <code>ValidationException</code>.</p> <p>In a response, this value is approximate and reflects the queue's effective starting position. While the queue is <code>CREATING</code>, the response echoes what you configured: for <code>AT_TIMESTAMP</code>, the timestamp you provided, and for <code>TRIM_HORIZON</code> and <code>LATEST</code>, this member is absent because the effective position is not yet determined. Once the queue is <code>ACTIVE</code>, the response always includes this member. For <code>AT_TIMESTAMP</code>, it is the timestamp you provided or the earliest time the stream can be read from, whichever is later.</p>"
+        }
+      },
+      "documentation":"<p>The position in a data stream from which a queue begins delivering records.</p>"
+    },
+    "QueueStartingPositionType":{
+      "type":"string",
+      "enum":[
+        "TRIM_HORIZON",
+        "LATEST",
+        "AT_TIMESTAMP"
+      ]
+    },
+    "QueueStatus":{
+      "type":"string",
+      "enum":[
+        "CREATING",
+        "ACTIVE",
+        "UPDATING",
+        "DELETING"
+      ]
+    },
+    "QueueStreamConfiguration":{
+      "type":"structure",
+      "required":["StreamARN"],
+      "members":{
+        "StreamARN":{
+          "shape":"StreamARN",
+          "documentation":"<p>The ARN of the data stream.</p>"
+        },
+        "StartingPosition":{
+          "shape":"QueueStartingPosition",
+          "documentation":"<p>The position in the stream from which the queue begins delivering records. The default is <code>LATEST</code>.</p>"
+        }
+      },
+      "documentation":"<p>The data stream a queue delivers records from, and the position in that stream where delivery begins.</p>"
+    },
+    "QueueStreamConfigurationList":{
+      "type":"list",
+      "member":{"shape":"QueueStreamConfiguration"},
+      "max":10000,
+      "min":1
+    },
+    "QueueStreamFilter":{
+      "type":"structure",
+      "required":["StreamARN"],
+      "members":{
+        "StreamARN":{
+          "shape":"StreamARN",
+          "documentation":"<p>The ARN of the data stream to filter on.</p>"
+        },
+        "StreamCreationTimestamp":{
+          "shape":"Timestamp",
+          "documentation":"<p>The time the data stream was created. Specify this value to distinguish between a deleted stream and a stream that was recreated with the same name.</p>"
+        }
+      },
+      "documentation":"<p>Filters the queues returned by <a>ListQueues</a> to those created on a particular data stream.</p>"
+    },
+    "QueueStreamFilterList":{
+      "type":"list",
+      "member":{"shape":"QueueStreamFilter"},
+      "max":10000,
+      "min":1
+    },
+    "QueueStreamIdentifier":{
+      "type":"structure",
+      "required":[
+        "StreamARN",
+        "StreamCreationTimestamp"
+      ],
+      "members":{
+        "StreamARN":{
+          "shape":"StreamARN",
+          "documentation":"<p>The ARN of the data stream.</p>"
+        },
+        "StreamCreationTimestamp":{
+          "shape":"Timestamp",
+          "documentation":"<p>The time the data stream was created.</p>"
+        }
+      },
+      "documentation":"<p>Identifies a data stream associated with a queue.</p>"
+    },
+    "QueueStreamIdentifierList":{
+      "type":"list",
+      "member":{"shape":"QueueStreamIdentifier"},
+      "max":10000,
+      "min":1
+    },
+    "QueueSummary":{
+      "type":"structure",
+      "required":[
+        "QueueName",
+        "QueueARN",
+        "QueueStatus",
+        "QueueCreationTimestamp",
+        "Streams"
+      ],
+      "members":{
+        "QueueName":{
+          "shape":"QueueName",
+          "documentation":"<p>The name of the queue.</p>"
+        },
+        "QueueARN":{
+          "shape":"QueueARN",
+          "documentation":"<p>The ARN of the queue.</p>"
+        },
+        "QueueStatus":{
+          "shape":"QueueStatus",
+          "documentation":"<p>The current status of the queue.</p>"
+        },
+        "QueueCreationTimestamp":{
+          "shape":"Timestamp",
+          "documentation":"<p>The time the queue was created.</p>"
+        },
+        "Streams":{
+          "shape":"QueueStreamIdentifierList",
+          "documentation":"<p>The data stream the queue delivers records from.</p>"
+        }
+      },
+      "documentation":"<p>A summary of a queue. Returned by <a>ListQueues</a>. To retrieve a queue's configuration attributes, use <a>DescribeQueue</a>.</p>"
+    },
+    "QueueSummaryList":{
+      "type":"list",
+      "member":{"shape":"QueueSummary"}
+    },
+    "ReceiptHandle":{
+      "type":"string",
+      "max":1024,
+      "min":1
+    },
+    "ReceiveCount":{
+      "type":"integer",
+      "min":0
+    },
+    "ReceiveDeadLetterQueueRecordsInput":{
+      "type":"structure",
+      "required":["QueueARN"],
+      "members":{
+        "QueueARN":{
+          "shape":"QueueARN",
+          "documentation":"<p>The ARN of the queue whose dead-letter records are received.</p>",
+          "contextParam":{"name":"QueueARN"}
+        },
+        "Limit":{
+          "shape":"ReceiveQueueRecordsInputLimit",
+          "documentation":"<p>The maximum number of records to return. The queue never returns more dead-letter records than this value, and might return fewer. The default is 10.</p>"
+        },
+        "WaitTimeSeconds":{
+          "shape":"ReceiveQueueRecordsWaitTimeSeconds",
+          "documentation":"<p>The duration, in seconds, that the call waits for a record to become visible before returning. The default is 9.</p>"
+        },
+        "VisibilityTimeoutSeconds":{
+          "shape":"VisibilityTimeoutSeconds",
+          "documentation":"<p>The duration, in seconds, that the records returned by this request are in flight and not visible to any consumer instance. If you do not specify this value, the queue's visibility timeout is used.</p>"
+        }
+      }
+    },
+    "ReceiveDeadLetterQueueRecordsOutput":{
+      "type":"structure",
+      "required":["QueueRecords"],
+      "members":{
+        "QueueRecords":{
+          "shape":"QueueRecordList",
+          "documentation":"<p>The dead-letter records received from the queue. This list is empty when no dead-letter records are visible.</p>"
+        }
+      }
+    },
+    "ReceiveQueueRecordsInput":{
+      "type":"structure",
+      "required":["QueueARN"],
+      "members":{
+        "QueueARN":{
+          "shape":"QueueARN",
+          "documentation":"<p>The ARN of the queue to receive records from.</p>",
+          "contextParam":{"name":"QueueARN"}
+        },
+        "Limit":{
+          "shape":"ReceiveQueueRecordsInputLimit",
+          "documentation":"<p>The maximum number of records to return. The queue never returns more records than this value, and might return fewer. The default is 10.</p>"
+        },
+        "WaitTimeSeconds":{
+          "shape":"ReceiveQueueRecordsWaitTimeSeconds",
+          "documentation":"<p>The duration, in seconds, that the call waits for a record to become visible before returning. The default is 9.</p>"
+        },
+        "VisibilityTimeoutSeconds":{
+          "shape":"VisibilityTimeoutSeconds",
+          "documentation":"<p>The duration, in seconds, that the records returned by this request are in flight and not visible to any consumer instance. If you do not specify this value, the queue's visibility timeout is used.</p>"
+        }
+      }
+    },
+    "ReceiveQueueRecordsInputLimit":{
+      "type":"integer",
+      "max":10,
+      "min":1
+    },
+    "ReceiveQueueRecordsOutput":{
+      "type":"structure",
+      "required":["QueueRecords"],
+      "members":{
+        "QueueRecords":{
+          "shape":"QueueRecordList",
+          "documentation":"<p>The records received from the queue. This list is empty when no records are visible.</p>"
+        }
+      }
+    },
+    "ReceiveQueueRecordsWaitTimeSeconds":{
+      "type":"integer",
+      "max":20,
+      "min":1
     },
     "Record":{
       "type":"structure",
@@ -2929,6 +3856,12 @@
         "STRING",
         "BYTE_ARRAY"
       ]
+    },
+    "RecordId":{
+      "type":"string",
+      "max":64,
+      "min":1,
+      "pattern":"^[a-z0-9]+$"
     },
     "RecordList":{
       "type":"list",
@@ -3000,7 +3933,7 @@
       "type":"string",
       "max":2048,
       "min":1,
-      "pattern":"arn:aws.*:kinesis:.*:\\d{12}:.*(stream|channel)/\\S+"
+      "pattern":"arn:aws.*:kinesis:.*:\\d{12}:.*(stream|channel|queue)/\\S+"
     },
     "ResourceInUseException":{
       "type":"structure",
@@ -3023,6 +3956,99 @@
       },
       "documentation":"<p>The requested resource could not be found. The stream might not be specified correctly.</p>",
       "exception":true
+    },
+    "RestoreDeadLetterQueueRecordsErrorEntry":{
+      "type":"structure",
+      "required":[
+        "ReceiptHandle",
+        "ErrorCode"
+      ],
+      "members":{
+        "ReceiptHandle":{
+          "shape":"ReceiptHandle",
+          "documentation":"<p>The receipt handle of the record that was not restored.</p>"
+        },
+        "ErrorCode":{
+          "shape":"ErrorCode",
+          "documentation":"<p>A code identifying the type of failure. One of <code>ResourceNotFoundException</code>, <code>InvalidArgumentException</code>, <code>ThrottlingException</code>, or <code>InternalFailureException</code>.</p>"
+        },
+        "ErrorMessage":{
+          "shape":"ErrorMessage",
+          "documentation":"<p>A description of the cause of the failure.</p>"
+        }
+      },
+      "documentation":"<p>A dead-letter record that was not restored, and why.</p>"
+    },
+    "RestoreDeadLetterQueueRecordsErrorEntryList":{
+      "type":"list",
+      "member":{"shape":"RestoreDeadLetterQueueRecordsErrorEntry"}
+    },
+    "RestoreDeadLetterQueueRecordsInput":{
+      "type":"structure",
+      "required":[
+        "QueueARN",
+        "Entries"
+      ],
+      "members":{
+        "QueueARN":{
+          "shape":"QueueARN",
+          "documentation":"<p>The ARN of the queue whose dead-letter records are restored.</p>",
+          "contextParam":{"name":"QueueARN"}
+        },
+        "Entries":{
+          "shape":"RestoreDeadLetterQueueRecordsRequestEntryList",
+          "documentation":"<p>The dead-letter records to restore, identified by their receipt handles.</p>"
+        }
+      }
+    },
+    "RestoreDeadLetterQueueRecordsOutput":{
+      "type":"structure",
+      "required":[
+        "Successful",
+        "Failed"
+      ],
+      "members":{
+        "Successful":{
+          "shape":"RestoreDeadLetterQueueRecordsResultEntryList",
+          "documentation":"<p>The records that were restored.</p>"
+        },
+        "Failed":{
+          "shape":"RestoreDeadLetterQueueRecordsErrorEntryList",
+          "documentation":"<p>The records that were not restored, each with the reason the entry failed.</p>"
+        }
+      }
+    },
+    "RestoreDeadLetterQueueRecordsRequestEntry":{
+      "type":"structure",
+      "required":["ReceiptHandle"],
+      "members":{
+        "ReceiptHandle":{
+          "shape":"ReceiptHandle",
+          "documentation":"<p>The receipt handle of the record to restore, as returned by <a>ReceiveDeadLetterQueueRecords</a>.</p>"
+        }
+      },
+      "documentation":"<p>A dead-letter record to restore, identified by its receipt handle.</p>"
+    },
+    "RestoreDeadLetterQueueRecordsRequestEntryList":{
+      "type":"list",
+      "member":{"shape":"RestoreDeadLetterQueueRecordsRequestEntry"},
+      "max":10,
+      "min":1
+    },
+    "RestoreDeadLetterQueueRecordsResultEntry":{
+      "type":"structure",
+      "required":["ReceiptHandle"],
+      "members":{
+        "ReceiptHandle":{
+          "shape":"ReceiptHandle",
+          "documentation":"<p>The receipt handle of the record that was restored.</p>"
+        }
+      },
+      "documentation":"<p>A dead-letter record that was restored.</p>"
+    },
+    "RestoreDeadLetterQueueRecordsResultEntryList":{
+      "type":"list",
+      "member":{"shape":"RestoreDeadLetterQueueRecordsResultEntry"}
     },
     "RetentionPeriodHours":{"type":"integer"},
     "RoleARN":{
@@ -3584,7 +4610,7 @@
         },
         "StreamModeDetails":{
           "shape":"StreamModeDetails",
-          "documentation":"<p> Specifies the capacity mode to which you want to set your data stream. Currently, in Kinesis Data Streams, you can choose between an <b>on-demand</b> ycapacity mode and a <b>provisioned</b> capacity mode for your data streams. </p>"
+          "documentation":"<p> Specifies the capacity mode to which you want to set your data stream. Currently, in Kinesis Data Streams, you can choose between an <b>on-demand</b> capacity mode and a <b>provisioned</b> capacity mode for your data streams. </p>"
         },
         "RetentionPeriodHours":{
           "shape":"RetentionPeriodHours",
@@ -3612,7 +4638,7 @@
         },
         "ConsumerCount":{
           "shape":"ConsumerCountObject",
-          "documentation":"<p>The number of enhanced fan-out consumers registered with the stream.</p>"
+          "documentation":"<p>The number of enhanced fan-out consumers registered with the stream. Queues are not included in this count, even though they share the stream's registered consumer limit with enhanced fan-out consumers. <code>QueueCount</code> reports the number of queues.</p>"
         },
         "WarmThroughput":{
           "shape":"WarmThroughputObject",
@@ -3629,6 +4655,10 @@
         "RecordDistributionStrategy":{
           "shape":"RecordDistributionStrategy",
           "documentation":"<p>The record distribution strategy that the stream currently uses. A value of <code>AUTO</code> indicates that Amazon Kinesis Data Streams distributes records across shards using service-managed algorithms. A value of <code>USER_PARTITION_KEY</code> indicates that shard placement is determined by the partition key that producers supply. This field is only present for streams that use the on-demand capacity mode.</p>"
+        },
+        "QueueCount":{
+          "shape":"QueueCountObject",
+          "documentation":"<p>The number of queues created on the data stream.</p>"
         }
       },
       "documentation":"<p>Represents the output for <a>DescribeStreamSummary</a> </p>"
@@ -3763,7 +4793,7 @@
       "members":{
         "SubscribeToShardEvent":{
           "shape":"SubscribeToShardEvent",
-          "documentation":"<p>After you call <a>SubscribeToShard</a>, Kinesis Data Streams sends events of this type to your consumer. For an example of how to handle these events, see <a href=\"/streams/latest/dev/building-enhanced-consumers-api.html\">Enhanced Fan-Out Using the Kinesis Data Streams API</a>.</p>"
+          "documentation":"<p>After you call <a>SubscribeToShard</a>, Kinesis Data Streams sends events of this type to your consumer. For an example of how to handle these events, see <a href=\"/streams/latest/dev/building-enhanced-consumers-api.html\">Develop enhanced fan-out consumers with the Amazon Web Services SDK for Java</a>.</p>"
         },
         "ResourceNotFoundException":{"shape":"ResourceNotFoundException"},
         "ResourceInUseException":{"shape":"ResourceInUseException"},
@@ -3896,6 +4926,24 @@
       "max":256,
       "min":0
     },
+    "TargetType":{
+      "type":"string",
+      "enum":[
+        "BUILT_IN",
+        "NONE"
+      ]
+    },
+    "ThrottlingException":{
+      "type":"structure",
+      "members":{
+        "message":{
+          "shape":"ErrorMessage",
+          "documentation":"<p>A message that provides information about the error.</p>"
+        }
+      },
+      "documentation":"<p>The request was denied because the request rate is too high. Reduce the frequency of your requests, and retry them with exponential backoff.</p>",
+      "exception":true
+    },
     "Timestamp":{"type":"timestamp"},
     "UntagResourceInput":{
       "type":"structure",
@@ -3972,6 +5020,106 @@
         }
       }
     },
+    "UpdateDeadLetterQueueRecordsVisibilityErrorEntry":{
+      "type":"structure",
+      "required":[
+        "ReceiptHandle",
+        "ErrorCode"
+      ],
+      "members":{
+        "ReceiptHandle":{
+          "shape":"ReceiptHandle",
+          "documentation":"<p>The receipt handle of the record whose visibility timeout was not changed.</p>"
+        },
+        "ErrorCode":{
+          "shape":"ErrorCode",
+          "documentation":"<p>A code identifying the type of failure. One of <code>ResourceNotFoundException</code>, <code>InvalidArgumentException</code>, <code>ThrottlingException</code>, or <code>InternalFailureException</code>.</p>"
+        },
+        "ErrorMessage":{
+          "shape":"ErrorMessage",
+          "documentation":"<p>A description of the cause of the failure.</p>"
+        }
+      },
+      "documentation":"<p>A dead-letter record whose visibility timeout was not changed, and why.</p>"
+    },
+    "UpdateDeadLetterQueueRecordsVisibilityErrorEntryList":{
+      "type":"list",
+      "member":{"shape":"UpdateDeadLetterQueueRecordsVisibilityErrorEntry"}
+    },
+    "UpdateDeadLetterQueueRecordsVisibilityInput":{
+      "type":"structure",
+      "required":[
+        "QueueARN",
+        "Entries"
+      ],
+      "members":{
+        "QueueARN":{
+          "shape":"QueueARN",
+          "documentation":"<p>The ARN of the queue whose dead-letter records are updated.</p>",
+          "contextParam":{"name":"QueueARN"}
+        },
+        "Entries":{
+          "shape":"UpdateDeadLetterQueueRecordsVisibilityRequestEntryList",
+          "documentation":"<p>The dead-letter records whose visibility timeout is changed, identified by their receipt handles, and the new visibility timeout for each.</p>"
+        }
+      }
+    },
+    "UpdateDeadLetterQueueRecordsVisibilityOutput":{
+      "type":"structure",
+      "required":[
+        "Successful",
+        "Failed"
+      ],
+      "members":{
+        "Successful":{
+          "shape":"UpdateDeadLetterQueueRecordsVisibilityResultEntryList",
+          "documentation":"<p>The records whose visibility timeout was changed.</p>"
+        },
+        "Failed":{
+          "shape":"UpdateDeadLetterQueueRecordsVisibilityErrorEntryList",
+          "documentation":"<p>The records whose visibility timeout was not changed, each with the reason the entry failed.</p>"
+        }
+      }
+    },
+    "UpdateDeadLetterQueueRecordsVisibilityRequestEntry":{
+      "type":"structure",
+      "required":[
+        "ReceiptHandle",
+        "VisibilityTimeoutSeconds"
+      ],
+      "members":{
+        "ReceiptHandle":{
+          "shape":"ReceiptHandle",
+          "documentation":"<p>The receipt handle of the record, as returned by <a>ReceiveDeadLetterQueueRecords</a>.</p>"
+        },
+        "VisibilityTimeoutSeconds":{
+          "shape":"VisibilityTimeoutSeconds",
+          "documentation":"<p>The new duration, in seconds, that the record is in flight and not visible to any consumer instance, measured from when this request is processed. Specify <code>0</code> to make the record visible immediately.</p>"
+        }
+      },
+      "documentation":"<p>A dead-letter record whose visibility timeout is changed, and the new visibility timeout.</p>"
+    },
+    "UpdateDeadLetterQueueRecordsVisibilityRequestEntryList":{
+      "type":"list",
+      "member":{"shape":"UpdateDeadLetterQueueRecordsVisibilityRequestEntry"},
+      "max":10,
+      "min":1
+    },
+    "UpdateDeadLetterQueueRecordsVisibilityResultEntry":{
+      "type":"structure",
+      "required":["ReceiptHandle"],
+      "members":{
+        "ReceiptHandle":{
+          "shape":"ReceiptHandle",
+          "documentation":"<p>The receipt handle of the record whose visibility timeout was changed.</p>"
+        }
+      },
+      "documentation":"<p>A dead-letter record whose visibility timeout was changed.</p>"
+    },
+    "UpdateDeadLetterQueueRecordsVisibilityResultEntryList":{
+      "type":"list",
+      "member":{"shape":"UpdateDeadLetterQueueRecordsVisibilityResultEntry"}
+    },
     "UpdateMaxRecordSizeInput":{
       "type":"structure",
       "required":["MaxRecordSizeInKiB"],
@@ -3991,6 +5139,134 @@
           "documentation":"<p>The maximum record size of a single record in KiB that you can write to, and read from a stream. Specify a value between 1024 and 10240 KiB (1 to 10 MiB). If you specify a value that is out of this range, <code>UpdateMaxRecordSize</code> sends back an <code>ValidationException</code> message.</p>"
         }
       }
+    },
+    "UpdateQueueInput":{
+      "type":"structure",
+      "required":[
+        "QueueARN",
+        "QueueAttributes"
+      ],
+      "members":{
+        "QueueARN":{
+          "shape":"QueueARN",
+          "documentation":"<p>The ARN of the queue to update.</p>",
+          "contextParam":{"name":"QueueARN"}
+        },
+        "QueueAttributes":{
+          "shape":"QueueAttributes",
+          "documentation":"<p>The configuration attributes to apply to the queue. Attributes you do not specify are left unchanged.</p>"
+        }
+      }
+    },
+    "UpdateQueueOutput":{
+      "type":"structure",
+      "required":["QueueDescription"],
+      "members":{
+        "QueueDescription":{
+          "shape":"QueueDescription",
+          "documentation":"<p>A description of the queue, including the updated attributes.</p>"
+        }
+      }
+    },
+    "UpdateQueueRecordsVisibilityErrorEntry":{
+      "type":"structure",
+      "required":[
+        "ReceiptHandle",
+        "ErrorCode"
+      ],
+      "members":{
+        "ReceiptHandle":{
+          "shape":"ReceiptHandle",
+          "documentation":"<p>The receipt handle of the record whose visibility timeout was not changed.</p>"
+        },
+        "ErrorCode":{
+          "shape":"ErrorCode",
+          "documentation":"<p>A code identifying the type of failure. One of <code>ResourceNotFoundException</code>, <code>InvalidArgumentException</code>, <code>ThrottlingException</code>, or <code>InternalFailureException</code>.</p>"
+        },
+        "ErrorMessage":{
+          "shape":"ErrorMessage",
+          "documentation":"<p>A description of the cause of the failure.</p>"
+        }
+      },
+      "documentation":"<p>A record whose visibility timeout was not changed, and why.</p>"
+    },
+    "UpdateQueueRecordsVisibilityErrorEntryList":{
+      "type":"list",
+      "member":{"shape":"UpdateQueueRecordsVisibilityErrorEntry"}
+    },
+    "UpdateQueueRecordsVisibilityInput":{
+      "type":"structure",
+      "required":[
+        "QueueARN",
+        "Entries"
+      ],
+      "members":{
+        "QueueARN":{
+          "shape":"QueueARN",
+          "documentation":"<p>The ARN of the queue the records were received from.</p>",
+          "contextParam":{"name":"QueueARN"}
+        },
+        "Entries":{
+          "shape":"UpdateQueueRecordsVisibilityRequestEntryList",
+          "documentation":"<p>The records whose visibility timeout is changed, identified by their receipt handles, and the new visibility timeout for each.</p>"
+        }
+      }
+    },
+    "UpdateQueueRecordsVisibilityOutput":{
+      "type":"structure",
+      "required":[
+        "Successful",
+        "Failed"
+      ],
+      "members":{
+        "Successful":{
+          "shape":"UpdateQueueRecordsVisibilityResultEntryList",
+          "documentation":"<p>The records whose visibility timeout was changed.</p>"
+        },
+        "Failed":{
+          "shape":"UpdateQueueRecordsVisibilityErrorEntryList",
+          "documentation":"<p>The records whose visibility timeout was not changed, each with the reason the entry failed.</p>"
+        }
+      }
+    },
+    "UpdateQueueRecordsVisibilityRequestEntry":{
+      "type":"structure",
+      "required":[
+        "ReceiptHandle",
+        "VisibilityTimeoutSeconds"
+      ],
+      "members":{
+        "ReceiptHandle":{
+          "shape":"ReceiptHandle",
+          "documentation":"<p>The receipt handle of the record, as returned by <a>ReceiveQueueRecords</a>.</p>"
+        },
+        "VisibilityTimeoutSeconds":{
+          "shape":"VisibilityTimeoutSeconds",
+          "documentation":"<p>The new duration, in seconds, that the record is in flight and not visible to any consumer instance, measured from when this request is processed. Specify <code>0</code> to make the record visible in the queue immediately.</p>"
+        }
+      },
+      "documentation":"<p>A record whose visibility timeout is changed, and the new visibility timeout.</p>"
+    },
+    "UpdateQueueRecordsVisibilityRequestEntryList":{
+      "type":"list",
+      "member":{"shape":"UpdateQueueRecordsVisibilityRequestEntry"},
+      "max":10,
+      "min":1
+    },
+    "UpdateQueueRecordsVisibilityResultEntry":{
+      "type":"structure",
+      "required":["ReceiptHandle"],
+      "members":{
+        "ReceiptHandle":{
+          "shape":"ReceiptHandle",
+          "documentation":"<p>The receipt handle of the record whose visibility timeout was changed.</p>"
+        }
+      },
+      "documentation":"<p>A record whose visibility timeout was changed.</p>"
+    },
+    "UpdateQueueRecordsVisibilityResultEntryList":{
+      "type":"list",
+      "member":{"shape":"UpdateQueueRecordsVisibilityResultEntry"}
     },
     "UpdateShardCountInput":{
       "type":"structure",
@@ -4140,8 +5416,13 @@
       "members":{
         "message":{"shape":"ErrorMessage"}
       },
-      "documentation":"<p>Specifies that you tried to invoke this API for a data stream with the on-demand capacity mode. This API is only supported for data streams with the provisioned capacity mode. </p>",
+      "documentation":"<p>The request failed validation. For example, a parameter value is not valid, a combination of parameters is not supported, or the operation is not supported for the stream's capacity mode. The error message describes the specific reason.</p>",
       "exception":true
+    },
+    "VisibilityTimeoutSeconds":{
+      "type":"integer",
+      "max":43200,
+      "min":0
     },
     "WarmThroughputObject":{
       "type":"structure",
@@ -4158,5 +5439,5 @@
       "documentation":"<p>Represents the warm throughput configuration on the stream. This is only present for On-Demand Kinesis Data Streams in accounts that have <code>MinimumThroughputBillingCommitment</code> enabled.</p>"
     }
   },
-  "documentation":"<fullname>Amazon Kinesis Data Streams Service API Reference</fullname> <p>Amazon Kinesis Data Streams is a managed service that scales elastically for real-time processing of streaming big data.</p>"
+  "documentation":"<fullname>Amazon Kinesis Data Streams Service API Reference</fullname> <p>Amazon Kinesis Data Streams is a serverless data streaming service that ingests data once and fans it out to multiple consumer applications for real-time processing.</p>"
 }

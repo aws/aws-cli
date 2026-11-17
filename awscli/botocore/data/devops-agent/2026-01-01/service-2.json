@@ -1213,6 +1213,54 @@
       },
       "readonly": true
     },
+    "GetChat": {
+      "name": "GetChat",
+      "http": {
+        "method": "GET",
+        "requestUri": "/agents/agent-space/{agentSpaceId}/chat/get/{executionId}",
+        "responseCode": 200
+      },
+      "input": {
+        "shape": "GetChatRequest"
+      },
+      "output": {
+        "shape": "GetChatResponse"
+      },
+      "errors": [
+        {
+          "shape": "ValidationException"
+        },
+        {
+          "shape": "ContentSizeExceededException"
+        },
+        {
+          "shape": "ServiceQuotaExceededException"
+        },
+        {
+          "shape": "ConflictException"
+        },
+        {
+          "shape": "InternalServerException"
+        },
+        {
+          "shape": "AccessDeniedException"
+        },
+        {
+          "shape": "ResourceNotFoundException"
+        },
+        {
+          "shape": "ThrottlingException"
+        },
+        {
+          "shape": "InvalidParameterException"
+        }
+      ],
+      "documentation": "<p>Retrieves the details of a chat execution, including its execution ID, summary, timestamps, and archive status.</p>",
+      "endpoint": {
+        "hostPrefix": "dp."
+      },
+      "readonly": true
+    },
     "GetOperatorApp": {
       "name": "GetOperatorApp",
       "http": {
@@ -2734,6 +2782,54 @@
         "hostPrefix": "dp."
       }
     },
+    "UpdateChat": {
+      "name": "UpdateChat",
+      "http": {
+        "method": "PATCH",
+        "requestUri": "/agents/agent-space/{agentSpaceId}/chat/{executionId}",
+        "responseCode": 200
+      },
+      "input": {
+        "shape": "UpdateChatRequest"
+      },
+      "output": {
+        "shape": "UpdateChatResponse"
+      },
+      "errors": [
+        {
+          "shape": "ValidationException"
+        },
+        {
+          "shape": "ContentSizeExceededException"
+        },
+        {
+          "shape": "ServiceQuotaExceededException"
+        },
+        {
+          "shape": "ConflictException"
+        },
+        {
+          "shape": "InternalServerException"
+        },
+        {
+          "shape": "AccessDeniedException"
+        },
+        {
+          "shape": "ResourceNotFoundException"
+        },
+        {
+          "shape": "ThrottlingException"
+        },
+        {
+          "shape": "InvalidParameterException"
+        }
+      ],
+      "documentation": "<p>Updates a chat execution. You can use this operation to change the chat execution's summary or to archive or unarchive it.</p><p>Archiving a chat execution hides it from the default chat list. Unarchiving a chat execution restores it to the default chat list.</p>",
+      "endpoint": {
+        "hostPrefix": "dp."
+      },
+      "idempotent": true
+    },
     "UpdateGoal": {
       "name": "UpdateGoal",
       "http": {
@@ -3874,7 +3970,9 @@
       "documentation": "<p>AWS DevOps Agent capability types representing the set of automated capabilities that can be enabled per association.</p>",
       "enum": [
         "RELEASE_READINESS_REVIEW",
-        "RELEASE_READINESS_REVIEW_AUTOMATED_TESTING"
+        "RELEASE_READINESS_REVIEW_AUTOMATED_TESTING",
+        "CODE_CHANGE_RISK_ANALYSIS",
+        "CODE_CHANGE_RISK_ANALYSIS_AUTOMATED_TESTING"
       ]
     },
     "CertificateString": {
@@ -3882,6 +3980,13 @@
       "documentation": "<p>String type for certificate or certificate chain.</p>",
       "max": 32768,
       "min": 1
+    },
+    "ChatArchiveStatus": {
+      "type": "string",
+      "enum": [
+        "ACTIVE",
+        "ARCHIVED"
+      ]
     },
     "ChatExecution": {
       "type": "structure",
@@ -3905,6 +4010,10 @@
         "summary": {
           "shape": "String",
           "documentation": "<p>Summary or title of the chat</p>"
+        },
+        "archiveStatus": {
+          "shape": "ChatArchiveStatus",
+          "documentation": "<p>Indicates whether the chat execution is archived or active.</p>"
         }
       },
       "documentation": "<p>A single chat execution summary</p>"
@@ -3947,6 +4056,10 @@
         "message": {
           "shape": "String",
           "documentation": "<p>Detailed error message describing the conflict.</p>"
+        },
+        "reason": {
+          "shape": "ConflictExceptionReason",
+          "documentation": "<p>A machine-readable reason code that explains why the request conflicted with the current state of the resource. For example, <code>CHAT_ARCHIVED</code> indicates that the request acted on a chat that is archived. This field is absent when no specific reason applies.</p>"
         }
       },
       "documentation": "<p>The request conflicts with the current state of the resource.</p>",
@@ -3955,6 +4068,12 @@
         "senderFault": true
       },
       "exception": true
+    },
+    "ConflictExceptionReason": {
+      "type": "string",
+      "enum": [
+        "CHAT_ARCHIVED"
+      ]
     },
     "ContentSizeExceededException": {
       "type": "structure",
@@ -5419,6 +5538,58 @@
       },
       "documentation": "<p>Response structure containing the requested backlog task</p>"
     },
+    "GetChatRequest": {
+      "type": "structure",
+      "required": [
+        "agentSpaceId",
+        "executionId"
+      ],
+      "members": {
+        "agentSpaceId": {
+          "shape": "AgentSpaceIdentifier",
+          "documentation": "<p>The unique identifier of the agent space that contains the chat execution.</p>",
+          "location": "uri",
+          "locationName": "agentSpaceId"
+        },
+        "executionId": {
+          "shape": "ResourceId",
+          "documentation": "<p>The unique identifier of the chat execution to retrieve.</p>",
+          "location": "uri",
+          "locationName": "executionId"
+        }
+      }
+    },
+    "GetChatResponse": {
+      "type": "structure",
+      "required": [
+        "executionId",
+        "createdAt",
+        "updatedAt",
+        "archiveStatus"
+      ],
+      "members": {
+        "executionId": {
+          "shape": "ResourceId",
+          "documentation": "<p>The unique identifier of the chat execution.</p>"
+        },
+        "summary": {
+          "shape": "String",
+          "documentation": "<p>The summary of the chat execution.</p>"
+        },
+        "createdAt": {
+          "shape": "Timestamp",
+          "documentation": "<p>The date and time at which the chat execution was created.</p>"
+        },
+        "updatedAt": {
+          "shape": "Timestamp",
+          "documentation": "<p>The date and time at which the chat execution was last updated.</p>"
+        },
+        "archiveStatus": {
+          "shape": "ChatArchiveStatus",
+          "documentation": "<p>Indicates whether the chat execution is archived or active.</p>"
+        }
+      }
+    },
     "GetOperatorAppInput": {
       "type": "structure",
       "required": [
@@ -6557,6 +6728,12 @@
           "documentation": "<p>Token for pagination</p>",
           "location": "querystring",
           "locationName": "nextToken"
+        },
+        "archiveStatus": {
+          "shape": "ChatArchiveStatus",
+          "documentation": "<p>The archive status to filter by. Use this parameter to list only archived chat executions or only active ones.</p>",
+          "location": "querystring",
+          "locationName": "archiveStatus"
         }
       },
       "documentation": "<p>Request structure for listing chats</p>"
@@ -10413,7 +10590,8 @@
         "INVESTIGATION",
         "EVALUATION",
         "RELEASE_READINESS_REVIEW",
-        "RELEASE_TESTING"
+        "RELEASE_TESTING",
+        "CODE_CHANGE_RISK_ANALYSIS"
       ]
     },
     "ThrottlingException": {
@@ -10982,6 +11160,77 @@
         }
       },
       "documentation": "<p>Response structure containing the updated task</p>"
+    },
+    "UpdateChatRequest": {
+      "type": "structure",
+      "required": [
+        "agentSpaceId",
+        "executionId"
+      ],
+      "members": {
+        "agentSpaceId": {
+          "shape": "AgentSpaceIdentifier",
+          "documentation": "<p>The unique identifier of the agent space that contains the chat execution to update.</p>",
+          "location": "uri",
+          "locationName": "agentSpaceId"
+        },
+        "executionId": {
+          "shape": "ResourceId",
+          "documentation": "<p>The unique identifier of the chat execution to update.</p>",
+          "location": "uri",
+          "locationName": "executionId"
+        },
+        "summary": {
+          "shape": "UpdateChatRequestSummaryString",
+          "documentation": "<p>The new summary to set for the chat execution.</p>"
+        },
+        "archiveStatus": {
+          "shape": "ChatArchiveStatus",
+          "documentation": "<p>The archive status to set for the chat execution. Use this parameter to archive the chat execution, hiding it from the default chat list, or to unarchive it, restoring it to the default chat list.</p>"
+        },
+        "clientToken": {
+          "shape": "UpdateChatRequestClientTokenString",
+          "documentation": "<p>A unique, case-sensitive identifier to ensure that the operation completes no more than one time. If this token matches a previous request, the service ignores the request, but does not return an error.</p>",
+          "idempotencyToken": true
+        }
+      }
+    },
+    "UpdateChatRequestClientTokenString": {
+      "type": "string",
+      "max": 64,
+      "min": 1,
+      "pattern": "[\\x21-\\x7E]+"
+    },
+    "UpdateChatRequestSummaryString": {
+      "type": "string",
+      "max": 256,
+      "min": 1
+    },
+    "UpdateChatResponse": {
+      "type": "structure",
+      "required": [
+        "executionId",
+        "updatedAt",
+        "archiveStatus"
+      ],
+      "members": {
+        "executionId": {
+          "shape": "ResourceId",
+          "documentation": "<p>The unique identifier of the updated chat execution.</p>"
+        },
+        "summary": {
+          "shape": "String",
+          "documentation": "<p>The summary of the chat execution after the update.</p>"
+        },
+        "updatedAt": {
+          "shape": "Timestamp",
+          "documentation": "<p>The date and time at which the chat execution was last updated.</p>"
+        },
+        "archiveStatus": {
+          "shape": "ChatArchiveStatus",
+          "documentation": "<p>The archive status of the chat execution after the update.</p>"
+        }
+      }
     },
     "UpdateGoalRequest": {
       "type": "structure",

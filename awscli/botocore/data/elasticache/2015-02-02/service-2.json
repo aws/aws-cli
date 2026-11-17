@@ -3270,6 +3270,10 @@
         "ConnectionType":{
           "shape":"ConnectionType",
           "documentation":"<p>The connection type for the serverless cache. Must be either <code>vpc</code> | <code>public</code>. Use <code>vpc</code> to access the cache through a VPC endpoint, or <code>public</code> to access the cache over the internet. If not specified, defaults to <code>vpc</code>. This value cannot be changed after the serverless cache is created. Setting this to <code>public</code> requires Valkey 9 or above.</p>"
+        },
+        "Integrations":{
+          "shape":"IntegrationRequestList",
+          "documentation":"<p>Which serverless cache integrations to enable. Valid values are:</p> <ul> <li> <p> <code>dynamodb</code> – DynamoDB integration.</p> </li> </ul> <p>DynamoDB integration requires the Valkey engine with a major engine version of 9 or above. If not specified, no integrations are enabled.</p>"
         }
       }
     },
@@ -4843,6 +4847,58 @@
     },
     "Integer":{"type":"integer"},
     "IntegerOptional":{"type":"integer"},
+    "Integration":{
+      "type":"structure",
+      "members":{
+        "IntegrationType":{
+          "shape":"IntegrationType",
+          "documentation":"<p>The integration type. ElastiCache supports <code>dynamodb</code>.</p>"
+        },
+        "Status":{
+          "shape":"IntegrationStatus",
+          "documentation":"<p>The current status of the integration. Valid values are:</p> <ul> <li> <p> <code>enabled</code> – The integration is enabled.</p> </li> <li> <p> <code>disabled</code> – The integration is disabled.</p> </li> </ul>"
+        }
+      },
+      "documentation":"<p>An integration configured on the serverless cache, and its current status. ElastiCache supports DynamoDB integration.</p>"
+    },
+    "IntegrationList":{
+      "type":"list",
+      "member":{
+        "shape":"Integration",
+        "locationName":"Integration"
+      }
+    },
+    "IntegrationRequest":{
+      "type":"structure",
+      "members":{
+        "IntegrationType":{
+          "shape":"IntegrationType",
+          "documentation":"<p>The integration type to enable. Must be <code>dynamodb</code>.</p>"
+        }
+      },
+      "documentation":"<p>Specifies an integration to enable on the serverless cache when you create it.</p>"
+    },
+    "IntegrationRequestList":{
+      "type":"list",
+      "member":{
+        "shape":"IntegrationRequest",
+        "locationName":"IntegrationRequest"
+      }
+    },
+    "IntegrationStatus":{
+      "type":"string",
+      "enum":[
+        "enabled",
+        "disabled",
+        "enabling",
+        "disabling",
+        "failed"
+      ]
+    },
+    "IntegrationType":{
+      "type":"string",
+      "enum":["dynamodb"]
+    },
     "InvalidARNFault":{
       "type":"structure",
       "members":{},
@@ -6994,7 +7050,7 @@
       "members":{
         "SecretArn":{
           "shape":"String",
-          "documentation":"<p>The ARN of the secret in AWS Secrets Manager that contains the credentials for authenticating with the source.</p>"
+          "documentation":"<p>The ARN of the secret in Secrets Manager that contains the credentials for authenticating with the source.</p>"
         }
       },
       "documentation":"<p>Configuration for authenticating with the source using Secrets Manager during migration.</p>"
@@ -7104,6 +7160,10 @@
         "Migration":{
           "shape":"MigrationSummary",
           "documentation":"<p>Provides a summary of the migration status for the serverless cache.</p>"
+        },
+        "Integrations":{
+          "shape":"IntegrationList",
+          "documentation":"<p>Configured integrations and their status.</p>"
         }
       },
       "documentation":"<p>The resource representing a serverless cache.</p>"

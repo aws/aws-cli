@@ -1180,7 +1180,7 @@
         {"shape":"InvalidParameterValueException"},
         {"shape":"MaxNumberOfConformancePacksExceededException"}
       ],
-      "documentation":"<p>Creates or updates a conformance pack. A conformance pack is a collection of Config rules that can be easily deployed in an account and a region and across an organization. For information on how many conformance packs you can have per account, see <a href=\"https://docs.aws.amazon.com/config/latest/developerguide/configlimits.html\"> <b>Service Limits</b> </a> in the <i>Config Developer Guide</i>.</p> <important> <p>When you use <code>PutConformancePack</code> to deploy conformance packs in your account, the operation can create Config rules and remediation actions without requiring <code>config:PutConfigRule</code> or <code>config:PutRemediationConfigurations</code> permissions in your account IAM policies.</p> <p>This API uses the <code>AWSServiceRoleForConfigConforms</code> service-linked role in your account to create conformance pack resources. This service-linked role includes the permissions to create Config rules and remediation configurations, even if your account IAM policies explicitly deny these actions.</p> </important> <p>This API creates a service-linked role <code>AWSServiceRoleForConfigConforms</code> in your account. The service-linked role is created only when the role does not exist in your account. </p> <note> <p>You must specify only one of the follow parameters: <code>TemplateS3Uri</code>, <code>TemplateBody</code> or <code>TemplateSSMDocumentDetails</code>.</p> </note> <note> <p> <b>Tags are added at creation and cannot be updated with this operation</b> </p> <p> <code>PutConformancePack</code> is an idempotent API. Subsequent requests won't create a duplicate resource if one was already created. If a following request has different <code>tags</code> values, Config will ignore these differences and treat it as an idempotent request of the previous. In this case, <code>tags</code> will not be updated, even if they are different.</p> <p>Use <a href=\"https://docs.aws.amazon.com/config/latest/APIReference/API_TagResource.html\">TagResource</a> and <a href=\"https://docs.aws.amazon.com/config/latest/APIReference/API_UntagResource.html\">UntagResource</a> to update tags after creation.</p> </note>"
+      "documentation":"<p>Creates or updates a conformance pack. A conformance pack is a collection of Config rules that can be easily deployed in an account and a region and across an organization. For information on how many conformance packs you can have per account, see <a href=\"https://docs.aws.amazon.com/config/latest/developerguide/configlimits.html\"> <b>Service Limits</b> </a> in the <i>Config Developer Guide</i>.</p> <important> <p>When you use <code>PutConformancePack</code> to deploy conformance packs in your account, the operation can create Config rules and remediation actions without requiring <code>config:PutConfigRule</code> or <code>config:PutRemediationConfigurations</code> permissions in your account IAM policies.</p> <p>This API uses the <code>AWSServiceRoleForConfigConforms</code> service-linked role in your account to create conformance pack resources. This service-linked role includes the permissions to create Config rules and remediation configurations, even if your account IAM policies explicitly deny these actions.</p> </important> <p>This API creates a service-linked role <code>AWSServiceRoleForConfigConforms</code> in your account. The service-linked role is created only when the role does not exist in your account. </p> <note> <p>For custom conformance packs, you must specify only one of <code>TemplateS3Uri</code>, <code>TemplateBody</code>, <code>TemplateSSMDocumentDetails</code>.</p> <p>For managed conformance packs, you must specify <code>Source</code>. Do not specify <code>TemplateS3Uri</code>, <code>TemplateBody</code>, <code>TemplateSSMDocumentDetails</code>, <code>DeliveryS3Bucket</code>, or <code>DeliveryS3KeyPrefix</code>.</p> </note> <note> <p> <b>Tags are added at creation and cannot be updated with this operation</b> </p> <p> <code>PutConformancePack</code> is an idempotent API. Subsequent requests won't create a duplicate resource if one was already created. If a following request has different <code>tags</code> values, Config will ignore these differences and treat it as an idempotent request of the previous. In this case, <code>tags</code> will not be updated, even if they are different.</p> <p>Use <a href=\"https://docs.aws.amazon.com/config/latest/APIReference/API_TagResource.html\">TagResource</a> and <a href=\"https://docs.aws.amazon.com/config/latest/APIReference/API_UntagResource.html\">UntagResource</a> to update tags after creation.</p> </note>"
     },
     "PutConnector":{
       "name":"PutConnector",
@@ -3013,6 +3013,18 @@
         "TemplateSSMDocumentDetails":{
           "shape":"TemplateSSMDocumentDetails",
           "documentation":"<p>An object that contains the name or Amazon Resource Name (ARN) of the Amazon Web Services Systems Manager document (SSM document) and the version of the SSM document that is used to create a conformance pack.</p>"
+        },
+        "Type":{
+          "shape":"ConformancePackType",
+          "documentation":"<p>The type of the conformance pack. Valid values:</p> <ul> <li> <p> <code>CUSTOM</code> – A custom conformance pack.</p> </li> <li> <p> <code>MANAGED</code> – A managed conformance pack.</p> </li> </ul>"
+        },
+        "Source":{
+          "shape":"ConformancePackSource",
+          "documentation":"<p>Contains the identifier of the managed conformance pack that Config deploys in your account.</p> <note> <p>This field applies only to managed conformance packs. Custom conformance packs leave it empty.</p> </note>"
+        },
+        "Scope":{
+          "shape":"ConformancePackScope",
+          "documentation":"<p>An object of type <code>ConformancePackScope</code>, which contains the tag key and optional tag value that defines which resources trigger an evaluation for the Config rules in the managed conformance pack.</p> <note> <p>Managed conformance packs with a scope populate this field. Custom conformance packs leave it empty.</p> </note>"
         }
       },
       "documentation":"<p>Returns details of a conformance pack. A conformance pack is a collection of Config rules and remediation actions that can be easily deployed in an account and a region.</p>"
@@ -3095,12 +3107,12 @@
           "documentation":"<p>Another part of the key-value pair. </p>"
         }
       },
-      "documentation":"<p>Input parameters in the form of key-value pairs for the conformance pack, both of which you define. Keys can have a maximum character length of 255 characters, and values can have a maximum length of 4096 characters.</p>"
+      "documentation":"<p>Input parameters in the form of key-value pairs for the conformance pack, both of which you define. For managed conformance packs, keys can have a maximum character length of 255 characters, and values can have a maximum length of 1024 characters. For custom conformance packs, keys can have a maximum character length of 255 characters, and values can have a maximum length of 4096 characters.</p>"
     },
     "ConformancePackInputParameters":{
       "type":"list",
       "member":{"shape":"ConformancePackInputParameter"},
-      "max":60,
+      "max":330,
       "min":0
     },
     "ConformancePackName":{
@@ -3157,12 +3169,46 @@
       "max":100,
       "min":0
     },
+    "ConformancePackScope":{
+      "type":"structure",
+      "required":["TagKey"],
+      "members":{
+        "TagKey":{
+          "shape":"TagKey",
+          "documentation":"<p>The tag key that applies to only those Amazon Web Services resources that you want to trigger an evaluation for the rules in the conformance pack. Defines the <a>Scope$TagKey</a> of all Config rules in the conformance pack. </p>"
+        },
+        "TagValue":{
+          "shape":"TagValue",
+          "documentation":"<p>The tag value that applies to only those Amazon Web Services resources that you want to trigger an evaluation for the rules in the conformance pack. If you do not specify a value for <code>TagValue</code>, resources that have the tag key <code>TagKey</code> trigger an evaluation, regardless of the tag value. Defines the <a>Scope$TagValue</a> of all Config rules in the conformance pack. </p>"
+        }
+      },
+      "documentation":"<p>Defines which resources trigger an evaluation for the Config rules in a conformance pack. The scope is a tag key, or a combination of a tag key and value, that is applied to every rule in the conformance pack. Specify a scope to constrain which resources trigger an evaluation for the rules. Otherwise, evaluations of rules in the conformance pack are triggered when any resource in your recording group changes in configuration.</p>"
+    },
+    "ConformancePackSource":{
+      "type":"structure",
+      "required":["SourceIdentifier"],
+      "members":{
+        "SourceIdentifier":{
+          "shape":"ConformancePackSourceIdentifier",
+          "documentation":"<p>A predefined identifier for a managed conformance pack. The identifier specifies which managed conformance pack Config deploys in your account.</p>"
+        }
+      },
+      "documentation":"<p>Provides the identifier of the managed conformance pack that Config deploys in your account.</p>"
+    },
+    "ConformancePackSourceIdentifier":{
+      "type":"string",
+      "max":256,
+      "min":1
+    },
     "ConformancePackState":{
       "type":"string",
       "enum":[
         "CREATE_IN_PROGRESS",
         "CREATE_COMPLETE",
         "CREATE_FAILED",
+        "UPDATE_IN_PROGRESS",
+        "UPDATE_COMPLETE",
+        "UPDATE_FAILED",
         "DELETE_IN_PROGRESS",
         "DELETE_FAILED"
       ]
@@ -3174,7 +3220,6 @@
         "ConformancePackId",
         "ConformancePackArn",
         "ConformancePackState",
-        "StackArn",
         "LastUpdateRequestedTime"
       ],
       "members":{
@@ -3192,11 +3237,11 @@
         },
         "ConformancePackState":{
           "shape":"ConformancePackState",
-          "documentation":"<p>Indicates deployment status of conformance pack.</p> <p>Config sets the state of the conformance pack to:</p> <ul> <li> <p>CREATE_IN_PROGRESS when a conformance pack creation is in progress for an account.</p> </li> <li> <p>CREATE_COMPLETE when a conformance pack has been successfully created in your account.</p> </li> <li> <p>CREATE_FAILED when a conformance pack creation failed in your account.</p> </li> <li> <p>DELETE_IN_PROGRESS when a conformance pack deletion is in progress. </p> </li> <li> <p>DELETE_FAILED when a conformance pack deletion failed in your account.</p> </li> </ul>"
+          "documentation":"<p>Indicates deployment status of conformance pack.</p> <p>Config sets the state of the conformance pack to:</p> <ul> <li> <p>CREATE_IN_PROGRESS when a conformance pack creation is in progress for an account.</p> </li> <li> <p>CREATE_COMPLETE when a conformance pack has been successfully created in your account.</p> </li> <li> <p>CREATE_FAILED when a conformance pack creation failed in your account.</p> </li> <li> <p>UPDATE_IN_PROGRESS when a conformance pack update is in progress for an account.</p> </li> <li> <p>UPDATE_COMPLETE when a conformance pack has been successfully updated in your account.</p> </li> <li> <p>UPDATE_FAILED when a conformance pack update failed in your account.</p> </li> <li> <p>DELETE_IN_PROGRESS when a conformance pack deletion is in progress. </p> </li> <li> <p>DELETE_FAILED when a conformance pack deletion failed in your account.</p> </li> </ul>"
         },
         "StackArn":{
           "shape":"StackArn",
-          "documentation":"<p>Amazon Resource Name (ARN) of CloudFormation stack. </p>"
+          "documentation":"<p>Amazon Resource Name (ARN) of CloudFormation stack. </p> <note> <p>Custom conformance packs populate this field. Managed conformance packs leave it empty.</p> </note>"
         },
         "ConformancePackStatusReason":{
           "shape":"ConformancePackStatusReason",
@@ -3209,6 +3254,10 @@
         "LastUpdateCompletedTime":{
           "shape":"Date",
           "documentation":"<p>Last time when conformation pack creation and update was successful.</p>"
+        },
+        "Type":{
+          "shape":"ConformancePackType",
+          "documentation":"<p>The type of the conformance pack. Valid values:</p> <ul> <li> <p> <code>CUSTOM</code> – A custom conformance pack.</p> </li> <li> <p> <code>MANAGED</code> – A managed conformance pack.</p> </li> </ul>"
         }
       },
       "documentation":"<p>Status details of a conformance pack.</p>"
@@ -3229,6 +3278,19 @@
       "members":{},
       "documentation":"<p>You have specified a template that is not valid or supported.</p>",
       "exception":true
+    },
+    "ConformancePackType":{
+      "type":"string",
+      "enum":[
+        "CUSTOM",
+        "MANAGED"
+      ]
+    },
+    "ConformancePackTypeList":{
+      "type":"list",
+      "member":{"shape":"ConformancePackType"},
+      "max":2,
+      "min":1
     },
     "Connector":{
       "type":"structure",
@@ -4160,6 +4222,10 @@
           "shape":"ConformancePackNamesList",
           "documentation":"<p>Comma-separated list of conformance pack names.</p>"
         },
+        "Filters":{
+          "shape":"DescribeConformancePacksFilters",
+          "documentation":"<p>Returns a filtered list of custom or managed conformance pack statuses. By default, if the filter is not defined, Config returns details for all your conformance packs.</p>"
+        },
         "Limit":{
           "shape":"PageSizeLimit",
           "documentation":"<p>The maximum number of conformance packs status returned on each page.</p>"
@@ -4183,12 +4249,26 @@
         }
       }
     },
+    "DescribeConformancePacksFilters":{
+      "type":"structure",
+      "members":{
+        "Types":{
+          "shape":"ConformancePackTypeList",
+          "documentation":"<p>Filters results by conformance pack type. Valid values:</p> <ul> <li> <p> <code>CUSTOM</code> – A custom conformance pack.</p> </li> <li> <p> <code>MANAGED</code> – A managed conformance pack.</p> </li> </ul> <p>If you specify both values, Config returns conformance packs of either type.</p>"
+        }
+      },
+      "documentation":"<p>Filters for filtering results from <a>DescribeConformancePacks</a> and <a>DescribeConformancePackStatus</a> by conformance pack type.</p>"
+    },
     "DescribeConformancePacksRequest":{
       "type":"structure",
       "members":{
         "ConformancePackNames":{
           "shape":"ConformancePackNamesList",
           "documentation":"<p>Comma-separated list of conformance pack names for which you want details. If you do not specify any names, Config returns details for all your conformance packs. </p>"
+        },
+        "Filters":{
+          "shape":"DescribeConformancePacksFilters",
+          "documentation":"<p>Returns a filtered list of custom or managed conformance packs. By default, if the filter is not defined, Config returns details for all your conformance packs.</p>"
         },
         "Limit":{
           "shape":"PageSizeLimit",
@@ -6957,7 +7037,7 @@
         },
         "ConformancePackInputParameters":{
           "shape":"ConformancePackInputParameters",
-          "documentation":"<p>A list of <code>ConformancePackInputParameter</code> objects.</p>"
+          "documentation":"<p>A list of <code>ConformancePackInputParameter</code> objects. Custom conformance packs can have at most 60 input parameters. Managed conformance packs can have at most 330 input parameters.</p>"
         },
         "TemplateSSMDocumentDetails":{
           "shape":"TemplateSSMDocumentDetails",
@@ -6966,6 +7046,14 @@
         "Tags":{
           "shape":"TagsList",
           "documentation":"<p>The tags for the conformance pack. Each tag consists of a key and an optional value, both of which you define.</p>"
+        },
+        "Source":{
+          "shape":"ConformancePackSource",
+          "documentation":"<p>An object of type <code>ConformancePackSource</code>, which contains the identifier of the managed conformance pack that you want to deploy. If you specify a source, Config creates a managed conformance pack. Managed conformance packs are predefined collections of Config rules that are created and maintained by Amazon Web Services.</p> <note> <p>If you specify a source, you cannot specify <code>TemplateS3Uri</code>, <code>TemplateBody</code>, <code>TemplateSSMDocumentDetails</code>, <code>DeliveryS3Bucket</code>, or <code>DeliveryS3KeyPrefix</code>. You cannot convert an existing conformance pack between a managed conformance pack and a custom conformance pack. You also cannot change the source of an existing managed conformance pack.</p> </note>"
+        },
+        "Scope":{
+          "shape":"ConformancePackScope",
+          "documentation":"<p>An object of type <code>ConformancePackScope</code> that defines which resources can trigger an evaluation for Config rules in the conformance pack. The scope can include a tag key and optional tag value. Specify a scope to constrain the resources that can trigger an evaluation for rules in the conformance pack. If you do not specify a scope, all rules in the conformance pack are unscoped.</p> <note> <p>This field is optional and is supported only for managed conformance packs. If you specify a scope, you must also specify <code>Source</code>.</p> </note>"
         }
       }
     },

@@ -244,6 +244,25 @@
       "documentation":"<p>Deletes the code signing configuration. You can delete the code signing configuration only if no function is using it. </p>",
       "idempotent":true
     },
+    "DeleteDurableExecution":{
+      "name":"DeleteDurableExecution",
+      "http":{
+        "method":"DELETE",
+        "requestUri":"/2025-12-01/durable-executions/{DurableExecutionArn}",
+        "responseCode":202
+      },
+      "input":{"shape":"DeleteDurableExecutionRequest"},
+      "output":{"shape":"DeleteDurableExecutionResponse"},
+      "errors":[
+        {"shape":"InvalidParameterValueException"},
+        {"shape":"ResourceConflictException"},
+        {"shape":"ServiceException"},
+        {"shape":"TooManyRequestsException"},
+        {"shape":"ResourceNotFoundException"}
+      ],
+      "documentation":"<p>Deletes a completed Lambda <a href=\"https://docs.aws.amazon.com/lambda/latest/dg/durable-functions.html\">durable execution</a> and its data. The execution must be in a terminal state (<code>SUCCEEDED</code>, <code>FAILED</code>, <code>STOPPED</code>, or <code>TIMED_OUT</code>). Otherwise, this operation returns a <code>ResourceConflictException</code>.</p> <p>The execution has <code>DELETING</code> status until the deletion finishes. For more information, see <a href=\"https://docs.aws.amazon.com/lambda/latest/dg/durable-delete.html\">Deleting durable executions</a>.</p>",
+      "idempotent":true
+    },
     "DeleteEventSourceMapping":{
       "name":"DeleteEventSourceMapping",
       "http":{
@@ -1250,6 +1269,29 @@
       "documentation":"<p>Returns a list of <a href=\"https://docs.aws.amazon.com/lambda/latest/dg/versioning-aliases.html\">versions</a> of a Lambda Event Function, with the version-specific configuration of each. Lambda returns up to 50 versions per call.</p>",
       "readonly":true
     },
+    "PauseDurableExecution":{
+      "name":"PauseDurableExecution",
+      "http":{
+        "method":"POST",
+        "requestUri":"/2025-12-01/durable-executions/{DurableExecutionArn}/pause",
+        "responseCode":202
+      },
+      "input":{"shape":"PauseDurableExecutionRequest"},
+      "output":{"shape":"PauseDurableExecutionResponse"},
+      "errors":[
+        {"shape":"InvalidParameterValueException"},
+        {"shape":"KMSInvalidStateException"},
+        {"shape":"ResourceConflictException"},
+        {"shape":"ServiceException"},
+        {"shape":"TooManyRequestsException"},
+        {"shape":"KMSNotFoundException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"KMSAccessDeniedException"},
+        {"shape":"KMSDisabledException"}
+      ],
+      "documentation":"<p>Pauses a running <a href=\"https://docs.aws.amazon.com/lambda/latest/dg/durable-functions.html\">durable execution</a>. While an execution is paused, Lambda doesn't invoke your function, but pending operations such as waits and callbacks continue to complete.</p> <p>If an invocation is in progress, the execution status changes to <code>PAUSING</code> until the invocation reaches its next checkpoint, and then changes to <code>PAUSED</code>. This operation returns a successful response while the execution status is still <code>RUNNING</code>, and the status changes when Lambda processes the request. For more information about pausing executions, see <a href=\"https://docs.aws.amazon.com/lambda/latest/dg/durable-pause-resume.html\">Pausing and resuming durable executions</a>.</p>",
+      "idempotent":true
+    },
     "PublishLayerVersion":{
       "name":"PublishLayerVersion",
       "http":{
@@ -1475,6 +1517,29 @@
       ],
       "documentation":"<p>Revokes function-use permission from an Amazon Web Services service or another Amazon Web Services account. You can get the ID of the statement from the output of <a>GetPolicy</a>.</p>"
     },
+    "ResumeDurableExecution":{
+      "name":"ResumeDurableExecution",
+      "http":{
+        "method":"POST",
+        "requestUri":"/2025-12-01/durable-executions/{DurableExecutionArn}/resume",
+        "responseCode":202
+      },
+      "input":{"shape":"ResumeDurableExecutionRequest"},
+      "output":{"shape":"ResumeDurableExecutionResponse"},
+      "errors":[
+        {"shape":"InvalidParameterValueException"},
+        {"shape":"KMSInvalidStateException"},
+        {"shape":"ResourceConflictException"},
+        {"shape":"ServiceException"},
+        {"shape":"TooManyRequestsException"},
+        {"shape":"KMSNotFoundException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"KMSAccessDeniedException"},
+        {"shape":"KMSDisabledException"}
+      ],
+      "documentation":"<p>Resumes a paused <a href=\"https://docs.aws.amazon.com/lambda/latest/dg/durable-functions.html\">durable execution</a>. If the pause interrupted an invocation, or an operation completed while the execution was paused, Lambda invokes your function. Otherwise, the execution continues to wait for its pending operations.</p> <p>If the execution status is <code>PAUSING</code>, this operation cancels the pause, and the in-progress invocation continues. This operation returns a successful response while the execution status is still <code>PAUSED</code> or <code>PAUSING</code>, and the status changes to <code>RUNNING</code> when Lambda processes the request. For more information about resuming executions, see <a href=\"https://docs.aws.amazon.com/lambda/latest/dg/durable-pause-resume.html\">Pausing and resuming durable executions</a>.</p>",
+      "idempotent":true
+    },
     "SendDurableExecutionCallbackFailure":{
       "name":"SendDurableExecutionCallbackFailure",
       "http":{
@@ -1556,7 +1621,7 @@
         {"shape":"KMSAccessDeniedException"},
         {"shape":"KMSDisabledException"}
       ],
-      "documentation":"<p>Stops a running <a href=\"https://docs.aws.amazon.com/lambda/latest/dg/durable-functions.html\">durable execution</a>. The execution transitions to STOPPED status and cannot be resumed. Any in-progress operations are terminated.</p>"
+      "documentation":"<p>Stops a running or paused <a href=\"https://docs.aws.amazon.com/lambda/latest/dg/durable-functions.html\">durable execution</a>. The execution transitions to STOPPED status and cannot be resumed. Any in-progress operations are terminated.</p>"
     },
     "TagResource":{
       "name":"TagResource",
@@ -3413,6 +3478,28 @@
       "type":"structure",
       "members":{}
     },
+    "DeleteDurableExecutionRequest":{
+      "type":"structure",
+      "required":["DurableExecutionArn"],
+      "members":{
+        "DurableExecutionArn":{
+          "shape":"DurableExecutionArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the durable execution.</p>",
+          "location":"uri",
+          "locationName":"DurableExecutionArn"
+        }
+      }
+    },
+    "DeleteDurableExecutionResponse":{
+      "type":"structure",
+      "required":["DeletionRequestTimestamp"],
+      "members":{
+        "DeletionRequestTimestamp":{
+          "shape":"ExecutionTimestamp",
+          "documentation":"<p>The timestamp when Lambda accepted the deletion request (ISO 8601 format).</p>"
+        }
+      }
+    },
     "DeleteEventSourceMappingRequest":{
       "type":"structure",
       "required":["UUID"],
@@ -4032,6 +4119,14 @@
         "InvocationCompletedDetails":{
           "shape":"InvocationCompletedDetails",
           "documentation":"<p>Details about a function invocation that completed.</p>"
+        },
+        "ExecutionPausedDetails":{
+          "shape":"ExecutionPausedDetails",
+          "documentation":"<p>The details of an <code>ExecutionPaused</code> event.</p>"
+        },
+        "ExecutionResumedDetails":{
+          "shape":"ExecutionResumedDetails",
+          "documentation":"<p>The details of an <code>ExecutionResumed</code> event.</p>"
         }
       },
       "documentation":"<p>An event that occurred during the execution of a durable function.</p>"
@@ -4069,6 +4164,20 @@
       },
       "documentation":"<p>Input information for an event.</p>"
     },
+    "EventPauseReason":{
+      "type":"structure",
+      "members":{
+        "Payload":{
+          "shape":"PauseReason",
+          "documentation":"<p>The reason that you provided when you paused the execution. This field is only present if you set <code>IncludeExecutionData</code> to <code>true</code> in the request.</p>"
+        },
+        "Truncated":{
+          "shape":"Truncated",
+          "documentation":"<p>Specifies whether Lambda omitted the reason from the response because <code>IncludeExecutionData</code> is <code>false</code>.</p>"
+        }
+      },
+      "documentation":"<p>The reason for pausing a durable execution, as recorded in the execution history.</p>"
+    },
     "EventResult":{
       "type":"structure",
       "members":{
@@ -4082,6 +4191,20 @@
         }
       },
       "documentation":"<p>Result information for an event.</p>"
+    },
+    "EventResumeReason":{
+      "type":"structure",
+      "members":{
+        "Payload":{
+          "shape":"ResumeReason",
+          "documentation":"<p>The reason that you provided when you resumed the execution. This field is only present if you set <code>IncludeExecutionData</code> to <code>true</code> in the request.</p>"
+        },
+        "Truncated":{
+          "shape":"Truncated",
+          "documentation":"<p>Specifies whether Lambda omitted the reason from the response because <code>IncludeExecutionData</code> is <code>false</code>.</p>"
+        }
+      },
+      "documentation":"<p>The reason for resuming a durable execution, as recorded in the execution history.</p>"
     },
     "EventSourceMappingArn":{
       "type":"string",
@@ -4313,7 +4436,9 @@
         "CallbackSucceeded",
         "CallbackFailed",
         "CallbackTimedOut",
-        "InvocationCompleted"
+        "InvocationCompleted",
+        "ExecutionPaused",
+        "ExecutionResumed"
       ]
     },
     "Events":{
@@ -4392,6 +4517,43 @@
       },
       "documentation":"<p>Details about a failed <a href=\"https://docs.aws.amazon.com/lambda/latest/dg/durable-functions.html\">durable execution</a>.</p>"
     },
+    "ExecutionPausedDetails":{
+      "type":"structure",
+      "required":[
+        "PauseRequestTimestamp",
+        "ExecutionTimeoutPaused"
+      ],
+      "members":{
+        "PauseRequestTimestamp":{
+          "shape":"ExecutionTimestamp",
+          "documentation":"<p>The date and time when you requested the pause, in <a href=\"https://www.w3.org/TR/NOTE-datetime\">ISO-8601 format</a> (YYYY-MM-DDThh:mm:ss.sTZD).</p>"
+        },
+        "Reason":{
+          "shape":"EventPauseReason",
+          "documentation":"<p>The reason that you provided when you paused the execution.</p>"
+        },
+        "ExecutionTimeoutPaused":{
+          "shape":"ExecutionTimeoutPaused",
+          "documentation":"<p>Specifies whether the pause also paused the execution timeout.</p>"
+        }
+      },
+      "documentation":"<p>Details about a <a href=\"https://docs.aws.amazon.com/lambda/latest/dg/durable-functions.html\">durable execution</a> that paused. The event timestamp is when the execution paused.</p>"
+    },
+    "ExecutionResumedDetails":{
+      "type":"structure",
+      "required":["ResumeRequestTimestamp"],
+      "members":{
+        "ResumeRequestTimestamp":{
+          "shape":"ExecutionTimestamp",
+          "documentation":"<p>The date and time when you requested the resume, in <a href=\"https://www.w3.org/TR/NOTE-datetime\">ISO-8601 format</a> (YYYY-MM-DDThh:mm:ss.sTZD).</p>"
+        },
+        "Reason":{
+          "shape":"EventResumeReason",
+          "documentation":"<p>The reason that you provided when you resumed the execution.</p>"
+        }
+      },
+      "documentation":"<p>Details about a <a href=\"https://docs.aws.amazon.com/lambda/latest/dg/durable-functions.html\">durable execution</a> that resumed. The event timestamp is when the execution resumed.</p>"
+    },
     "ExecutionStartedDetails":{
       "type":"structure",
       "required":[
@@ -4417,7 +4579,10 @@
         "SUCCEEDED",
         "FAILED",
         "TIMED_OUT",
-        "STOPPED"
+        "STOPPED",
+        "DELETING",
+        "PAUSING",
+        "PAUSED"
       ]
     },
     "ExecutionStatusList":{
@@ -4463,6 +4628,10 @@
       "box":true,
       "max":31622400,
       "min":1
+    },
+    "ExecutionTimeoutPaused":{
+      "type":"boolean",
+      "box":true
     },
     "ExecutionTimestamp":{"type":"timestamp"},
     "FileSystemArn":{
@@ -5228,7 +5397,7 @@
         },
         "Status":{
           "shape":"ExecutionStatus",
-          "documentation":"<p>The current status of the durable execution. Valid values are <code>RUNNING</code>, <code>SUCCEEDED</code>, <code>FAILED</code>, <code>TIMED_OUT</code>, and <code>STOPPED</code>.</p>"
+          "documentation":"<p>The durable execution has one of the following statuses:</p> <ul> <li> <p> <code>RUNNING</code> – The execution is running or waiting for pending operations to complete.</p> </li> <li> <p> <code>PAUSING</code> – The execution is waiting for an in-progress invocation to reach its next checkpoint before it pauses.</p> </li> <li> <p> <code>PAUSED</code> – The execution is paused, and Lambda doesn't invoke your function.</p> </li> <li> <p> <code>SUCCEEDED</code> – The execution completed successfully.</p> </li> <li> <p> <code>FAILED</code> – The execution completed with an error.</p> </li> <li> <p> <code>TIMED_OUT</code> – The execution exceeded its execution timeout.</p> </li> <li> <p> <code>STOPPED</code> – A <code>StopDurableExecution</code> request stopped the execution.</p> </li> <li> <p> <code>DELETING</code> – A <code>DeleteDurableExecution</code> request is deleting the execution and its data.</p> </li> </ul>"
         },
         "EndTimestamp":{
           "shape":"ExecutionTimestamp",
@@ -5249,6 +5418,14 @@
         "DurableConfig":{
           "shape":"DurableConfig",
           "documentation":"<p>Configuration settings for the durable execution, including execution timeout, retention period for execution history, and an optional ARN of the Key Management Service (KMS) customer managed key that is used to encrypt your durable execution's payload data, including input, output, and error payloads.</p>"
+        },
+        "PauseDetails":{
+          "shape":"PauseDetails",
+          "documentation":"<p>The details of the pause, including when you requested it and whether it pauses the execution timeout. This field is only present when the execution status is <code>PAUSING</code> or <code>PAUSED</code>.</p>"
+        },
+        "ExpectedExecutionTimeoutTimestamp":{
+          "shape":"ExecutionTimestamp",
+          "documentation":"<p>The date and time when the durable execution will time out, in Unix timestamp format. This value includes any extension from time the execution spent paused. While the execution is paused with its execution timeout paused, this value is 366 days after the start time. This field isn't present for completed executions.</p>"
         }
       },
       "documentation":"<p>The response from the GetDurableExecution operation, containing detailed information about the durable execution.</p>"
@@ -6831,7 +7008,7 @@
         },
         "Statuses":{
           "shape":"ExecutionStatusList",
-          "documentation":"<p>Filter executions by status. Valid values: RUNNING, SUCCEEDED, FAILED, TIMED_OUT, STOPPED.</p>",
+          "documentation":"<p>Filters the executions by status. Specify one of the following values:</p> <ul> <li> <p> <code>RUNNING</code> – The execution is running or waiting for pending operations to complete.</p> </li> <li> <p> <code>PAUSING</code> – The execution is waiting for an in-progress invocation to reach its next checkpoint before it pauses.</p> </li> <li> <p> <code>PAUSED</code> – The execution is paused, and Lambda doesn't invoke your function.</p> </li> <li> <p> <code>SUCCEEDED</code> – The execution completed successfully.</p> </li> <li> <p> <code>FAILED</code> – The execution completed with an error.</p> </li> <li> <p> <code>TIMED_OUT</code> – The execution exceeded its execution timeout.</p> </li> <li> <p> <code>STOPPED</code> – A <code>StopDurableExecution</code> request stopped the execution.</p> </li> <li> <p> <code>DELETING</code> – A <code>DeleteDurableExecution</code> request is deleting the execution and its data.</p> </li> </ul>",
           "location":"querystring",
           "locationName":"Statuses"
         },
@@ -7782,6 +7959,63 @@
       "min":0,
       "pattern":"[\\s\\S]*"
     },
+    "PauseDetails":{
+      "type":"structure",
+      "required":[
+        "PauseRequestTimestamp",
+        "ExecutionTimeoutPaused"
+      ],
+      "members":{
+        "PauseRequestTimestamp":{
+          "shape":"ExecutionTimestamp",
+          "documentation":"<p>The date and time when you requested the pause, in <a href=\"https://www.w3.org/TR/NOTE-datetime\">ISO-8601 format</a> (YYYY-MM-DDThh:mm:ss.sTZD).</p>"
+        },
+        "Reason":{
+          "shape":"PauseReason",
+          "documentation":"<p>The reason that you provided when you paused the execution. This field is only present if you set <code>IncludeExecutionData</code> to <code>true</code> in the request.</p>"
+        },
+        "ExecutionTimeoutPaused":{
+          "shape":"ExecutionTimeoutPaused",
+          "documentation":"<p>Specifies whether the pause also pauses the execution timeout.</p>"
+        }
+      },
+      "documentation":"<p>Details about a <a href=\"https://docs.aws.amazon.com/lambda/latest/dg/durable-functions.html\">durable execution</a> that is pausing or paused.</p>"
+    },
+    "PauseDurableExecutionRequest":{
+      "type":"structure",
+      "required":["DurableExecutionArn"],
+      "members":{
+        "DurableExecutionArn":{
+          "shape":"DurableExecutionArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the durable execution.</p>",
+          "location":"uri",
+          "locationName":"DurableExecutionArn"
+        },
+        "ClientToken":{
+          "shape":"ClientToken",
+          "documentation":"<p>A unique, case-sensitive identifier that you provide so that the request completes no more than one time. If you repeat a request with the same client token and parameters within 15 minutes, Lambda doesn't pause the execution again and returns a successful response instead of an error.</p>",
+          "idempotencyToken":true
+        },
+        "Reason":{
+          "shape":"PauseReason",
+          "documentation":"<p>A description of why you're pausing the execution. Lambda records the reason in the execution history.</p>"
+        },
+        "ExecutionTimeoutPaused":{
+          "shape":"ExecutionTimeoutPaused",
+          "documentation":"<p>Specifies whether to pause the execution timeout while the execution is paused. If <code>true</code>, Lambda extends the execution timeout by the time the execution spends paused. An execution with a paused timeout still times out 366 days after it started. The default value is <code>true</code>.</p>"
+        }
+      }
+    },
+    "PauseDurableExecutionResponse":{
+      "type":"structure",
+      "members":{}
+    },
+    "PauseReason":{
+      "type":"string",
+      "max":1024,
+      "min":0,
+      "sensitive":true
+    },
     "PerExecutionEnvironmentMaxConcurrency":{
       "type":"integer",
       "box":true,
@@ -8602,6 +8836,37 @@
         "RequestResponse",
         "DryRun"
       ]
+    },
+    "ResumeDurableExecutionRequest":{
+      "type":"structure",
+      "required":["DurableExecutionArn"],
+      "members":{
+        "DurableExecutionArn":{
+          "shape":"DurableExecutionArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the durable execution.</p>",
+          "location":"uri",
+          "locationName":"DurableExecutionArn"
+        },
+        "ClientToken":{
+          "shape":"ClientToken",
+          "documentation":"<p>A unique, case-sensitive identifier that you provide so that the request completes no more than one time. If you repeat a request with the same client token and parameters within 15 minutes, Lambda doesn't resume the execution again and returns a successful response instead of an error.</p>",
+          "idempotencyToken":true
+        },
+        "Reason":{
+          "shape":"ResumeReason",
+          "documentation":"<p>A description of why you're resuming the execution. Lambda records the reason in the execution history.</p>"
+        }
+      }
+    },
+    "ResumeDurableExecutionResponse":{
+      "type":"structure",
+      "members":{}
+    },
+    "ResumeReason":{
+      "type":"string",
+      "max":1024,
+      "min":0,
+      "sensitive":true
     },
     "RetentionPeriodInDays":{
       "type":"integer",
@@ -10208,7 +10473,7 @@
           "documentation":"<p>The duration to wait, in seconds.</p>"
         }
       },
-      "documentation":"<p>Specifies how long to pause the durable execution.</p>"
+      "documentation":"<p>Specifies how long the durable execution waits.</p>"
     },
     "WaitOptionsWaitSecondsInteger":{
       "type":"integer",

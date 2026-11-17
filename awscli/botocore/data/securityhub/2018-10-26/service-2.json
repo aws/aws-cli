@@ -17224,7 +17224,8 @@
       "type":"string",
       "enum":[
         "Azure",
-        "AWS"
+        "AWS",
+        "GCP"
       ]
     },
     "CloudWatchLogsLogGroupArnConfigDetails":{
@@ -17533,7 +17534,8 @@
       "enum":[
         "JIRA_CLOUD",
         "SERVICENOW",
-        "AZURE"
+        "AZURE",
+        "GCP"
       ]
     },
     "ConnectorStatus":{
@@ -18182,14 +18184,16 @@
     "CriticalitySourceList":{
       "type":"list",
       "member":{"shape":"CriticalitySource"},
-      "max":3
+      "max":5
     },
     "CriticalitySourceType":{
       "type":"string",
       "enum":[
         "AutomationRule",
         "ResourceName",
-        "TagInference"
+        "TagInference",
+        "CloudWatchTelemetryInference",
+        "InstalledSoftwareAndPackageInference"
       ]
     },
     "CrossAccountMaxResults":{
@@ -18200,7 +18204,10 @@
     "CspmConnectorProviderName":{
       "type":"string",
       "documentation":"<p>The name of the cloud provider for a CSPM connector.</p>",
-      "enum":["AZURE"]
+      "enum":[
+        "AZURE",
+        "GCP"
+      ]
     },
     "CspmConnectorStatus":{
       "type":"string",
@@ -18296,9 +18303,13 @@
         "Azure":{
           "shape":"AzureProviderConfiguration",
           "documentation":"<p>The Azure provider configuration.</p>"
+        },
+        "GCP":{
+          "shape":"GcpProviderConfiguration",
+          "documentation":"<p>The GCP provider configuration.</p>"
         }
       },
-      "documentation":"<p>The cloud provider configuration for creating a connector. This is a union type that currently supports Azure.</p>",
+      "documentation":"<p>The cloud provider configuration for creating a connector. This is a union type that currently supports Azure and GCP.</p>",
       "union":true
     },
     "CspmProviderDetail":{
@@ -18307,9 +18318,13 @@
         "Azure":{
           "shape":"AzureDetail",
           "documentation":"<p>The Azure provider detail.</p>"
+        },
+        "GCP":{
+          "shape":"GcpDetail",
+          "documentation":"<p>The GCP provider detail.</p>"
         }
       },
-      "documentation":"<p>The detailed cloud provider configuration for a connector. This is a union type that currently supports Azure.</p>",
+      "documentation":"<p>The detailed cloud provider configuration for a connector. This is a union type that currently supports Azure and GCP.</p>",
       "union":true
     },
     "CspmProviderSummary":{
@@ -18336,9 +18351,13 @@
         "Azure":{
           "shape":"AzureUpdateConfiguration",
           "documentation":"<p>The Azure update configuration.</p>"
+        },
+        "GCP":{
+          "shape":"GcpUpdateConfiguration",
+          "documentation":"<p>The GCP update configuration.</p>"
         }
       },
-      "documentation":"<p>The cloud provider configuration for updating a connector. This is a union type that currently supports Azure.</p>",
+      "documentation":"<p>The cloud provider configuration for updating a connector. This is a union type that currently supports Azure and GCP.</p>",
       "union":true
     },
     "CustomDataIdentifiersDetections":{
@@ -18915,7 +18934,7 @@
         },
         "Providers":{
           "shape":"StandardsProviders",
-          "documentation":"<p>A list of cloud providers to filter the standards by. For example, specify <code>Azure</code> to return only standards that evaluate Azure resources.</p>",
+          "documentation":"<p>A list of cloud providers to filter the standards by. For example, specify <code>Azure</code> to return only standards that evaluate Azure resources, or <code>GCP</code> to return only standards that evaluate GCP resources.</p>",
           "location":"querystring",
           "locationName":"Providers"
         }
@@ -20030,6 +20049,109 @@
         "SECURITY_HUB_V2_MULTI_CLOUD_AZURE"
       ]
     },
+    "GcpDetail":{
+      "type":"structure",
+      "required":[
+        "AWSConfigConnectorArn",
+        "ScopeConfiguration",
+        "GCPRegions"
+      ],
+      "members":{
+        "AWSConfigConnectorArn":{
+          "shape":"NonEmptyString",
+          "documentation":"<p>The ARN of the multi-cloud configuration connector used to establish the connection to GCP.</p>"
+        },
+        "ScopeConfiguration":{
+          "shape":"GcpScopeConfiguration",
+          "documentation":"<p>The scope configuration that defines which GCP resources are monitored.</p>"
+        },
+        "GCPRegions":{
+          "shape":"GcpRegionList",
+          "documentation":"<p>The list of GCP regions being monitored.</p>"
+        }
+      },
+      "documentation":"<p>The detailed GCP configuration for a connector.</p>"
+    },
+    "GcpProviderConfiguration":{
+      "type":"structure",
+      "required":[
+        "AWSConfigConnectorArn",
+        "ScopeConfiguration",
+        "GCPRegions"
+      ],
+      "members":{
+        "AWSConfigConnectorArn":{
+          "shape":"NonEmptyString",
+          "documentation":"<p>The ARN of the multi-cloud configuration connector used to establish the connection to GCP.</p>"
+        },
+        "ScopeConfiguration":{
+          "shape":"GcpScopeConfiguration",
+          "documentation":"<p>The scope configuration that defines which GCP resources are monitored.</p>"
+        },
+        "GCPRegions":{
+          "shape":"GcpRegionList",
+          "documentation":"<p>The list of GCP regions to monitor.</p>"
+        }
+      },
+      "documentation":"<p>The configuration for connecting to a GCP environment.</p>"
+    },
+    "GcpRegionList":{
+      "type":"list",
+      "member":{
+        "shape":"NonEmptyString",
+        "documentation":"<p>A GCP region.</p>"
+      },
+      "documentation":"<p>A list of GCP regions.</p>",
+      "max":256,
+      "min":1
+    },
+    "GcpResourceDetails":{
+      "type":"structure",
+      "members":{},
+      "documentation":"<p>Details about a GCP resource that is related to a finding. This field is a JSON object that contains provider-specific resource details.</p>",
+      "document":true
+    },
+    "GcpScopeConfiguration":{
+      "type":"structure",
+      "required":["ScopeType"],
+      "members":{
+        "ScopeType":{
+          "shape":"GcpScopeType",
+          "documentation":"<p>The type of scope. Valid values are <code>ORGANIZATION</code> and <code>PROJECT</code>.</p>"
+        },
+        "ScopeValues":{
+          "shape":"ScopeValueList",
+          "documentation":"<p>The list of scope values. Use an organization ID when the scope type is <code>ORGANIZATION</code>, or project IDs when the scope type is <code>PROJECT</code>.</p>"
+        }
+      },
+      "documentation":"<p>The scope configuration for a GCP connector, defining the organization or project scope.</p>"
+    },
+    "GcpScopeType":{
+      "type":"string",
+      "documentation":"<p>The type of scope for a GCP connector. Valid values are <code>ORGANIZATION</code> (monitor all projects in the organization) and <code>PROJECT</code> (monitor specific projects).</p>",
+      "enum":[
+        "PROJECT",
+        "ORGANIZATION"
+      ]
+    },
+    "GcpUpdateConfiguration":{
+      "type":"structure",
+      "required":[
+        "ScopeConfiguration",
+        "GCPRegions"
+      ],
+      "members":{
+        "ScopeConfiguration":{
+          "shape":"GcpScopeConfiguration",
+          "documentation":"<p>The updated scope configuration.</p>"
+        },
+        "GCPRegions":{
+          "shape":"GcpRegionList",
+          "documentation":"<p>The updated list of GCP regions to monitor.</p>"
+        }
+      },
+      "documentation":"<p>The configuration for updating a GCP connector's scope and regions.</p>"
+    },
     "GenerateRecommendedPolicyV2Request":{
       "type":"structure",
       "required":["MetadataUid"],
@@ -20417,7 +20539,7 @@
         },
         "Providers":{
           "shape":"StandardsProviders",
-          "documentation":"<p>A list of cloud providers to filter the enabled standards by. For example, specify <code>Azure</code> to return only enabled standards that evaluate Azure resources.</p>"
+          "documentation":"<p>A list of cloud providers to filter the enabled standards by. For example, specify <code>Azure</code> to return only enabled standards that evaluate Azure resources, or <code>GCP</code> to return only enabled standards that evaluate GCP resources.</p>"
         }
       }
     },
@@ -22393,7 +22515,7 @@
         },
         "Providers":{
           "shape":"SecurityControlsProviders",
-          "documentation":"<p>A list of cloud providers to filter the security control definitions by. For example, specify <code>Azure</code> to return only controls that evaluate Azure resources.</p>",
+          "documentation":"<p>A list of cloud providers to filter the security control definitions by. For example, specify <code>Azure</code> to return only controls that evaluate Azure resources, or <code>GCP</code> to return only controls that evaluate GCP resources.</p>",
           "location":"querystring",
           "locationName":"Providers"
         }
@@ -23708,6 +23830,10 @@
         "Azure":{
           "shape":"AzureProviderConfiguration",
           "documentation":"<p>The configuration settings required to establish a CSPM integration with Microsoft Azure.</p>"
+        },
+        "GCP":{
+          "shape":"GcpProviderConfiguration",
+          "documentation":"<p>The configuration settings required to establish a CSPM integration with Google Cloud Platform (GCP).</p>"
         }
       },
       "documentation":"<p>The initial configuration settings required to establish an integration between Security Hub and third-party provider.</p>",
@@ -23727,6 +23853,10 @@
         "Azure":{
           "shape":"AzureDetail",
           "documentation":"<p>Details about a Microsoft Azure CSPM integration.</p>"
+        },
+        "GCP":{
+          "shape":"GcpDetail",
+          "documentation":"<p>Details about a Google Cloud Platform (GCP) CSPM integration.</p>"
         }
       },
       "documentation":"<p>The third-party provider detail for a service configuration.</p>",
@@ -23761,6 +23891,10 @@
         "Azure":{
           "shape":"AzureUpdateConfiguration",
           "documentation":"<p>The parameters required to update the configuration for a Microsoft Azure CSPM integration.</p>"
+        },
+        "GCP":{
+          "shape":"GcpUpdateConfiguration",
+          "documentation":"<p>The parameters required to update the configuration for a Google Cloud Platform (GCP) CSPM integration.</p>"
         }
       },
       "documentation":"<p>The parameters required to update the configuration of an integration provider.</p>",
@@ -24982,6 +25116,10 @@
         "AzureResource":{
           "shape":"AzureResourceDetails",
           "documentation":"<p>Details about an Azure resource that is related to a finding.</p>"
+        },
+        "GcpResource":{
+          "shape":"GcpResourceDetails",
+          "documentation":"<p>Details about a GCP resource that is related to a finding.</p>"
         }
       },
       "documentation":"<p>Additional details about a resource related to a finding.</p> <p>To provide the details, use the object that corresponds to the resource type. For example, if the resource type is <code>AwsEc2Instance</code>, then you use the <code>AwsEc2Instance</code> object to provide the details.</p> <p>If the type-specific object does not contain all of the fields you want to populate, then you use the <code>Other</code> object to populate those additional fields.</p> <p>You also use the <code>Other</code> object to populate the details when the selected type does not have a corresponding object.</p>"
@@ -26150,7 +26288,7 @@
         },
         "Provider":{
           "shape":"SecurityControlsProvider",
-          "documentation":"<p>The cloud provider whose resources the security control evaluates. For example, <code>AWS</code> or <code>Azure</code>.</p>"
+          "documentation":"<p>The cloud provider whose resources the security control evaluates. For example, <code>AWS</code>, <code>Azure</code>, or <code>GCP</code>.</p>"
         }
       },
       "documentation":"<p> A security control in Security Hub CSPM describes a security best practice related to a specific resource. </p>"
@@ -26218,7 +26356,7 @@
         },
         "Provider":{
           "shape":"SecurityControlsProvider",
-          "documentation":"<p>The cloud provider whose resources the security control evaluates. For example, <code>AWS</code> or <code>Azure</code>.</p>"
+          "documentation":"<p>The cloud provider whose resources the security control evaluates. For example, <code>AWS</code>, <code>Azure</code>, or <code>GCP</code>.</p>"
         }
       },
       "documentation":"<p> Provides metadata for a security control, including its unique standard-agnostic identifier, title, description, severity, availability in Amazon Web Services Regions, and a link to remediation steps. </p>"
@@ -26275,7 +26413,8 @@
       "type":"string",
       "enum":[
         "AWS",
-        "Azure"
+        "Azure",
+        "GCP"
       ]
     },
     "SecurityControlsProviders":{
@@ -26928,7 +27067,7 @@
         },
         "Provider":{
           "shape":"StandardsProvider",
-          "documentation":"<p>The cloud provider whose resources the standard evaluates. For example, <code>AWS</code> or <code>Azure</code>.</p>"
+          "documentation":"<p>The cloud provider whose resources the standard evaluates. For example, <code>AWS</code>, <code>Azure</code>, or <code>GCP</code>.</p>"
         },
         "StandardsManagedBy":{
           "shape":"StandardsManagedBy",
@@ -27186,7 +27325,8 @@
       "type":"string",
       "enum":[
         "AWS",
-        "Azure"
+        "Azure",
+        "GCP"
       ]
     },
     "StandardsProviders":{
@@ -27249,7 +27389,7 @@
         },
         "Provider":{
           "shape":"StandardsProvider",
-          "documentation":"<p>The cloud provider whose resources the standard evaluates. For example, <code>AWS</code> or <code>Azure</code>.</p>"
+          "documentation":"<p>The cloud provider whose resources the standard evaluates. For example, <code>AWS</code>, <code>Azure</code>, or <code>GCP</code>.</p>"
         }
       },
       "documentation":"<p>A resource that represents your subscription to a supported standard.</p>"

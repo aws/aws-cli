@@ -19150,6 +19150,18 @@
         "Tags":{
           "shape":"TagMap",
           "documentation":"<p>The tags used to organize, track, or control access for this resource. For example, { \"Tags\": {\"key1\":\"value1\", \"key2\":\"value2\"} }.</p>"
+        },
+        "ItemEnablementStatus":{
+          "shape":"EvaluationEnablementStatusMap",
+          "documentation":"<p>A map of item (section or question) identifiers to their enablement status, computed by the service from each item's conditional enablement configuration. Disabled items are excluded from scoring. Valid values: <code>ENABLED</code> | <code>DISABLED</code>.</p>"
+        },
+        "SourceResolutionStatus":{
+          "shape":"EvaluationItemResolutionStatus",
+          "documentation":"<p>The aggregate status of resolving the external source data (such as Contact Lens analysis and AI metrics) that is used by conditional enablement in the evaluation. Source data is resolved asynchronously after the evaluation is started. While a source is pending or after it fails to resolve, conditions that depend on it evaluate to the item's <code>DefaultAction</code>. Valid values:</p> <ul> <li> <p> <code>PENDING</code> - One or more sources have not been resolved yet. Call <code>DescribeContactEvaluation</code> again to get updated <code>ItemEnablementStatus</code> values.</p> </li> <li> <p> <code>RESOLVED</code> - All sources have been resolved.</p> </li> <li> <p> <code>FAILED</code> - One or more sources could not be resolved. Dependent conditions use the item's <code>DefaultAction</code>.</p> </li> </ul>"
+        },
+        "SourceValues":{
+          "shape":"EvaluationResolvedSourceList",
+          "documentation":"<p>The resolved values of the external sources (such as contact data, evaluation metadata, form metadata, and AI metrics) that are used by the conditions in the evaluation form. You can use these values to evaluate the conditions against the current answers without calling <code>DescribeContactEvaluation</code> again.</p>"
         }
       },
       "documentation":"<p>Information about a contact evaluation.</p>"
@@ -19327,6 +19339,19 @@
       },
       "documentation":"<p>Information about a contact participant in the evaluation.</p>"
     },
+    "EvaluationEnablementStatus":{
+      "type":"string",
+      "enum":[
+        "ENABLED",
+        "DISABLED"
+      ]
+    },
+    "EvaluationEnablementStatusMap":{
+      "type":"map",
+      "key":{"shape":"ReferenceId"},
+      "value":{"shape":"EvaluationEnablementStatus"},
+      "max":100
+    },
     "EvaluationForm":{
       "type":"structure",
       "required":[
@@ -19488,6 +19513,21 @@
       "type":"list",
       "member":{"shape":"EvaluationFormAIVersionSummary"}
     },
+    "EvaluationFormAiMetricsField":{
+      "type":"string",
+      "enum":[
+        "AI_SESSION_IS_HANDED_OFF",
+        "AI_SESSION_SELF_SERVICE_DURATION",
+        "AI_SESSION_GOAL_SUCCESS_RATE",
+        "AI_SESSION_COMPLETENESS_SCORE",
+        "AI_SESSION_FAITHFULNESS_SCORE",
+        "AI_AGENT_MAX_PROMPT_LATENCY",
+        "AI_TOOL_MAX_LATENCY",
+        "AI_TOOL_SELECTION_ACCURACY",
+        "AI_TOOL_PARAMETER_ACCURACY",
+        "AI_TOOL_UTILIZATION_ACCURACY"
+      ]
+    },
     "EvaluationFormAutoEvaluationConfiguration":{
       "type":"structure",
       "required":["Enabled"],
@@ -19498,6 +19538,37 @@
         }
       },
       "documentation":"<p>The automatic evaluation configuration of an evaluation form.</p>"
+    },
+    "EvaluationFormContactAttributeKey":{
+      "type":"string",
+      "max":32767,
+      "min":1
+    },
+    "EvaluationFormContactField":{
+      "type":"string",
+      "enum":[
+        "CATEGORIES",
+        "AGENT_ARN",
+        "QUEUE_ARN",
+        "ROUTING_PROFILE_ARN",
+        "CHANNEL",
+        "INITIATION_METHOD",
+        "IS_QUEUED",
+        "OVERALL_CUSTOMER_SENTIMENT_SCORE",
+        "OVERALL_AGENT_SENTIMENT_SCORE",
+        "CUSTOMER_SENTIMENT_SCORE_WITHOUT_AGENT",
+        "CUSTOMER_SENTIMENT_SCORE_WITH_AGENT",
+        "NON_TALK_TIME",
+        "NON_TALK_TIME_PERCENTAGE",
+        "NUMBER_OF_INTERRUPTIONS",
+        "CONTACT_DURATION",
+        "AGENT_INTERACTION_DURATION",
+        "CUSTOMER_HOLD_TIME",
+        "LONGEST_HOLD_DURATION",
+        "NUMBER_OF_HOLDS",
+        "AGENT_INTERACTION_AND_HOLD_DURATION",
+        "RECORDING_MEDIA_STREAM_TYPES"
+      ]
     },
     "EvaluationFormContent":{
       "type":"structure",
@@ -19561,6 +19632,17 @@
       "documentation":"<p>Information about an evaluation form used in a contact evaluation.</p>"
     },
     "EvaluationFormDescription":{"type":"string"},
+    "EvaluationFormEnablementBooleanValue":{"type":"boolean"},
+    "EvaluationFormEnablementNumericValue":{"type":"double"},
+    "EvaluationFormEnablementStringValue":{
+      "type":"string",
+      "max":512,
+      "min":0
+    },
+    "EvaluationFormEvaluationMetadataField":{
+      "type":"string",
+      "enum":["EVALUATION_TYPE"]
+    },
     "EvaluationFormId":{
       "type":"string",
       "max":256,
@@ -19598,7 +19680,7 @@
         },
         "Operator":{
           "shape":"EvaluationFormItemEnablementOperator",
-          "documentation":"<p>The operator to be used to be applied to operands if more than one provided. </p>"
+          "documentation":"<p>The operator to apply to the operands when more than one operand is provided.</p>"
         }
       },
       "documentation":"<p>A condition for item enablement.</p>"
@@ -19635,11 +19717,11 @@
         },
         "Action":{
           "shape":"EvaluationFormItemEnablementAction",
-          "documentation":"<p>An enablement action that if condition is satisfied. </p>"
+          "documentation":"<p>The enablement action to apply if the condition is satisfied.</p>"
         },
         "DefaultAction":{
           "shape":"EvaluationFormItemEnablementAction",
-          "documentation":"<p>An enablement action that if condition is not satisfied. </p>"
+          "documentation":"<p>The enablement action to apply if the condition is not satisfied. This action is also applied when the condition depends on an external source that is still pending or could not be resolved.</p>"
         }
       },
       "documentation":"<p>An item enablement configuration.</p>"
@@ -19662,7 +19744,7 @@
         },
         "Comparator":{
           "shape":"EvaluationFormItemSourceValuesComparator",
-          "documentation":"<p>A comparator to be used against list of values. </p>"
+          "documentation":"<p>A comparator to be used against a list of values. <code>IN</code>, <code>NOT_IN</code>, <code>ALL_IN</code>, and <code>EXACT</code> compare sets of values. <code>GREATER_THAN</code>, <code>LESS_THAN</code>, <code>GREATER_THAN_OR_EQUAL_TO</code>, and <code>LESS_THAN_OR_EQUAL_TO</code> compare a single numeric or date and time value. <code>EQUAL_TO</code> and <code>NOT_EQUAL_TO</code> compare a single value.</p>"
         }
       },
       "documentation":"<p>An expression that defines a basic building block of conditional enablement.</p>"
@@ -19680,18 +19762,44 @@
       "members":{
         "Type":{
           "shape":"EvaluationFormItemEnablementSourceType",
-          "documentation":"<p>A type of source item. </p>"
+          "documentation":"<p>A type of source item. Valid values:</p> <ul> <li> <p> <code>QUESTION_REF_ID</code> - The answer to another question in the evaluation form.</p> </li> <li> <p> <code>CONTACT</code> - Data from the evaluated contact.</p> </li> <li> <p> <code>EVALUATION_METADATA</code> - Metadata of the evaluation, such as the evaluation type.</p> </li> <li> <p> <code>AI_METRICS</code> - Metrics about AI agents, AI sessions, and AI tools on the contact.</p> </li> </ul>"
         },
         "RefId":{
           "shape":"ReferenceId",
-          "documentation":"<p>A referenceId of the source item.</p>"
+          "documentation":"<p>A referenceId of the source item. Use when <code>Type</code> is <code>QUESTION_REF_ID</code>.</p>"
+        },
+        "ContactField":{
+          "shape":"EvaluationFormContactField",
+          "documentation":"<p>The contact field to use as the source, such as <code>CHANNEL</code>, <code>QUEUE_ARN</code>, <code>OVERALL_CUSTOMER_SENTIMENT_SCORE</code>, or <code>RECORDING_MEDIA_STREAM_TYPES</code>. Use when <code>Type</code> is <code>CONTACT</code>.</p>"
+        },
+        "ContactAttributeKey":{
+          "shape":"EvaluationFormContactAttributeKey",
+          "documentation":"<p>The key of the contact attribute to use as the source. Use when <code>Type</code> is <code>CONTACT</code>.</p>"
+        },
+        "SegmentAttributeKey":{
+          "shape":"EvaluationFormSegmentAttributeKey",
+          "documentation":"<p>The key of the contact segment attribute to use as the source. Use when <code>Type</code> is <code>CONTACT</code>.</p>"
+        },
+        "EvaluationMetadataField":{
+          "shape":"EvaluationFormEvaluationMetadataField",
+          "documentation":"<p>The evaluation metadata field to use as the source. Use when <code>Type</code> is <code>EVALUATION_METADATA</code>.</p>"
+        },
+        "AiMetricsField":{
+          "shape":"EvaluationFormAiMetricsField",
+          "documentation":"<p>The AI metrics field to use as the source. Use when <code>Type</code> is <code>AI_METRICS</code>.</p>"
         }
       },
       "documentation":"<p>An enablement expression source item.</p>"
     },
     "EvaluationFormItemEnablementSourceType":{
       "type":"string",
-      "enum":["QUESTION_REF_ID"]
+      "enum":[
+        "QUESTION_REF_ID",
+        "CONTACT",
+        "EVALUATION_METADATA",
+        "FORM_METADATA",
+        "AI_METRICS"
+      ]
     },
     "EvaluationFormItemEnablementSourceValue":{
       "type":"structure",
@@ -19699,14 +19807,32 @@
       "members":{
         "Type":{
           "shape":"EvaluationFormItemEnablementSourceValueType",
-          "documentation":"<p>A type of source item value. </p>"
+          "documentation":"<p>A type of source item value. Valid values: <code>OPTION_REF_ID</code> | <code>STRING_VALUE</code> | <code>NUMERIC_VALUE</code> | <code>BOOLEAN_VALUE</code> | <code>DATETIME_VALUE</code>.</p>"
         },
         "RefId":{
           "shape":"ReferenceId",
-          "documentation":"<p>A referenceId of the source value.</p>"
+          "documentation":"<p>A referenceId of the source value. Use when <code>Type</code> is <code>OPTION_REF_ID</code>.</p>"
+        },
+        "StringValue":{
+          "shape":"EvaluationFormEnablementStringValue",
+          "documentation":"<p>A string value to compare against the source. Use when <code>Type</code> is <code>STRING_VALUE</code>.</p>"
+        },
+        "NumericValue":{
+          "shape":"EvaluationFormEnablementNumericValue",
+          "documentation":"<p>A numeric value to compare against the source. Use when <code>Type</code> is <code>NUMERIC_VALUE</code>.</p>",
+          "box":true
+        },
+        "BooleanValue":{
+          "shape":"EvaluationFormEnablementBooleanValue",
+          "documentation":"<p>A Boolean value to compare against the source. Use when <code>Type</code> is <code>BOOLEAN_VALUE</code>.</p>",
+          "box":true
+        },
+        "DateTimeValue":{
+          "shape":"Timestamp",
+          "documentation":"<p>A date and time value to compare against the source. Use when <code>Type</code> is <code>DATETIME_VALUE</code>.</p>"
         }
       },
-      "documentation":"<p>An enablement expression source value.</p>"
+      "documentation":"<p>An enablement expression source value. Provide only the value member that matches the specified <code>Type</code>.</p>"
     },
     "EvaluationFormItemEnablementSourceValueList":{
       "type":"list",
@@ -19714,7 +19840,13 @@
     },
     "EvaluationFormItemEnablementSourceValueType":{
       "type":"string",
-      "enum":["OPTION_REF_ID"]
+      "enum":[
+        "OPTION_REF_ID",
+        "STRING_VALUE",
+        "NUMERIC_VALUE",
+        "BOOLEAN_VALUE",
+        "DATETIME_VALUE"
+      ]
     },
     "EvaluationFormItemSourceValuesComparator":{
       "type":"string",
@@ -19722,7 +19854,13 @@
         "IN",
         "NOT_IN",
         "ALL_IN",
-        "EXACT"
+        "EXACT",
+        "GREATER_THAN",
+        "LESS_THAN",
+        "GREATER_THAN_OR_EQUAL_TO",
+        "LESS_THAN_OR_EQUAL_TO",
+        "EQUAL_TO",
+        "NOT_EQUAL_TO"
       ]
     },
     "EvaluationFormItemWeight":{"type":"double"},
@@ -19890,7 +20028,10 @@
           "shape":"ReferenceIdList",
           "documentation":"<p>Reference IDs of default options.</p>"
         },
-        "AnswerSource":{"shape":"EvaluationFormQuestionAutomationAnswerSource"}
+        "AnswerSource":{
+          "shape":"EvaluationFormQuestionAutomationAnswerSource",
+          "documentation":"<p>Automation answer source.</p>"
+        }
       },
       "documentation":"<p>Automation configuration for multi-select questions.</p>"
     },
@@ -20112,7 +20253,7 @@
       "members":{
         "SourceType":{
           "shape":"EvaluationFormQuestionAutomationAnswerSourceType",
-          "documentation":"<p>The automation answer source type.</p>"
+          "documentation":"<p>The automation answer source type. Valid values:</p> <ul> <li> <p> <code>CONTACT_LENS_DATA</code> - The answer is based on Contact Lens data, such as rule categories and metrics.</p> </li> <li> <p> <code>GEN_AI</code> - The answer is generated by generative AI.</p> </li> <li> <p> <code>CONDITION</code> - The answer is determined by evaluating the conditions defined in the automation rules of the question.</p> </li> </ul>"
         }
       },
       "documentation":"<p>A question automation answer.</p>"
@@ -20121,7 +20262,8 @@
       "type":"string",
       "enum":[
         "CONTACT_LENS_DATA",
-        "GEN_AI"
+        "GEN_AI",
+        "CONDITION"
       ]
     },
     "EvaluationFormQuestionInstructions":{"type":"string"},
@@ -20402,11 +20544,20 @@
         "ScoreThresholds":{
           "shape":"EvaluationFormScoreThresholdList",
           "documentation":"<p>The score thresholds for performance categories.</p>"
+        },
+        "Enablement":{
+          "shape":"EvaluationFormItemEnablementConfiguration",
+          "documentation":"<p>The conditional enablement configuration of the section. Sections use the same enablement model as questions.</p>"
         }
       },
       "documentation":"<p>Information about a section from an evaluation form. A section can contain sections and/or questions. Evaluation forms can only contain sections and subsections (two level nesting).</p>"
     },
     "EvaluationFormSectionTitle":{"type":"string"},
+    "EvaluationFormSegmentAttributeKey":{
+      "type":"string",
+      "max":128,
+      "min":1
+    },
     "EvaluationFormSingleSelectQuestionAutomation":{
       "type":"structure",
       "members":{
@@ -20431,6 +20582,10 @@
         "RuleCategory":{
           "shape":"SingleSelectQuestionRuleCategoryAutomation",
           "documentation":"<p>The automation option based on a rule category for the single select question.</p>"
+        },
+        "AutomationRule":{
+          "shape":"SingleSelectQuestionAutomationRule",
+          "documentation":"<p>The automation option based on a condition for the single select question. Use with the <code>CONDITION</code> answer source type.</p>"
         }
       },
       "documentation":"<p>Information about the automation option of a single select question.</p>",
@@ -20755,6 +20910,14 @@
       "documentation":"<p>An analysis for a generative AI answer to the question.</p>"
     },
     "EvaluationId":{"type":"string"},
+    "EvaluationItemResolutionStatus":{
+      "type":"string",
+      "enum":[
+        "PENDING",
+        "RESOLVED",
+        "FAILED"
+      ]
+    },
     "EvaluationMetadata":{
       "type":"structure",
       "required":[
@@ -20845,7 +21008,8 @@
       "type":"string",
       "enum":[
         "CONTACT_LENS_DATA",
-        "GEN_AI"
+        "GEN_AI",
+        "CONDITION"
       ]
     },
     "EvaluationQuestionInputDetails":{
@@ -20857,6 +21021,38 @@
         }
       },
       "documentation":"<p>Details of the input data used for automated question processing.</p>"
+    },
+    "EvaluationResolvedSource":{
+      "type":"structure",
+      "required":[
+        "Source",
+        "Status"
+      ],
+      "members":{
+        "Source":{
+          "shape":"EvaluationFormItemEnablementSource",
+          "documentation":"<p>The external source, such as contact data, evaluation metadata, form metadata, or AI metrics.</p>"
+        },
+        "Status":{
+          "shape":"EvaluationItemResolutionStatus",
+          "documentation":"<p>The status of resolving the source. Valid values:</p> <ul> <li> <p> <code>PENDING</code> - The source has not been resolved yet.</p> </li> <li> <p> <code>RESOLVED</code> - The source has been resolved.</p> </li> <li> <p> <code>FAILED</code> - The source could not be resolved.</p> </li> </ul>"
+        },
+        "Values":{
+          "shape":"EvaluationResolvedSourceValueList",
+          "documentation":"<p>The resolved values of the source. Present when <code>Status</code> is <code>RESOLVED</code>. Contains one value for a single-valued source, any number of values for a multi-valued source, and no values when the source is not present on the contact.</p>"
+        }
+      },
+      "documentation":"<p>The resolved value of an external source that is used by the conditions in an evaluation form.</p>"
+    },
+    "EvaluationResolvedSourceList":{
+      "type":"list",
+      "member":{"shape":"EvaluationResolvedSource"},
+      "max":100
+    },
+    "EvaluationResolvedSourceValueList":{
+      "type":"list",
+      "member":{"shape":"EvaluationFormItemEnablementSourceValue"},
+      "max":100
     },
     "EvaluationReviewConfiguration":{
       "type":"structure",
@@ -21240,7 +21436,7 @@
         },
         "AnalysisType":{
           "shape":"EvaluationQuestionAnswerAnalysisType",
-          "documentation":"<p>Type of analysis used to provide suggested answer.</p>"
+          "documentation":"<p>Type of analysis used to provide suggested answer. Valid values: <code>CONTACT_LENS_DATA</code> | <code>GEN_AI</code> | <code>CONDITION</code>.</p>"
         },
         "AnalysisDetails":{
           "shape":"EvaluationQuestionAnswerAnalysisDetails",
@@ -29210,7 +29406,16 @@
         "CUSTOMER_HOLD_TIME",
         "LONGEST_HOLD_DURATION",
         "NUMBER_OF_HOLDS",
-        "AGENT_INTERACTION_AND_HOLD_DURATION"
+        "AGENT_INTERACTION_AND_HOLD_DURATION",
+        "AI_SESSION_SELF_SERVICE_DURATION",
+        "AI_SESSION_GOAL_SUCCESS_RATE",
+        "AI_SESSION_COMPLETENESS_SCORE",
+        "AI_SESSION_FAITHFULNESS_SCORE",
+        "AI_AGENT_MAX_PROMPT_LATENCY",
+        "AI_TOOL_MAX_LATENCY",
+        "AI_TOOL_SELECTION_ACCURACY",
+        "AI_TOOL_PARAMETER_ACCURACY",
+        "AI_TOOL_UTILIZATION_ACCURACY"
       ]
     },
     "NumericQuestionPropertyValueAutomation":{
@@ -29222,7 +29427,7 @@
           "documentation":"<p>The property label of the automation.</p>"
         }
       },
-      "documentation":"<p>Information about the property value used in automation of a numeric questions. Label values are associated with minimum and maximum values for the numeric question.</p> <ul> <li> <p>Sentiment scores have a minimum value of -5 and maximum value of 5.</p> </li> <li> <p> Duration labels, such as <code>NON_TALK_TIME</code>, <code>CONTACT_DURATION</code>, <code>AGENT_INTERACTION_DURATION</code>, <code>CUSTOMER_HOLD_TIME</code> have a minimum value of 0 and maximum value of 63072000.</p> </li> <li> <p>Percentages have a minimum value of 0 and maximum value of 100. </p> </li> <li> <p> <code>NUMBER_OF_INTERRUPTIONS</code> has a minimum value of 0 and maximum value of 1000.</p> </li> </ul>"
+      "documentation":"<p>Information about the property value used in automation of a numeric question. Label values are associated with minimum and maximum values for the numeric question.</p> <ul> <li> <p>Sentiment scores have a minimum value of -5 and maximum value of 5.</p> </li> <li> <p> Duration labels, such as <code>NON_TALK_TIME</code>, <code>CONTACT_DURATION</code>, <code>AGENT_INTERACTION_DURATION</code>, <code>CUSTOMER_HOLD_TIME</code> have a minimum value of 0 and maximum value of 63072000.</p> </li> <li> <p>Percentages have a minimum value of 0 and maximum value of 100. </p> </li> <li> <p> <code>NUMBER_OF_INTERRUPTIONS</code> has a minimum value of 0 and maximum value of 1000.</p> </li> </ul>"
     },
     "ObservationSummary":{
       "type":"structure",
@@ -35706,6 +35911,24 @@
     "SingleSelectOptions":{
       "type":"list",
       "member":{"shape":"TaskTemplateSingleSelectOption"}
+    },
+    "SingleSelectQuestionAutomationRule":{
+      "type":"structure",
+      "required":[
+        "Condition",
+        "OptionRefId"
+      ],
+      "members":{
+        "Condition":{
+          "shape":"EvaluationFormItemEnablementCondition",
+          "documentation":"<p>The condition that must be satisfied for the answer option to be selected. The condition uses the same sources, comparators, and operators as item enablement conditions.</p>"
+        },
+        "OptionRefId":{
+          "shape":"ReferenceId",
+          "documentation":"<p>The identifier of the answer option to select when the condition is satisfied.</p>"
+        }
+      },
+      "documentation":"<p>Information about a condition-based automation rule for a single select question. When the condition is satisfied, the specified answer option is selected.</p>"
     },
     "SingleSelectQuestionRuleCategoryAutomation":{
       "type":"structure",

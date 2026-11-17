@@ -102,7 +102,7 @@
       },
       "input":{"shape":"AcceptVpcPeeringConnectionRequest"},
       "output":{"shape":"AcceptVpcPeeringConnectionResult"},
-      "documentation":"<p>Accept a VPC peering connection request. To accept a request, the VPC peering connection must be in the <code>pending-acceptance</code> state, and you must be the owner of the peer VPC. Use <a>DescribeVpcPeeringConnections</a> to view your outstanding VPC peering connection requests.</p> <p>For an inter-Region VPC peering connection request, you must accept the VPC peering connection in the Region of the accepter VPC.</p>"
+      "documentation":"<p>Accept a VPC peering connection request. To accept a request, the VPC peering connection must be in the <code>pending-acceptance</code> state, and you must be the owner of the peer VPC. Use <a>DescribeVpcPeeringConnections</a> to view your outstanding VPC peering connection requests.</p> <p>For an inter-Region VPC peering connection request, you must accept the VPC peering connection in the Region of the accepter VPC.</p> <p>If the requester allows multipath resilience, accepting the request also allows multipath resilience for the accepter VPC, and the <code>multipathResilienceStatus</code> of the VPC peering connection becomes <code>enabled</code>. Additional charges apply. For more information, see <a href=\"http://aws.amazon.com/vpc/pricing/\">Amazon VPC pricing</a>. To stop allowing multipath resilience for the accepter VPC, use <a>ModifyVpcPeeringConnectionOptions</a> and set <code>AllowMultipathResilience</code> to <code>false</code>.</p>"
     },
     "AdvertiseByoipCidr":{
       "name":"AdvertiseByoipCidr",
@@ -1766,7 +1766,7 @@
       },
       "input":{"shape":"CreateVpcPeeringConnectionRequest"},
       "output":{"shape":"CreateVpcPeeringConnectionResult"},
-      "documentation":"<p>Requests a VPC peering connection between two VPCs: a requester VPC that you own and an accepter VPC with which to create the connection. The accepter VPC can belong to another Amazon Web Services account and can be in a different Region to the requester VPC. The requester VPC and accepter VPC cannot have overlapping CIDR blocks.</p> <note> <p>Limitations and rules apply to a VPC peering connection. For more information, see the <a href=\"https://docs.aws.amazon.com/vpc/latest/peering/vpc-peering-basics.html#vpc-peering-limitations\">VPC peering limitations</a> in the <i>VPC Peering Guide</i>.</p> </note> <p>The owner of the accepter VPC must accept the peering request to activate the peering connection. The VPC peering connection request expires after 7 days, after which it cannot be accepted or rejected.</p> <p>If you create a VPC peering connection request between VPCs with overlapping CIDR blocks, the VPC peering connection has a status of <code>failed</code>.</p>"
+      "documentation":"<p>Requests a VPC peering connection between two VPCs: a requester VPC that you own and an accepter VPC with which to create the connection. The accepter VPC can belong to another Amazon Web Services account and can be in a different Region to the requester VPC. The requester VPC and accepter VPC cannot have overlapping CIDR blocks.</p> <note> <p>Limitations and rules apply to a VPC peering connection. For more information, see the <a href=\"https://docs.aws.amazon.com/vpc/latest/peering/vpc-peering-basics.html#vpc-peering-limitations\">VPC peering limitations</a> in the <i>VPC Peering Guide</i>.</p> </note> <p>The owner of the accepter VPC must accept the peering request to activate the peering connection. The VPC peering connection request expires after 7 days, after which it cannot be accepted or rejected.</p> <p>Multipath resilience replicates the traffic of an inter-Region VPC peering connection across multiple network paths.</p> <p>If you create a VPC peering connection request between VPCs with overlapping CIDR blocks, the VPC peering connection has a status of <code>failed</code>.</p>"
     },
     "CreateVpnConcentrator":{
       "name":"CreateVpnConcentrator",
@@ -7164,6 +7164,16 @@
       "output":{"shape":"ModifyTransitGatewayNetworkFunctionAttachmentResult"},
       "documentation":"<p>Adds Availability Zones to or removes Availability Zones from the specified network function attachment. The attachment must be in the <code>available</code> state. You must specify at least one Availability Zone to add or remove, and the attachment must keep at least one Availability Zone.</p> <p>Adding an Availability Zone provisions a new Gateway Load Balancer endpoint in that Availability Zone. If the endpoint service doesn't automatically accept connection requests, the endpoint service owner must accept the endpoint connection for each Availability Zone that you add.</p>"
     },
+    "ModifyTransitGatewayPeeringAttachment":{
+      "name":"ModifyTransitGatewayPeeringAttachment",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"ModifyTransitGatewayPeeringAttachmentRequest"},
+      "output":{"shape":"ModifyTransitGatewayPeeringAttachmentResult"},
+      "documentation":"<p>Modifies the options for a transit gateway peering attachment. The peering attachment must be in the <code>available</code> state.</p> <p>You can allow multipath resilience for your side of an inter-Region transit gateway peering attachment between supported Regions. Multipath resilience isn't supported for transit gateway peering attachments in the same Region. It takes effect only when both the requester and the accepter allow it. To modify the requester side, send the request in the Region of the requester transit gateway. To modify the accepter side, send the request in the Region of the accepter transit gateway. To check whether multipath resilience is in effect, use <a>DescribeTransitGatewayPeeringAttachments</a> and check <code>multipathResilienceStatus</code>.</p>"
+    },
     "ModifyTransitGatewayPolicyTableEntry":{
       "name":"ModifyTransitGatewayPolicyTableEntry",
       "http":{
@@ -7390,7 +7400,7 @@
       },
       "input":{"shape":"ModifyVpcPeeringConnectionOptionsRequest"},
       "output":{"shape":"ModifyVpcPeeringConnectionOptionsResult"},
-      "documentation":"<p>Modifies the VPC peering connection options on one side of a VPC peering connection.</p> <p>If the peered VPCs are in the same Amazon Web Services account, you can enable DNS resolution for queries from the local VPC. This ensures that queries from the local VPC resolve to private IP addresses in the peer VPC. This option is not available if the peered VPCs are in different Amazon Web Services accounts or different Regions. For peered VPCs in different Amazon Web Services accounts, each Amazon Web Services account owner must initiate a separate request to modify the peering connection options. For inter-region peering connections, you must use the Region for the requester VPC to modify the requester VPC peering options and the Region for the accepter VPC to modify the accepter VPC peering options. To verify which VPCs are the accepter and the requester for a VPC peering connection, use the <a>DescribeVpcPeeringConnections</a> command.</p>"
+      "documentation":"<p>Modifies the VPC peering connection options on one side of a VPC peering connection.</p> <p>If the peered VPCs are in the same Amazon Web Services account, you can enable DNS resolution for queries from the local VPC. This ensures that queries from the local VPC resolve to private IP addresses in the peer VPC. This option is not available if the peered VPCs are in different Amazon Web Services accounts or different Regions. For peered VPCs in different Amazon Web Services accounts, each Amazon Web Services account owner must initiate a separate request to modify the peering connection options. For inter-region peering connections, you must use the Region for the requester VPC to modify the requester VPC peering options and the Region for the accepter VPC to modify the accepter VPC peering options. To verify which VPCs are the accepter and the requester for a VPC peering connection, use the <a>DescribeVpcPeeringConnections</a> command.</p> <p>Multipath resilience replicates the traffic of an inter-Region VPC peering connection across multiple network paths. You can allow multipath resilience for your side of the connection if both of its Regions are supported. It takes effect only when both the requester and the accepter allow it. Additional charges apply when multipath resilience is in effect. For more information, see <a href=\"http://aws.amazon.com/vpc/pricing/\">Amazon VPC pricing</a>. To check whether multipath resilience is in effect, use <a>DescribeVpcPeeringConnections</a> and check <code>multipathResilienceStatus</code>.</p>"
     },
     "ModifyVpcTenancy":{
       "name":"ModifyVpcTenancy",
@@ -8852,7 +8862,7 @@
         },
         "GlobalAccelerator":{
           "shape":"VpcEncryptionControlExclusionState",
-          "documentation":"<p>The exclusion configuration for AWS Global Accelerator.</p>",
+          "documentation":"<p>The exclusion configuration for Amazon Web Services Global Accelerator.</p>",
           "locationName":"globalAccelerator"
         },
         "ApiGatewayV2":{
@@ -8880,6 +8890,13 @@
         "transitions-successful",
         "transitions-failed"
       ]
+    },
+    "ActiveAdditionalKeyExchangesList":{
+      "type":"list",
+      "member":{
+        "shape":"ActiveVpnTunnelAdditionalKeyExchange",
+        "locationName":"item"
+      }
     },
     "ActiveInstance":{
       "type":"structure",
@@ -8913,6 +8930,22 @@
         "shape":"ActiveInstance",
         "locationName":"item"
       }
+    },
+    "ActiveVpnTunnelAdditionalKeyExchange":{
+      "type":"structure",
+      "members":{
+        "AdditionalKeyExchangeRound":{
+          "shape":"Integer",
+          "documentation":"<p>The additional key exchange round number.</p>",
+          "locationName":"additionalKeyExchangeRound"
+        },
+        "KeyExchangeMethod":{
+          "shape":"Integer",
+          "documentation":"<p>The key exchange method number negotiated for this round.</p>",
+          "locationName":"keyExchangeMethod"
+        }
+      },
+      "documentation":"<p>Describes an additional key exchange round negotiated for an active VPN tunnel.</p>"
     },
     "ActiveVpnTunnelStatus":{
       "type":"structure",
@@ -8961,6 +8994,16 @@
           "shape":"String",
           "documentation":"<p>The reason for the current provisioning status.</p>",
           "locationName":"provisioningStatusReason"
+        },
+        "Phase1AdditionalKeyExchanges":{
+          "shape":"ActiveAdditionalKeyExchangesList",
+          "documentation":"<p>The additional key exchanges negotiated in Phase 1 IKE negotiations.</p>",
+          "locationName":"phase1AdditionalKeyExchangeSet"
+        },
+        "Phase2AdditionalKeyExchanges":{
+          "shape":"ActiveAdditionalKeyExchangesList",
+          "documentation":"<p>The additional key exchanges negotiated in Phase 2 IKE negotiations.</p>",
+          "locationName":"phase2AdditionalKeyExchangeSet"
         }
       },
       "documentation":"<p>Contains information about the current security configuration of an active VPN tunnel.</p>"
@@ -9119,6 +9162,67 @@
       }
     },
     "AdditionalFlexibleNetworkInterfaces":{"type":"integer"},
+    "AdditionalKeyExchangeMethodsList":{
+      "type":"list",
+      "member":{
+        "shape":"AdditionalKeyExchangeMethodsListValue",
+        "locationName":"item"
+      }
+    },
+    "AdditionalKeyExchangeMethodsListValue":{
+      "type":"structure",
+      "members":{
+        "Value":{
+          "shape":"Integer",
+          "documentation":"<p>The key exchange method number.</p>",
+          "locationName":"value"
+        }
+      },
+      "documentation":"<p>The key exchange method number that is permitted for an additional key exchange round.</p>"
+    },
+    "AdditionalKeyExchangeMethodsRequestList":{
+      "type":"list",
+      "member":{
+        "shape":"AdditionalKeyExchangeMethodsRequestListValue",
+        "locationName":"item"
+      }
+    },
+    "AdditionalKeyExchangeMethodsRequestListValue":{
+      "type":"structure",
+      "members":{
+        "Value":{
+          "shape":"Integer",
+          "documentation":"<p>The key exchange method number.</p>"
+        }
+      },
+      "documentation":"<p>Specifies a key exchange method number that is permitted for an additional key exchange round.</p>"
+    },
+    "AdditionalKeyExchangeRequirement":{
+      "type":"string",
+      "enum":[
+        "required",
+        "optional"
+      ]
+    },
+    "AdditionalKeyExchangeRound":{
+      "type":"integer",
+      "max":7,
+      "min":1
+    },
+    "AdditionalKeyExchangesList":{
+      "type":"list",
+      "member":{
+        "shape":"VpnAdditionalKeyExchange",
+        "locationName":"item"
+      }
+    },
+    "AdditionalKeyExchangesRequestSpecification":{
+      "type":"list",
+      "member":{
+        "shape":"VpnAdditionalKeyExchangeRequest",
+        "locationName":"item"
+      }
+    },
     "Address":{
       "type":"structure",
       "members":{
@@ -13828,6 +13932,25 @@
         "locationName":"item"
       }
     },
+    "CapacityBlockInstanceTypePreference":{
+      "type":"structure",
+      "members":{
+        "InstanceType":{
+          "shape":"String",
+          "documentation":"<p>The instance type to consider in the Capacity Block search.</p>"
+        }
+      },
+      "documentation":"<p>Instance type preference for a Capacity Block search. Specifies one or more instance types to evaluate when searching for available Capacity Blocks.</p>"
+    },
+    "CapacityBlockInstanceTypePreferenceSet":{
+      "type":"list",
+      "member":{
+        "shape":"CapacityBlockInstanceTypePreference",
+        "locationName":"item"
+      },
+      "max":10,
+      "min":0
+    },
     "CapacityBlockInterconnectStatus":{
       "type":"string",
       "enum":[
@@ -13908,9 +14031,84 @@
           "shape":"String",
           "documentation":"<p>The type of zone where the Capacity Block offering is available.</p>",
           "locationName":"zoneType"
+        },
+        "CapacityBlockOfferingSegments":{
+          "shape":"CapacityBlockOfferingSegmentSet",
+          "documentation":"<p>The individual segments that compose the Capacity Block offering. Each segment describes a distinct block of capacity with its own Availability Zone, instance type, schedule, and pricing.</p>",
+          "locationName":"capacityBlockOfferingSegmentSet"
         }
       },
       "documentation":"<p>The recommended Capacity Block that fits your search requirements.</p>"
+    },
+    "CapacityBlockOfferingSegment":{
+      "type":"structure",
+      "members":{
+        "InstanceType":{
+          "shape":"String",
+          "documentation":"<p>The instance type of the Capacity Block offering segment.</p>",
+          "locationName":"instanceType"
+        },
+        "AvailabilityZone":{
+          "shape":"String",
+          "documentation":"<p>The Availability Zone of the Capacity Block offering segment.</p>",
+          "locationName":"availabilityZone"
+        },
+        "AvailabilityZoneId":{
+          "shape":"String",
+          "documentation":"<p>The ID of the Availability Zone for the Capacity Block offering segment.</p>",
+          "locationName":"availabilityZoneId"
+        },
+        "InstanceCount":{
+          "shape":"Integer",
+          "documentation":"<p>The number of instances in the Capacity Block offering segment.</p>",
+          "locationName":"instanceCount"
+        },
+        "StartDate":{
+          "shape":"MillisecondDateTime",
+          "documentation":"<p>The start date of the Capacity Block offering segment.</p>",
+          "locationName":"startDate"
+        },
+        "EndDate":{
+          "shape":"MillisecondDateTime",
+          "documentation":"<p>The end date of the Capacity Block offering segment.</p>",
+          "locationName":"endDate"
+        },
+        "CapacityBlockDurationHours":{
+          "shape":"Integer",
+          "documentation":"<p>The number of hours for the duration of the Capacity Block offering segment.</p>",
+          "locationName":"capacityBlockDurationHours"
+        },
+        "CapacityBlockDurationMinutes":{
+          "shape":"Integer",
+          "documentation":"<p>The number of minutes for the duration of the Capacity Block offering segment.</p>",
+          "locationName":"capacityBlockDurationMinutes"
+        },
+        "UpfrontFee":{
+          "shape":"String",
+          "documentation":"<p>The total price to be paid up front for the Capacity Block offering segment.</p>",
+          "locationName":"upfrontFee"
+        },
+        "CurrencyCode":{
+          "shape":"String",
+          "documentation":"<p>The currency of the payment for the Capacity Block offering segment.</p>",
+          "locationName":"currencyCode"
+        },
+        "ZoneType":{
+          "shape":"String",
+          "documentation":"<p>The type of zone where the Capacity Block offering segment is available.</p>",
+          "locationName":"zoneType"
+        }
+      },
+      "documentation":"<p>Describes an individual segment within a Capacity Block offering. Each segment represents a distinct block of capacity with its own Availability Zone, instance type, duration, pricing, and schedule.</p>"
+    },
+    "CapacityBlockOfferingSegmentSet":{
+      "type":"list",
+      "member":{
+        "shape":"CapacityBlockOfferingSegment",
+        "locationName":"item"
+      },
+      "max":10,
+      "min":0
     },
     "CapacityBlockOfferingSet":{
       "type":"list",
@@ -20192,6 +20390,20 @@
         }
       }
     },
+    "CreatePeeringConnectionOptionsRequest":{
+      "type":"structure",
+      "members":{
+        "AllowMultipathResilience":{
+          "shape":"Boolean",
+          "documentation":"<p>Specifies whether you allow multipath resilience for the requester VPC. Multipath resilience is supported only for inter-Region VPC peering connections between supported Regions. It takes effect only when both the requester and the accepter allow it. Accepting the VPC peering connection request also allows multipath resilience for the accepter VPC. If you don't specify this parameter, the default is <code>false</code>.</p>"
+        },
+        "MultipathResilienceMode":{
+          "shape":"MultipathResilienceMode",
+          "documentation":"<p>The multipath resilience mode. You can specify this parameter only if <code>AllowMultipathResilience</code> is <code>true</code>.</p> <p>The following value is valid:</p> <ul> <li> <p> <code>always-on</code> – Replicates traffic across multiple network paths while multipath resilience is in effect.</p> </li> </ul> <p>If <code>AllowMultipathResilience</code> is <code>true</code> and you don't specify a mode, the default is <code>always-on</code>.</p>"
+        }
+      },
+      "documentation":"<p>The VPC peering connection options to apply to the requester VPC when you create a VPC peering connection.</p>"
+    },
     "CreatePlacementGroupRequest":{
       "type":"structure",
       "members":{
@@ -21694,6 +21906,14 @@
         "DynamicRouting":{
           "shape":"DynamicRoutingValue",
           "documentation":"<p>Indicates whether dynamic routing is enabled or disabled.</p>"
+        },
+        "AllowMultipathResilience":{
+          "shape":"Boolean",
+          "documentation":"<p>Specifies whether you allow multipath resilience for the requester side of the transit gateway peering attachment. Multipath resilience is supported only for inter-Region transit gateway peering attachments between supported Regions. It takes effect only when both the requester and the accepter allow it. If you don't specify this parameter, the default is <code>false</code>.</p>"
+        },
+        "MultipathResilienceMode":{
+          "shape":"TransitGatewayPeeringAttachmentMultipathResilienceMode",
+          "documentation":"<p>The multipath resilience mode. You can specify this parameter only if <code>AllowMultipathResilience</code> is <code>true</code>.</p> <p>The following value is valid:</p> <ul> <li> <p> <code>always-on</code> – Replicates traffic across multiple network paths while multipath resilience is in effect.</p> </li> </ul> <p>If <code>AllowMultipathResilience</code> is <code>true</code> and you don't specify a mode, the default is <code>always-on</code>.</p>"
         }
       },
       "documentation":"<p>Describes whether dynamic routing is enabled or disabled for the transit gateway peering request.</p>"
@@ -22878,6 +23098,10 @@
           "shape":"TagSpecificationList",
           "documentation":"<p>The tags to assign to the peering connection.</p>",
           "locationName":"TagSpecification"
+        },
+        "RequesterPeeringConnectionOptions":{
+          "shape":"CreatePeeringConnectionOptionsRequest",
+          "documentation":"<p>The VPC peering connection options to apply to the requester VPC.</p>"
         },
         "DryRun":{
           "shape":"Boolean",
@@ -27140,6 +27364,11 @@
         "AllAvailabilityZones":{
           "shape":"Boolean",
           "documentation":"<p> Include all Availability Zones and Local Zones, regardless of your opt-in status. If you do not use this parameter, the results include available offerings from all Availability Zones in the Amazon Web Services Region and Local Zones you are opted into. </p>"
+        },
+        "InstanceTypePreferences":{
+          "shape":"CapacityBlockInstanceTypePreferenceSet",
+          "documentation":"<p>List of instance type preferences for the Capacity Block offering search. Accepts one or more instance type names. Either this or the legacy <code>InstanceType</code> parameter is required.</p>",
+          "locationName":"InstanceTypePreference"
         }
       }
     },
@@ -59298,7 +59527,7 @@
         },
         "GlobalAccelerator":{
           "shape":"VpcEncryptionControlExclusionStateInput",
-          "documentation":"<p>Specifies whether to exclude AWS Global Accelerator from account-level encryption enforcement.</p>"
+          "documentation":"<p>Specifies whether to exclude Amazon Web Services Global Accelerator from account-level encryption enforcement.</p>"
         },
         "ApiGatewayV2":{
           "shape":"VpcEncryptionControlExclusionStateInput",
@@ -61986,6 +62215,48 @@
       },
       "documentation":"<p>The transit gateway options.</p>"
     },
+    "ModifyTransitGatewayPeeringAttachmentRequest":{
+      "type":"structure",
+      "required":["TransitGatewayAttachmentId"],
+      "members":{
+        "TransitGatewayAttachmentId":{
+          "shape":"TransitGatewayAttachmentId",
+          "documentation":"<p>The ID of the transit gateway peering attachment.</p>"
+        },
+        "Options":{
+          "shape":"ModifyTransitGatewayPeeringAttachmentRequestOptions",
+          "documentation":"<p>The options to modify for the transit gateway peering attachment.</p>"
+        },
+        "DryRun":{
+          "shape":"Boolean",
+          "documentation":"<p>Checks whether you have the required permissions for the action, without actually making the request, and provides an error response. If you have the required permissions, the error response is <code>DryRunOperation</code>. Otherwise, it is <code>UnauthorizedOperation</code>.</p>"
+        }
+      }
+    },
+    "ModifyTransitGatewayPeeringAttachmentRequestOptions":{
+      "type":"structure",
+      "members":{
+        "AllowMultipathResilience":{
+          "shape":"Boolean",
+          "documentation":"<p>Specifies whether you allow multipath resilience for your side of the transit gateway peering attachment. Multipath resilience is supported only for inter-Region transit gateway peering attachments between supported Regions. It takes effect only when both the requester and the accepter allow it. If you don't specify this parameter, the current setting doesn't change.</p>"
+        },
+        "MultipathResilienceMode":{
+          "shape":"TransitGatewayPeeringAttachmentMultipathResilienceMode",
+          "documentation":"<p>The multipath resilience mode. You can specify this parameter only if <code>AllowMultipathResilience</code> is <code>true</code>.</p> <p>The following value is valid:</p> <ul> <li> <p> <code>always-on</code> – Replicates traffic across multiple network paths while multipath resilience is in effect.</p> </li> </ul> <p>If <code>AllowMultipathResilience</code> is <code>true</code> and you don't specify a mode, the default is <code>always-on</code>.</p>"
+        }
+      },
+      "documentation":"<p>Contains the options to modify for a transit gateway peering attachment, including multipath resilience settings.</p>"
+    },
+    "ModifyTransitGatewayPeeringAttachmentResult":{
+      "type":"structure",
+      "members":{
+        "TransitGatewayPeeringAttachment":{
+          "shape":"TransitGatewayPeeringAttachment",
+          "documentation":"<p>Information about the transit gateway peering attachment.</p>",
+          "locationName":"transitGatewayPeeringAttachment"
+        }
+      }
+    },
     "ModifyTransitGatewayPolicyTableEntryRequest":{
       "type":"structure",
       "required":[
@@ -62842,7 +63113,7 @@
         },
         "GlobalAcceleratorExclusion":{
           "shape":"VpcEncryptionControlExclusionStateInput",
-          "documentation":"<p>Specifies whether to exclude AWS Global Accelerator traffic from encryption enforcement.</p>"
+          "documentation":"<p>Specifies whether to exclude Amazon Web Services Global Accelerator traffic from encryption enforcement.</p>"
         },
         "ApiGatewayV2Exclusion":{
           "shape":"VpcEncryptionControlExclusionStateInput",
@@ -63452,12 +63723,12 @@
         },
         "Phase1DHGroupNumbers":{
           "shape":"Phase1DHGroupNumbersRequestList",
-          "documentation":"<p>One or more Diffie-Hellman group numbers that are permitted for the VPN tunnel for phase 1 IKE negotiations.</p> <p>Valid values: <code>2</code> | <code>14</code> | <code>15</code> | <code>16</code> | <code>17</code> | <code>18</code> | <code>19</code> | <code>20</code> | <code>21</code> | <code>22</code> | <code>23</code> | <code>24</code> </p>",
+          "documentation":"<p>One or more Diffie-Hellman group numbers that are permitted for the VPN tunnel for phase 1 IKE negotiations.</p> <p>Valid values: <code>2</code> | <code>14</code> | <code>15</code> | <code>16</code> | <code>17</code> | <code>18</code> | <code>19</code> | <code>20</code> | <code>21</code> | <code>22</code> | <code>23</code> | <code>24</code> | <code>35</code> </p>",
           "locationName":"Phase1DHGroupNumber"
         },
         "Phase2DHGroupNumbers":{
           "shape":"Phase2DHGroupNumbersRequestList",
-          "documentation":"<p>One or more Diffie-Hellman group numbers that are permitted for the VPN tunnel for phase 2 IKE negotiations.</p> <p>Valid values: <code>2</code> | <code>5</code> | <code>14</code> | <code>15</code> | <code>16</code> | <code>17</code> | <code>18</code> | <code>19</code> | <code>20</code> | <code>21</code> | <code>22</code> | <code>23</code> | <code>24</code> </p>",
+          "documentation":"<p>One or more Diffie-Hellman group numbers that are permitted for the VPN tunnel for phase 2 IKE negotiations.</p> <p>Valid values: <code>2</code> | <code>5</code> | <code>14</code> | <code>15</code> | <code>16</code> | <code>17</code> | <code>18</code> | <code>19</code> | <code>20</code> | <code>21</code> | <code>22</code> | <code>23</code> | <code>24</code> | <code>35</code> | <code>36</code> | <code>37</code> </p>",
           "locationName":"Phase2DHGroupNumber"
         },
         "IKEVersions":{
@@ -63476,6 +63747,16 @@
         "EnableTunnelLifecycleControl":{
           "shape":"Boolean",
           "documentation":"<p>Turn on or off tunnel endpoint lifecycle control feature.</p>"
+        },
+        "Phase1AdditionalKeyExchanges":{
+          "shape":"AdditionalKeyExchangesRequestSpecification",
+          "documentation":"<p>One or more additional key exchange rounds that are permitted for the VPN tunnel for phase 1 IKE negotiations. Additional key exchanges occur after the initial Diffie-Hellman exchange. Each round must have a unique round number.</p> <p>Additional key exchanges are supported only with IKEv2. You can't specify a <code>required</code> round if <code>IKEVersions</code> contains only <code>ikev1</code>.</p>",
+          "locationName":"Phase1AdditionalKeyExchange"
+        },
+        "Phase2AdditionalKeyExchanges":{
+          "shape":"AdditionalKeyExchangesRequestSpecification",
+          "documentation":"<p>One or more additional key exchange rounds that are permitted for the VPN tunnel for phase 2 IKE negotiations. Additional key exchanges occur after the initial Diffie-Hellman exchange. Each round must have a unique round number.</p> <p>Additional key exchanges are supported only with IKEv2. You can't specify a <code>required</code> round if <code>IKEVersions</code> contains only <code>ikev1</code>.</p>",
+          "locationName":"Phase2AdditionalKeyExchange"
         }
       },
       "documentation":"<p>The Amazon Web Services Site-to-Site VPN tunnel options to modify.</p>",
@@ -63690,6 +63971,18 @@
       "enum":[
         "enable",
         "disable"
+      ]
+    },
+    "MultipathResilienceMode":{
+      "type":"string",
+      "enum":["always-on"]
+    },
+    "MultipathResilienceStatus":{
+      "type":"string",
+      "enum":[
+        "pending",
+        "enabled",
+        "disabled"
       ]
     },
     "NatFlexCostAllocationPolicyDocument":{
@@ -66116,6 +66409,16 @@
           "shape":"Boolean",
           "documentation":"<p>Deprecated.</p>",
           "locationName":"allowEgressFromLocalVpcToRemoteClassicLink"
+        },
+        "AllowMultipathResilience":{
+          "shape":"Boolean",
+          "documentation":"<p>Indicates whether this side of the VPC peering connection allows multipath resilience.</p>",
+          "locationName":"allowMultipathResilience"
+        },
+        "MultipathResilienceMode":{
+          "shape":"MultipathResilienceMode",
+          "documentation":"<p>The multipath resilience mode for this side of the VPC peering connection. This value is present only when this side allows multipath resilience.</p>",
+          "locationName":"multipathResilienceMode"
         }
       },
       "documentation":"<p>Describes the VPC peering connection options.</p>"
@@ -66134,6 +66437,14 @@
         "AllowEgressFromLocalVpcToRemoteClassicLink":{
           "shape":"Boolean",
           "documentation":"<p>Deprecated.</p>"
+        },
+        "AllowMultipathResilience":{
+          "shape":"Boolean",
+          "documentation":"<p>Specifies whether you allow multipath resilience for this side of the VPC peering connection. Multipath resilience is supported only for inter-Region VPC peering connections between supported Regions. It takes effect only when both the requester and the accepter allow it. If you don't specify this parameter, the current setting doesn't change.</p>"
+        },
+        "MultipathResilienceMode":{
+          "shape":"MultipathResilienceMode",
+          "documentation":"<p>The multipath resilience mode. You can specify this parameter only if <code>AllowMultipathResilience</code> is <code>true</code>.</p> <p>The following value is valid:</p> <ul> <li> <p> <code>always-on</code> – Replicates traffic across multiple network paths while multipath resilience is in effect.</p> </li> </ul> <p>If <code>AllowMultipathResilience</code> is <code>true</code> and you don't specify a mode, the default is <code>always-on</code>.</p>"
         }
       },
       "documentation":"<p>The VPC peering connection options.</p>"
@@ -67724,6 +68035,11 @@
           "shape":"CapacityBlockSet",
           "documentation":"<p>The Capacity Block.</p>",
           "locationName":"capacityBlockSet"
+        },
+        "CapacityReservations":{
+          "shape":"CapacityReservationSet",
+          "documentation":"<p>The Capacity Reservations created as a result of the Capacity Block purchase. When a Capacity Block offering contains multiple segments, a separate Capacity Reservation is created for each segment.</p>",
+          "locationName":"capacityReservationSet"
         }
       }
     },
@@ -79427,6 +79743,18 @@
         "locationName":"item"
       }
     },
+    "TransitGatewayPeeringAttachmentMultipathResilienceMode":{
+      "type":"string",
+      "enum":["always-on"]
+    },
+    "TransitGatewayPeeringAttachmentMultipathResilienceStatus":{
+      "type":"string",
+      "enum":[
+        "pending",
+        "enabled",
+        "disabled"
+      ]
+    },
     "TransitGatewayPeeringAttachmentOptions":{
       "type":"structure",
       "members":{
@@ -79434,6 +79762,31 @@
           "shape":"DynamicRoutingValue",
           "documentation":"<p>Describes whether dynamic routing is enabled or disabled for the transit gateway peering attachment.</p>",
           "locationName":"dynamicRouting"
+        },
+        "RequesterAllowMultipathResilience":{
+          "shape":"Boolean",
+          "documentation":"<p>Indicates whether the requester allows multipath resilience for the transit gateway peering attachment.</p>",
+          "locationName":"requesterAllowMultipathResilience"
+        },
+        "RequesterMultipathResilienceMode":{
+          "shape":"TransitGatewayPeeringAttachmentMultipathResilienceMode",
+          "documentation":"<p>The multipath resilience mode for the requester. This value is present only when the requester allows multipath resilience.</p>",
+          "locationName":"requesterMultipathResilienceMode"
+        },
+        "AccepterAllowMultipathResilience":{
+          "shape":"Boolean",
+          "documentation":"<p>Indicates whether the accepter allows multipath resilience for the transit gateway peering attachment.</p>",
+          "locationName":"accepterAllowMultipathResilience"
+        },
+        "AccepterMultipathResilienceMode":{
+          "shape":"TransitGatewayPeeringAttachmentMultipathResilienceMode",
+          "documentation":"<p>The multipath resilience mode for the accepter. This value is present only when the accepter allows multipath resilience.</p>",
+          "locationName":"accepterMultipathResilienceMode"
+        },
+        "MultipathResilienceStatus":{
+          "shape":"TransitGatewayPeeringAttachmentMultipathResilienceStatus",
+          "documentation":"<p>The multipath resilience status of the transit gateway peering attachment. The possible values are:</p> <ul> <li> <p> <code>enabled</code> – Both the requester and the accepter allow multipath resilience.</p> </li> <li> <p> <code>pending</code> – Either the requester or the accepter allows multipath resilience, but not both.</p> </li> <li> <p> <code>disabled</code> – Neither the requester nor the accepter allows multipath resilience.</p> </li> </ul>",
+          "locationName":"multipathResilienceStatus"
         }
       },
       "documentation":"<p>Describes dynamic routing for the transit gateway peering attachment.</p>"
@@ -80472,6 +80825,16 @@
           "shape":"Boolean",
           "documentation":"<p>Status of tunnel endpoint lifecycle control feature.</p>",
           "locationName":"enableTunnelLifecycleControl"
+        },
+        "Phase1AdditionalKeyExchanges":{
+          "shape":"AdditionalKeyExchangesList",
+          "documentation":"<p>The permitted additional key exchange rounds for the VPN tunnel for phase 1 IKE negotiations.</p>",
+          "locationName":"phase1AdditionalKeyExchangeSet"
+        },
+        "Phase2AdditionalKeyExchanges":{
+          "shape":"AdditionalKeyExchangesList",
+          "documentation":"<p>The permitted additional key exchange rounds for the VPN tunnel for phase 2 IKE negotiations.</p>",
+          "locationName":"phase2AdditionalKeyExchangeSet"
         }
       },
       "documentation":"<p>The VPN tunnel options.</p>"
@@ -83432,7 +83795,7 @@
         },
         "GlobalAcceleratorExclusion":{
           "shape":"VpcEncryptionControlExclusionStateInput",
-          "documentation":"<p>Specifies whether to exclude AWS Global Accelerator traffic from encryption enforcement.</p>"
+          "documentation":"<p>Specifies whether to exclude Amazon Web Services Global Accelerator traffic from encryption enforcement.</p>"
         },
         "ApiGatewayV2Exclusion":{
           "shape":"VpcEncryptionControlExclusionStateInput",
@@ -83518,7 +83881,7 @@
         },
         "GlobalAccelerator":{
           "shape":"VpcEncryptionControlExclusion",
-          "documentation":"<p>The exclusion configuration for AWS Global Accelerator traffic.</p>",
+          "documentation":"<p>The exclusion configuration for Amazon Web Services Global Accelerator traffic.</p>",
           "locationName":"globalAccelerator"
         },
         "ApiGatewayV2":{
@@ -84046,6 +84409,11 @@
           "shape":"String",
           "documentation":"<p>The ID of the VPC peering connection.</p>",
           "locationName":"vpcPeeringConnectionId"
+        },
+        "MultipathResilienceStatus":{
+          "shape":"MultipathResilienceStatus",
+          "documentation":"<p>The multipath resilience status of the VPC peering connection. The possible values are:</p> <ul> <li> <p> <code>enabled</code> – Both the requester and the accepter allow multipath resilience.</p> </li> <li> <p> <code>pending</code> – Either the requester or the accepter allows multipath resilience, but not both.</p> </li> <li> <p> <code>disabled</code> – Neither the requester nor the accepter allows multipath resilience.</p> </li> </ul>",
+          "locationName":"multipathResilienceStatus"
         }
       },
       "documentation":"<p>Describes a VPC peering connection.</p>"
@@ -84083,6 +84451,16 @@
           "shape":"Boolean",
           "documentation":"<p>Deprecated.</p>",
           "locationName":"allowEgressFromLocalVpcToRemoteClassicLink"
+        },
+        "AllowMultipathResilience":{
+          "shape":"Boolean",
+          "documentation":"<p>Indicates whether this side of the VPC peering connection allows multipath resilience.</p>",
+          "locationName":"allowMultipathResilience"
+        },
+        "MultipathResilienceMode":{
+          "shape":"MultipathResilienceMode",
+          "documentation":"<p>The multipath resilience mode for this side of the VPC peering connection. This value is present only when this side allows multipath resilience.</p>",
+          "locationName":"multipathResilienceMode"
         }
       },
       "documentation":"<p>Describes the VPC peering connection options.</p>"
@@ -84169,6 +84547,47 @@
     "VpcTenancy":{
       "type":"string",
       "enum":["default"]
+    },
+    "VpnAdditionalKeyExchange":{
+      "type":"structure",
+      "members":{
+        "AdditionalKeyExchangeRound":{
+          "shape":"Integer",
+          "documentation":"<p>The additional key exchange round number.</p>",
+          "locationName":"additionalKeyExchangeRound"
+        },
+        "KeyExchangeMethods":{
+          "shape":"AdditionalKeyExchangeMethodsList",
+          "documentation":"<p>The key exchange method numbers permitted for this round.</p>",
+          "locationName":"keyExchangeMethodSet"
+        },
+        "Requirement":{
+          "shape":"AdditionalKeyExchangeRequirement",
+          "documentation":"<p>Indicates whether this round is mandatory.</p>",
+          "locationName":"requirement"
+        }
+      },
+      "documentation":"<p>Describes an additional key exchange round that is permitted for the VPN tunnel.</p>"
+    },
+    "VpnAdditionalKeyExchangeRequest":{
+      "type":"structure",
+      "required":["AdditionalKeyExchangeRound"],
+      "members":{
+        "AdditionalKeyExchangeRound":{
+          "shape":"AdditionalKeyExchangeRound",
+          "documentation":"<p>The additional key exchange round number.</p> <p>Valid range: Minimum value of 1. Maximum value of 7.</p>"
+        },
+        "KeyExchangeMethods":{
+          "shape":"AdditionalKeyExchangeMethodsRequestList",
+          "documentation":"<p>The key exchange method numbers that are permitted for this round. The method numbers are the IANA IKEv2 key exchange method transform IDs.</p> <p>A <code>required</code> round must specify at least one method. An <code>optional</code> round can omit this parameter or specify an empty list. If omitted or empty for an optional round, the round is disabled.</p> <p>IKEv2 requires that the initial Diffie-Hellman exchange and each required round use a different key exchange method. The permitted methods must allow a distinct method to be selected for each of them.</p> <p>Valid values: <code>2</code> | <code>5</code> | <code>14</code> | <code>15</code> | <code>16</code> | <code>17</code> | <code>18</code> | <code>19</code> | <code>20</code> | <code>21</code> | <code>22</code> | <code>23</code> | <code>24</code> | <code>35</code> | <code>36</code> | <code>37</code> </p>",
+          "locationName":"KeyExchangeMethod"
+        },
+        "Requirement":{
+          "shape":"AdditionalKeyExchangeRequirement",
+          "documentation":"<p>Indicates whether this round is mandatory. If <code>required</code>, the tunnel isn't established unless the customer gateway device negotiates this round. If <code>optional</code>, the round is negotiated only if the customer gateway device supports it.</p> <p>Valid values: <code>required</code> | <code>optional</code> </p> <p>Default: <code>required</code> </p>"
+        }
+      },
+      "documentation":"<p>Specifies an additional key exchange round for the VPN tunnel, as defined in RFC 9370.</p>"
     },
     "VpnConcentrator":{
       "type":"structure",
@@ -84682,12 +85101,12 @@
         },
         "Phase1DHGroupNumbers":{
           "shape":"Phase1DHGroupNumbersRequestList",
-          "documentation":"<p>One or more Diffie-Hellman group numbers that are permitted for the VPN tunnel for phase 1 IKE negotiations.</p> <p>Valid values: <code>2</code> | <code>14</code> | <code>15</code> | <code>16</code> | <code>17</code> | <code>18</code> | <code>19</code> | <code>20</code> | <code>21</code> | <code>22</code> | <code>23</code> | <code>24</code> </p>",
+          "documentation":"<p>One or more Diffie-Hellman group numbers that are permitted for the VPN tunnel for phase 1 IKE negotiations.</p> <p>Valid values: <code>2</code> | <code>14</code> | <code>15</code> | <code>16</code> | <code>17</code> | <code>18</code> | <code>19</code> | <code>20</code> | <code>21</code> | <code>22</code> | <code>23</code> | <code>24</code> | <code>35</code> </p>",
           "locationName":"Phase1DHGroupNumber"
         },
         "Phase2DHGroupNumbers":{
           "shape":"Phase2DHGroupNumbersRequestList",
-          "documentation":"<p>One or more Diffie-Hellman group numbers that are permitted for the VPN tunnel for phase 2 IKE negotiations.</p> <p>Valid values: <code>2</code> | <code>5</code> | <code>14</code> | <code>15</code> | <code>16</code> | <code>17</code> | <code>18</code> | <code>19</code> | <code>20</code> | <code>21</code> | <code>22</code> | <code>23</code> | <code>24</code> </p>",
+          "documentation":"<p>One or more Diffie-Hellman group numbers that are permitted for the VPN tunnel for phase 2 IKE negotiations.</p> <p>Valid values: <code>2</code> | <code>5</code> | <code>14</code> | <code>15</code> | <code>16</code> | <code>17</code> | <code>18</code> | <code>19</code> | <code>20</code> | <code>21</code> | <code>22</code> | <code>23</code> | <code>24</code> | <code>35</code> | <code>36</code> | <code>37</code> </p>",
           "locationName":"Phase2DHGroupNumber"
         },
         "IKEVersions":{
@@ -84706,6 +85125,16 @@
         "EnableTunnelLifecycleControl":{
           "shape":"Boolean",
           "documentation":"<p>Turn on or off tunnel endpoint lifecycle control feature.</p>"
+        },
+        "Phase1AdditionalKeyExchanges":{
+          "shape":"AdditionalKeyExchangesRequestSpecification",
+          "documentation":"<p>One or more additional key exchange rounds that are permitted for the VPN tunnel for phase 1 IKE negotiations. Additional key exchanges occur after the initial Diffie-Hellman exchange. Each round must have a unique round number.</p> <p>Additional key exchanges are supported only with IKEv2. You can't specify a <code>required</code> round if <code>IKEVersions</code> contains only <code>ikev1</code>.</p>",
+          "locationName":"Phase1AdditionalKeyExchange"
+        },
+        "Phase2AdditionalKeyExchanges":{
+          "shape":"AdditionalKeyExchangesRequestSpecification",
+          "documentation":"<p>One or more additional key exchange rounds that are permitted for the VPN tunnel for phase 2 IKE negotiations. Additional key exchanges occur after the initial Diffie-Hellman exchange. Each round must have a unique round number.</p> <p>Additional key exchanges are supported only with IKEv2. You can't specify a <code>required</code> round if <code>IKEVersions</code> contains only <code>ikev1</code>.</p>",
+          "locationName":"Phase2AdditionalKeyExchange"
         }
       },
       "documentation":"<p>The tunnel options for a single VPN tunnel.</p>"

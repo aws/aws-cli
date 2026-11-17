@@ -3296,6 +3296,11 @@
           "shape":"RoutingPolicyAssociationDetailsList",
           "documentation":"<p>The names of the routing policies and other association details in the core network change values.</p>",
           "box":true
+        },
+        "MultipathResilience":{
+          "shape":"MultipathResilienceChangeValues",
+          "documentation":"<p>The change in multipath resilience configuration in the core network change values.</p>",
+          "box":true
         }
       },
       "documentation":"<p>Describes a core network change.</p>"
@@ -7135,6 +7140,28 @@
       "type":"integer",
       "max":500,
       "min":1
+    },
+    "MultipathResilienceChangeValues":{
+      "type":"structure",
+      "members":{
+        "Mode":{
+          "shape":"MultipathResilienceMode",
+          "documentation":"<p>The mode (best-effort/disabled) of multipath resilience.</p>"
+        },
+        "EdgeSets":{
+          "shape":"EdgeSetList",
+          "documentation":"<p>A set of two edge locations.</p>",
+          "box":true
+        }
+      },
+      "documentation":"<p>Information about a change in multipath resilience.</p>"
+    },
+    "MultipathResilienceMode":{
+      "type":"string",
+      "enum":[
+        "best-effort",
+        "disabled"
+      ]
     },
     "NatGatewaySupportState":{
       "type":"string",

@@ -19,6 +19,24 @@
     "uid":"marketplace-agreement-2020-03-01"
   },
   "operations":{
+    "AcceptAgreementApproval":{
+      "name":"AcceptAgreementApproval",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"AcceptAgreementApprovalInput"},
+      "output":{"shape":"AcceptAgreementApprovalOutput"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"ValidationException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ConflictException"}
+      ],
+      "documentation":"<p>Allows the management account or a delegated administrator of the buyer's AWS organization to approve an agreement approval that is in <code>PENDING_APPROVAL</code> status, as the organization administrator approver or on behalf of another approver. Once every level is approved, the agreement approval transitions to <code>APPROVED</code> status. You can optionally provide purchase order references and a note.</p>"
+    },
     "AcceptAgreementCancellationRequest":{
       "name":"AcceptAgreementCancellationRequest",
       "http":{
@@ -68,6 +86,7 @@
         {"shape":"ValidationException"},
         {"shape":"ResourceNotFoundException"},
         {"shape":"ThrottlingException"},
+        {"shape":"ServiceQuotaExceededException"},
         {"shape":"InternalServerException"},
         {"shape":"ConflictException"}
       ],
@@ -144,6 +163,25 @@
       ],
       "documentation":"<p>Allows sellers (proposers) to cancel a payment request that is in <code>PENDING_APPROVAL</code> status. Once cancelled, the payment request transitions to <code>CANCELLED</code> status and can no longer be accepted or rejected by the buyer.</p> <note> <p>Only payment requests in <code>PENDING_APPROVAL</code> status can be cancelled. A <code>ConflictException</code> is thrown if the payment request is in any other status.</p> </note>"
     },
+    "CancelAgreementRequest":{
+      "name":"CancelAgreementRequest",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"CancelAgreementRequestInput"},
+      "output":{"shape":"CancelAgreementRequestOutput"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"ValidationException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ConflictException"}
+      ],
+      "documentation":"<p>Allows buyers (acceptors) to cancel an agreement request that is in <code>PENDING_APPROVAL</code> status, or in <code>APPROVED</code> status when no agreement has been created from it. Once cancelled, the agreement request transitions to <code>CANCELLED</code> status and its open agreement approvals are cancelled.</p>",
+      "idempotent":true
+    },
     "CreateAgreementRequest":{
       "name":"CreateAgreementRequest",
       "http":{
@@ -180,6 +218,24 @@
       ],
       "documentation":"<p>Provides details about an agreement, such as the proposer, acceptor, start date, and end date.</p>"
     },
+    "GetAgreementApproval":{
+      "name":"GetAgreementApproval",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"GetAgreementApprovalInput"},
+      "output":{"shape":"GetAgreementApprovalOutput"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"ValidationException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Retrieves detailed information about a specific agreement approval, including its approval levels, the approvers at each level, and the decision of each approver. The acceptor, or the management account or a delegated administrator of the acceptor's AWS organization, can call this operation.</p>",
+      "readonly":true
+    },
     "GetAgreementCancellationRequest":{
       "name":"GetAgreementCancellationRequest",
       "http":{
@@ -196,6 +252,24 @@
         {"shape":"InternalServerException"}
       ],
       "documentation":"<p>Retrieves detailed information about a specific agreement cancellation request. Both sellers (proposers) and buyers (acceptors) can use this operation to view cancellation requests associated with their agreements.</p>"
+    },
+    "GetAgreementContacts":{
+      "name":"GetAgreementContacts",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"GetAgreementContactsInput"},
+      "output":{"shape":"GetAgreementContactsOutput"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"ValidationException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Obtains details about the acceptor's contact information for an active agreement that you participate in as the proposer, acceptor, or manufacturer.</p> <note> <p>If the acceptor's contact information isn't available, the operation succeeds but doesn't return <code>acceptorContact</code>. This happens when the acceptor didn't provide it, the information was removed, or the agreement isn't active.</p> </note>",
+      "readonly":true
     },
     "GetAgreementEntitlements":{
       "name":"GetAgreementEntitlements",
@@ -232,6 +306,60 @@
       ],
       "documentation":"<p>Retrieves detailed information about a specific payment request. Both sellers (proposers) and buyers (acceptors) can use this operation to view payment requests associated with their agreements. The response includes the current status, charge details, timestamps, and the charge ID if the request has been approved.</p> <note> <p>The calling identity must be either the acceptor or proposer of the payment request. A <code>ResourceNotFoundException</code> is returned if the payment request does not exist.</p> </note>"
     },
+    "GetAgreementRequest":{
+      "name":"GetAgreementRequest",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"GetAgreementRequestInput"},
+      "output":{"shape":"GetAgreementRequestOutput"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"ValidationException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Retrieves detailed information about a specific agreement request, including its status, intent, approval requirement, and charges. The acceptor, or the management account or a delegated administrator of the acceptor's AWS organization, can call this operation.</p>",
+      "readonly":true
+    },
+    "GetAgreementRequestApprovalPlans":{
+      "name":"GetAgreementRequestApprovalPlans",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"GetAgreementRequestApprovalPlansInput"},
+      "output":{"shape":"GetAgreementRequestApprovalPlansOutput"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"ValidationException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Retrieves the approval plans that apply to an agreement request. Only the acceptor of the agreement request can call this operation. Each approval plan lists its approval levels and the approvers at each level. Pass the <code>planReference</code> of an approval plan to <code>StartAgreementApprovals</code> to start an agreement approval for it.</p>",
+      "readonly":true
+    },
+    "GetAgreementRequestTerms":{
+      "name":"GetAgreementRequestTerms",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"GetAgreementRequestTermsInput"},
+      "output":{"shape":"GetAgreementRequestTermsOutput"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"ValidationException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Retrieves the terms proposed for an agreement request, such as pricing, legal, and renewal terms. The acceptor, or the management account or a delegated administrator of the acceptor's AWS organization, can call this operation. This operation is similar to <code>GetAgreementTerms</code>, but it takes an <code>agreementRequestId</code> instead of an <code>agreementId</code>.</p>",
+      "readonly":true
+    },
     "GetAgreementTerms":{
       "name":"GetAgreementTerms",
       "http":{
@@ -265,6 +393,23 @@
         {"shape":"InternalServerException"}
       ],
       "documentation":"<p>Retrieves detailed information about a specific billing adjustment request. Sellers (proposers) can use this operation to view the status and details of a billing adjustment request they submitted.</p>"
+    },
+    "ListAgreementApprovals":{
+      "name":"ListAgreementApprovals",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"ListAgreementApprovalsInput"},
+      "output":{"shape":"ListAgreementApprovalsOutput"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"ValidationException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Lists agreement approvals available to you as a buyer. Use <code>REQUESTER</code> as the <code>partyType</code> to list the agreement approvals that your account started. Use <code>AWS_ORGANIZATION_ADMIN</code> to list the agreement approvals in your AWS organization, if your account is the management account or a delegated administrator of the organization. You can filter the results by agreement request, approval type, and status.</p>",
+      "readonly":true
     },
     "ListAgreementCancellationRequests":{
       "name":"ListAgreementCancellationRequests",
@@ -332,6 +477,23 @@
       ],
       "documentation":"<p>Lists payment requests available to you as a seller or buyer. Both sellers (proposers) and buyers (acceptors) can use this operation to find payment requests by specifying their party type and applying optional parameters.</p> <note> <p> <code>PartyType</code> is a required parameter. A <code>ValidationException</code> is returned if <code>PartyType</code> is not provided. Pagination is supported through <code>maxResults</code> (1-50, default 50) and <code>nextToken</code> parameters.</p> </note>"
     },
+    "ListAgreementRequests":{
+      "name":"ListAgreementRequests",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"ListAgreementRequestsInput"},
+      "output":{"shape":"ListAgreementRequestsOutput"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"ValidationException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Lists agreement requests available to you as a buyer (acceptor). You can filter the results by <code>catalog</code>, <code>status</code>, and <code>resourceId</code>.</p>",
+      "readonly":true
+    },
     "ListBillingAdjustmentRequests":{
       "name":"ListBillingAdjustmentRequests",
       "http":{
@@ -347,6 +509,24 @@
         {"shape":"InternalServerException"}
       ],
       "documentation":"<p>Lists billing adjustment requests for a specific agreement. Sellers (proposers) can use this operation to view all billing adjustment requests associated with an agreement.</p>"
+    },
+    "RejectAgreementApproval":{
+      "name":"RejectAgreementApproval",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"RejectAgreementApprovalInput"},
+      "output":{"shape":"RejectAgreementApprovalOutput"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"ValidationException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ConflictException"}
+      ],
+      "documentation":"<p>Allows the management account or a delegated administrator of the buyer's AWS organization to reject an agreement approval that is in <code>PENDING_APPROVAL</code> status, as the organization administrator approver or on behalf of another approver. Once rejected, the agreement approval and its agreement request transition to <code>REJECTED</code> status. You must provide a reason for the rejection.</p>"
     },
     "RejectAgreementCancellationRequest":{
       "name":"RejectAgreementCancellationRequest",
@@ -436,6 +616,24 @@
       ],
       "documentation":"<p>Allows sellers (proposers) to submit a payment request to buyers (acceptors) for a specific charge amount for an agreement that includes a <code>VariablePaymentTerm</code>. The payment request is created in <code>PENDING_APPROVAL</code> status, at which point the buyer can accept or reject it.</p> <note> <p>The agreement must be active and have a <code>VariablePaymentTerm</code> to support payment requests. The <code>chargeAmount</code> must not exceed the remaining available balance under the <code>VariablePaymentTerm</code> <code>maxTotalChargeAmount</code>.</p> </note>"
     },
+    "StartAgreementApprovals":{
+      "name":"StartAgreementApprovals",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"StartAgreementApprovalsInput"},
+      "output":{"shape":"StartAgreementApprovalsOutput"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"ValidationException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ConflictException"}
+      ],
+      "documentation":"<p>Allows buyers (acceptors) to start the approvals that their organization requires for an agreement request. You start one agreement approval for each approval plan that you specify. Use <code>GetAgreementRequestApprovalPlans</code> to retrieve the approval plans of the agreement request. Once the agreement approvals start, the agreement request transitions to <code>PENDING_APPROVAL</code> status.</p>"
+    },
     "UpdatePurchaseOrders":{
       "name":"UpdatePurchaseOrders",
       "http":{
@@ -461,6 +659,19 @@
       "max":12,
       "min":12,
       "pattern":"[0-9]+"
+    },
+    "AcceptAgreementApprovalInput":{
+      "type":"structure",
+      "members":{
+        "buyerAgreementApprovalApproverInput":{
+          "shape":"BuyerAgreementApprovalApproverInput",
+          "documentation":"<p>The approval decision for an agreement approval that the buyer's organization requires.</p>"
+        }
+      }
+    },
+    "AcceptAgreementApprovalOutput":{
+      "type":"structure",
+      "members":{}
     },
     "AcceptAgreementCancellationRequestInput":{
       "type":"structure",
@@ -638,7 +849,7 @@
         },
         "freeTrialPricingTerm":{
           "shape":"FreeTrialPricingTerm",
-          "documentation":"<p>Defines a short-term free pricing model where the buyers aren’t charged anything within a specified limit.</p>"
+          "documentation":"<p>Defines a short-term free pricing model where the buyers aren't charged anything within a specified limit.</p>"
         },
         "fixedUpfrontPricingTerm":{
           "shape":"FixedUpfrontPricingTerm",
@@ -669,6 +880,40 @@
         }
       },
       "documentation":"<p>The details of the party accepting the agreement terms. This is commonly the buyer for <code>PurchaseAgreement</code>.</p>"
+    },
+    "AcceptorContact":{
+      "type":"structure",
+      "required":[
+        "firstName",
+        "lastName",
+        "emailAddress",
+        "companyName",
+        "countryCode"
+      ],
+      "members":{
+        "firstName":{
+          "shape":"PersonName",
+          "documentation":"<p>The first name of the acceptor contact.</p>"
+        },
+        "lastName":{
+          "shape":"PersonName",
+          "documentation":"<p>The last name of the acceptor contact.</p>"
+        },
+        "emailAddress":{
+          "shape":"EmailAddress",
+          "documentation":"<p>The email address of the acceptor contact.</p>"
+        },
+        "companyName":{
+          "shape":"ContactCompanyName",
+          "documentation":"<p>The name of the company that the acceptor contact represents.</p>"
+        },
+        "countryCode":{
+          "shape":"CountryCode",
+          "documentation":"<p>The ISO-3166 two-letter country code for the acceptor contact.</p>"
+        }
+      },
+      "documentation":"<p>The contact information of the acceptor.</p>",
+      "sensitive":true
     },
     "AccessDeniedException":{
       "type":"structure",
@@ -702,6 +947,301 @@
         "MISSING_MFA",
         "INVALID_ACCESS"
       ]
+    },
+    "AgreementApprovalDeployedOnAws":{
+      "type":"string",
+      "max":64,
+      "min":1
+    },
+    "AgreementApprovalId":{
+      "type":"string",
+      "max":64,
+      "min":1,
+      "pattern":"apr-[A-Za-z0-9]+"
+    },
+    "AgreementApprovalLevelName":{
+      "type":"string",
+      "max":255,
+      "min":1,
+      "pattern":"(.)+"
+    },
+    "AgreementApprovalName":{
+      "type":"string",
+      "max":255,
+      "min":1,
+      "pattern":"(.)+"
+    },
+    "AgreementApprovalNote":{
+      "type":"string",
+      "max":1000,
+      "min":1,
+      "sensitive":true
+    },
+    "AgreementApprovalOfferId":{
+      "type":"string",
+      "max":64,
+      "min":1,
+      "pattern":"\\S{1,64}"
+    },
+    "AgreementApprovalOfferSetId":{
+      "type":"string",
+      "max":50,
+      "min":1,
+      "pattern":"\\S{1,50}"
+    },
+    "AgreementApprovalPartyType":{
+      "type":"string",
+      "enum":[
+        "REQUESTER",
+        "AWS_ORGANIZATION_ADMIN"
+      ]
+    },
+    "AgreementApprovalPlan":{
+      "type":"structure",
+      "members":{
+        "buyerAgreementApprovalPlan":{
+          "shape":"BuyerAgreementApprovalPlan",
+          "documentation":"<p>An approval plan that the buyer's organization requires.</p>"
+        }
+      },
+      "documentation":"<p>An approval plan that applies to an agreement request.</p>",
+      "union":true
+    },
+    "AgreementApprovalPlanInput":{
+      "type":"structure",
+      "members":{
+        "buyerAgreementApprovalPlanInput":{
+          "shape":"BuyerAgreementApprovalPlanInput",
+          "documentation":"<p>An approval plan that the buyer's organization requires.</p>"
+        }
+      },
+      "documentation":"<p>The approval plan to start an agreement approval for.</p>",
+      "union":true
+    },
+    "AgreementApprovalPlanInputs":{
+      "type":"list",
+      "member":{"shape":"AgreementApprovalPlanInput"},
+      "max":10,
+      "min":1
+    },
+    "AgreementApprovalPlanName":{
+      "type":"string",
+      "max":255,
+      "min":1,
+      "pattern":"(.)+"
+    },
+    "AgreementApprovalPlanReference":{
+      "type":"string",
+      "max":64,
+      "min":1,
+      "pattern":"aplan-[A-Za-z0-9]+"
+    },
+    "AgreementApprovalPlans":{
+      "type":"list",
+      "member":{"shape":"AgreementApprovalPlan"},
+      "max":10,
+      "min":1
+    },
+    "AgreementApprovalProposalSummary":{
+      "type":"structure",
+      "required":[
+        "offerId",
+        "visibilityScope"
+      ],
+      "members":{
+        "offerId":{
+          "shape":"AgreementApprovalOfferId",
+          "documentation":"<p>The unique identifier of the offer in AWS Marketplace.</p>"
+        },
+        "offerSetId":{
+          "shape":"AgreementApprovalOfferSetId",
+          "documentation":"<p>A unique identifier for the offer set containing this offer.</p>"
+        },
+        "resources":{
+          "shape":"AgreementApprovalResources",
+          "documentation":"<p>The list of resources involved in the agreement.</p>"
+        },
+        "visibilityScope":{
+          "shape":"OfferVisibilityScope",
+          "documentation":"<p>The visibility of the offer. Valid values are <code>PUBLIC</code> and <code>PRIVATE</code>.</p>"
+        }
+      },
+      "documentation":"<p>A summary of the proposal received from the proposer.</p>"
+    },
+    "AgreementApprovalProposer":{
+      "type":"structure",
+      "required":[
+        "accountId",
+        "legalName"
+      ],
+      "members":{
+        "accountId":{
+          "shape":"AWSAccountId",
+          "documentation":"<p>The AWS account ID of the proposer.</p>"
+        },
+        "legalName":{
+          "shape":"ProposerLegalName",
+          "documentation":"<p>The legal name of the proposer.</p>"
+        }
+      },
+      "documentation":"<p>Details of the party proposing the agreement terms. This is commonly the seller for <code>PurchaseAgreement</code>.</p>"
+    },
+    "AgreementApprovalPurchaseOrder":{
+      "type":"structure",
+      "required":["chargeId"],
+      "members":{
+        "chargeId":{
+          "shape":"ChargeId",
+          "documentation":"<p>The unique identifier of the charge to associate the purchase order with. Use <code>GetAgreementRequest</code> to retrieve the charges of the agreement request.</p>"
+        },
+        "purchaseOrderReference":{
+          "shape":"PurchaseOrderReference",
+          "documentation":"<p>The purchase order reference to associate with the charge.</p>"
+        }
+      },
+      "documentation":"<p>A purchase order reference for a charge on the agreement request.</p>"
+    },
+    "AgreementApprovalPurchaseOrders":{
+      "type":"list",
+      "member":{"shape":"AgreementApprovalPurchaseOrder"},
+      "max":86,
+      "min":1
+    },
+    "AgreementApprovalRequester":{
+      "type":"structure",
+      "required":["accountId"],
+      "members":{
+        "accountId":{
+          "shape":"AWSAccountId",
+          "documentation":"<p>The AWS account ID of the requester, which is the buyer of the agreement request.</p>"
+        }
+      },
+      "documentation":"<p>The account that started an agreement approval.</p>"
+    },
+    "AgreementApprovalResource":{
+      "type":"structure",
+      "required":[
+        "id",
+        "type",
+        "name"
+      ],
+      "members":{
+        "id":{
+          "shape":"AgreementApprovalResourceId",
+          "documentation":"<p>The unique identifier of the resource.</p>"
+        },
+        "type":{
+          "shape":"AgreementApprovalResourceType",
+          "documentation":"<p>Type of the resource, which is the product (for example, <code>SaaSProduct</code>, <code>AmiProduct</code>, <code>ContainerProduct</code>).</p>"
+        },
+        "name":{
+          "shape":"AgreementApprovalResourceName",
+          "documentation":"<p>The name of the product.</p>"
+        },
+        "deployedOnAws":{
+          "shape":"AgreementApprovalDeployedOnAws",
+          "documentation":"<p>Whether the product is deployed on AWS (for example, <code>DEPLOYED</code>).</p>"
+        }
+      },
+      "documentation":"<p>A resource involved in the agreement, such as a product.</p>"
+    },
+    "AgreementApprovalResourceId":{
+      "type":"string",
+      "max":64,
+      "min":1,
+      "pattern":"[A-Za-z0-9_/-]+"
+    },
+    "AgreementApprovalResourceName":{
+      "type":"string",
+      "max":255,
+      "min":1,
+      "pattern":"[^\\p{C}]+"
+    },
+    "AgreementApprovalResourceType":{
+      "type":"string",
+      "max":128,
+      "min":1,
+      "pattern":"[A-Za-z0-9]+"
+    },
+    "AgreementApprovalResources":{
+      "type":"list",
+      "member":{"shape":"AgreementApprovalResource"},
+      "max":100,
+      "min":0
+    },
+    "AgreementApprovalStatus":{
+      "type":"string",
+      "enum":[
+        "PENDING_APPROVAL",
+        "APPROVED",
+        "REJECTED",
+        "EXPIRED",
+        "CANCELLED"
+      ]
+    },
+    "AgreementApprovalSummaries":{
+      "type":"list",
+      "member":{"shape":"AgreementApprovalSummary"}
+    },
+    "AgreementApprovalSummary":{
+      "type":"structure",
+      "required":[
+        "approvalType",
+        "agreementRequestId",
+        "agreementApprovalId",
+        "name",
+        "status",
+        "createdAt",
+        "updatedAt",
+        "approvalNeededBy"
+      ],
+      "members":{
+        "approvalType":{
+          "shape":"AgreementApprovalType",
+          "documentation":"<p>The type of the agreement approval. The only value is <code>BUYER_AGREEMENT_APPROVAL</code>, an approval that the buyer's organization requires before the agreement request can be accepted.</p>"
+        },
+        "agreementRequestId":{
+          "shape":"AgreementRequestId",
+          "documentation":"<p>The unique identifier of the agreement request that the agreement approval is for.</p>"
+        },
+        "agreementApprovalId":{
+          "shape":"AgreementApprovalId",
+          "documentation":"<p>The unique identifier of the agreement approval.</p>"
+        },
+        "name":{
+          "shape":"AgreementApprovalName",
+          "documentation":"<p>The descriptive name of the agreement approval.</p>"
+        },
+        "status":{
+          "shape":"AgreementApprovalStatus",
+          "documentation":"<p>The current status of the agreement approval. Possible values include <code>PENDING_APPROVAL</code>, <code>APPROVED</code>, <code>REJECTED</code>, <code>EXPIRED</code>, and <code>CANCELLED</code>.</p>"
+        },
+        "createdAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The date and time when the agreement approval was created.</p>"
+        },
+        "updatedAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The date and time when the agreement approval was last updated.</p>"
+        },
+        "startedAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The date and time when approvers could start acting on the agreement approval.</p>"
+        },
+        "expiresAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The date and time when the agreement approval expires if it isn't approved or rejected.</p>"
+        },
+        "approvalNeededBy":{
+          "shape":"Timestamp",
+          "documentation":"<p>The date and time by which the agreement approval must be completed.</p>"
+        }
+      },
+      "documentation":"<p>Summary view of an agreement approval.</p>"
+    },
+    "AgreementApprovalType":{
+      "type":"string",
+      "enum":["BUYER_AGREEMENT_APPROVAL"]
     },
     "AgreementCancellationRequestCancellationReason":{
       "type":"string",
@@ -911,6 +1451,116 @@
       "min":1,
       "pattern":"ar-[A-Za-z0-9]+"
     },
+    "AgreementRequestStatus":{
+      "type":"string",
+      "enum":[
+        "DRAFT",
+        "PENDING_APPROVAL",
+        "APPROVED",
+        "ACCEPTED",
+        "REJECTED",
+        "CANCELLED"
+      ]
+    },
+    "AgreementRequestSummary":{
+      "type":"structure",
+      "members":{
+        "agreementRequestId":{
+          "shape":"AgreementRequestId",
+          "documentation":"<p>The unique identifier of the agreement request.</p>"
+        },
+        "agreementType":{
+          "shape":"AgreementType",
+          "documentation":"<p>The type of agreement (for example, <code>PurchaseAgreement</code>).</p>"
+        },
+        "status":{
+          "shape":"AgreementRequestStatus",
+          "documentation":"<p>The current status of the agreement request. Possible values include <code>DRAFT</code>, <code>PENDING_APPROVAL</code>, <code>APPROVED</code>, <code>ACCEPTED</code>, <code>REJECTED</code>, and <code>CANCELLED</code>.</p>"
+        },
+        "agreementId":{
+          "shape":"ResourceId",
+          "documentation":"<p>The unique identifier of the agreement that the agreement request is for.</p>"
+        },
+        "proposalSummary":{
+          "shape":"ProposalSummary",
+          "documentation":"<p>A summary of the proposal received from the proposer.</p>"
+        }
+      },
+      "documentation":"<p>Summary view of an agreement request.</p>"
+    },
+    "AgreementRequestSummaryList":{
+      "type":"list",
+      "member":{"shape":"AgreementRequestSummary"}
+    },
+    "AgreementRequestTerm":{
+      "type":"structure",
+      "members":{
+        "legalTerm":{
+          "shape":"LegalTerm",
+          "documentation":"<p>Defines the list of text agreements proposed to the acceptors. An example is the end user license agreement (EULA).</p>"
+        },
+        "supportTerm":{
+          "shape":"SupportTerm",
+          "documentation":"<p>Defines the customer support available for the acceptors when they purchase the software.</p>"
+        },
+        "renewalTerm":{
+          "shape":"RenewalTerm",
+          "documentation":"<p>Defines that on graceful expiration of the agreement (when the agreement ends on its pre-defined end date), a new agreement will be created using the accepted terms on the existing agreement. In other words, the agreement will be renewed. Presence of <code>RenewalTerm</code> in the offer document means that auto-renewal is allowed. The acceptor will have the option to accept or decline auto-renewal at the offer acceptance/agreement creation. The acceptor can also change this flag from <code>True</code> to <code>False</code> or <code>False</code> to <code>True</code>, within the limits set by <code>LockoutPeriod</code> and <code>MaxRenewals</code>. Setting the flag to <code>True</code> doesn't by itself guarantee that the agreement renews, because the proposer can also opt out.</p>"
+        },
+        "usageBasedPricingTerm":{
+          "shape":"UsageBasedPricingTerm",
+          "documentation":"<p>Defines a usage-based pricing model (typically, pay-as-you-go pricing), where the customers are charged based on product usage.</p>"
+        },
+        "configurableUpfrontPricingTerm":{
+          "shape":"ConfigurableUpfrontPricingTerm",
+          "documentation":"<p>Defines a prepaid payment model that allows buyers to configure the entitlements they want to purchase and the duration.</p>"
+        },
+        "byolPricingTerm":{
+          "shape":"ByolPricingTerm",
+          "documentation":"<p>Enables you and your customers to move your existing agreements to AWS Marketplace. The customer won't be charged for product usage in AWS Marketplace because they already paid for the product outside of AWS Marketplace.</p>"
+        },
+        "recurringPaymentTerm":{
+          "shape":"RecurringPaymentTerm",
+          "documentation":"<p>Defines a pricing model where customers are charged a fixed recurring price at the end of each billing period.</p>"
+        },
+        "validityTerm":{
+          "shape":"ValidityTerm",
+          "documentation":"<p>Defines the conditions that will keep an agreement created from this offer valid.</p>"
+        },
+        "paymentScheduleTerm":{
+          "shape":"PaymentScheduleTerm",
+          "documentation":"<p>Defines an installment-based pricing model where customers are charged a fixed price on different dates during the agreement validity period. This is used most commonly for flexible payment schedule pricing.</p>"
+        },
+        "freeTrialPricingTerm":{
+          "shape":"FreeTrialPricingTerm",
+          "documentation":"<p>Defines a short-term free pricing model where the buyers aren't charged anything within a specified limit.</p>"
+        },
+        "fixedUpfrontPricingTerm":{
+          "shape":"FixedUpfrontPricingTerm",
+          "documentation":"<p>Defines a pre-paid pricing model where the customers are charged a fixed upfront amount.</p>"
+        },
+        "variablePaymentTerm":{
+          "shape":"VariablePaymentTerm",
+          "documentation":"<p>Defines a payment model where sellers can submit variable payment requests up to a maximum charge amount, with configurable approval strategies and expiration timelines.</p>"
+        },
+        "netPaymentTerm":{
+          "shape":"NetPaymentTerm",
+          "documentation":"<p>Defines the net payment due period for the agreement, specifying when payment is due after an invoice is issued.</p>"
+        }
+      },
+      "documentation":"<p>A subset of terms proposed by the proposer, which have been requested by the acceptor as part of the agreement request.</p>",
+      "union":true
+    },
+    "AgreementRequestTermList":{
+      "type":"list",
+      "member":{"shape":"AgreementRequestTerm"}
+    },
+    "AgreementRequestTermsMaxResults":{
+      "type":"integer",
+      "box":true,
+      "max":50,
+      "min":10
+    },
     "AgreementResourceType":{
       "type":"string",
       "max":64,
@@ -954,7 +1604,7 @@
         },
         "endTime":{
           "shape":"Timestamp",
-          "documentation":"<p>The date and time when the agreement ends. The field is <code>null</code> for pay-as-you-go agreements, which don’t have end dates.</p>"
+          "documentation":"<p>The date and time when the agreement ends. The field is <code>null</code> for pay-as-you-go agreements, which don't have end dates.</p>"
         },
         "lastUpdateTime":{
           "shape":"Timestamp",
@@ -999,6 +1649,10 @@
         "freeTrialEndTime":{
           "shape":"Timestamp",
           "documentation":"<p>The date and time when the free trial of the agreement ends. This field is present only when the agreement includes a free trial.</p> <p>For an agreement that includes both a free trial and usage-based pricing, the agreement converts to paid usage at this time.</p>"
+        },
+        "includesContactOfType":{
+          "shape":"ContactTypeList",
+          "documentation":"<p>The types of contact information on file for the agreement. For example, <code>ACCEPTOR</code> indicates that the acceptor's contact information is on file, which you can retrieve with <code>GetAgreementContacts</code>.</p>"
         }
       },
       "documentation":"<p>A summary of the agreement, including top-level attributes (for example, the agreement ID, proposer, and acceptor).</p>"
@@ -1007,11 +1661,120 @@
       "type":"list",
       "member":{"shape":"AgreementViewSummary"}
     },
+    "ApprovalRequirement":{
+      "type":"string",
+      "enum":[
+        "REQUIRED",
+        "NOT_REQUIRED"
+      ]
+    },
+    "Approver":{
+      "type":"structure",
+      "members":{
+        "emailApprover":{
+          "shape":"EmailApprover",
+          "documentation":"<p>An approver who is identified by an email address.</p>"
+        },
+        "procurementToolApprover":{
+          "shape":"ProcurementToolApprover",
+          "documentation":"<p>A procurement system that approves through the buyer's procurement integration.</p>"
+        },
+        "awsOrganizationAdminApprover":{
+          "shape":"AwsOrganizationAdminApprover",
+          "documentation":"<p>The administrators of the buyer's AWS organization.</p>"
+        }
+      },
+      "documentation":"<p>An approver in an approval plan.</p>",
+      "union":true
+    },
+    "ApproverName":{
+      "type":"string",
+      "max":255,
+      "min":1,
+      "sensitive":true
+    },
+    "ApproverOutcome":{
+      "type":"structure",
+      "members":{
+        "emailApproverOutcome":{
+          "shape":"EmailApproverOutcome",
+          "documentation":"<p>The decision of an approver who is identified by an email address.</p>"
+        },
+        "procurementToolApproverOutcome":{
+          "shape":"ProcurementToolApproverOutcome",
+          "documentation":"<p>The decision of a procurement system.</p>"
+        },
+        "awsOrganizationApproverOutcome":{
+          "shape":"AwsOrganizationApproverOutcome",
+          "documentation":"<p>The decision of the administrators of the buyer's AWS organization.</p>"
+        }
+      },
+      "documentation":"<p>An approver in an agreement approval and the approver's decision.</p>",
+      "union":true
+    },
+    "ApproverOutcomeId":{
+      "type":"string",
+      "max":64,
+      "min":1,
+      "pattern":"aprout-[A-Za-z0-9-]+"
+    },
+    "ApproverOutcomeStatus":{
+      "type":"string",
+      "enum":[
+        "QUEUED",
+        "PENDING_APPROVAL",
+        "APPROVED",
+        "REJECTED",
+        "EXPIRED",
+        "SKIPPED"
+      ]
+    },
     "AwsArn":{
       "type":"string",
       "max":2048,
       "min":1,
       "pattern":"arn:aws[a-zA-Z-]*:[A-Za-z0-9][A-Za-z0-9_/.-]{0,62}:[A-Za-z0-9_/.-]{0,63}:[A-Za-z0-9_/.-]{0,63}:[A-Za-z0-9][A-Za-z0-9:_/+=,@.-]{0,1023}"
+    },
+    "AwsOrganizationAdminApprover":{
+      "type":"structure",
+      "required":["organizationId"],
+      "members":{
+        "organizationId":{
+          "shape":"OrganizationId",
+          "documentation":"<p>The ID of the AWS organization.</p>"
+        }
+      },
+      "documentation":"<p>An approver that represents the administrators of the buyer's AWS organization. The management account or a delegated administrator of the organization can decide for this approver.</p>"
+    },
+    "AwsOrganizationApproverOutcome":{
+      "type":"structure",
+      "required":[
+        "status",
+        "updatedAt"
+      ],
+      "members":{
+        "note":{
+          "shape":"AgreementApprovalNote",
+          "documentation":"<p>The note that the approver provided with the decision.</p>"
+        },
+        "status":{
+          "shape":"ApproverOutcomeStatus",
+          "documentation":"<p>The decision status of the approver. Possible values include <code>QUEUED</code>, <code>PENDING_APPROVAL</code>, <code>APPROVED</code>, <code>REJECTED</code>, <code>EXPIRED</code>, and <code>SKIPPED</code>.</p>"
+        },
+        "updatedAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The date and time when the decision was last updated.</p>"
+        },
+        "approverOutcomeId":{
+          "shape":"ApproverOutcomeId",
+          "documentation":"<p>The unique identifier of this approver in the agreement approval.</p>"
+        },
+        "purchaseOrders":{
+          "shape":"AgreementApprovalPurchaseOrders",
+          "documentation":"<p>The purchase order references that the approver provided with the decision.</p>"
+        }
+      },
+      "documentation":"<p>The decision of the administrators of the buyer's AWS organization. The management account or a delegated administrator of the organization makes this decision.</p>"
     },
     "BatchCreateBillingAdjustmentError":{
       "type":"structure",
@@ -1253,6 +2016,282 @@
       "min":1,
       "pattern":"(.)+"
     },
+    "BuyerAgreementApproval":{
+      "type":"structure",
+      "required":[
+        "approvalType",
+        "agreementApprovalId",
+        "name",
+        "agreementRequestId",
+        "status",
+        "requester",
+        "createdAt",
+        "updatedAt",
+        "approvalNeededBy",
+        "levels",
+        "planInput",
+        "proposer",
+        "proposalSummary"
+      ],
+      "members":{
+        "approvalType":{
+          "shape":"AgreementApprovalType",
+          "documentation":"<p>The type of the agreement approval, which is <code>BUYER_AGREEMENT_APPROVAL</code>.</p>"
+        },
+        "agreementApprovalId":{
+          "shape":"AgreementApprovalId",
+          "documentation":"<p>The unique identifier of the agreement approval.</p>"
+        },
+        "name":{
+          "shape":"AgreementApprovalName",
+          "documentation":"<p>The descriptive name of the agreement approval.</p>"
+        },
+        "agreementRequestId":{
+          "shape":"AgreementRequestId",
+          "documentation":"<p>The unique identifier of the agreement request that the agreement approval is for. Use <code>GetAgreementRequest</code> to retrieve the agreement request details.</p>"
+        },
+        "status":{
+          "shape":"AgreementApprovalStatus",
+          "documentation":"<p>The current status of the agreement approval. Possible values include <code>PENDING_APPROVAL</code>, <code>APPROVED</code>, <code>REJECTED</code>, <code>EXPIRED</code>, and <code>CANCELLED</code>.</p>"
+        },
+        "requester":{
+          "shape":"AgreementApprovalRequester",
+          "documentation":"<p>The account that started the agreement approval.</p>"
+        },
+        "createdAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The date and time when the agreement approval was created.</p>"
+        },
+        "updatedAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The date and time when the agreement approval was last updated.</p>"
+        },
+        "startedAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The date and time when approvers could start acting on the agreement approval.</p>"
+        },
+        "expiresAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The date and time when the agreement approval expires if it isn't approved or rejected.</p>"
+        },
+        "approvalNeededBy":{
+          "shape":"Timestamp",
+          "documentation":"<p>The date and time by which the agreement approval must be completed.</p>"
+        },
+        "levels":{
+          "shape":"BuyerAgreementApprovalLevels",
+          "documentation":"<p>The approval levels, in the order they are evaluated. Approvers at a level can act only after the previous level is approved. Each level lists its approvers and the decision of each one.</p>"
+        },
+        "planInput":{
+          "shape":"BuyerAgreementApprovalPlanInput",
+          "documentation":"<p>The approval plan and the note that the requester provided in <code>StartAgreementApprovals</code>.</p>"
+        },
+        "proposer":{
+          "shape":"AgreementApprovalProposer",
+          "documentation":"<p>The details of the party proposing the agreement terms. This is commonly the seller for <code>PurchaseAgreement</code>.</p>"
+        },
+        "proposalSummary":{
+          "shape":"AgreementApprovalProposalSummary",
+          "documentation":"<p>A summary of the proposal received from the proposer.</p>"
+        }
+      },
+      "documentation":"<p>The details of an approval that the buyer's organization requires before the agreement request can be accepted, including the approval levels and the decision of each approver.</p>"
+    },
+    "BuyerAgreementApprovalApproverInput":{
+      "type":"structure",
+      "required":["agreementApprovalId"],
+      "members":{
+        "agreementApprovalId":{
+          "shape":"AgreementApprovalId",
+          "documentation":"<p>The unique identifier of the agreement approval to approve.</p>"
+        },
+        "purchaseOrders":{
+          "shape":"AgreementApprovalPurchaseOrders",
+          "documentation":"<p>An optional list of purchase order references to associate with charges on the agreement request.</p>"
+        },
+        "note":{
+          "shape":"AgreementApprovalNote",
+          "documentation":"<p>An optional note that explains the decision (1-1000 characters).</p>"
+        },
+        "approverOutcomeIdToOverride":{
+          "shape":"ApproverOutcomeId",
+          "documentation":"<p>The <code>approverOutcomeId</code> of the approver to decide on behalf of. You must be the management account or a delegated administrator of your AWS organization to set this field. Use <code>GetAgreementApproval</code> to retrieve the <code>approverOutcomeId</code> of each approver.</p>"
+        }
+      },
+      "documentation":"<p>The approval decision for an agreement approval.</p>"
+    },
+    "BuyerAgreementApprovalCriteria":{
+      "type":"structure",
+      "required":["requiredApprovalCount"],
+      "members":{
+        "requiredApprovalCount":{
+          "shape":"Integer",
+          "documentation":"<p>The number of approvers in the group who must approve before the level is approved.</p>"
+        }
+      },
+      "documentation":"<p>The approval criteria for a group of approvers.</p>"
+    },
+    "BuyerAgreementApprovalGroup":{
+      "type":"structure",
+      "required":[
+        "approvalCriteria",
+        "approvers"
+      ],
+      "members":{
+        "approvalCriteria":{
+          "shape":"BuyerAgreementApprovalCriteria",
+          "documentation":"<p>The number of approvers in the group who must approve.</p>"
+        },
+        "approvers":{
+          "shape":"BuyerApproverOutcomes",
+          "documentation":"<p>The approvers in the group and the decision of each one.</p>"
+        }
+      },
+      "documentation":"<p>A group of approvers, the number of approvals the group requires, and the decision of each approver.</p>"
+    },
+    "BuyerAgreementApprovalGroups":{
+      "type":"list",
+      "member":{"shape":"BuyerAgreementApprovalGroup"},
+      "max":1,
+      "min":1
+    },
+    "BuyerAgreementApprovalLevel":{
+      "type":"structure",
+      "required":["groups"],
+      "members":{
+        "name":{
+          "shape":"AgreementApprovalLevelName",
+          "documentation":"<p>The name of the level.</p>"
+        },
+        "groups":{
+          "shape":"BuyerAgreementApprovalGroups",
+          "documentation":"<p>The group of approvers at this level.</p>"
+        }
+      },
+      "documentation":"<p>A level of an agreement approval, with the decision of each approver.</p>"
+    },
+    "BuyerAgreementApprovalLevels":{
+      "type":"list",
+      "member":{"shape":"BuyerAgreementApprovalLevel"},
+      "max":6,
+      "min":1
+    },
+    "BuyerAgreementApprovalPlan":{
+      "type":"structure",
+      "required":[
+        "planReference",
+        "levels"
+      ],
+      "members":{
+        "planReference":{
+          "shape":"AgreementApprovalPlanReference",
+          "documentation":"<p>The identifier of the approval plan. Pass it in <code>StartAgreementApprovals</code> to start an agreement approval for this plan.</p>"
+        },
+        "name":{
+          "shape":"AgreementApprovalPlanName",
+          "documentation":"<p>The name of the approval plan.</p>"
+        },
+        "levels":{
+          "shape":"BuyerAgreementApprovalPlanLevels",
+          "documentation":"<p>The approval levels of the plan, in the order they are evaluated. Approvers at a level can act only after the previous level is approved.</p>"
+        }
+      },
+      "documentation":"<p>An approval plan that the buyer's organization requires, with its approval levels and the approvers at each level.</p>"
+    },
+    "BuyerAgreementApprovalPlanGroup":{
+      "type":"structure",
+      "required":[
+        "approvalCriteria",
+        "approvers"
+      ],
+      "members":{
+        "approvalCriteria":{
+          "shape":"BuyerAgreementApprovalCriteria",
+          "documentation":"<p>The number of approvers in the group who must approve.</p>"
+        },
+        "approvers":{
+          "shape":"BuyerApprovers",
+          "documentation":"<p>The approvers in the group.</p>"
+        }
+      },
+      "documentation":"<p>A group of approvers and the number of approvals the group requires.</p>"
+    },
+    "BuyerAgreementApprovalPlanGroups":{
+      "type":"list",
+      "member":{"shape":"BuyerAgreementApprovalPlanGroup"},
+      "max":1,
+      "min":1
+    },
+    "BuyerAgreementApprovalPlanInput":{
+      "type":"structure",
+      "required":["planReference"],
+      "members":{
+        "planReference":{
+          "shape":"AgreementApprovalPlanReference",
+          "documentation":"<p>The identifier of the approval plan. Use <code>GetAgreementRequestApprovalPlans</code> to retrieve the approval plans of the agreement request.</p>"
+        },
+        "requesterNote":{
+          "shape":"AgreementApprovalNote",
+          "documentation":"<p>An optional note for the approvers, such as the business reason for the purchase (1-1000 characters).</p>"
+        }
+      },
+      "documentation":"<p>The approval plan to start an agreement approval for, and an optional note for the approvers.</p>"
+    },
+    "BuyerAgreementApprovalPlanLevel":{
+      "type":"structure",
+      "required":["groups"],
+      "members":{
+        "name":{
+          "shape":"AgreementApprovalLevelName",
+          "documentation":"<p>The name of the level.</p>"
+        },
+        "groups":{
+          "shape":"BuyerAgreementApprovalPlanGroups",
+          "documentation":"<p>The group of approvers at this level.</p>"
+        }
+      },
+      "documentation":"<p>A level of an approval plan.</p>"
+    },
+    "BuyerAgreementApprovalPlanLevels":{
+      "type":"list",
+      "member":{"shape":"BuyerAgreementApprovalPlanLevel"},
+      "max":6,
+      "min":1
+    },
+    "BuyerAgreementApprovalRejectionInput":{
+      "type":"structure",
+      "required":[
+        "agreementApprovalId",
+        "note"
+      ],
+      "members":{
+        "agreementApprovalId":{
+          "shape":"AgreementApprovalId",
+          "documentation":"<p>The unique identifier of the agreement approval to reject.</p>"
+        },
+        "note":{
+          "shape":"AgreementApprovalNote",
+          "documentation":"<p>The reason for the rejection.</p>"
+        },
+        "approverOutcomeIdToOverride":{
+          "shape":"ApproverOutcomeId",
+          "documentation":"<p>The <code>approverOutcomeId</code> of the approver to decide on behalf of. You must be the management account or a delegated administrator of your AWS organization to set this field. Use <code>GetAgreementApproval</code> to retrieve the <code>approverOutcomeId</code> of each approver.</p>"
+        }
+      },
+      "documentation":"<p>The rejection decision for an agreement approval.</p>"
+    },
+    "BuyerApproverOutcomes":{
+      "type":"list",
+      "member":{"shape":"ApproverOutcome"},
+      "max":10,
+      "min":1
+    },
+    "BuyerApprovers":{
+      "type":"list",
+      "member":{"shape":"Approver"},
+      "max":10,
+      "min":1
+    },
     "ByolPricingTerm":{
       "type":"structure",
       "members":{
@@ -1266,6 +2305,17 @@
         }
       },
       "documentation":"<p>Enables you and your customers to move your existing agreements to AWS Marketplace. The customer won't be charged for product usage in AWS Marketplace because they already paid for the product outside of AWS Marketplace.</p>"
+    },
+    "CallerIdentity":{
+      "type":"structure",
+      "required":["principalArn"],
+      "members":{
+        "principalArn":{
+          "shape":"PrincipalArn",
+          "documentation":"<p>The ARN of the IAM principal that made the call.</p>"
+        }
+      },
+      "documentation":"<p>The identity of a caller.</p>"
     },
     "CancelAgreementCancellationRequestInput":{
       "type":"structure",
@@ -1398,6 +2448,20 @@
         }
       }
     },
+    "CancelAgreementRequestInput":{
+      "type":"structure",
+      "required":["agreementRequestId"],
+      "members":{
+        "agreementRequestId":{
+          "shape":"AgreementRequestId",
+          "documentation":"<p>The unique identifier of the agreement request to cancel.</p>"
+        }
+      }
+    },
+    "CancelAgreementRequestOutput":{
+      "type":"structure",
+      "members":{}
+    },
     "Catalog":{
       "type":"string",
       "max":64,
@@ -1464,7 +2528,7 @@
       "members":{
         "currencyCode":{
           "shape":"CurrencyCode",
-          "documentation":"<p>The three-letter currency code for all charges (e.g., USD).</p>"
+          "documentation":"<p>The three-letter currency code for all charges (for example, USD).</p>"
         },
         "newAgreementValue":{
           "shape":"BoundedString",
@@ -1508,7 +2572,7 @@
       "members":{
         "type":{
           "shape":"UnversionedTermType",
-          "documentation":"<p>Category of selector.</p>"
+          "documentation":"<p>Category of the term.</p>"
         },
         "id":{
           "shape":"TermId",
@@ -1610,6 +2674,25 @@
       },
       "documentation":"<p>Defines limits on how the term can be configured by acceptors. </p>"
     },
+    "ContactCompanyName":{
+      "type":"string",
+      "max":256,
+      "min":1,
+      "pattern":"(.)+",
+      "sensitive":true
+    },
+    "ContactType":{
+      "type":"string",
+      "enum":["ACCEPTOR"]
+    },
+    "ContactTypeList":{
+      "type":"list",
+      "member":{"shape":"ContactType"}
+    },
+    "CountryCode":{
+      "type":"string",
+      "pattern":"[A-Z]{2}"
+    },
     "CreateAgreementRequestInput":{
       "type":"structure",
       "required":[
@@ -1641,6 +2724,10 @@
         "taxConfiguration":{
           "shape":"TaxConfiguration",
           "documentation":"<p>Configuration for tax estimation in the agreement request response.</p>"
+        },
+        "acceptorContact":{
+          "shape":"AcceptorContact",
+          "documentation":"<p>The contact information of the acceptor.</p> <important> <p>Don't provide this parameter if the intent is <code>AMEND</code>.</p> </important>"
         }
       }
     },
@@ -1651,9 +2738,25 @@
           "shape":"AgreementRequestId",
           "documentation":"<p>The unique identifier of the agreement request created. Use this identifier with <code>AcceptAgreementRequest</code> to accept the agreement.</p>"
         },
+        "agreementType":{
+          "shape":"AgreementType",
+          "documentation":"<p>The type of agreement (for example, <code>PurchaseAgreement</code>).</p>"
+        },
         "chargeSummary":{
           "shape":"ChargeSummary",
           "documentation":"<p>Provides details of the charges associated with the agreement request. This is only applicable when a request is created for <code>PurchaseAgreement</code>.</p>"
+        },
+        "status":{
+          "shape":"AgreementRequestStatus",
+          "documentation":"<p>The current status of the agreement request. Possible values include:</p> <ul> <li> <p> <code>DRAFT</code> – The agreement request has been created but not yet submitted for approval.</p> </li> <li> <p> <code>PENDING_APPROVAL</code> – The agreement request is waiting for one or more approvers to decide.</p> </li> <li> <p> <code>APPROVED</code> – All required approvals have been granted, but the agreement request wasn't accepted automatically. Call <code>AcceptAgreementRequest</code> to accept it. If the call fails, its error explains why.</p> </li> <li> <p> <code>ACCEPTED</code> – The agreement request has been accepted and the resulting agreement has been created.</p> </li> <li> <p> <code>REJECTED</code> – At least one approver rejected the agreement request. It won't proceed.</p> </li> <li> <p> <code>CANCELLED</code> – The agreement request was cancelled before completion, by the acceptor or because the acceptor's account left its AWS organization.</p> </li> </ul>"
+        },
+        "approvalRequirement":{
+          "shape":"ApprovalRequirement",
+          "documentation":"<p>Indicates whether the agreement request requires approval before it can be accepted. Values are <code>REQUIRED</code> and <code>NOT_REQUIRED</code>.</p>"
+        },
+        "createdAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The date and time when the agreement request was created.</p>"
         }
       }
     },
@@ -1764,7 +2867,7 @@
       "members":{
         "type":{
           "shape":"BoundedString",
-          "documentation":"<p>Category of the document. Document types include:</p> <ul> <li> <p> <code>CustomEula</code> – A custom EULA provided by you as seller. A URL for a EULA stored in an accessible Amazon S3 bucket is required for this document type.</p> </li> <li> <p> <code>CustomDsa</code> – A custom Data Subscription Agreement (DSA) provided by you as seller. A URL for a DSA stored in an accessible Amazon S3 bucket is required for this document type.</p> </li> <li> <p> <code>StandardEula</code> – The Standard Contract for AWS Marketplace (SCMP). For more information about SCMP, see the AWS Marketplace Seller Guide. You don’t provide a URL for this type because it’s managed by AWS Marketplace.</p> </li> <li> <p> <code>StandardDsa</code> – DSA for AWS Marketplace. For more information about the DSA, see the AWS Data Exchange User Guide. You don’t provide a URL for this type because it’s managed by AWS Marketplace.</p> </li> </ul>"
+          "documentation":"<p>Category of the document. Document types include:</p> <ul> <li> <p> <code>CustomEula</code> – A custom EULA provided by you as seller. A URL for a EULA stored in an accessible Amazon S3 bucket is required for this document type.</p> </li> <li> <p> <code>CustomDsa</code> – A custom Data Subscription Agreement (DSA) provided by you as seller. A URL for a DSA stored in an accessible Amazon S3 bucket is required for this document type.</p> </li> <li> <p> <code>StandardEula</code> – The Standard Contract for AWS Marketplace (SCMP). For more information about SCMP, see the AWS Marketplace Seller Guide. You don't provide a URL for this type because it's managed by AWS Marketplace.</p> </li> <li> <p> <code>StandardDsa</code> – DSA for AWS Marketplace. For more information about the DSA, see the AWS Data Exchange User Guide. You don't provide a URL for this type because it's managed by AWS Marketplace.</p> </li> </ul>"
         },
         "url":{
           "shape":"BoundedString",
@@ -1780,6 +2883,71 @@
     "DocumentList":{
       "type":"list",
       "member":{"shape":"DocumentItem"}
+    },
+    "EmailAddress":{
+      "type":"string",
+      "max":255,
+      "min":1,
+      "pattern":"[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}",
+      "sensitive":true
+    },
+    "EmailApprover":{
+      "type":"structure",
+      "required":["emailAddress"],
+      "members":{
+        "emailAddress":{
+          "shape":"EmailAddress",
+          "documentation":"<p>The email address of the approver.</p>"
+        },
+        "name":{
+          "shape":"ApproverName",
+          "documentation":"<p>The name of the approver.</p>"
+        }
+      },
+      "documentation":"<p>An approver who is identified by an email address.</p>"
+    },
+    "EmailApproverOutcome":{
+      "type":"structure",
+      "required":[
+        "status",
+        "updatedAt",
+        "emailAddress"
+      ],
+      "members":{
+        "note":{
+          "shape":"AgreementApprovalNote",
+          "documentation":"<p>The note that the approver provided with the decision.</p>"
+        },
+        "status":{
+          "shape":"ApproverOutcomeStatus",
+          "documentation":"<p>The decision status of the approver. Possible values include <code>QUEUED</code>, <code>PENDING_APPROVAL</code>, <code>APPROVED</code>, <code>REJECTED</code>, <code>EXPIRED</code>, and <code>SKIPPED</code>.</p>"
+        },
+        "updatedAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The date and time when the decision was last updated.</p>"
+        },
+        "approverOutcomeId":{
+          "shape":"ApproverOutcomeId",
+          "documentation":"<p>The unique identifier of this approver in the agreement approval. An administrator of the buyer's AWS organization passes it as <code>approverOutcomeIdToOverride</code> to decide on the approver's behalf.</p>"
+        },
+        "emailAddress":{
+          "shape":"EmailAddress",
+          "documentation":"<p>The email address of the approver.</p>"
+        },
+        "name":{
+          "shape":"ApproverName",
+          "documentation":"<p>The name of the approver.</p>"
+        },
+        "purchaseOrders":{
+          "shape":"AgreementApprovalPurchaseOrders",
+          "documentation":"<p>The purchase order references that the approver provided with the decision.</p>"
+        },
+        "overriddenBy":{
+          "shape":"CallerIdentity",
+          "documentation":"<p>The identity that decided on the approver's behalf. This field is empty unless an administrator of the buyer's AWS organization decided for the approver.</p>"
+        }
+      },
+      "documentation":"<p>The decision of an approver who is identified by an email address.</p>"
     },
     "EndTimeBehavior":{
       "type":"structure",
@@ -1896,6 +3064,10 @@
         "estimatedTaxes":{
           "shape":"EstimatedTaxes",
           "documentation":"<p>Provides an aggregated view of estimated tax information for this specific charge.</p>"
+        },
+        "purchaseOrderReference":{
+          "shape":"PurchaseOrderReference",
+          "documentation":"<p>The purchase order reference associated with the charge, if any.</p>"
         }
       },
       "documentation":"<p>Estimated charge for the request.</p>"
@@ -2002,7 +3174,7 @@
           "documentation":"<p>Entitlements granted to the acceptor of a free trial as part of an agreement execution.</p>"
         }
       },
-      "documentation":"<p>Defines a short-term free pricing model where the buyers aren’t charged anything within a specified limit.</p>"
+      "documentation":"<p>Defines a short-term free pricing model where the buyers aren't charged anything within a specified limit.</p>"
     },
     "FreeTrialSummary":{
       "type":"structure",
@@ -2013,6 +3185,25 @@
         }
       },
       "documentation":"<p>Contains details about the free trial of an agreement, including when the free trial ends.</p>"
+    },
+    "GetAgreementApprovalInput":{
+      "type":"structure",
+      "required":["agreementApprovalId"],
+      "members":{
+        "agreementApprovalId":{
+          "shape":"AgreementApprovalId",
+          "documentation":"<p>The unique identifier of the agreement approval to retrieve.</p>"
+        }
+      }
+    },
+    "GetAgreementApprovalOutput":{
+      "type":"structure",
+      "members":{
+        "buyerAgreementApproval":{
+          "shape":"BuyerAgreementApproval",
+          "documentation":"<p>The details of the agreement approval, when it is a <code>BUYER_AGREEMENT_APPROVAL</code>.</p>"
+        }
+      }
     },
     "GetAgreementCancellationRequestInput":{
       "type":"structure",
@@ -2065,6 +3256,25 @@
         "updatedAt":{
           "shape":"Timestamp",
           "documentation":"<p>The date and time when the cancellation request was last updated.</p>"
+        }
+      }
+    },
+    "GetAgreementContactsInput":{
+      "type":"structure",
+      "required":["agreementId"],
+      "members":{
+        "agreementId":{
+          "shape":"ResourceId",
+          "documentation":"<p>The unique identifier of the agreement.</p>"
+        }
+      }
+    },
+    "GetAgreementContactsOutput":{
+      "type":"structure",
+      "members":{
+        "acceptorContact":{
+          "shape":"AcceptorContact",
+          "documentation":"<p>The contact information that the acceptor provided when creating the agreement.</p>"
         }
       }
     },
@@ -2162,6 +3372,125 @@
         "updatedAt":{
           "shape":"Timestamp",
           "documentation":"<p>The date and time when the payment request was last updated.</p>"
+        }
+      }
+    },
+    "GetAgreementRequestApprovalPlansInput":{
+      "type":"structure",
+      "required":["agreementRequestId"],
+      "members":{
+        "agreementRequestId":{
+          "shape":"AgreementRequestId",
+          "documentation":"<p>The unique identifier of the agreement request to retrieve the approval plans for.</p>"
+        },
+        "maxResults":{
+          "shape":"MaxResults",
+          "documentation":"<p>The maximum number of approval plans to return in a single response (1-50). Default is 10.</p>"
+        },
+        "nextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>A token to specify where to start pagination.</p>"
+        }
+      }
+    },
+    "GetAgreementRequestApprovalPlansOutput":{
+      "type":"structure",
+      "required":["items"],
+      "members":{
+        "items":{
+          "shape":"AgreementApprovalPlans",
+          "documentation":"<p>An array of <code>AgreementApprovalPlan</code> objects, one for each approval plan that applies to the agreement request.</p>"
+        },
+        "nextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>The token used for pagination. The field is <code>null</code> if there are no more results.</p>"
+        }
+      }
+    },
+    "GetAgreementRequestInput":{
+      "type":"structure",
+      "required":["agreementRequestId"],
+      "members":{
+        "agreementRequestId":{
+          "shape":"AgreementRequestId",
+          "documentation":"<p>The unique identifier of the agreement request.</p>"
+        }
+      }
+    },
+    "GetAgreementRequestOutput":{
+      "type":"structure",
+      "members":{
+        "agreementRequestId":{
+          "shape":"AgreementRequestId",
+          "documentation":"<p>The unique identifier of the agreement request.</p>"
+        },
+        "agreementType":{
+          "shape":"AgreementType",
+          "documentation":"<p>The type of agreement (for example, <code>PurchaseAgreement</code>).</p>"
+        },
+        "status":{
+          "shape":"AgreementRequestStatus",
+          "documentation":"<p>The current status of the agreement request. Possible values include:</p> <ul> <li> <p> <code>DRAFT</code> – The agreement request has been created but not yet submitted for approval.</p> </li> <li> <p> <code>PENDING_APPROVAL</code> – The agreement request is waiting for one or more approvers to decide.</p> </li> <li> <p> <code>APPROVED</code> – All required approvals have been granted, but the agreement request wasn't accepted automatically. Call <code>AcceptAgreementRequest</code> to accept it. If the call fails, its error explains why.</p> </li> <li> <p> <code>ACCEPTED</code> – The agreement request has been accepted and the resulting agreement has been created.</p> </li> <li> <p> <code>REJECTED</code> – At least one approver rejected the agreement request. It won't proceed.</p> </li> <li> <p> <code>CANCELLED</code> – The agreement request was cancelled before completion, by the acceptor or because the acceptor's account left its AWS organization.</p> </li> </ul>"
+        },
+        "approvalRequirement":{
+          "shape":"ApprovalRequirement",
+          "documentation":"<p>Indicates whether the agreement request requires approval before it can be accepted. Values are <code>REQUIRED</code> and <code>NOT_REQUIRED</code>.</p>"
+        },
+        "agreementId":{
+          "shape":"ResourceId",
+          "documentation":"<p>The unique identifier of the agreement that the agreement request is for.</p>"
+        },
+        "intent":{
+          "shape":"Intent",
+          "documentation":"<p>The purpose and desired outcome of the agreement request.</p> <ul> <li> <p> <code>NEW</code> – Creates a new agreement for terms in the request.</p> </li> <li> <p> <code>AMEND</code> – Modifies an existing agreement with terms that are accepted in the request.</p> </li> <li> <p> <code>REPLACE</code> – Creates a new agreement with accepted terms and replaces the existing agreement.</p> </li> </ul>"
+        },
+        "createdAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The date and time when the agreement request was created.</p>"
+        },
+        "chargeSummary":{
+          "shape":"ChargeSummary",
+          "documentation":"<p>Provides details of the charges associated with the agreement request. This is only applicable when a request is created for <code>PurchaseAgreement</code>.</p>"
+        },
+        "proposer":{
+          "shape":"Proposer",
+          "documentation":"<p>The details of the party proposing the agreement terms. This is commonly the seller for <code>PurchaseAgreement</code>.</p>"
+        },
+        "proposalSummary":{
+          "shape":"ProposalSummary",
+          "documentation":"<p>A summary of the proposal received from the proposer.</p>"
+        }
+      }
+    },
+    "GetAgreementRequestTermsInput":{
+      "type":"structure",
+      "required":["agreementRequestId"],
+      "members":{
+        "agreementRequestId":{
+          "shape":"AgreementRequestId",
+          "documentation":"<p>The unique identifier of the agreement request.</p>"
+        },
+        "maxResults":{
+          "shape":"AgreementRequestTermsMaxResults",
+          "documentation":"<p>The maximum number of terms to return in the response.</p>"
+        },
+        "nextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>A token to specify where to start pagination.</p>"
+        }
+      }
+    },
+    "GetAgreementRequestTermsOutput":{
+      "type":"structure",
+      "required":["terms"],
+      "members":{
+        "terms":{
+          "shape":"AgreementRequestTermList",
+          "documentation":"<p>The terms proposed for the agreement request. The terms are fixed when the agreement request is created.</p>"
+        },
+        "nextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>The token used for pagination. The field is <code>null</code> if there are no more results.</p>"
         }
       }
     },
@@ -2419,7 +3748,7 @@
         },
         "id":{
           "shape":"TermId",
-          "documentation":"<p>The unique identifer for the term.</p>"
+          "documentation":"<p>The unique identifier for the term.</p>"
         },
         "documents":{
           "shape":"DocumentList",
@@ -2431,6 +3760,54 @@
     "LineItemGroupBy":{
       "type":"string",
       "enum":["INVOICE_ID"]
+    },
+    "ListAgreementApprovalsInput":{
+      "type":"structure",
+      "required":["partyType"],
+      "members":{
+        "catalog":{
+          "shape":"Catalog",
+          "documentation":"<p>An optional parameter to filter agreement approvals by catalog (for example, <code>AWSMarketplace</code>).</p>"
+        },
+        "partyType":{
+          "shape":"AgreementApprovalPartyType",
+          "documentation":"<p>The party type for the agreement approvals. Required parameter. Use <code>REQUESTER</code> to list agreement approvals for agreement requests that you created, or <code>AWS_ORGANIZATION_ADMIN</code> to list agreement approvals as an AWS Organizations administrator.</p>"
+        },
+        "agreementRequestId":{
+          "shape":"AgreementRequestId",
+          "documentation":"<p>An optional parameter to filter agreement approvals for a specific agreement request.</p>"
+        },
+        "approvalType":{
+          "shape":"AgreementApprovalType",
+          "documentation":"<p>An optional parameter to filter agreement approvals by type. The only valid value is <code>BUYER_AGREEMENT_APPROVAL</code>.</p>"
+        },
+        "status":{
+          "shape":"AgreementApprovalStatus",
+          "documentation":"<p>An optional parameter to filter agreement approvals by status. Valid values include <code>PENDING_APPROVAL</code>, <code>APPROVED</code>, <code>REJECTED</code>, <code>EXPIRED</code>, and <code>CANCELLED</code>. If you don't specify a status, agreement approvals of all statuses are returned.</p>"
+        },
+        "maxResults":{
+          "shape":"MaxResults",
+          "documentation":"<p>The maximum number of agreement approvals to return in a single response (1-50). Default is 20.</p>"
+        },
+        "nextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>A token to specify where to start pagination.</p>"
+        }
+      }
+    },
+    "ListAgreementApprovalsOutput":{
+      "type":"structure",
+      "required":["items"],
+      "members":{
+        "items":{
+          "shape":"AgreementApprovalSummaries",
+          "documentation":"<p>An array of <code>AgreementApprovalSummary</code> objects containing summary information about each agreement approval.</p>"
+        },
+        "nextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>The token used for pagination. The field is <code>null</code> if there are no more results.</p>"
+        }
+      }
     },
     "ListAgreementCancellationRequestsInput":{
       "type":"structure",
@@ -2623,6 +4000,44 @@
         }
       }
     },
+    "ListAgreementRequestsInput":{
+      "type":"structure",
+      "members":{
+        "catalog":{
+          "shape":"Catalog",
+          "documentation":"<p>An optional parameter to list agreement requests by catalog (for example, <code>AWSMarketplace</code>).</p>"
+        },
+        "status":{
+          "shape":"AgreementRequestStatus",
+          "documentation":"<p>An optional parameter to list agreement requests by status. Valid values include <code>DRAFT</code>, <code>PENDING_APPROVAL</code>, <code>APPROVED</code>, <code>ACCEPTED</code>, <code>REJECTED</code>, and <code>CANCELLED</code>. If you don't specify a status, agreement requests of all statuses are returned.</p>"
+        },
+        "resourceId":{
+          "shape":"ResourceId",
+          "documentation":"<p>An optional parameter to list agreement requests for a specific resource, such as a product.</p>"
+        },
+        "maxResults":{
+          "shape":"MaxResults",
+          "documentation":"<p>The maximum number of agreement requests to return in a single response (1-50). Default is 20.</p>"
+        },
+        "nextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>A token to specify where to start pagination.</p>"
+        }
+      }
+    },
+    "ListAgreementRequestsOutput":{
+      "type":"structure",
+      "members":{
+        "items":{
+          "shape":"AgreementRequestSummaryList",
+          "documentation":"<p>An array of <code>AgreementRequestSummary</code> objects containing summary information about each agreement request.</p>"
+        },
+        "nextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>The token used for pagination. The field is <code>null</code> if there are no more results.</p>"
+        }
+      }
+    },
     "ListBillingAdjustmentRequestsInput":{
       "type":"structure",
       "members":{
@@ -2714,11 +4129,24 @@
       "type":"string",
       "pattern":"\\S{1,50}"
     },
+    "OfferVisibilityScope":{
+      "type":"string",
+      "enum":[
+        "PUBLIC",
+        "PRIVATE"
+      ]
+    },
     "OffsetDuration":{
       "type":"string",
       "max":6,
       "min":3,
       "pattern":"P(\\d{1,4}M|\\d{1,4}D)"
+    },
+    "OrganizationId":{
+      "type":"string",
+      "max":34,
+      "min":12,
+      "pattern":"o-[a-z0-9]{10,32}"
     },
     "PartyType":{
       "type":"string",
@@ -2894,6 +4322,13 @@
       },
       "documentation":"<p>A range of price increase percentages that the proposer can choose from before the adjustment deadline of the agreement.</p> <p> <code>MinValue</code> will be less than <code>MaxValue</code>, and <code>DefaultValue</code> will fall within the range. When the proposer authorizes a single percentage instead of a range, <code>PriceIncrease</code> is a <code>FixedPercentage</code> rather than a <code>PercentageRange</code>.</p>"
     },
+    "PersonName":{
+      "type":"string",
+      "max":80,
+      "min":1,
+      "pattern":"(.)+",
+      "sensitive":true
+    },
     "PositiveAmountUpto8Decimals":{
       "type":"string",
       "pattern":"[0-9]*(\\.[0-9]{0,8})?"
@@ -2937,10 +4372,66 @@
         },
         "currencyCode":{
           "shape":"CurrencyCode",
-          "documentation":"<p>The 3-letter ISO 4217 currency code (e.g., <code>USD</code>, <code>EUR</code>, <code>JPY</code>).</p>"
+          "documentation":"<p>The 3-letter ISO 4217 currency code (for example, <code>USD</code>, <code>EUR</code>, <code>JPY</code>).</p>"
         }
       },
       "documentation":"<p>Monetary amounts associated with an invoice line item group.</p>"
+    },
+    "PrincipalArn":{
+      "type":"string",
+      "max":2048,
+      "min":1,
+      "pattern":"arn:[^:]+:[^:]+:[^:]*:[^:]*:.+"
+    },
+    "ProcurementToolApprover":{
+      "type":"structure",
+      "required":["name"],
+      "members":{
+        "name":{
+          "shape":"ApproverName",
+          "documentation":"<p>The name of the procurement system.</p>"
+        }
+      },
+      "documentation":"<p>A procurement system that approves through the buyer's procurement integration.</p>"
+    },
+    "ProcurementToolApproverOutcome":{
+      "type":"structure",
+      "required":[
+        "status",
+        "updatedAt",
+        "name"
+      ],
+      "members":{
+        "note":{
+          "shape":"AgreementApprovalNote",
+          "documentation":"<p>The note that the approver provided with the decision.</p>"
+        },
+        "status":{
+          "shape":"ApproverOutcomeStatus",
+          "documentation":"<p>The decision status of the approver. Possible values include <code>QUEUED</code>, <code>PENDING_APPROVAL</code>, <code>APPROVED</code>, <code>REJECTED</code>, <code>EXPIRED</code>, and <code>SKIPPED</code>.</p>"
+        },
+        "updatedAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The date and time when the decision was last updated.</p>"
+        },
+        "approverOutcomeId":{
+          "shape":"ApproverOutcomeId",
+          "documentation":"<p>The unique identifier of this approver in the agreement approval. An administrator of the buyer's AWS organization passes it as <code>approverOutcomeIdToOverride</code> to decide on the approver's behalf.</p>"
+        },
+        "name":{
+          "shape":"ApproverName",
+          "documentation":"<p>The name of the procurement system.</p>"
+        },
+        "purchaseOrders":{
+          "shape":"AgreementApprovalPurchaseOrders",
+          "documentation":"<p>The purchase order references that the approver provided with the decision.</p>"
+        },
+        "overriddenBy":{
+          "shape":"CallerIdentity",
+          "documentation":"<p>The identity that decided on the procurement system's behalf. This field is empty unless an administrator of the buyer's AWS organization decided for the procurement system.</p>"
+        }
+      },
+      "documentation":"<p>The decision of a procurement system.</p>"
     },
     "ProposalSummary":{
       "type":"structure",
@@ -2969,6 +4460,12 @@
         }
       },
       "documentation":"<p>Details of the party proposing the agreement terms,. This is commonly the seller for <code>PurchaseAgreement</code>. </p>"
+    },
+    "ProposerLegalName":{
+      "type":"string",
+      "max":255,
+      "min":1,
+      "pattern":"[^\\p{C}]+"
     },
     "PurchaseOrder":{
       "type":"structure",
@@ -3012,7 +4509,7 @@
         },
         "price":{
           "shape":"BoundedString",
-          "documentation":"<p>Per unit price for the product dimension that’s used for calculating the amount to be charged.</p>"
+          "documentation":"<p>Per unit price for the product dimension that's used for calculating the amount to be charged.</p>"
         }
       },
       "documentation":"<p>Defines the per unit rates for each individual product dimension.</p>"
@@ -3051,7 +4548,21 @@
       "type":"string",
       "max":512,
       "min":1,
-      "pattern":"[A-Za-z0-9+/=.:_-]+"
+      "pattern":"[A-Za-z0-9+/=.:_-]+",
+      "sensitive":true
+    },
+    "RejectAgreementApprovalInput":{
+      "type":"structure",
+      "members":{
+        "buyerAgreementApprovalRejectionInput":{
+          "shape":"BuyerAgreementApprovalRejectionInput",
+          "documentation":"<p>The rejection decision for an agreement approval that the buyer's organization requires.</p>"
+        }
+      }
+    },
+    "RejectAgreementApprovalOutput":{
+      "type":"structure",
+      "members":{}
     },
     "RejectAgreementCancellationRequestInput":{
       "type":"structure",
@@ -3342,7 +4853,9 @@
         "PaymentRequest",
         "Invoice",
         "AgreementCancellationRequest",
-        "BillingAdjustmentRequest"
+        "BillingAdjustmentRequest",
+        "AgreementApproval",
+        "AgreementRequestApprovalPlan"
       ]
     },
     "Resources":{
@@ -3376,7 +4889,7 @@
         },
         "filters":{
           "shape":"FilterList",
-          "documentation":"<p>The filter name and value pair used to return a specific list of results.</p> <p>The following filters are supported:</p> <ul> <li> <p> <code>ResourceIdentifier</code> – The unique identifier of the resource.</p> </li> <li> <p> <code>ResourceType</code> – Type of the resource, which is the product (<code>AmiProduct</code>, <code>ContainerProduct</code>, <code>SaaSProduct</code>, <code>ProfessionalServicesProduct</code>, or <code>MachineLearningProduct</code>).</p> </li> <li> <p> <code>PartyType</code> – The party type of the caller. Use <code>Proposer</code> or <code>Acceptor</code>.</p> </li> <li> <p> <code>AcceptorAccountId</code> – The AWS account ID of the party accepting the agreement terms.</p> </li> <li> <p> <code>OfferId</code> – The unique identifier of the offer in which the terms are registered in the agreement token.</p> </li> <li> <p> <code>Status</code> – The current status of the agreement. Values include <code>ACTIVE</code>, <code>CANCELLED</code>, <code>EXPIRED</code>, <code>RENEWED</code>, <code>REPLACED</code>, and <code>TERMINATED</code>.</p> </li> <li> <p> <code>BeforeEndTime</code> – A date used to filter agreements with a date before the <code>endTime</code> of an agreement.</p> </li> <li> <p> <code>AfterEndTime</code> – A date used to filter agreements with a date after the <code>endTime</code> of an agreement.</p> </li> <li> <p> <code>BeforeStartTime</code> – A date used to filter agreements with a date before the <code>startTime</code> of an agreement.</p> </li> <li> <p> <code>AfterStartTime</code> – A date used to filter agreements with a date after the <code>startTime</code> of an agreement.</p> </li> <li> <p> <code>BeforeLastUpdateTime</code> – A date used to filter agreements with a date before the <code>lastUpdateTime</code> of an agreement.</p> </li> <li> <p> <code>AfterLastUpdateTime</code> – A date used to filter agreements with a date after the <code>lastUpdateTime</code> of an agreement.</p> </li> <li> <p> <code>AgreementType</code> – The type of agreement. Supported value includes <code>PurchaseAgreement</code>.</p> </li> <li> <p> <code>OfferSetId</code> – A unique identifier for the offer set containing this offer. All agreements created from offers in this set include this identifier as context.</p> </li> <li> <p> <code>EndTimeBehaviorType</code> – What happens to the agreement when it reaches its end date. Values include <code>RENEW</code>, <code>REPLACE</code>, and <code>EXPIRE</code>.</p> </li> <li> <p> <code>EndTimeBehaviorReasonCode</code> – The reason why the agreement doesn't renew at its end date. Values include <code>PROPOSER_RENEW_OPTED_OUT</code>, <code>ACCEPTOR_RENEW_OPTED_OUT</code>, <code>NO_RENEWAL_TERM</code>, and <code>RENEWAL_LIMIT_EXHAUSTED</code>.</p> </li> <li> <p> <code>InitialAgreementId</code> – The unique identifier of the very first agreement in a chain of related agreements. Use this filter to return every agreement in the same chain.</p> </li> <li> <p> <code>LicenseArn</code> – The Amazon Resource Name (ARN) of the AWS License Manager license associated with an entitlement granted by the agreement.</p> </li> </ul> <p>A proposer can use any combination of the preceding filters along with <code>AgreementType</code>, which is required.</p> <p>The following filter combinations are supported when the <code>PartyType</code> is <code>Acceptor</code>:</p> <ul> <li> <p> <code>AgreementType</code> </p> </li> <li> <p> <code>AgreementType</code> + <code>Status</code> </p> </li> <li> <p> <code>AgreementType</code> + <code>EndTime</code> </p> </li> <li> <p> <code>AgreementType</code> + <code>Status</code> + <code>EndTime</code> </p> </li> <li> <p> <code>AgreementType</code> + <code>ResourceIdentifier</code> </p> </li> <li> <p> <code>AgreementType</code> + <code>ResourceIdentifier</code> + <code>EndTime</code> </p> </li> <li> <p> <code>AgreementType</code> + <code>ResourceIdentifier</code> + <code>Status</code> </p> </li> <li> <p> <code>AgreementType</code> + <code>ResourceIdentifier</code> + <code>Status</code> + <code>EndTime</code> </p> </li> <li> <p> <code>AgreementType</code> + <code>ResourceType</code> </p> </li> <li> <p> <code>AgreementType</code> + <code>ResourceType</code> + <code>EndTime</code> </p> </li> <li> <p> <code>AgreementType</code> + <code>OfferId</code> </p> </li> <li> <p> <code>AgreementType</code> + <code>OfferId</code> + <code>EndTime</code> </p> </li> <li> <p> <code>AgreementType</code> + <code>OfferId</code> + <code>Status</code> </p> </li> <li> <p> <code>AgreementType</code> + <code>OfferId</code> + <code>Status</code> + <code>EndTime</code> </p> </li> <li> <p> <code>AgreementType</code> + <code>OfferSetId</code> </p> </li> <li> <p> <code>AgreementType</code> + <code>OfferSetId</code> + <code>EndTime</code> </p> </li> <li> <p> <code>AgreementType</code> + <code>OfferSetId</code> + <code>Status</code> </p> </li> <li> <p> <code>AgreementType</code> + <code>OfferSetId</code> + <code>Status</code> + <code>EndTime</code> </p> </li> </ul> <note> <p>To filter by <code>EndTime</code>, you can use <code>BeforeEndTime</code>, <code>AfterEndTime</code>, or both.</p> </note>"
+          "documentation":"<p>The filter name and value pair used to return a specific list of results.</p> <p>The following filters are supported:</p> <ul> <li> <p> <code>ResourceIdentifier</code> – The unique identifier of the resource.</p> </li> <li> <p> <code>ResourceType</code> – Type of the resource, which is the product (<code>AmiProduct</code>, <code>ContainerProduct</code>, <code>SaaSProduct</code>, <code>ProfessionalServicesProduct</code>, or <code>MachineLearningProduct</code>).</p> </li> <li> <p> <code>PartyType</code> – The party type of the caller. Use <code>Proposer</code> or <code>Acceptor</code>.</p> </li> <li> <p> <code>AcceptorAccountId</code> – The AWS account ID of the party accepting the agreement terms.</p> </li> <li> <p> <code>OfferId</code> – The unique identifier of the offer in which the terms are registered in the agreement token.</p> </li> <li> <p> <code>Status</code> – The current status of the agreement. Values include <code>ACTIVE</code>, <code>CANCELLED</code>, <code>EXPIRED</code>, <code>RENEWED</code>, <code>REPLACED</code>, and <code>TERMINATED</code>.</p> </li> <li> <p> <code>BeforeEndTime</code> – A date used to filter agreements with a date before the <code>endTime</code> of an agreement.</p> </li> <li> <p> <code>AfterEndTime</code> – A date used to filter agreements with a date after the <code>endTime</code> of an agreement.</p> </li> <li> <p> <code>BeforeStartTime</code> – A date used to filter agreements with a date before the <code>startTime</code> of an agreement.</p> </li> <li> <p> <code>AfterStartTime</code> – A date used to filter agreements with a date after the <code>startTime</code> of an agreement.</p> </li> <li> <p> <code>BeforeLastUpdateTime</code> – A date used to filter agreements with a date before the <code>lastUpdateTime</code> of an agreement.</p> </li> <li> <p> <code>AfterLastUpdateTime</code> – A date used to filter agreements with a date after the <code>lastUpdateTime</code> of an agreement.</p> </li> <li> <p> <code>AgreementType</code> – The type of agreement. Supported value includes <code>PurchaseAgreement</code>.</p> </li> <li> <p> <code>OfferSetId</code> – A unique identifier for the offer set containing this offer. All agreements created from offers in this set include this identifier as context.</p> </li> <li> <p> <code>EndTimeBehaviorType</code> – What happens to the agreement when it reaches its end date. Values include <code>RENEW</code>, <code>REPLACE</code>, and <code>EXPIRE</code>.</p> </li> <li> <p> <code>EndTimeBehaviorReasonCode</code> – The reason why the agreement doesn't renew at its end date. Values include <code>PROPOSER_RENEW_OPTED_OUT</code>, <code>ACCEPTOR_RENEW_OPTED_OUT</code>, <code>NO_RENEWAL_TERM</code>, and <code>RENEWAL_LIMIT_EXHAUSTED</code>.</p> </li> <li> <p> <code>InitialAgreementId</code> – The unique identifier of the very first agreement in a chain of related agreements. Use this filter to return every agreement in the same chain.</p> </li> <li> <p> <code>LicenseArn</code> – The Amazon Resource Name (ARN) of the AWS License Manager license associated with an entitlement granted by the agreement.</p> </li> <li> <p> <code>IncludesContactOfType</code> – The type of contact information on file for the agreement. Supported value includes <code>ACCEPTOR</code>.</p> </li> </ul> <p>A proposer can use any combination of the preceding filters along with <code>AgreementType</code>, which is required.</p> <p>The following filter combinations are supported when the <code>PartyType</code> is <code>Acceptor</code>:</p> <ul> <li> <p> <code>AgreementType</code> </p> </li> <li> <p> <code>AgreementType</code> + <code>Status</code> </p> </li> <li> <p> <code>AgreementType</code> + <code>EndTime</code> </p> </li> <li> <p> <code>AgreementType</code> + <code>Status</code> + <code>EndTime</code> </p> </li> <li> <p> <code>AgreementType</code> + <code>ResourceIdentifier</code> </p> </li> <li> <p> <code>AgreementType</code> + <code>ResourceIdentifier</code> + <code>EndTime</code> </p> </li> <li> <p> <code>AgreementType</code> + <code>ResourceIdentifier</code> + <code>Status</code> </p> </li> <li> <p> <code>AgreementType</code> + <code>ResourceIdentifier</code> + <code>Status</code> + <code>EndTime</code> </p> </li> <li> <p> <code>AgreementType</code> + <code>ResourceType</code> </p> </li> <li> <p> <code>AgreementType</code> + <code>ResourceType</code> + <code>EndTime</code> </p> </li> <li> <p> <code>AgreementType</code> + <code>OfferId</code> </p> </li> <li> <p> <code>AgreementType</code> + <code>OfferId</code> + <code>EndTime</code> </p> </li> <li> <p> <code>AgreementType</code> + <code>OfferId</code> + <code>Status</code> </p> </li> <li> <p> <code>AgreementType</code> + <code>OfferId</code> + <code>Status</code> + <code>EndTime</code> </p> </li> <li> <p> <code>AgreementType</code> + <code>OfferSetId</code> </p> </li> <li> <p> <code>AgreementType</code> + <code>OfferSetId</code> + <code>EndTime</code> </p> </li> <li> <p> <code>AgreementType</code> + <code>OfferSetId</code> + <code>Status</code> </p> </li> <li> <p> <code>AgreementType</code> + <code>OfferSetId</code> + <code>Status</code> + <code>EndTime</code> </p> </li> </ul> <note> <p>To filter by <code>EndTime</code>, you can use <code>BeforeEndTime</code>, <code>AfterEndTime</code>, or both.</p> </note>"
         },
         "sort":{
           "shape":"Sort",
@@ -3613,6 +5126,37 @@
         "DESCENDING"
       ]
     },
+    "StartAgreementApprovalsInput":{
+      "type":"structure",
+      "required":[
+        "agreementRequestId",
+        "planInputs"
+      ],
+      "members":{
+        "agreementRequestId":{
+          "shape":"AgreementRequestId",
+          "documentation":"<p>The unique identifier of the agreement request to start approvals for.</p>"
+        },
+        "planInputs":{
+          "shape":"AgreementApprovalPlanInputs",
+          "documentation":"<p>The approval plans to start agreement approvals for.</p>"
+        },
+        "purchaseOrders":{
+          "shape":"AgreementApprovalPurchaseOrders",
+          "documentation":"<p>An optional list of purchase order references to associate with charges on the agreement request.</p>"
+        }
+      }
+    },
+    "StartAgreementApprovalsOutput":{
+      "type":"structure",
+      "required":["approvalSummaries"],
+      "members":{
+        "approvalSummaries":{
+          "shape":"AgreementApprovalSummaries",
+          "documentation":"<p>An array of <code>AgreementApprovalSummary</code> objects, one for each agreement approval that was started.</p>"
+        }
+      }
+    },
     "String":{"type":"string"},
     "SupportTerm":{
       "type":"structure",
@@ -3713,7 +5257,8 @@
       "enum":[
         "ON_ACCEPTANCE",
         "SCHEDULED",
-        "BILLING_PERIOD"
+        "BILLING_PERIOD",
+        "NOT_APPLICABLE"
       ]
     },
     "UnversionedTermType":{
@@ -3824,6 +5369,13 @@
     "ValidationExceptionReason":{
       "type":"string",
       "enum":[
+        "CLOSED_AGREEMENT_APPROVAL",
+        "QUEUED_AGREEMENT_APPROVAL",
+        "INVALID_AGREEMENT_APPROVAL_ID",
+        "MISSING_AGREEMENT_APPROVAL_ID",
+        "DUPLICATE_PLAN_REFERENCE",
+        "INVALID_PLAN_INPUTS",
+        "PENDING_APPROVAL_AGREEMENT_REQUEST",
         "MISSING_BILLING_ADJUSTMENTS",
         "BILLING_ADJUSTMENTS_LIMIT_EXCEEDED",
         "MISSING_INVOICE_ID",
@@ -3893,6 +5445,7 @@
         "INACTIVE_AGREEMENT",
         "SUPERSEDED_AGREEMENT_PROPOSAL",
         "EXPIRED_AGREEMENT_PROPOSAL",
+        "INVALID_ACCEPTOR_CONTACT",
         "MISSING_MANDATORY_TERMS",
         "INCOMPATIBLE_TERMS",
         "MISSING_USAGE_AGREEMENT",
@@ -3905,7 +5458,18 @@
         "DUPLICATE_CHARGES",
         "UNSUPPORTED_ACCOUNT_PLAN",
         "DUPLICATE_AGREEMENT_IN_ORGANIZATION",
-        "MISSING_PURCHASE_ORDER_REFERENCE"
+        "MISSING_AWS_LICENSE_MANAGER_USER_SUBSCRIPTIONS_SLR",
+        "MISSING_PURCHASE_ORDER_REFERENCE",
+        "INVALID_RESOURCE_ID",
+        "CLOSED_AGREEMENT_REQUEST",
+        "INCOMPATIBLE_AGREEMENT_REQUEST",
+        "REJECTED_BY_AGREEMENT_APPROVAL_POLICY",
+        "MISSING_PLAN_INPUTS",
+        "INVALID_APPROVER_OUTCOME_ID_TO_OVERRIDE",
+        "INVALID_NOTE",
+        "MISSING_NOTE",
+        "INVALID_APPROVAL_TYPE",
+        "MISSING_SORT_BY"
       ]
     },
     "ValidityTerm":{
@@ -3921,15 +5485,15 @@
         },
         "agreementDuration":{
           "shape":"BoundedString",
-          "documentation":"<p>Defines the duration that the agreement remains active. If <code>AgreementStartDate</code> isn’t provided, the agreement duration is relative to the agreement signature time. The duration is represented in the ISO_8601 format.</p>"
+          "documentation":"<p>Defines the duration that the agreement remains active. If <code>AgreementStartDate</code> isn't provided, the agreement duration is relative to the agreement signature time. The duration is represented in the ISO_8601 format.</p>"
         },
         "agreementStartDate":{
           "shape":"Timestamp",
-          "documentation":"<p>Defines the date when agreement starts. The agreement starts at 00:00:00.000 UTC on the date provided. If <code>AgreementStartDate</code> isn’t provided, the agreement start date is determined based on agreement signature time.</p>"
+          "documentation":"<p>Defines the date when agreement starts. The agreement starts at 00:00:00.000 UTC on the date provided. If <code>AgreementStartDate</code> isn't provided, the agreement start date is determined based on agreement signature time.</p>"
         },
         "agreementEndDate":{
           "shape":"Timestamp",
-          "documentation":"<p>Defines the date when the agreement ends. The agreement ends at 23:59:59.999 UTC on the date provided. If <code>AgreementEndDate</code> isn’t provided, the agreement end date is determined by the validity of individual terms.</p>"
+          "documentation":"<p>Defines the date when the agreement ends. The agreement ends at 23:59:59.999 UTC on the date provided. If <code>AgreementEndDate</code> isn't provided, the agreement end date is determined by the validity of individual terms.</p>"
         }
       },
       "documentation":"<p>Defines the conditions that will keep an agreement created from this offer valid. </p>"
@@ -3970,7 +5534,7 @@
         },
         "expirationDuration":{
           "shape":"ISO8601Duration",
-          "documentation":"<p>Defines the duration after which a payment request is automatically approved if no further action is taken. This only applies when the payment request approval strategy is set to <code>AUTO_APPROVE_ON_EXPIRATION</code>. The duration is represented in the ISO_8601 format (e.g., P10D for 10 days).</p>"
+          "documentation":"<p>Defines the duration after which a payment request is automatically approved if no further action is taken. This only applies when the payment request approval strategy is set to <code>AUTO_APPROVE_ON_EXPIRATION</code>. The duration is represented in the ISO_8601 format (for example, P10D for 10 days).</p>"
         }
       },
       "documentation":"<p>Additional parameters specified by the acceptor while accepting the variable payment term.</p>"

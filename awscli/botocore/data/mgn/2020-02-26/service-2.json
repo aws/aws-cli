@@ -166,6 +166,23 @@
       "documentation":"<p>Creates a new network migration definition that specifies the source and target network configuration for a migration.</p>",
       "idempotent":true
     },
+    "CreateRemoteSourceAction":{
+      "name":"CreateRemoteSourceAction",
+      "http":{
+        "method":"POST",
+        "requestUri":"/CreateRemoteSourceAction",
+        "responseCode":201
+      },
+      "input":{"shape":"CreateRemoteSourceActionRequest"},
+      "output":{"shape":"CreateRemoteSourceActionResponse"},
+      "errors":[
+        {"shape":"UninitializedAccountException"},
+        {"shape":"ValidationException"},
+        {"shape":"ServiceQuotaExceededException"},
+        {"shape":"ConflictException"}
+      ],
+      "documentation":"<p>Creates a source action, which references a script in AWS Systems Manager Parameter Store that Application Migration Service runs on source environment.</p>"
+    },
     "CreateReplicationConfigurationTemplate":{
       "name":"CreateReplicationConfigurationTemplate",
       "http":{
@@ -281,6 +298,24 @@
         {"shape":"ConflictException"}
       ],
       "documentation":"<p>Deletes a network migration definition. This operation removes the migration definition and all associated metadata.</p>",
+      "idempotent":true
+    },
+    "DeleteRemoteSourceAction":{
+      "name":"DeleteRemoteSourceAction",
+      "http":{
+        "method":"POST",
+        "requestUri":"/DeleteRemoteSourceAction",
+        "responseCode":204
+      },
+      "input":{"shape":"DeleteRemoteSourceActionRequest"},
+      "output":{"shape":"DeleteRemoteSourceActionResponse"},
+      "errors":[
+        {"shape":"UninitializedAccountException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ValidationException"},
+        {"shape":"ConflictException"}
+      ],
+      "documentation":"<p>Deletes a source action. This operation also deletes the invocation results of the source action.</p>",
       "idempotent":true
     },
     "DeleteReplicationConfigurationTemplate":{
@@ -530,6 +565,23 @@
         {"shape":"ResourceNotFoundException"}
       ],
       "documentation":"<p>Lists all LaunchConfigurations available, filtered by Source Server IDs.</p>",
+      "readonly":true
+    },
+    "GetLaunchConfigurationDefaults":{
+      "name":"GetLaunchConfigurationDefaults",
+      "http":{
+        "method":"POST",
+        "requestUri":"/GetLaunchConfigurationDefaults",
+        "responseCode":200
+      },
+      "input":{"shape":"GetLaunchConfigurationDefaultsRequest"},
+      "output":{"shape":"GetLaunchConfigurationDefaultsResponse"},
+      "errors":[
+        {"shape":"UninitializedAccountException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ValidationException"}
+      ],
+      "documentation":"<p>Gets the launch configuration defaults of a source server: the Amazon Elastic Block Store (Amazon EBS) volume configuration used for the disk mappings created later in the source server's Amazon Elastic Compute Cloud (Amazon EC2) launch template.</p>",
       "readonly":true
     },
     "GetNetworkMigrationDefinition":{
@@ -860,6 +912,24 @@
       "documentation":"<p>Lists network migration execution instances for a given definition, showing the status and progress of each execution.</p>",
       "readonly":true
     },
+    "ListNetworkMigrationInsights":{
+      "name":"ListNetworkMigrationInsights",
+      "http":{
+        "method":"POST",
+        "requestUri":"/network-migration/ListNetworkMigrationInsights",
+        "responseCode":200
+      },
+      "input":{"shape":"ListNetworkMigrationInsightsRequest"},
+      "output":{"shape":"ListNetworkMigrationInsightsResponse"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ValidationException"}
+      ],
+      "documentation":"<p>Lists network migration insights for a network migration definition.</p>",
+      "readonly":true
+    },
     "ListNetworkMigrationMapperSegmentConstructs":{
       "name":"ListNetworkMigrationMapperSegmentConstructs",
       "http":{
@@ -930,6 +1000,72 @@
         {"shape":"ValidationException"}
       ],
       "documentation":"<p>Lists network migration mapping jobs, which analyze and create relationships between source and target network resources.</p>",
+      "readonly":true
+    },
+    "ListRemoteSourceActionInvocationResults":{
+      "name":"ListRemoteSourceActionInvocationResults",
+      "http":{
+        "method":"POST",
+        "requestUri":"/ListRemoteSourceActionInvocationResults",
+        "responseCode":200
+      },
+      "input":{"shape":"ListRemoteSourceActionInvocationResultsRequest"},
+      "output":{"shape":"ListRemoteSourceActionInvocationResultsResponse"},
+      "errors":[
+        {"shape":"UninitializedAccountException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ValidationException"}
+      ],
+      "documentation":"<p>Lists the latest invocation result of each source action that ran on a source server.</p>",
+      "readonly":true
+    },
+    "ListRemoteSourceActionInvocations":{
+      "name":"ListRemoteSourceActionInvocations",
+      "http":{
+        "method":"POST",
+        "requestUri":"/ListRemoteSourceActionInvocations",
+        "responseCode":200
+      },
+      "input":{"shape":"ListRemoteSourceActionInvocationsRequest"},
+      "output":{"shape":"ListRemoteSourceActionInvocationsResponse"},
+      "errors":[
+        {"shape":"UninitializedAccountException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ValidationException"}
+      ],
+      "documentation":"<p>Lists the invocations of a source action job, one for each source server and source action, with optional filtering.</p>",
+      "readonly":true
+    },
+    "ListRemoteSourceActionJobs":{
+      "name":"ListRemoteSourceActionJobs",
+      "http":{
+        "method":"POST",
+        "requestUri":"/ListRemoteSourceActionJobs",
+        "responseCode":200
+      },
+      "input":{"shape":"ListRemoteSourceActionJobsRequest"},
+      "output":{"shape":"ListRemoteSourceActionJobsResponse"},
+      "errors":[
+        {"shape":"UninitializedAccountException"},
+        {"shape":"ValidationException"}
+      ],
+      "documentation":"<p>Lists the source action jobs in the account, with optional filtering.</p>",
+      "readonly":true
+    },
+    "ListRemoteSourceActions":{
+      "name":"ListRemoteSourceActions",
+      "http":{
+        "method":"POST",
+        "requestUri":"/ListRemoteSourceActions",
+        "responseCode":200
+      },
+      "input":{"shape":"ListRemoteSourceActionsRequest"},
+      "output":{"shape":"ListRemoteSourceActionsResponse"},
+      "errors":[
+        {"shape":"UninitializedAccountException"},
+        {"shape":"ValidationException"}
+      ],
+      "documentation":"<p>Lists the source actions in the account, with optional filtering.</p>",
       "readonly":true
     },
     "ListSourceServerActions":{
@@ -1301,6 +1437,24 @@
       "documentation":"<p>Starts a job to apply customer modifications to network migration mappings, such as changing properties.</p>",
       "idempotent":true
     },
+    "StartRemoteSourceActionJob":{
+      "name":"StartRemoteSourceActionJob",
+      "http":{
+        "method":"POST",
+        "requestUri":"/StartRemoteSourceActionJob",
+        "responseCode":202
+      },
+      "input":{"shape":"StartRemoteSourceActionJobRequest"},
+      "output":{"shape":"StartRemoteSourceActionJobResponse"},
+      "errors":[
+        {"shape":"UninitializedAccountException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ValidationException"},
+        {"shape":"ServiceQuotaExceededException"},
+        {"shape":"ConflictException"}
+      ],
+      "documentation":"<p>Starts a job that runs a source action on source servers through a connector.</p>"
+    },
     "StartReplication":{
       "name":"StartReplication",
       "http":{
@@ -1489,6 +1643,23 @@
       "documentation":"<p>Updates multiple LaunchConfigurations by Source Server ID.</p> <note> <p>bootMode valid values are <code>LEGACY_BIOS | UEFI | USE_SOURCE</code> </p> </note>",
       "idempotent":true
     },
+    "UpdateLaunchConfigurationDefaults":{
+      "name":"UpdateLaunchConfigurationDefaults",
+      "http":{
+        "method":"POST",
+        "requestUri":"/UpdateLaunchConfigurationDefaults",
+        "responseCode":200
+      },
+      "input":{"shape":"UpdateLaunchConfigurationDefaultsRequest"},
+      "output":{"shape":"UpdateLaunchConfigurationDefaultsResponse"},
+      "errors":[
+        {"shape":"UninitializedAccountException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ValidationException"}
+      ],
+      "documentation":"<p>Updates the launch configuration defaults of a source server. They apply only to disk mappings created later in the source server's Amazon Elastic Compute Cloud (Amazon EC2) launch template, and members you omit keep their current values.</p>",
+      "idempotent":true
+    },
     "UpdateLaunchConfigurationTemplate":{
       "name":"UpdateLaunchConfigurationTemplate",
       "http":{
@@ -1538,6 +1709,24 @@
         {"shape":"ValidationException"}
       ],
       "documentation":"<p>Updates a mapper segment's configuration, such as changing its scope tags.</p>",
+      "idempotent":true
+    },
+    "UpdateRemoteSourceAction":{
+      "name":"UpdateRemoteSourceAction",
+      "http":{
+        "method":"POST",
+        "requestUri":"/UpdateRemoteSourceAction",
+        "responseCode":200
+      },
+      "input":{"shape":"UpdateRemoteSourceActionRequest"},
+      "output":{"shape":"UpdateRemoteSourceActionResponse"},
+      "errors":[
+        {"shape":"UninitializedAccountException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ValidationException"},
+        {"shape":"ConflictException"}
+      ],
+      "documentation":"<p>Updates a source action.</p>",
       "idempotent":true
     },
     "UpdateReplicationConfiguration":{
@@ -1898,6 +2087,30 @@
       "type":"structure",
       "members":{}
     },
+    "AssociationCidrList":{
+      "type":"list",
+      "member":{"shape":"CidrBlock"},
+      "max":10,
+      "min":0
+    },
+    "AssociationUserProvidedID":{
+      "type":"string",
+      "max":256,
+      "min":1,
+      "pattern":"[^\\s\\x00]( *[^\\s\\x00])*"
+    },
+    "AssociationUserProvidedIDList":{
+      "type":"list",
+      "member":{"shape":"AssociationUserProvidedID"},
+      "max":100,
+      "min":0
+    },
+    "AssociationVmUUIDList":{
+      "type":"list",
+      "member":{"shape":"VmUUID"},
+      "max":100,
+      "min":0
+    },
     "BandwidthThrottling":{
       "type":"long",
       "max":10000,
@@ -2194,6 +2407,12 @@
       "min":36,
       "pattern":"[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}"
     },
+    "ConstructLogicalID":{
+      "type":"string",
+      "max":255,
+      "min":1,
+      "pattern":"[a-zA-Z][a-zA-Z0-9]*"
+    },
     "ConstructProperties":{
       "type":"map",
       "key":{"shape":"ConstructPropertyKey"},
@@ -2203,7 +2422,7 @@
     },
     "ConstructPropertyKey":{
       "type":"string",
-      "max":24,
+      "max":128,
       "min":0
     },
     "Cpus":{
@@ -2273,6 +2492,10 @@
         "mapAutoTaggingMpeID":{
           "shape":"TagValue",
           "documentation":"<p>Launch configuration template map auto tagging MPE ID.</p>"
+        },
+        "mapAutoTaggingKey":{
+          "shape":"TagKey",
+          "documentation":"<p>Launch configuration template map auto tagging key.</p>"
         },
         "tags":{
           "shape":"TagsMap",
@@ -2350,6 +2573,10 @@
           "shape":"SourceConfigurationList",
           "documentation":"<p>A list of source configurations for the network migration.</p>"
         },
+        "definitionType":{
+          "shape":"DefinitionType",
+          "documentation":"<p>Specifies the type of the definition. <code>MIGRATION</code> migrates an existing network. <code>NEW_NETWORK</code> designs a new network. If you omit this value, the definition type is <code>MIGRATION</code>.</p>"
+        },
         "targetS3Configuration":{
           "shape":"TargetS3Configuration",
           "documentation":"<p>The S3 configuration for storing the target network artifacts.</p>"
@@ -2377,6 +2604,102 @@
         "scopeTags":{
           "shape":"ScopeTagsMap",
           "documentation":"<p>Scope tags for the network migration definition to control access and organization.</p>"
+        }
+      }
+    },
+    "CreateOperation":{
+      "type":"structure",
+      "members":{
+        "name":{
+          "shape":"SegmentConstructName",
+          "documentation":"<p>The name for the new construct.</p>"
+        },
+        "excluded":{
+          "shape":"Boolean",
+          "documentation":"<p>Whether the new construct is excluded from the migration.</p>"
+        },
+        "properties":{
+          "shape":"EnrichedProperties",
+          "documentation":"<p>The properties of the new construct, using their native value types.</p>"
+        },
+        "configuration":{
+          "shape":"OperationConfigurationUnion",
+          "documentation":"<p>The initial construct-type-specific behavioral configuration for the new construct.</p>"
+        }
+      },
+      "documentation":"<p>An operation that creates a new construct in the segment.</p>"
+    },
+    "CreateRemoteSourceActionRequest":{
+      "type":"structure",
+      "required":[
+        "name",
+        "ssmParameterName"
+      ],
+      "members":{
+        "name":{
+          "shape":"RemoteSourceActionName",
+          "documentation":"<p>The name of the source action.</p>"
+        },
+        "description":{
+          "shape":"RemoteSourceActionDescription",
+          "documentation":"<p>A description of the source action.</p>"
+        },
+        "ssmParameterName":{
+          "shape":"SsmParameterStoreParameterName",
+          "documentation":"<p>AWS Systems Manager Parameter Store parameter name.</p>"
+        },
+        "timeoutSeconds":{
+          "shape":"RemoteSourceActionTimeoutSeconds",
+          "documentation":"<p>The maximum time, in seconds, that the script can run on each source server.</p>"
+        },
+        "operatingSystem":{
+          "shape":"RemoteSourceActionOperatingSystem",
+          "documentation":"<p>The operating system of the source servers that the script runs on. Set to <code>linux</code> or <code>windows</code> to run the script only on source servers with that operating system, or <code>all</code> to run it on both.</p>"
+        },
+        "tags":{
+          "shape":"TagsMap",
+          "documentation":"<p>Tags to assign to the source action.</p>"
+        },
+        "accountID":{
+          "shape":"AccountID",
+          "documentation":"<p>Account ID.</p>"
+        }
+      }
+    },
+    "CreateRemoteSourceActionResponse":{
+      "type":"structure",
+      "members":{
+        "remoteSourceActionID":{
+          "shape":"RemoteSourceActionID",
+          "documentation":"<p>The unique identifier of the source action.</p>"
+        },
+        "arn":{
+          "shape":"ARN",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the source action.</p>"
+        },
+        "name":{
+          "shape":"RemoteSourceActionName",
+          "documentation":"<p>The name of the source action.</p>"
+        },
+        "description":{
+          "shape":"RemoteSourceActionDescription",
+          "documentation":"<p>A description of the source action.</p>"
+        },
+        "ssmParameterName":{
+          "shape":"SsmParameterStoreParameterName",
+          "documentation":"<p>AWS Systems Manager Parameter Store parameter name.</p>"
+        },
+        "timeoutSeconds":{
+          "shape":"RemoteSourceActionTimeoutSeconds",
+          "documentation":"<p>The maximum time, in seconds, that the script can run on each source server.</p>"
+        },
+        "operatingSystem":{
+          "shape":"OperatingSystemString",
+          "documentation":"<p>The operating system of the source servers that the script runs on. Absent when the script runs on both Linux and Windows.</p>"
+        },
+        "tags":{
+          "shape":"TagsMap",
+          "documentation":"<p>Tags assigned to the source action.</p>"
         }
       }
     },
@@ -2459,6 +2782,10 @@
         "storeSnapshotOnLocalZone":{
           "shape":"Boolean",
           "documentation":"<p>Request to store snapshot on local zone during Replication Settings template creation.</p>"
+        },
+        "outpostSnapshotLocation":{
+          "shape":"OutpostSnapshotLocation",
+          "documentation":"<p>Request to set the location of replication snapshots when the staging area subnet is on an AWS Outpost during Replication Settings template creation. Set to <code>OUTPOST</code> to keep replication snapshots on the Outpost, or <code>REGION</code> to store them in the AWS Region. Required when the staging area subnet is on an Outpost, and not allowed otherwise.</p>"
         },
         "storageConfiguration":{
           "shape":"StorageConfiguration",
@@ -2559,6 +2886,10 @@
         "replicatorId":{
           "shape":"ReplicatorID",
           "documentation":"<p>Replication server instance ID.</p>"
+        },
+        "stagingOutpostArn":{
+          "shape":"OutpostARN",
+          "documentation":"<p>The ARN of the AWS Outpost that hosts the staging area, when the staging area subnet is on an Outpost.</p>"
         }
       },
       "documentation":"<p>Request data replication info.</p>"
@@ -2675,6 +3006,13 @@
         "SHIPPING_SNAPSHOT"
       ]
     },
+    "DefinitionType":{
+      "type":"string",
+      "enum":[
+        "MIGRATION",
+        "NEW_NETWORK"
+      ]
+    },
     "DeleteApplicationRequest":{
       "type":"structure",
       "required":["applicationID"],
@@ -2749,10 +3087,35 @@
       "type":"structure",
       "members":{}
     },
+    "DeleteOnTermination":{
+      "type":"string",
+      "enum":[
+        "ENABLED",
+        "DISABLED"
+      ]
+    },
     "DeleteOperation":{
       "type":"structure",
       "members":{},
       "documentation":"<p>An operation that deletes a construct from the mapping.</p>"
+    },
+    "DeleteRemoteSourceActionRequest":{
+      "type":"structure",
+      "required":["remoteSourceActionID"],
+      "members":{
+        "remoteSourceActionID":{
+          "shape":"RemoteSourceActionID",
+          "documentation":"<p>The unique identifier of the source action to delete.</p>"
+        },
+        "accountID":{
+          "shape":"AccountID",
+          "documentation":"<p>Account ID.</p>"
+        }
+      }
+    },
+    "DeleteRemoteSourceActionResponse":{
+      "type":"structure",
+      "members":{}
     },
     "DeleteReplicationConfigurationTemplateRequest":{
       "type":"structure",
@@ -3159,6 +3522,11 @@
       "max":1000,
       "min":0
     },
+    "Document":{
+      "type":"structure",
+      "members":{},
+      "document":true
+    },
     "DocumentVersion":{
       "type":"string",
       "pattern":"(\\$DEFAULT|\\$LATEST|[0-9]+)"
@@ -3183,6 +3551,20 @@
     "EncryptionAlgorithm":{
       "type":"string",
       "enum":["SHA256"]
+    },
+    "EnrichedProperties":{
+      "type":"map",
+      "key":{"shape":"EnrichedPropertyKey"},
+      "value":{"shape":"Document"},
+      "documentation":"<p>A map of construct property keys to values, using native types such as strings, numbers, references, and lists.</p>",
+      "max":20,
+      "min":1
+    },
+    "EnrichedPropertyKey":{
+      "type":"string",
+      "max":128,
+      "min":1,
+      "pattern":"[A-Za-z][A-Za-z0-9]*"
     },
     "EnrichmentSourceS3Configuration":{
       "type":"structure",
@@ -3447,6 +3829,41 @@
         }
       },
       "documentation":"<p>FSx for ONTAP storage configuration.</p>"
+    },
+    "GetLaunchConfigurationDefaultsRequest":{
+      "type":"structure",
+      "required":["sourceServerID"],
+      "members":{
+        "sourceServerID":{
+          "shape":"SourceServerID",
+          "documentation":"<p>Request to get the launch configuration defaults by Source Server ID.</p>"
+        },
+        "accountID":{
+          "shape":"AccountID",
+          "documentation":"<p>Request to get the launch configuration defaults by Account ID.</p>"
+        }
+      }
+    },
+    "GetLaunchConfigurationDefaultsResponse":{
+      "type":"structure",
+      "members":{
+        "sourceServerID":{
+          "shape":"SourceServerID",
+          "documentation":"<p>Source Server ID of the launch configuration defaults.</p>"
+        },
+        "smallVolumeMaxSize":{
+          "shape":"PositiveInteger",
+          "documentation":"<p>Disks up to this size, in GiB, use the small volume configuration, and larger disks use the large one. <code>0</code> means every disk uses the large one.</p>"
+        },
+        "smallVolumeConfiguration":{
+          "shape":"SourceServerVolumeConfiguration",
+          "documentation":"<p>Volume configuration for disks up to <code>smallVolumeMaxSize</code>. Omitted when none of its fields is set.</p>"
+        },
+        "largeVolumeConfiguration":{
+          "shape":"SourceServerVolumeConfiguration",
+          "documentation":"<p>Volume configuration for disks larger than <code>smallVolumeMaxSize</code>. Omitted when none of its fields is set.</p>"
+        }
+      }
     },
     "GetLaunchConfigurationRequest":{
       "type":"structure",
@@ -3837,6 +4254,84 @@
         "TERMINATE"
       ]
     },
+    "InsightID":{
+      "type":"string",
+      "max":36,
+      "min":36,
+      "pattern":"[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}"
+    },
+    "InsightLevel":{
+      "type":"string",
+      "documentation":"<p>The level that a network migration insight applies to: the run, a segment, or a construct.</p>",
+      "enum":[
+        "RUN",
+        "SEGMENT",
+        "CONSTRUCT"
+      ]
+    },
+    "InsightMessage":{
+      "type":"structure",
+      "members":{
+        "code":{
+          "shape":"BoundedString",
+          "documentation":"<p>A stable identifier for the kind of insight.</p>"
+        },
+        "message":{
+          "shape":"InsightMessageText",
+          "documentation":"<p>The human-readable insight message.</p>"
+        },
+        "topic":{
+          "shape":"BoundedString",
+          "documentation":"<p>The topic that the insight relates to.</p>"
+        }
+      },
+      "documentation":"<p>The content of a network migration insight.</p>"
+    },
+    "InsightMessageText":{
+      "type":"string",
+      "max":4096,
+      "min":1
+    },
+    "InsightProducerID":{
+      "type":"string",
+      "max":128,
+      "min":1,
+      "pattern":"[0-9a-zA-Z-]+"
+    },
+    "InsightProducerName":{
+      "type":"string",
+      "documentation":"<p>The job type or API name that produced a network migration insight.</p>",
+      "enum":[
+        "MAPPING",
+        "MAPPING_UPDATE",
+        "CODE_GENERATION",
+        "DEPLOY",
+        "DEPLOYED_STACKS_DELETION",
+        "ANALYZE"
+      ]
+    },
+    "InsightProducerType":{
+      "type":"string",
+      "documentation":"<p>Whether a network migration insight was produced by a job or by an API request.</p>",
+      "enum":[
+        "JOB",
+        "API"
+      ]
+    },
+    "InsightType":{
+      "type":"string",
+      "documentation":"<p>The type of a network migration insight.</p>",
+      "enum":[
+        "INTENT_GAP",
+        "WARNING",
+        "QUESTION",
+        "INFO",
+        "ERROR",
+        "CONTEXT",
+        "EXCLUDED",
+        "BEHAVIOR_CHANGE"
+      ]
+    },
     "InternalServerException":{
       "type":"structure",
       "required":["message"],
@@ -3864,7 +4359,7 @@
     "Iops":{
       "type":"long",
       "box":true,
-      "max":64000,
+      "max":80000,
       "min":100
     },
     "IpAssignmentStrategy":{
@@ -4154,6 +4649,10 @@
         "mapAutoTaggingMpeID":{
           "shape":"TagValue",
           "documentation":"<p>Map auto tagging MPE ID.</p>"
+        },
+        "mapAutoTaggingKey":{
+          "shape":"TagKey",
+          "documentation":"<p>Map auto tagging key.</p>"
         }
       }
     },
@@ -4180,6 +4679,10 @@
         "mapAutoTaggingMpeID":{
           "shape":"TagValue",
           "documentation":"<p>Launch configuration template map auto tagging MPE ID.</p>"
+        },
+        "mapAutoTaggingKey":{
+          "shape":"TagKey",
+          "documentation":"<p>Launch configuration template map auto tagging key.</p>"
         },
         "tags":{
           "shape":"TagsMap",
@@ -5217,6 +5720,73 @@
         }
       }
     },
+    "ListNetworkMigrationInsightsFilters":{
+      "type":"structure",
+      "members":{
+        "insightTypes":{
+          "shape":"ListNetworkMigrationInsightsTypesFilter",
+          "documentation":"<p>The insight types to include in the results.</p>"
+        }
+      },
+      "documentation":"<p>Filters for listing network migration insights.</p>"
+    },
+    "ListNetworkMigrationInsightsRequest":{
+      "type":"structure",
+      "required":["networkMigrationDefinitionID"],
+      "members":{
+        "networkMigrationDefinitionID":{
+          "shape":"NetworkMigrationDefinitionID",
+          "documentation":"<p>The unique identifier of the network migration definition.</p>"
+        },
+        "networkMigrationExecutionID":{
+          "shape":"NetworkMigrationExecutionID",
+          "documentation":"<p>The unique identifier of the network migration execution to narrow the results to.</p>"
+        },
+        "producerID":{
+          "shape":"InsightProducerID",
+          "documentation":"<p>The identifier of the job or API request to narrow the results to.</p>"
+        },
+        "segmentID":{
+          "shape":"SegmentID",
+          "documentation":"<p>The unique identifier of the segment to narrow the results to.</p>"
+        },
+        "constructID":{
+          "shape":"ConstructID",
+          "documentation":"<p>The unique identifier of the construct to narrow the results to.</p>"
+        },
+        "filters":{
+          "shape":"ListNetworkMigrationInsightsFilters",
+          "documentation":"<p>Filters to apply when listing insights.</p>"
+        },
+        "maxResults":{
+          "shape":"MaxResultsType",
+          "documentation":"<p>The maximum number of results to return in a single call.</p>"
+        },
+        "nextToken":{
+          "shape":"PaginationToken",
+          "documentation":"<p>The token for the next page of results.</p>"
+        }
+      }
+    },
+    "ListNetworkMigrationInsightsResponse":{
+      "type":"structure",
+      "members":{
+        "items":{
+          "shape":"NetworkMigrationInsightsList",
+          "documentation":"<p>A list of network migration insights.</p>"
+        },
+        "nextToken":{
+          "shape":"PaginationToken",
+          "documentation":"<p>The token to use to retrieve the next page of results. This value is null when there are no more results to return.</p>"
+        }
+      }
+    },
+    "ListNetworkMigrationInsightsTypesFilter":{
+      "type":"list",
+      "member":{"shape":"InsightType"},
+      "max":10,
+      "min":0
+    },
     "ListNetworkMigrationMapperSegmentConstructTypesFilter":{
       "type":"list",
       "member":{"shape":"NetworkMigrationMapperSegmentConstructType"},
@@ -5274,6 +5844,14 @@
         "nextToken":{
           "shape":"PaginationToken",
           "documentation":"<p>The token for the next page of results.</p>"
+        },
+        "includeEnrichedProperties":{
+          "shape":"Boolean",
+          "documentation":"<p>Whether to return construct properties using their native value types.</p>"
+        },
+        "includeConfiguration":{
+          "shape":"Boolean",
+          "documentation":"<p>Whether to return construct-type-specific behavioral configuration.</p>"
         }
       }
     },
@@ -5457,6 +6035,186 @@
         "items":{
           "shape":"NetworkMigrationMappingsList",
           "documentation":"<p>A list of network migration mapping job details.</p>"
+        },
+        "nextToken":{
+          "shape":"PaginationToken",
+          "documentation":"<p>The token to use to retrieve the next page of results. This value is null when there are no more results to return.</p>"
+        }
+      }
+    },
+    "ListRemoteSourceActionInvocationResultsRequest":{
+      "type":"structure",
+      "required":["sourceServerID"],
+      "members":{
+        "sourceServerID":{
+          "shape":"SourceServerID",
+          "documentation":"<p>The unique identifier of the source server to list invocation results for.</p>"
+        },
+        "maxResults":{
+          "shape":"MaxResultsType",
+          "documentation":"<p>The maximum number of results to return in a single call.</p>"
+        },
+        "nextToken":{
+          "shape":"PaginationToken",
+          "documentation":"<p>The token for the next page of results.</p>"
+        },
+        "accountID":{
+          "shape":"AccountID",
+          "documentation":"<p>Account ID.</p>"
+        }
+      }
+    },
+    "ListRemoteSourceActionInvocationResultsResponse":{
+      "type":"structure",
+      "members":{
+        "items":{
+          "shape":"RemoteSourceActionInvocationResultsList",
+          "documentation":"<p>A list of source action invocation results.</p>"
+        },
+        "nextToken":{
+          "shape":"PaginationToken",
+          "documentation":"<p>The token to use to retrieve the next page of results. This value is null when there are no more results to return.</p>"
+        }
+      }
+    },
+    "ListRemoteSourceActionInvocationsRequest":{
+      "type":"structure",
+      "required":["remoteSourceActionJobID"],
+      "members":{
+        "remoteSourceActionJobID":{
+          "shape":"RemoteSourceActionJobID",
+          "documentation":"<p>The unique identifier of the job to list invocations for.</p>"
+        },
+        "filters":{
+          "shape":"ListRemoteSourceActionInvocationsRequestFilters",
+          "documentation":"<p>Filters to apply when listing invocations, such as source server or status.</p>"
+        },
+        "maxResults":{
+          "shape":"MaxResultsType",
+          "documentation":"<p>The maximum number of results to return in a single call.</p>"
+        },
+        "nextToken":{
+          "shape":"PaginationToken",
+          "documentation":"<p>The token for the next page of results.</p>"
+        },
+        "accountID":{
+          "shape":"AccountID",
+          "documentation":"<p>Account ID.</p>"
+        }
+      }
+    },
+    "ListRemoteSourceActionInvocationsRequestFilters":{
+      "type":"structure",
+      "members":{
+        "sourceServerArns":{
+          "shape":"SourceServerArnsFilter",
+          "documentation":"<p>A list of source server ARNs to filter by.</p>"
+        },
+        "remoteSourceActionArns":{
+          "shape":"RemoteSourceActionArnsFilter",
+          "documentation":"<p>A list of source action ARNs to filter by.</p>"
+        },
+        "statuses":{
+          "shape":"RemoteSourceActionInvocationStatusesFilter",
+          "documentation":"<p>A list of invocation statuses to filter by.</p>"
+        }
+      },
+      "documentation":"<p>Filters for listing source action invocations.</p>"
+    },
+    "ListRemoteSourceActionInvocationsResponse":{
+      "type":"structure",
+      "members":{
+        "items":{
+          "shape":"RemoteSourceActionInvocationsList",
+          "documentation":"<p>A list of source action invocations.</p>"
+        },
+        "nextToken":{
+          "shape":"PaginationToken",
+          "documentation":"<p>The token to use to retrieve the next page of results. This value is null when there are no more results to return.</p>"
+        }
+      }
+    },
+    "ListRemoteSourceActionJobsRequest":{
+      "type":"structure",
+      "members":{
+        "filters":{
+          "shape":"ListRemoteSourceActionJobsRequestFilters",
+          "documentation":"<p>Filters to apply when listing source action jobs.</p>"
+        },
+        "maxResults":{
+          "shape":"MaxResultsType",
+          "documentation":"<p>The maximum number of results to return in a single call.</p>"
+        },
+        "nextToken":{
+          "shape":"PaginationToken",
+          "documentation":"<p>The token for the next page of results.</p>"
+        },
+        "accountID":{
+          "shape":"AccountID",
+          "documentation":"<p>Account ID.</p>"
+        }
+      }
+    },
+    "ListRemoteSourceActionJobsRequestFilters":{
+      "type":"structure",
+      "members":{
+        "remoteSourceActionJobIDs":{
+          "shape":"RemoteSourceActionJobIDsFilter",
+          "documentation":"<p>A list of job IDs to filter by.</p>"
+        }
+      },
+      "documentation":"<p>Filters for listing source action jobs.</p>"
+    },
+    "ListRemoteSourceActionJobsResponse":{
+      "type":"structure",
+      "members":{
+        "items":{
+          "shape":"RemoteSourceActionJobsList",
+          "documentation":"<p>A list of source action jobs.</p>"
+        },
+        "nextToken":{
+          "shape":"PaginationToken",
+          "documentation":"<p>The token to use to retrieve the next page of results. This value is null when there are no more results to return.</p>"
+        }
+      }
+    },
+    "ListRemoteSourceActionsRequest":{
+      "type":"structure",
+      "members":{
+        "filters":{
+          "shape":"ListRemoteSourceActionsRequestFilters",
+          "documentation":"<p>Filters to apply when listing source actions.</p>"
+        },
+        "maxResults":{
+          "shape":"MaxResultsType",
+          "documentation":"<p>The maximum number of results to return in a single call.</p>"
+        },
+        "nextToken":{
+          "shape":"PaginationToken",
+          "documentation":"<p>The token for the next page of results.</p>"
+        },
+        "accountID":{
+          "shape":"AccountID",
+          "documentation":"<p>Account ID.</p>"
+        }
+      }
+    },
+    "ListRemoteSourceActionsRequestFilters":{
+      "type":"structure",
+      "members":{
+        "remoteSourceActionIDs":{
+          "shape":"RemoteSourceActionIDsFilter",
+          "documentation":"<p>A list of source action IDs to filter by.</p>"
+        }
+      },
+      "documentation":"<p>Filters for listing source actions.</p>"
+    },
+    "ListRemoteSourceActionsResponse":{
+      "type":"structure",
+      "members":{
+        "items":{
+          "shape":"RemoteSourceActionsList",
+          "documentation":"<p>A list of source actions.</p>"
         },
         "nextToken":{
           "shape":"PaginationToken",
@@ -6018,6 +6776,10 @@
           "shape":"SourceConfigurationList",
           "documentation":"<p>A list of source configurations for the network migration.</p>"
         },
+        "definitionType":{
+          "shape":"DefinitionType",
+          "documentation":"<p>Specifies the type of the definition. <code>MIGRATION</code> migrates an existing network. <code>NEW_NETWORK</code> designs a new network.</p>"
+        },
         "targetS3Configuration":{
           "shape":"TargetS3Configuration",
           "documentation":"<p>The S3 configuration for storing the target network artifacts.</p>"
@@ -6104,6 +6866,10 @@
         "scopeTags":{
           "shape":"ScopeTagsMap",
           "documentation":"<p>Scope tags for the network migration definition.</p>"
+        },
+        "definitionType":{
+          "shape":"DefinitionType",
+          "documentation":"<p>The type of the network migration definition.</p>"
         }
       },
       "documentation":"<p>A summary of a network migration definition.</p>"
@@ -6292,6 +7058,66 @@
       "max":5,
       "min":0
     },
+    "NetworkMigrationInsight":{
+      "type":"structure",
+      "members":{
+        "networkMigrationDefinitionID":{
+          "shape":"NetworkMigrationDefinitionID",
+          "documentation":"<p>The unique identifier of the network migration definition the insight belongs to.</p>"
+        },
+        "networkMigrationExecutionID":{
+          "shape":"NetworkMigrationExecutionID",
+          "documentation":"<p>The unique identifier of the network migration execution the insight belongs to.</p>"
+        },
+        "producerID":{
+          "shape":"InsightProducerID",
+          "documentation":"<p>The identifier of the job or API request that produced the insight.</p>"
+        },
+        "producerType":{
+          "shape":"InsightProducerType",
+          "documentation":"<p>Whether the insight was produced by a job or by an API request.</p>"
+        },
+        "producerName":{
+          "shape":"InsightProducerName",
+          "documentation":"<p>The job type or API name that produced the insight.</p>"
+        },
+        "segmentID":{
+          "shape":"SegmentID",
+          "documentation":"<p>The unique identifier of the segment the insight relates to; absent for run-level insights.</p>"
+        },
+        "constructID":{
+          "shape":"ConstructID",
+          "documentation":"<p>The unique identifier of the construct the insight relates to; absent for run-level and segment-level insights.</p>"
+        },
+        "insightID":{
+          "shape":"InsightID",
+          "documentation":"<p>The unique identifier of the insight.</p>"
+        },
+        "insightLevel":{
+          "shape":"InsightLevel",
+          "documentation":"<p>The level that the insight applies to: the run, a segment, or a construct.</p>"
+        },
+        "insightType":{
+          "shape":"InsightType",
+          "documentation":"<p>The type of the insight.</p>"
+        },
+        "insightMessage":{
+          "shape":"InsightMessage",
+          "documentation":"<p>The content of the insight.</p>"
+        },
+        "createdAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The timestamp when the insight was created.</p>"
+        }
+      },
+      "documentation":"<p>An insight produced during a network migration, such as a warning, decision, question, or other context beyond the migrated output.</p>"
+    },
+    "NetworkMigrationInsightsList":{
+      "type":"list",
+      "member":{"shape":"NetworkMigrationInsight"},
+      "max":100,
+      "min":0
+    },
     "NetworkMigrationJobID":{
       "type":"string",
       "max":36,
@@ -6410,15 +7236,23 @@
         "properties":{
           "shape":"ConstructProperties",
           "documentation":"<p>The properties and configuration of the construct.</p>"
+        },
+        "enrichedProperties":{
+          "shape":"EnrichedProperties",
+          "documentation":"<p>The construct properties using their native value types. Returned by Get, and by List when includeEnrichedProperties is true.</p>"
+        },
+        "configuration":{
+          "shape":"OperationConfigurationUnion",
+          "documentation":"<p>The construct-type-specific behavioral configuration. Returned by Get, and by List when includeConfiguration is true.</p>"
         }
       },
       "documentation":"<p>Represents a construct within a mapper segment. A construct is an individual infrastructure component such as a VPC, subnet, security group, route table, or other network resource that is part of the network migration.</p>"
     },
     "NetworkMigrationMapperSegmentConstructType":{
       "type":"string",
-      "max":24,
+      "max":64,
       "min":0,
-      "pattern":"AWS::([A-Z\\d]){2,10}::[a-zA-Z\\d]{2,30}"
+      "pattern":"AWS::([A-Z\\d]){2,10}::[a-zA-Z\\d]{2,47}"
     },
     "NetworkMigrationMapperSegmentConstructs":{
       "type":"list",
@@ -6533,6 +7367,21 @@
       "type":"string",
       "pattern":"(linux|windows)"
     },
+    "OperationConfigurationUnion":{
+      "type":"structure",
+      "members":{
+        "securityGroup":{
+          "shape":"SecurityGroupConfiguration",
+          "documentation":"<p>Behavioral configuration for a security group construct.</p>"
+        },
+        "securityGroupRule":{
+          "shape":"SecurityGroupRuleConfiguration",
+          "documentation":"<p>Behavioral configuration for a security group rule construct.</p>"
+        }
+      },
+      "documentation":"<p>Construct-type-specific behavioral configuration. The variant provided must match the construct type.</p>",
+      "union":true
+    },
     "OperationUnion":{
       "type":"structure",
       "members":{
@@ -6551,6 +7400,14 @@
         "update":{
           "shape":"UpdateOperation",
           "documentation":"<p>An update operation to modify construct properties.</p>"
+        },
+        "updateV2":{
+          "shape":"UpdateOperationV2",
+          "documentation":"<p>An update operation that modifies a construct using native property value types and behavioral configuration, with partial updates and property removal.</p>"
+        },
+        "create":{
+          "shape":"CreateOperation",
+          "documentation":"<p>A create operation that adds a new construct to the segment, identified by the constructLogicalID on the parent construct entry.</p>"
         }
       },
       "documentation":"<p>A union type representing the operation to perform on a construct during a mapping update.</p>",
@@ -6561,6 +7418,19 @@
       "box":true,
       "max":10000,
       "min":1001
+    },
+    "OutpostARN":{
+      "type":"string",
+      "max":255,
+      "min":20,
+      "pattern":"arn:aws([a-z-]+)?:outposts:[a-z\\d-]+:\\d{12}:outpost/op-[a-f0-9]{17}"
+    },
+    "OutpostSnapshotLocation":{
+      "type":"string",
+      "enum":[
+        "OUTPOST",
+        "REGION"
+      ]
     },
     "PaginationToken":{
       "type":"string",
@@ -6677,6 +7547,13 @@
         }
       },
       "documentation":"<p>Status of the Post Launch Actions running on the Test or Cutover instance.</p>"
+    },
+    "PropertiesToDelete":{
+      "type":"list",
+      "member":{"shape":"EnrichedPropertyKey"},
+      "documentation":"<p>A list of construct property keys to remove.</p>",
+      "max":20,
+      "min":1
     },
     "PutSourceServerActionRequest":{
       "type":"structure",
@@ -6814,6 +7691,258 @@
         }
       }
     },
+    "RemoteSourceAction":{
+      "type":"structure",
+      "members":{
+        "remoteSourceActionID":{
+          "shape":"RemoteSourceActionID",
+          "documentation":"<p>The unique identifier of the source action.</p>"
+        },
+        "arn":{
+          "shape":"ARN",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the source action.</p>"
+        },
+        "name":{
+          "shape":"RemoteSourceActionName",
+          "documentation":"<p>The name of the source action.</p>"
+        },
+        "description":{
+          "shape":"RemoteSourceActionDescription",
+          "documentation":"<p>A description of the source action.</p>"
+        },
+        "ssmParameterName":{
+          "shape":"SsmParameterStoreParameterName",
+          "documentation":"<p>AWS Systems Manager Parameter Store parameter name.</p>"
+        },
+        "timeoutSeconds":{
+          "shape":"RemoteSourceActionTimeoutSeconds",
+          "documentation":"<p>The maximum time, in seconds, that the script can run on each source server.</p>"
+        },
+        "operatingSystem":{
+          "shape":"OperatingSystemString",
+          "documentation":"<p>The operating system of the source servers that the script runs on. Absent when the script runs on both Linux and Windows.</p>"
+        },
+        "tags":{
+          "shape":"TagsMap",
+          "documentation":"<p>Tags assigned to the source action.</p>"
+        }
+      },
+      "documentation":"<p>A source action, which references a script in AWS Systems Manager Parameter Store that Application Migration Service runs on source servers through a connector.</p>"
+    },
+    "RemoteSourceActionArn":{
+      "type":"string",
+      "max":100,
+      "min":20,
+      "pattern":"arn:[\\w-]+:mgn:([a-z]{2}-(gov-)?[a-z]+-\\d{1})?:(\\d{12})?:remote-source-action\\/(rsa-[0-9a-zA-Z]{17})"
+    },
+    "RemoteSourceActionArns":{
+      "type":"list",
+      "member":{"shape":"RemoteSourceActionArn"},
+      "max":1,
+      "min":1
+    },
+    "RemoteSourceActionArnsFilter":{
+      "type":"list",
+      "member":{"shape":"RemoteSourceActionArn"},
+      "max":1,
+      "min":0
+    },
+    "RemoteSourceActionDescription":{
+      "type":"string",
+      "max":600,
+      "min":0,
+      "pattern":"[^\\x00]*"
+    },
+    "RemoteSourceActionID":{
+      "type":"string",
+      "max":21,
+      "min":21,
+      "pattern":"rsa-[0-9a-zA-Z]{17}"
+    },
+    "RemoteSourceActionIDsFilter":{
+      "type":"list",
+      "member":{"shape":"RemoteSourceActionID"},
+      "max":200,
+      "min":0
+    },
+    "RemoteSourceActionInvocation":{
+      "type":"structure",
+      "members":{
+        "sourceServerArn":{
+          "shape":"SourceServerArn",
+          "documentation":"<p>The ARN of the source server.</p>"
+        },
+        "remoteSourceActionArn":{
+          "shape":"RemoteSourceActionArn",
+          "documentation":"<p>The ARN of the source action.</p>"
+        },
+        "ssmCommandInvocationID":{
+          "shape":"SsmCommandInvocationID",
+          "documentation":"<p>The ID of the AWS Systems Manager command that runs the source action on the connector.</p>"
+        },
+        "status":{
+          "shape":"RemoteSourceActionInvocationStatus",
+          "documentation":"<p>The current status of the invocation.</p>"
+        },
+        "startedAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The timestamp when the command started running.</p>"
+        },
+        "endedAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The timestamp when the command finished.</p>"
+        }
+      },
+      "documentation":"<p>The run of a source action on one source server as part of a job.</p>"
+    },
+    "RemoteSourceActionInvocationResult":{
+      "type":"structure",
+      "members":{
+        "remoteSourceActionID":{
+          "shape":"RemoteSourceActionID",
+          "documentation":"<p>The unique identifier of the source action.</p>"
+        },
+        "connectorOwnerAccountID":{
+          "shape":"AccountID",
+          "documentation":"<p>The ID of the account that owns the connector that ran the source action.</p>"
+        },
+        "status":{
+          "shape":"RemoteSourceActionInvocationStatus",
+          "documentation":"<p>The status of the latest invocation.</p>"
+        },
+        "startedAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The timestamp when the command started running.</p>"
+        },
+        "endedAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The timestamp when the command finished.</p>"
+        }
+      },
+      "documentation":"<p>The latest invocation result of a source action on a source server.</p>"
+    },
+    "RemoteSourceActionInvocationResultsList":{
+      "type":"list",
+      "member":{"shape":"RemoteSourceActionInvocationResult"}
+    },
+    "RemoteSourceActionInvocationStatus":{
+      "type":"string",
+      "documentation":"<p>The status of a source action invocation. Can be PENDING, IN_PROGRESS, DELAYED, SUCCESS, CANCELLED, TIMED_OUT, FAILED, CANCELLING, or STALLED.</p>",
+      "enum":[
+        "PENDING",
+        "IN_PROGRESS",
+        "DELAYED",
+        "SUCCESS",
+        "CANCELLED",
+        "TIMED_OUT",
+        "FAILED",
+        "CANCELLING",
+        "STALLED"
+      ]
+    },
+    "RemoteSourceActionInvocationStatusesFilter":{
+      "type":"list",
+      "member":{"shape":"RemoteSourceActionInvocationStatus"},
+      "max":10,
+      "min":0
+    },
+    "RemoteSourceActionInvocationsList":{
+      "type":"list",
+      "member":{"shape":"RemoteSourceActionInvocation"}
+    },
+    "RemoteSourceActionJob":{
+      "type":"structure",
+      "members":{
+        "remoteSourceActionJobID":{
+          "shape":"RemoteSourceActionJobID",
+          "documentation":"<p>The unique identifier of the job.</p>"
+        },
+        "arn":{
+          "shape":"ARN",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the job.</p>"
+        },
+        "status":{
+          "shape":"RemoteSourceActionJobStatus",
+          "documentation":"<p>The current status of the job.</p>"
+        },
+        "sourceServerArns":{
+          "shape":"SourceServerArns",
+          "documentation":"<p>The ARNs of the source servers that the job runs on.</p>"
+        },
+        "remoteSourceActionArns":{
+          "shape":"RemoteSourceActionArns",
+          "documentation":"<p>The ARNs of the source actions that the job runs.</p>"
+        },
+        "connectorArn":{
+          "shape":"ConnectorArn",
+          "documentation":"<p>The ARN of the connector that runs the job.</p>"
+        },
+        "startedAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The timestamp when the job started running.</p>"
+        },
+        "endedAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The timestamp when the job completed or failed.</p>"
+        },
+        "statusReason":{
+          "shape":"LargeBoundedString",
+          "documentation":"<p>The reason the job failed.</p>"
+        },
+        "tags":{
+          "shape":"TagsMap",
+          "documentation":"<p>Tags assigned to the job.</p>"
+        }
+      },
+      "documentation":"<p>A job that runs a source action on source servers through a connector.</p>"
+    },
+    "RemoteSourceActionJobID":{
+      "type":"string",
+      "max":24,
+      "min":24,
+      "pattern":"rsajob-[0-9a-zA-Z]{17}"
+    },
+    "RemoteSourceActionJobIDsFilter":{
+      "type":"list",
+      "member":{"shape":"RemoteSourceActionJobID"},
+      "max":200,
+      "min":0
+    },
+    "RemoteSourceActionJobStatus":{
+      "type":"string",
+      "documentation":"<p>The status of a source action job. Can be PENDING, RUNNING, COMPLETED, FAILED, or STALLED.</p>",
+      "enum":[
+        "PENDING",
+        "RUNNING",
+        "COMPLETED",
+        "FAILED",
+        "STALLED"
+      ]
+    },
+    "RemoteSourceActionJobsList":{
+      "type":"list",
+      "member":{"shape":"RemoteSourceActionJob"}
+    },
+    "RemoteSourceActionName":{
+      "type":"string",
+      "max":256,
+      "min":1,
+      "pattern":"[^\\s\\x00]( *[^\\s\\x00])*"
+    },
+    "RemoteSourceActionOperatingSystem":{
+      "type":"string",
+      "pattern":"(linux|windows|all)"
+    },
+    "RemoteSourceActionTimeoutSeconds":{
+      "type":"integer",
+      "box":true,
+      "max":5400,
+      "min":60
+    },
+    "RemoteSourceActionsList":{
+      "type":"list",
+      "member":{"shape":"RemoteSourceAction"}
+    },
     "RemoveSourceServerActionRequest":{
       "type":"structure",
       "required":[
@@ -6934,6 +8063,10 @@
         "storeSnapshotOnLocalZone":{
           "shape":"Boolean",
           "documentation":"<p>Replication Configuration store snapshot on local zone.</p>"
+        },
+        "outpostSnapshotLocation":{
+          "shape":"OutpostSnapshotLocation",
+          "documentation":"<p>Indicates the location of replication snapshots when the staging area subnet is on an AWS Outpost. <code>OUTPOST</code> keeps replication snapshots on the Outpost, and <code>REGION</code> stores them in the AWS Region.</p>"
         },
         "storageConfiguration":{
           "shape":"StorageConfiguration",
@@ -7084,6 +8217,10 @@
         "storeSnapshotOnLocalZone":{
           "shape":"Boolean",
           "documentation":"<p>Replication Configuration template store snapshot on local zone.</p>"
+        },
+        "outpostSnapshotLocation":{
+          "shape":"OutpostSnapshotLocation",
+          "documentation":"<p>Indicates the location of replication snapshots in the Replication Configuration template when the staging area subnet is on an AWS Outpost. <code>OUTPOST</code> keeps replication snapshots on the Outpost, and <code>REGION</code> stores them in the AWS Region.</p>"
         },
         "storageConfiguration":{
           "shape":"StorageConfiguration",
@@ -7264,6 +8401,34 @@
       "min":20,
       "pattern":"arn:[\\w-]+:secretsmanager:([a-z]{2}-(gov-)?[a-z]+-\\d{1})?:(\\d{12})?:secret:(.+)"
     },
+    "SecurityGroupAssociations":{
+      "type":"structure",
+      "members":{
+        "cidrs":{
+          "shape":"AssociationCidrList",
+          "documentation":"<p>The CIDR ranges associated with the security group. A provided list replaces the stored list; an empty list clears it, and omitting the field leaves it unchanged.</p>"
+        },
+        "vmUUIDs":{
+          "shape":"AssociationVmUUIDList",
+          "documentation":"<p>The UUIDs of the source machines associated with the security group.</p>"
+        },
+        "userProvidedIDs":{
+          "shape":"AssociationUserProvidedIDList",
+          "documentation":"<p>The user-provided identifiers of the source machines associated with the security group.</p>"
+        }
+      },
+      "documentation":"<p>The associations that bind a security group to source machines before they are provisioned.</p>"
+    },
+    "SecurityGroupConfiguration":{
+      "type":"structure",
+      "members":{
+        "associations":{
+          "shape":"SecurityGroupAssociations",
+          "documentation":"<p>The CIDR ranges and machine identifiers that associate source machines with the security group. Each list provided replaces the stored list rather than merging into it.</p>"
+        }
+      },
+      "documentation":"<p>Behavioral configuration for a security group construct.</p>"
+    },
     "SecurityGroupID":{
       "type":"string",
       "max":255,
@@ -7278,6 +8443,16 @@
         "MAP_DHCP"
       ]
     },
+    "SecurityGroupRuleConfiguration":{
+      "type":"structure",
+      "members":{
+        "enableReferencing":{
+          "shape":"Boolean",
+          "documentation":"<p>Whether automatic conversion of CIDR-based sources and destinations to security group references applies to this rule.</p>"
+        }
+      },
+      "documentation":"<p>Behavioral configuration for a security group rule construct.</p>"
+    },
     "SegmentConstructDescription":{
       "type":"string",
       "max":600,
@@ -7289,6 +8464,34 @@
       "max":256,
       "min":1,
       "pattern":"[^\\s\\x00]( *[^\\s\\x00])*"
+    },
+    "SegmentCreateOperation":{
+      "type":"structure",
+      "required":["name"],
+      "members":{
+        "name":{
+          "shape":"SegmentName",
+          "documentation":"<p>The name of the new segment.</p>"
+        },
+        "description":{
+          "shape":"SegmentDescription",
+          "documentation":"<p>A description of the new segment.</p>"
+        },
+        "targetAccount":{
+          "shape":"AccountID",
+          "documentation":"<p>The target AWS account for the new segment.</p>"
+        },
+        "scopeTags":{
+          "shape":"ScopeTagsMap",
+          "documentation":"<p>Scope tags for the new segment.</p>"
+        }
+      },
+      "documentation":"<p>An operation that creates a segment.</p>"
+    },
+    "SegmentDeleteOperation":{
+      "type":"structure",
+      "members":{},
+      "documentation":"<p>An operation that deletes a segment from the mapping.</p>"
     },
     "SegmentDescription":{
       "type":"string",
@@ -7302,11 +8505,58 @@
       "min":36,
       "pattern":"[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}"
     },
+    "SegmentLogicalID":{
+      "type":"string",
+      "max":64,
+      "min":0,
+      "pattern":"nmd[a-zA-Z0-9]+"
+    },
     "SegmentName":{
       "type":"string",
       "max":256,
       "min":1,
       "pattern":"[^\\s\\x00]( *[^\\s\\x00])*"
+    },
+    "SegmentOperation":{
+      "type":"structure",
+      "members":{
+        "create":{
+          "shape":"SegmentCreateOperation",
+          "documentation":"<p>A create operation to add a new segment.</p>"
+        },
+        "update":{
+          "shape":"SegmentUpdateOperation",
+          "documentation":"<p>An update operation to modify segment properties.</p>"
+        },
+        "delete":{
+          "shape":"SegmentDeleteOperation",
+          "documentation":"<p>A delete operation to remove a segment from the mapping.</p>"
+        }
+      },
+      "documentation":"<p>Specifies the operation to perform on a segment during a mapping update. Specify one of a create, update, or delete operation.</p>",
+      "union":true
+    },
+    "SegmentUpdateOperation":{
+      "type":"structure",
+      "members":{
+        "name":{
+          "shape":"SegmentName",
+          "documentation":"<p>The updated name for the segment.</p>"
+        },
+        "description":{
+          "shape":"SegmentDescription",
+          "documentation":"<p>The updated description for the segment.</p>"
+        },
+        "targetAccount":{
+          "shape":"AccountID",
+          "documentation":"<p>The updated target AWS account for the segment.</p>"
+        },
+        "scopeTags":{
+          "shape":"ScopeTagsMap",
+          "documentation":"<p>The updated scope tags for the segment.</p>"
+        }
+      },
+      "documentation":"<p>An operation that updates the properties of a segment.</p>"
     },
     "ServiceQuotaExceededException":{
       "type":"structure",
@@ -7367,7 +8617,7 @@
     "SourceConfigurationList":{
       "type":"list",
       "member":{"shape":"SourceConfiguration"},
-      "max":2,
+      "max":3,
       "min":0
     },
     "SourceEnvironment":{
@@ -7381,7 +8631,8 @@
         "LOGICAL_MODEL",
         "MODELIZE_IT",
         "AWS_DISCOVERY_COLLECTOR",
-        "MIGRATION_PLANNING_ARTIFACTS"
+        "MIGRATION_PLANNING_ARTIFACTS",
+        "F5_BIGIP"
       ]
     },
     "SourceProperties":{
@@ -7575,6 +8826,24 @@
       },
       "documentation":"<p>Source server post migration custom action filters.</p>"
     },
+    "SourceServerArn":{
+      "type":"string",
+      "max":100,
+      "min":20,
+      "pattern":"arn:[\\w-]+:mgn:([a-z]{2}-(gov-)?[a-z]+-\\d{1})?:(\\d{12})?:source-server\\/(s-[0-9a-zA-Z]{17})"
+    },
+    "SourceServerArns":{
+      "type":"list",
+      "member":{"shape":"SourceServerArn"},
+      "max":100,
+      "min":1
+    },
+    "SourceServerArnsFilter":{
+      "type":"list",
+      "member":{"shape":"SourceServerArn"},
+      "max":200,
+      "min":0
+    },
     "SourceServerConnectorAction":{
       "type":"structure",
       "members":{
@@ -7594,6 +8863,32 @@
       "max":19,
       "min":19,
       "pattern":"s-[0-9a-zA-Z]{17}"
+    },
+    "SourceServerVolumeConfiguration":{
+      "type":"structure",
+      "members":{
+        "volumeType":{
+          "shape":"VolumeType",
+          "documentation":"<p>EBS volume type.</p>"
+        },
+        "iops":{
+          "shape":"Iops",
+          "documentation":"<p>Provisioned IOPS, for io1, io2 and gp3 volumes.</p>"
+        },
+        "throughput":{
+          "shape":"Throughput",
+          "documentation":"<p>Throughput in MiB/s, for gp3 volumes only.</p>"
+        },
+        "volumeInitializationRate":{
+          "shape":"VolumeInitializationRate",
+          "documentation":"<p>Provisioned rate for volume initialization, in MiB/s.</p>"
+        },
+        "deleteOnTermination":{
+          "shape":"DeleteOnTermination",
+          "documentation":"<p>Specifies whether the volume is deleted when the launched instance terminates.</p>"
+        }
+      },
+      "documentation":"<p>Contains the Amazon Elastic Block Store (Amazon EBS) volume configuration for the disk mappings created later in the source server's Amazon Elastic Compute Cloud (Amazon EC2) launch template. Fields that aren't set get the service's default values.</p>"
     },
     "SourceServersList":{
       "type":"list",
@@ -7624,6 +8919,12 @@
         }
       },
       "documentation":"<p>An operation that splits a construct into multiple constructs with different CIDR blocks.</p>"
+    },
+    "SsmCommandInvocationID":{
+      "type":"string",
+      "max":36,
+      "min":36,
+      "pattern":"[0-9A-Fa-f]{8}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{4}-[0-9A-Fa-f]{12}"
     },
     "SsmDocument":{
       "type":"structure",
@@ -8000,15 +9301,15 @@
     },
     "StartNetworkMigrationMappingUpdateConstruct":{
       "type":"structure",
-      "required":[
-        "segmentID",
-        "constructID",
-        "constructType"
-      ],
+      "required":["constructType"],
       "members":{
         "segmentID":{
           "shape":"SegmentID",
           "documentation":"<p>The ID of the segment containing the construct.</p>"
+        },
+        "segmentLogicalID":{
+          "shape":"LogicalID",
+          "documentation":"<p>The identifier of a segment created in the same request that this construct belongs to. Use it instead of <code>segmentID</code> for a new segment.</p>"
         },
         "constructID":{
           "shape":"ConstructID",
@@ -8017,6 +9318,10 @@
         "constructType":{
           "shape":"NetworkMigrationMapperSegmentConstructType",
           "documentation":"<p>The type of the construct.</p>"
+        },
+        "constructLogicalID":{
+          "shape":"ConstructLogicalID",
+          "documentation":"<p>The logical identifier for a construct created by a create operation; other operations identify the construct by constructID. Other entries in the same request can reference the new construct as {\"Ref\": \"&lt;constructLogicalID&gt;\"}.</p>"
         },
         "operation":{
           "shape":"OperationUnion",
@@ -8067,11 +9372,18 @@
     },
     "StartNetworkMigrationMappingUpdateSegment":{
       "type":"structure",
-      "required":["segmentID"],
       "members":{
         "segmentID":{
           "shape":"SegmentID",
           "documentation":"<p>The ID of the segment to update.</p>"
+        },
+        "segmentLogicalID":{
+          "shape":"SegmentLogicalID",
+          "documentation":"<p>An identifier that you choose for a segment created by this request. You can use it in other constructs in the same request to refer to the new segment.</p>"
+        },
+        "operation":{
+          "shape":"SegmentOperation",
+          "documentation":"<p>The operation to perform on the segment.</p>"
         },
         "targetAccount":{
           "shape":"AccountID",
@@ -8089,6 +9401,50 @@
       "member":{"shape":"StartNetworkMigrationMappingUpdateSegment"},
       "max":100,
       "min":0
+    },
+    "StartRemoteSourceActionJobRequest":{
+      "type":"structure",
+      "required":[
+        "remoteSourceActionArns",
+        "connectorArn",
+        "sourceServerArns"
+      ],
+      "members":{
+        "remoteSourceActionArns":{
+          "shape":"RemoteSourceActionArns",
+          "documentation":"<p>The ARNs of the source actions to run.</p>"
+        },
+        "connectorArn":{
+          "shape":"ConnectorArn",
+          "documentation":"<p>The ARN of the connector that runs the source actions.</p>"
+        },
+        "sourceServerArns":{
+          "shape":"SourceServerArns",
+          "documentation":"<p>The ARNs of the source servers to run the source actions on.</p>"
+        },
+        "clientToken":{
+          "shape":"ClientIdempotencyToken",
+          "documentation":"<p>A unique, case-sensitive identifier that you provide to ensure the idempotency of the request.</p>",
+          "idempotencyToken":true
+        },
+        "tags":{
+          "shape":"TagsMap",
+          "documentation":"<p>Tags to assign to the job.</p>"
+        },
+        "accountID":{
+          "shape":"AccountID",
+          "documentation":"<p>Account ID.</p>"
+        }
+      }
+    },
+    "StartRemoteSourceActionJobResponse":{
+      "type":"structure",
+      "members":{
+        "remoteSourceActionJob":{
+          "shape":"RemoteSourceActionJob",
+          "documentation":"<p>The job that was started.</p>"
+        }
+      }
     },
     "StartReplicationRequest":{
       "type":"structure",
@@ -8573,6 +9929,53 @@
         }
       }
     },
+    "UpdateLaunchConfigurationDefaultsRequest":{
+      "type":"structure",
+      "required":["sourceServerID"],
+      "members":{
+        "sourceServerID":{
+          "shape":"SourceServerID",
+          "documentation":"<p>Request to update the launch configuration defaults by Source Server ID.</p>"
+        },
+        "accountID":{
+          "shape":"AccountID",
+          "documentation":"<p>Request to update the launch configuration defaults by Account ID.</p>"
+        },
+        "smallVolumeMaxSize":{
+          "shape":"PositiveInteger",
+          "documentation":"<p>Disks up to this size, in GiB, use the small volume configuration, and larger disks use the large one. <code>0</code> means every disk uses the large one. If you omit it, the current value is kept.</p>"
+        },
+        "smallVolumeConfiguration":{
+          "shape":"SourceServerVolumeConfiguration",
+          "documentation":"<p>Volume configuration for disks up to <code>smallVolumeMaxSize</code>. If you omit it, the current one is kept. If you send it, it replaces the current one: fields you omit are cleared, and an empty configuration, <code>{}</code>, clears all of them.</p>"
+        },
+        "largeVolumeConfiguration":{
+          "shape":"SourceServerVolumeConfiguration",
+          "documentation":"<p>Volume configuration for disks larger than <code>smallVolumeMaxSize</code>. If you omit it, the current one is kept. If you send it, it replaces the current one: fields you omit are cleared, and an empty configuration, <code>{}</code>, clears all of them.</p>"
+        }
+      }
+    },
+    "UpdateLaunchConfigurationDefaultsResponse":{
+      "type":"structure",
+      "members":{
+        "sourceServerID":{
+          "shape":"SourceServerID",
+          "documentation":"<p>Source Server ID of the launch configuration defaults.</p>"
+        },
+        "smallVolumeMaxSize":{
+          "shape":"PositiveInteger",
+          "documentation":"<p>Disks up to this size, in GiB, use the small volume configuration, and larger disks use the large one. <code>0</code> means every disk uses the large one.</p>"
+        },
+        "smallVolumeConfiguration":{
+          "shape":"SourceServerVolumeConfiguration",
+          "documentation":"<p>Volume configuration for disks up to <code>smallVolumeMaxSize</code>. Omitted when none of its fields is set.</p>"
+        },
+        "largeVolumeConfiguration":{
+          "shape":"SourceServerVolumeConfiguration",
+          "documentation":"<p>Volume configuration for disks larger than <code>smallVolumeMaxSize</code>. Omitted when none of its fields is set.</p>"
+        }
+      }
+    },
     "UpdateLaunchConfigurationRequest":{
       "type":"structure",
       "required":["sourceServerID"],
@@ -8618,6 +10021,10 @@
           "shape":"TagValue",
           "documentation":"<p>Launch configuration map auto tagging MPE ID.</p>"
         },
+        "mapAutoTaggingKey":{
+          "shape":"TagKey",
+          "documentation":"<p>Launch configuration map auto tagging key.</p>"
+        },
         "accountID":{
           "shape":"AccountID",
           "documentation":"<p>Update Launch configuration Account ID.</p>"
@@ -8643,6 +10050,10 @@
         "mapAutoTaggingMpeID":{
           "shape":"TagValue",
           "documentation":"<p>Launch configuration template map auto tagging MPE ID.</p>"
+        },
+        "mapAutoTaggingKey":{
+          "shape":"TagKey",
+          "documentation":"<p>Launch configuration template map auto tagging key.</p>"
         },
         "launchDisposition":{
           "shape":"LaunchDisposition",
@@ -8734,6 +10145,10 @@
         "scopeTags":{
           "shape":"ScopeTagsMap",
           "documentation":"<p>The updated scope tags for the network migration definition.</p>"
+        },
+        "definitionType":{
+          "shape":"DefinitionType",
+          "documentation":"<p>The updated type of the network migration definition.</p>"
         }
       }
     },
@@ -8780,6 +10195,103 @@
         }
       },
       "documentation":"<p>An operation that updates the properties of a construct.</p>"
+    },
+    "UpdateOperationV2":{
+      "type":"structure",
+      "members":{
+        "name":{
+          "shape":"SegmentConstructName",
+          "documentation":"<p>The updated name for the construct.</p>"
+        },
+        "excluded":{
+          "shape":"Boolean",
+          "documentation":"<p>Whether to exclude this construct from the migration.</p>"
+        },
+        "properties":{
+          "shape":"EnrichedProperties",
+          "documentation":"<p>The properties to set or overwrite on the construct, using their native value types; omitted keys are unchanged.</p>"
+        },
+        "propertiesToDelete":{
+          "shape":"PropertiesToDelete",
+          "documentation":"<p>The property keys to remove from the construct.</p>"
+        },
+        "configuration":{
+          "shape":"OperationConfigurationUnion",
+          "documentation":"<p>Construct-type-specific behavioral configuration to apply, such as security group associations or security group rule referencing.</p>"
+        }
+      },
+      "documentation":"<p>An operation that updates a construct using native property value types and construct-type-specific behavioral configuration.</p>"
+    },
+    "UpdateRemoteSourceActionRequest":{
+      "type":"structure",
+      "required":["remoteSourceActionID"],
+      "members":{
+        "remoteSourceActionID":{
+          "shape":"RemoteSourceActionID",
+          "documentation":"<p>The unique identifier of the source action to update.</p>"
+        },
+        "name":{
+          "shape":"RemoteSourceActionName",
+          "documentation":"<p>The updated name of the source action.</p>"
+        },
+        "description":{
+          "shape":"RemoteSourceActionDescription",
+          "documentation":"<p>The updated description of the source action.</p>"
+        },
+        "ssmParameterName":{
+          "shape":"SsmParameterStoreParameterName",
+          "documentation":"<p>AWS Systems Manager Parameter Store parameter name.</p>"
+        },
+        "timeoutSeconds":{
+          "shape":"RemoteSourceActionTimeoutSeconds",
+          "documentation":"<p>The updated maximum time, in seconds, that the script can run on each source server.</p>"
+        },
+        "operatingSystem":{
+          "shape":"RemoteSourceActionOperatingSystem",
+          "documentation":"<p>The updated operating system of the source servers that the script runs on. Set to <code>linux</code> or <code>windows</code> to run the script only on source servers with that operating system, or <code>all</code> to run it on both.</p>"
+        },
+        "accountID":{
+          "shape":"AccountID",
+          "documentation":"<p>Account ID.</p>"
+        }
+      }
+    },
+    "UpdateRemoteSourceActionResponse":{
+      "type":"structure",
+      "members":{
+        "remoteSourceActionID":{
+          "shape":"RemoteSourceActionID",
+          "documentation":"<p>The unique identifier of the source action.</p>"
+        },
+        "arn":{
+          "shape":"ARN",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the source action.</p>"
+        },
+        "name":{
+          "shape":"RemoteSourceActionName",
+          "documentation":"<p>The name of the source action.</p>"
+        },
+        "description":{
+          "shape":"RemoteSourceActionDescription",
+          "documentation":"<p>A description of the source action.</p>"
+        },
+        "ssmParameterName":{
+          "shape":"SsmParameterStoreParameterName",
+          "documentation":"<p>AWS Systems Manager Parameter Store parameter name.</p>"
+        },
+        "timeoutSeconds":{
+          "shape":"RemoteSourceActionTimeoutSeconds",
+          "documentation":"<p>The maximum time, in seconds, that the script can run on each source server.</p>"
+        },
+        "operatingSystem":{
+          "shape":"OperatingSystemString",
+          "documentation":"<p>The operating system of the source servers that the script runs on. Absent when the script runs on both Linux and Windows.</p>"
+        },
+        "tags":{
+          "shape":"TagsMap",
+          "documentation":"<p>Tags assigned to the source action.</p>"
+        }
+      }
     },
     "UpdateReplicationConfigurationRequest":{
       "type":"structure",
@@ -8861,6 +10373,10 @@
           "shape":"Boolean",
           "documentation":"<p>Update replication configuration store snapshot on local zone.</p>"
         },
+        "outpostSnapshotLocation":{
+          "shape":"OutpostSnapshotLocation",
+          "documentation":"<p>Updates the location of replication snapshots when the staging area subnet is on an AWS Outpost. Set to <code>OUTPOST</code> to keep replication snapshots on the Outpost, or <code>REGION</code> to store them in the AWS Region. Required when the staging area subnet is on an Outpost, and not allowed otherwise.</p>"
+        },
         "storageConfiguration":{
           "shape":"StorageConfiguration",
           "documentation":"<p>Update replication configuration storage configuration.</p>"
@@ -8938,6 +10454,10 @@
         "storeSnapshotOnLocalZone":{
           "shape":"Boolean",
           "documentation":"<p>Update replication configuration template store snapshot on local zone request.</p>"
+        },
+        "outpostSnapshotLocation":{
+          "shape":"OutpostSnapshotLocation",
+          "documentation":"<p>Updates the location of replication snapshots in the Replication Configuration template when the staging area subnet is on an AWS Outpost. Set to <code>OUTPOST</code> to keep replication snapshots on the Outpost, or <code>REGION</code> to store them in the AWS Region. Required when the staging area subnet is on an Outpost, and not allowed otherwise.</p>"
         },
         "storageConfiguration":{
           "shape":"StorageConfiguration",
@@ -9119,6 +10639,12 @@
     "VcenterClientList":{
       "type":"list",
       "member":{"shape":"VcenterClient"}
+    },
+    "VmUUID":{
+      "type":"string",
+      "max":256,
+      "min":1,
+      "pattern":"[a-zA-Z0-9-]+"
     },
     "VolumeInitializationRate":{
       "type":"long",

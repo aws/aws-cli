@@ -236,6 +236,27 @@
       "documentation":"<p>Deletes a session associated with a capacity provider in Amazon Bedrock AgentCore and makes the session unavailable for further use. To delete a capacity provider session, specify both the capacity provider identifier and the session ID. After you delete a session, you cannot restart it.</p>",
       "idempotent":true
     },
+    "DeleteDatasetGeneration":{
+      "name":"DeleteDatasetGeneration",
+      "http":{
+        "method":"DELETE",
+        "requestUri":"/datasets/{datasetId}/generations/{generationId}",
+        "responseCode":202
+      },
+      "input":{"shape":"DeleteDatasetGenerationRequest"},
+      "output":{"shape":"DeleteDatasetGenerationResponse"},
+      "errors":[
+        {"shape":"UnauthorizedException"},
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ConflictException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Deletes the record of a dataset generation. The examples the generation added stay in the dataset's draft. To remove them, find them with the <code>generationIds</code> filter of <code>ListDatasetExamples</code>, then call <code>DeleteDatasetExamples</code>.</p>",
+      "idempotent":true
+    },
     "DeleteEvent":{
       "name":"DeleteEvent",
       "http":{
@@ -397,6 +418,25 @@
       ],
       "documentation":"<p>Retrieves the A2A agent card associated with an AgentCore Runtime agent.</p>"
     },
+    "GetAgentInsight":{
+      "name":"GetAgentInsight",
+      "http":{
+        "method":"GET",
+        "requestUri":"/agentinsights/{agentInsightId}",
+        "responseCode":200
+      },
+      "input":{"shape":"GetAgentInsightRequest"},
+      "output":{"shape":"GetAgentInsightResponse"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Amazon Bedrock AgentCore Agent Insights identifies patterns detected across your agent sessions. Use Agent Insights to identify recurring issues and prioritize fixes.</p> <p>Retrieves detailed information about an Amazon Bedrock AgentCore Agent Insight, including its archive status, affected sessions, and, when applicable, the batch evaluation that produced it.</p>",
+      "readonly":true
+    },
     "GetBatchEvaluation":{
       "name":"GetBatchEvaluation",
       "http":{
@@ -453,6 +493,26 @@
         {"shape":"InternalServerException"}
       ],
       "documentation":"<p>Retrieves detailed information about a specific code interpreter session in Amazon Bedrock AgentCore. This operation returns the session's configuration, current status, and metadata.</p> <p>To get a code interpreter session, you must specify both the code interpreter identifier and the session ID. The response includes information about the session's timeout settings and current status.</p> <p>The following operations are related to <code>GetCodeInterpreterSession</code>:</p> <ul> <li> <p> <a href=\"https://docs.aws.amazon.com/bedrock-agentcore/latest/APIReference/API_StartCodeInterpreterSession.html\">StartCodeInterpreterSession</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/bedrock-agentcore/latest/APIReference/API_ListCodeInterpreterSessions.html\">ListCodeInterpreterSessions</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/bedrock-agentcore/latest/APIReference/API_StopCodeInterpreterSession.html\">StopCodeInterpreterSession</a> </p> </li> </ul>",
+      "readonly":true
+    },
+    "GetDatasetGeneration":{
+      "name":"GetDatasetGeneration",
+      "http":{
+        "method":"GET",
+        "requestUri":"/datasets/{datasetId}/generations/{generationId}",
+        "responseCode":200
+      },
+      "input":{"shape":"GetDatasetGenerationRequest"},
+      "output":{"shape":"GetDatasetGenerationResponse"},
+      "errors":[
+        {"shape":"UnauthorizedException"},
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Gets a dataset generation, including its status, the request it was started with, its progress counts, its redaction summary and its errors. Call this operation to track a generation that you started with <code>StartDatasetGeneration</code>.</p>",
       "readonly":true
     },
     "GetEvent":{
@@ -870,6 +930,24 @@
       "documentation":"<p>Lists all actors in an AgentCore Memory resource. We recommend using pagination to ensure that the operation returns quickly and successfully.</p> <p>To use this operation, you must have the <code>bedrock-agentcore:ListActors</code> permission.</p>",
       "readonly":true
     },
+    "ListAgentInsights":{
+      "name":"ListAgentInsights",
+      "http":{
+        "method":"GET",
+        "requestUri":"/agentinsights",
+        "responseCode":200
+      },
+      "input":{"shape":"ListAgentInsightsRequest"},
+      "output":{"shape":"ListAgentInsightsResponse"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Lists Amazon Bedrock AgentCore Agent Insight summaries in your account and Region. Use this operation to review patterns across sessions before you investigate or archive an insight. The response paginates the results. Use the <code>nextToken</code> parameter to retrieve additional results.</p>",
+      "readonly":true
+    },
     "ListBatchEvaluations":{
       "name":"ListBatchEvaluations",
       "http":{
@@ -925,6 +1003,26 @@
         {"shape":"InternalServerException"}
       ],
       "documentation":"<p>Retrieves a list of code interpreter sessions in Amazon Bedrock AgentCore that match the specified criteria. This operation returns summary information about each session, including identifiers, status, and timestamps.</p> <p>You can filter the results by code interpreter identifier and session status. The operation supports pagination to handle large result sets efficiently.</p> <p>We recommend using pagination to ensure that the operation returns quickly and successfully when retrieving large numbers of sessions.</p> <p>The following operations are related to <code>ListCodeInterpreterSessions</code>:</p> <ul> <li> <p> <a href=\"https://docs.aws.amazon.com/bedrock-agentcore/latest/APIReference/API_StartCodeInterpreterSession.html\">StartCodeInterpreterSession</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/bedrock-agentcore/latest/APIReference/API_GetCodeInterpreterSession.html\">GetCodeInterpreterSession</a> </p> </li> </ul>",
+      "readonly":true
+    },
+    "ListDatasetGenerations":{
+      "name":"ListDatasetGenerations",
+      "http":{
+        "method":"GET",
+        "requestUri":"/datasets/{datasetId}/generations",
+        "responseCode":200
+      },
+      "input":{"shape":"ListDatasetGenerationsRequest"},
+      "output":{"shape":"ListDatasetGenerationsResponse"},
+      "errors":[
+        {"shape":"UnauthorizedException"},
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Lists the generations for a dataset. AgentCore keeps a generation until you delete it with <code>DeleteDatasetGeneration</code> or delete the dataset. To get a generation's counts and the request it was started with, call <code>GetDatasetGeneration</code>.</p>",
       "readonly":true
     },
     "ListEvents":{
@@ -1207,6 +1305,28 @@
       "documentation":"<p>Creates and initializes a code interpreter session in Amazon Bedrock AgentCore. The session enables agents to execute code as part of their response generation, supporting programming languages such as Python for data analysis, visualization, and computation tasks.</p> <p>To create a session, you must specify a code interpreter identifier and a name. The session remains active until it times out or you explicitly stop it using the <code>StopCodeInterpreterSession</code> operation.</p> <p>The following operations are related to <code>StartCodeInterpreterSession</code>:</p> <ul> <li> <p> <a href=\"https://docs.aws.amazon.com/bedrock-agentcore/latest/APIReference/API_InvokeCodeInterpreter.html\">InvokeCodeInterpreter</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/bedrock-agentcore/latest/APIReference/API_GetCodeInterpreterSession.html\">GetCodeInterpreterSession</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/bedrock-agentcore/latest/APIReference/API_StopCodeInterpreterSession.html\">StopCodeInterpreterSession</a> </p> </li> </ul>",
       "idempotent":true
     },
+    "StartDatasetGeneration":{
+      "name":"StartDatasetGeneration",
+      "http":{
+        "method":"POST",
+        "requestUri":"/datasets/{datasetId}/generations",
+        "responseCode":202
+      },
+      "input":{"shape":"StartDatasetGenerationRequest"},
+      "output":{"shape":"StartDatasetGenerationResponse"},
+      "errors":[
+        {"shape":"ServiceQuotaExceededException"},
+        {"shape":"UnauthorizedException"},
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ConflictException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Starts a dataset generation, which creates examples for an existing dataset from your agent's traces. The dataset must be <code>ACTIVE</code>. Each generation produces one scenario type, set by <code>scenarioType</code>. When the generation finishes, AgentCore adds the examples to the dataset's draft. Examples that duplicate each other, or that duplicate examples already in the draft, are left out.</p> <p>A dataset can have only one generation in progress at a time. While it runs, requests that change the dataset's draft or publish a version are rejected with a <code>ConflictException</code>.</p> <p>AgentCore reads the traces with your credentials, so you need read access to the trace log groups, and to the dataset's KMS key if the dataset uses a customer managed key. The draft can hold at most 1,000 examples, including the examples this generation can add (<code>maxScenarios</code>).</p> <p>The operation returns immediately. To track progress, call <code>GetDatasetGeneration</code>.</p>",
+      "idempotent":true
+    },
     "StartMemoryExtractionJob":{
       "name":"StartMemoryExtractionJob",
       "http":{
@@ -1352,6 +1472,26 @@
         {"shape":"InternalServerException"}
       ],
       "documentation":"<p>Updates an A/B test's configuration, including variants, traffic allocation, evaluation settings, or execution status.</p>",
+      "idempotent":true
+    },
+    "UpdateAgentInsight":{
+      "name":"UpdateAgentInsight",
+      "http":{
+        "method":"PUT",
+        "requestUri":"/agentinsights/{agentInsightId}",
+        "responseCode":200
+      },
+      "input":{"shape":"UpdateAgentInsightRequest"},
+      "output":{"shape":"UpdateAgentInsightResponse"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ConflictException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Updates the archive status of an Amazon Bedrock AgentCore Agent Insight.</p>",
       "idempotent":true
     },
     "UpdateBrowserStream":{
@@ -1589,6 +1729,12 @@
       "member":{"shape":"AffectedSession"},
       "min":0
     },
+    "AgentApplicationName":{
+      "type":"string",
+      "documentation":"<p>The default Store includes all applications; this value attributes the Insight to one application and does not configure Store selection.</p>",
+      "max":256,
+      "min":1
+    },
     "AgentCard":{
       "type":"structure",
       "members":{},
@@ -1607,6 +1753,174 @@
         }
       },
       "documentation":"<p> The agent card definition for A2A descriptors, including the schema version and inline content that describes the agent's capabilities.</p>"
+    },
+    "AgentCoreRuntimeInvocation":{
+      "type":"structure",
+      "required":["agentRuntimeEndpointArn"],
+      "members":{
+        "agentRuntimeEndpointArn":{
+          "shape":"AgentRuntimeEndpointArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the agent runtime endpoint to invoke. Specify an endpoint in the same account and Region as the batch evaluation. The service requires the endpoint and its agent runtime version to be ready. The agent runtime must use the HTTP protocol and IAM inbound authorization.</p>"
+        },
+        "requestTemplate":{
+          "shape":"RequestTemplate",
+          "documentation":"<p>A JSON object template for the request payload sent to the agent for each turn. The template must contain the placeholder <code>{{turn.input}}</code> exactly once, as the complete value of a JSON string and not as a field name. The service replaces the placeholder with the input of the turn. If the input isn't a string, the service inserts it as a JSON value. If you don't specify a template, the service uses <code>{\"prompt\": \"{{turn.input}}\"}</code>.</p>"
+        }
+      },
+      "documentation":"<p>The configuration for invoking an agent hosted on AgentCore Runtime. Each scenario runs in its own runtime session, and the turns of a scenario are sent in order within that session. The batch evaluation uses your credentials to read the agent runtime endpoint and the dataset, invoke the agent runtime, and read the resulting traces. You must have permission for these actions.</p>"
+    },
+    "AgentCoreRuntimeInvocationDetails":{
+      "type":"structure",
+      "required":[
+        "agentRuntimeEndpointArn",
+        "agentRuntimeVersion"
+      ],
+      "members":{
+        "agentRuntimeEndpointArn":{
+          "shape":"AgentRuntimeEndpointArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the agent runtime endpoint that the batch evaluation invoked.</p>"
+        },
+        "agentRuntimeVersion":{
+          "shape":"AgentRuntimeVersion",
+          "documentation":"<p>The version of the agent runtime that the endpoint pointed to when the batch evaluation started. If you update the endpoint after the batch evaluation starts, each later turn uses the version that the endpoint points to when the turn runs.</p>"
+        },
+        "requestTemplate":{
+          "shape":"RequestTemplate",
+          "documentation":"<p>The request payload template that the batch evaluation used for each turn. If the request didn't specify a template, this is the default template.</p>"
+        }
+      },
+      "documentation":"<p>The details of the agent hosted on AgentCore Runtime that a batch evaluation invoked.</p>"
+    },
+    "AgentInsightArchiveStatus":{
+      "type":"string",
+      "documentation":"<p>Specifies whether an Agent Insight is active or archived. Valid values:</p> <ul> <li> <p> <code>ACTIVE</code> - The insight is currently active.</p> </li> <li> <p> <code>ARCHIVED</code> - The insight has been archived.</p> </li> </ul>",
+      "enum":[
+        "ACTIVE",
+        "ARCHIVED"
+      ]
+    },
+    "AgentInsightCustomerMetadataStatus":{
+      "type":"string",
+      "documentation":"<p>Whether customer-encrypted metadata is available for an Agent Insight.</p>",
+      "enum":[
+        "AVAILABLE",
+        "CUSTOMER_KEY_UNAVAILABLE",
+        "UNAVAILABLE"
+      ]
+    },
+    "AgentInsightId":{
+      "type":"string",
+      "documentation":"<p>Application-scoped persisted Insight identifier, distinct from the common-model analysis type identifier.</p>",
+      "max":64,
+      "min":1,
+      "pattern":"[a-z0-9]+"
+    },
+    "AgentInsightSummary":{
+      "type":"structure",
+      "required":[
+        "type",
+        "name",
+        "description",
+        "createdAt",
+        "agentInsightId",
+        "applicationName",
+        "customerMetadataStatus",
+        "updatedAt",
+        "archiveStatus"
+      ],
+      "members":{
+        "type":{"shape":"InsightType"},
+        "name":{
+          "shape":"InsightName",
+          "documentation":"<p>A generated display label for the Agent Insight. This is a human-readable summary of the detected pattern, not an identifier.</p>"
+        },
+        "description":{
+          "shape":"InsightDescription",
+          "documentation":"<p>A generated description of the Agent Insight that explains the detected pattern and its observed behavior across sessions.</p>"
+        },
+        "createdAt":{
+          "shape":"SyntheticTimestamp_date_time",
+          "documentation":"<p>The date and time when the Agent Insight was first created.</p>"
+        },
+        "affectedSessionCount":{
+          "shape":"AgentInsightSummaryAffectedSessionCountInteger",
+          "documentation":"<p>The number of sessions affected by the insight pattern.</p>"
+        },
+        "agentInsightId":{
+          "shape":"AgentInsightId",
+          "documentation":"<p>The unique identifier of the Agent Insight.</p>"
+        },
+        "applicationName":{
+          "shape":"AgentApplicationName",
+          "documentation":"<p>The application that the Agent Insight belongs to.</p>"
+        },
+        "batchEvaluationId":{
+          "shape":"BatchEvaluationId",
+          "documentation":"<p>The Batch Evaluation that produced this Insight, when applicable.</p>"
+        },
+        "customerMetadataStatus":{
+          "shape":"AgentInsightCustomerMetadataStatus",
+          "documentation":"<p>Specifies whether customer-encrypted metadata is available for the Agent Insight.</p>"
+        },
+        "updatedAt":{
+          "shape":"SyntheticTimestamp_date_time",
+          "documentation":"<p>The date and time when the Agent Insight was last updated.</p>"
+        },
+        "archiveStatus":{
+          "shape":"AgentInsightArchiveStatus",
+          "documentation":"<p>Specifies whether the Agent Insight is active or archived. Valid values:</p> <ul> <li> <p> <code>ACTIVE</code> - The insight is currently active.</p> </li> <li> <p> <code>ARCHIVED</code> - The insight has been archived.</p> </li> </ul>"
+        },
+        "lastSeenAt":{
+          "shape":"SyntheticTimestamp_date_time",
+          "documentation":"<p>The most recent date and time when the insight pattern was observed.</p>"
+        }
+      },
+      "documentation":"<p>Contains summary information about an Amazon Bedrock AgentCore Agent Insight, including its label, description, and creation time. This structure is returned by <code>ListAgentInsights</code>; use <code>GetAgentInsight</code> to retrieve the sample sessions and root causes for a specific insight.</p>"
+    },
+    "AgentInsightSummaryAffectedSessionCountInteger":{
+      "type":"integer",
+      "box":true,
+      "min":0
+    },
+    "AgentInsightSummaryList":{
+      "type":"list",
+      "member":{"shape":"AgentInsightSummary"},
+      "max":50,
+      "min":0
+    },
+    "AgentInvocationConfig":{
+      "type":"structure",
+      "members":{
+        "agentCoreRuntime":{
+          "shape":"AgentCoreRuntimeInvocation",
+          "documentation":"<p>The configuration for invoking an agent hosted on AgentCore Runtime.</p>"
+        }
+      },
+      "documentation":"<p>The agent that the batch evaluation invokes with each scenario in the dataset.</p>",
+      "union":true
+    },
+    "AgentInvocationDetails":{
+      "type":"structure",
+      "members":{
+        "agentCoreRuntime":{
+          "shape":"AgentCoreRuntimeInvocationDetails",
+          "documentation":"<p>The details of the agent hosted on AgentCore Runtime that the batch evaluation invoked.</p>"
+        }
+      },
+      "documentation":"<p>The agent that a batch evaluation invoked with each scenario in the dataset.</p>",
+      "union":true
+    },
+    "AgentRuntimeEndpointArn":{
+      "type":"string",
+      "documentation":"<p>The Amazon Resource Name (ARN) of an agent runtime endpoint.</p>",
+      "pattern":"arn:aws(-[^:]+)?:bedrock-agentcore:[a-z0-9-]+:[0-9]{12}:runtime/[a-zA-Z][a-zA-Z0-9_]{0,47}-[a-zA-Z0-9]{10}/runtime-endpoint/[a-zA-Z][a-zA-Z0-9_]{0,47}"
+    },
+    "AgentRuntimeVersion":{
+      "type":"string",
+      "documentation":"<p>The version of an agent runtime.</p>",
+      "max":5,
+      "min":1,
+      "pattern":"([1-9][0-9]{0,4})"
     },
     "AgentSkillsDescriptor":{
       "type":"structure",
@@ -1847,6 +2161,17 @@
       "type":"string",
       "documentation":"<p>A human-readable name for a batch evaluation.</p>",
       "pattern":"[a-zA-Z][a-zA-Z0-9_]{0,47}"
+    },
+    "BatchEvaluationSourceConfig":{
+      "type":"structure",
+      "required":["batchEvaluationArn"],
+      "members":{
+        "batchEvaluationArn":{
+          "shape":"BatchEvaluationArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the batch evaluation.</p>"
+        }
+      },
+      "documentation":"<p>A batch evaluation source for a dataset generation. The generation reads the sessions the batch evaluation evaluated, so there is no time window.</p>"
     },
     "BatchEvaluationStatus":{
       "type":"string",
@@ -2419,6 +2744,45 @@
         }
       },
       "documentation":"<p>The configuration for reading agent traces from CloudWatch Logs.</p>"
+    },
+    "CloudWatchLogsSourceConfig":{
+      "type":"structure",
+      "required":["serviceNames"],
+      "members":{
+        "logGroupNames":{
+          "shape":"CloudWatchLogsSourceConfigLogGroupNamesList",
+          "documentation":"<p>The names of the log groups to read, from 1 to 5. You can't specify this together with <code>logGroupNamePrefixes</code>.</p>"
+        },
+        "logGroupNamePrefixes":{
+          "shape":"CloudWatchLogsSourceConfigLogGroupNamePrefixesList",
+          "documentation":"<p>Prefixes of the names of the log groups to read, from 1 to 5. You can't specify this together with <code>logGroupNames</code>.</p>"
+        },
+        "serviceNames":{
+          "shape":"ServiceNameList",
+          "documentation":"<p>The service name of the agent, which matches the <code>service.name</code> resource attribute in its traces. Specify exactly one.</p>"
+        },
+        "startTime":{
+          "shape":"SyntheticTimestamp_date_time",
+          "documentation":"<p>The start of the time window to read sessions from. The default is 7 days before <code>endTime</code>.</p>"
+        },
+        "endTime":{
+          "shape":"SyntheticTimestamp_date_time",
+          "documentation":"<p>The end of the time window to read sessions from. The default is the time the generation starts.</p>"
+        }
+      },
+      "documentation":"<p>A CloudWatch Logs source for a dataset generation. Specify either <code>logGroupNames</code> or <code>logGroupNamePrefixes</code>.</p>"
+    },
+    "CloudWatchLogsSourceConfigLogGroupNamePrefixesList":{
+      "type":"list",
+      "member":{"shape":"LogGroupNamePrefix"},
+      "max":5,
+      "min":1
+    },
+    "CloudWatchLogsSourceConfigLogGroupNamesList":{
+      "type":"list",
+      "member":{"shape":"LogGroupName"},
+      "max":5,
+      "min":1
     },
     "CloudWatchLogsSourceLogGroupNamePrefixesList":{
       "type":"list",
@@ -3249,6 +3613,35 @@
       "documentation":"<p>Supported currency codes.</p>",
       "enum":["USD"]
     },
+    "CustomDataIdentifier":{
+      "type":"structure",
+      "required":[
+        "name",
+        "regex"
+      ],
+      "members":{
+        "name":{
+          "shape":"CustomDataIdentifierNameString",
+          "documentation":"<p>The name of the custom data identifier. It can't be the same as the name of a managed data identifier.</p>"
+        },
+        "regex":{
+          "shape":"CustomDataIdentifierRegexString",
+          "documentation":"<p>The regular expression that matches the data to mask. Lookahead and lookbehind aren't supported.</p>"
+        }
+      },
+      "documentation":"<p>A custom data identifier, defined by a regular expression.</p>"
+    },
+    "CustomDataIdentifierNameString":{
+      "type":"string",
+      "max":128,
+      "min":1,
+      "pattern":"[A-Za-z0-9_-]+"
+    },
+    "CustomDataIdentifierRegexString":{
+      "type":"string",
+      "max":200,
+      "min":1
+    },
     "CustomDescriptor":{
       "type":"structure",
       "members":{
@@ -3290,6 +3683,161 @@
       },
       "documentation":"<p>Configuration for the data source used in evaluation.</p>",
       "union":true
+    },
+    "DatasetDetails":{
+      "type":"structure",
+      "required":[
+        "datasetId",
+        "datasetVersion"
+      ],
+      "members":{
+        "datasetId":{
+          "shape":"DatasetId",
+          "documentation":"<p>The unique identifier of the dataset.</p>"
+        },
+        "datasetVersion":{
+          "shape":"DatasetVersion",
+          "documentation":"<p>The version of the dataset that the batch evaluation ran. If the request didn't specify a version, this is the latest published version when the batch evaluation started.</p>"
+        }
+      },
+      "documentation":"<p>Identifies the dataset and the version of it that a batch evaluation ran.</p>"
+    },
+    "DatasetExecutionConfig":{
+      "type":"structure",
+      "required":[
+        "dataset",
+        "agentInvocation"
+      ],
+      "members":{
+        "dataset":{
+          "shape":"DatasetSource",
+          "documentation":"<p>The dataset whose scenarios are sent to the agent. The dataset must use the predefined evaluation schema, and the version that runs must contain between 1 and 1,000 scenarios.</p>"
+        },
+        "agentInvocation":{
+          "shape":"AgentInvocationConfig",
+          "documentation":"<p>Specifies the agent runtime endpoint and the request template that the batch evaluation uses to invoke the agent for each scenario in the dataset.</p>"
+        }
+      },
+      "documentation":"<p>The configuration for running the scenarios in a dataset against an agent as part of a batch evaluation.</p>"
+    },
+    "DatasetExecutionDetails":{
+      "type":"structure",
+      "required":[
+        "dataset",
+        "agentInvocation"
+      ],
+      "members":{
+        "dataset":{
+          "shape":"DatasetDetails",
+          "documentation":"<p>The dataset and the version of it that the batch evaluation ran.</p>"
+        },
+        "agentInvocation":{
+          "shape":"AgentInvocationDetails",
+          "documentation":"<p>The agent that the batch evaluation invoked.</p>"
+        }
+      },
+      "documentation":"<p>The details of the dataset and agent that a batch evaluation ran.</p>"
+    },
+    "DatasetGenerationDescription":{
+      "type":"string",
+      "max":200,
+      "min":0
+    },
+    "DatasetGenerationId":{
+      "type":"string",
+      "pattern":"[a-zA-Z][a-zA-Z0-9-_]{0,99}-[a-zA-Z0-9]{10}"
+    },
+    "DatasetGenerationName":{
+      "type":"string",
+      "pattern":"[a-zA-Z][a-zA-Z0-9_-]{0,47}"
+    },
+    "DatasetGenerationStatus":{
+      "type":"string",
+      "documentation":"<p>The status of a dataset generation.</p>",
+      "enum":[
+        "IN_PROGRESS",
+        "COMPLETED",
+        "COMPLETED_WITH_ERRORS",
+        "FAILED",
+        "DELETING"
+      ]
+    },
+    "DatasetGenerationSummary":{
+      "type":"structure",
+      "required":[
+        "generationId",
+        "datasetId",
+        "name",
+        "scenarioType",
+        "status",
+        "createdAt"
+      ],
+      "members":{
+        "generationId":{
+          "shape":"DatasetGenerationId",
+          "documentation":"<p>The unique identifier of the dataset generation.</p>"
+        },
+        "datasetId":{
+          "shape":"DatasetId",
+          "documentation":"<p>The unique identifier of the dataset.</p>"
+        },
+        "name":{
+          "shape":"DatasetGenerationName",
+          "documentation":"<p>The name of the dataset generation.</p>"
+        },
+        "description":{
+          "shape":"DatasetGenerationDescription",
+          "documentation":"<p>The description of the dataset generation.</p>"
+        },
+        "scenarioType":{
+          "shape":"ScenarioType",
+          "documentation":"<p>The type of scenario the generation produces.</p>"
+        },
+        "status":{
+          "shape":"DatasetGenerationStatus",
+          "documentation":"<p>The status of the dataset generation.</p>"
+        },
+        "createdAt":{
+          "shape":"SyntheticTimestamp_date_time",
+          "documentation":"<p>The time at which the dataset generation started.</p>"
+        },
+        "completedAt":{
+          "shape":"SyntheticTimestamp_date_time",
+          "documentation":"<p>The time at which the dataset generation finished. Present only when the generation has finished.</p>"
+        }
+      },
+      "documentation":"<p>A summary of a dataset generation. To get its counts and the request it was started with, call <code>GetDatasetGeneration</code>.</p>"
+    },
+    "DatasetGenerationSummaryList":{
+      "type":"list",
+      "member":{"shape":"DatasetGenerationSummary"}
+    },
+    "DatasetId":{
+      "type":"string",
+      "documentation":"<p>The unique identifier of a dataset.</p>",
+      "pattern":"[a-zA-Z0-9_-]{1,110}"
+    },
+    "DatasetSource":{
+      "type":"structure",
+      "required":["datasetId"],
+      "members":{
+        "datasetId":{
+          "shape":"DatasetId",
+          "documentation":"<p>The unique identifier of the dataset.</p>"
+        },
+        "datasetVersion":{
+          "shape":"DatasetVersion",
+          "documentation":"<p>The number of a published version of the dataset. You can't run the <code>DRAFT</code> version. If you don't specify a version, the batch evaluation uses the latest published version.</p>"
+        }
+      },
+      "documentation":"<p>Identifies the dataset and the version of it to run.</p>"
+    },
+    "DatasetVersion":{
+      "type":"string",
+      "documentation":"<p>The version of a dataset.</p>",
+      "max":19,
+      "min":1,
+      "pattern":"(DRAFT|[0-9]{1,19})"
     },
     "DateTimestamp":{
       "type":"timestamp",
@@ -3403,6 +3951,44 @@
         "status":{
           "shape":"CapacityProviderSessionStatus",
           "documentation":"<p>The current status of the capacity provider session. When the status is <code>Deleting</code>, the session is being deleted and is not available. When the status is <code>Deleted</code>, the session is no longer available.</p>"
+        }
+      }
+    },
+    "DeleteDatasetGenerationRequest":{
+      "type":"structure",
+      "required":[
+        "datasetId",
+        "generationId"
+      ],
+      "members":{
+        "datasetId":{
+          "shape":"DatasetId",
+          "documentation":"<p>The unique identifier of the dataset.</p>",
+          "location":"uri",
+          "locationName":"datasetId"
+        },
+        "generationId":{
+          "shape":"DatasetGenerationId",
+          "documentation":"<p>The unique identifier of the dataset generation.</p>",
+          "location":"uri",
+          "locationName":"generationId"
+        }
+      }
+    },
+    "DeleteDatasetGenerationResponse":{
+      "type":"structure",
+      "required":[
+        "generationId",
+        "status"
+      ],
+      "members":{
+        "generationId":{
+          "shape":"DatasetGenerationId",
+          "documentation":"<p>The unique identifier of the dataset generation.</p>"
+        },
+        "status":{
+          "shape":"DatasetGenerationStatus",
+          "documentation":"<p>The status of the dataset generation.</p>"
         }
       }
     },
@@ -4055,6 +4641,43 @@
       "type":"string",
       "pattern":"arn:aws[a-zA-Z-]*:bedrock-agentcore:[a-z0-9-]+:[0-9]{12}:evaluator\\/[a-zA-Z][a-zA-Z0-9-_]{0,99}-[a-zA-Z0-9]{10}$|^arn:aws[a-zA-Z-]*:bedrock-agentcore:::evaluator/(Builtin|ThirdParty)\\.[a-zA-Z0-9._-]+"
     },
+    "EvaluatorFilter":{
+      "type":"structure",
+      "required":[
+        "evaluatorId",
+        "operator",
+        "value"
+      ],
+      "members":{
+        "evaluatorId":{
+          "shape":"EvaluatorId",
+          "documentation":"<p>The unique identifier of the evaluator whose result to compare.</p>"
+        },
+        "evaluationDimensionName":{
+          "shape":"EvaluationDimensionName",
+          "documentation":"<p>The dimension of the evaluator's result to compare. Required for an evaluator that scores more than one dimension. Don't specify it for any other evaluator.</p>"
+        },
+        "operator":{
+          "shape":"GenerationFilterOperator",
+          "documentation":"<p>How to compare the evaluation result with <code>value</code>.</p>"
+        },
+        "value":{
+          "shape":"GenerationFilterValue",
+          "documentation":"<p>The value to compare the evaluation result with. Use <code>doubleValue</code> for a score and <code>stringValue</code> for a label. <code>booleanValue</code> isn't supported.</p>"
+        },
+        "aggregation":{
+          "shape":"ResultAggregation",
+          "documentation":"<p>How to combine the evaluator's per-trace or per-span results into one result for the session. Required for an evaluator that scores traces or spans. Don't specify it for an evaluator that scores sessions.</p>"
+        }
+      },
+      "documentation":"<p>A condition on a session's evaluation result.</p>"
+    },
+    "EvaluatorFilterList":{
+      "type":"list",
+      "member":{"shape":"EvaluatorFilter"},
+      "max":10,
+      "min":0
+    },
     "EvaluatorId":{
       "type":"string",
       "max":111,
@@ -4591,11 +5214,22 @@
       "documentation":"<p>A value used in filter comparisons, supporting different data types.</p>",
       "union":true
     },
+    "FindingCountMap":{
+      "type":"map",
+      "key":{"shape":"FindingIdentifierKey"},
+      "value":{"shape":"Integer"}
+    },
     "FindingDescription":{
       "type":"string",
       "max":500,
       "min":1,
       "sensitive":true
+    },
+    "FindingIdentifierKey":{
+      "type":"string",
+      "max":128,
+      "min":1,
+      "pattern":"[A-Za-z0-9_-]{1,128}"
     },
     "FindingTargetId":{
       "type":"string",
@@ -4624,6 +5258,293 @@
         }
       },
       "documentation":"<p>A filter to restrict which gateway target paths are included in the A/B test.</p>"
+    },
+    "GenerationAttributeFilter":{
+      "type":"structure",
+      "required":[
+        "key",
+        "operator",
+        "value"
+      ],
+      "members":{
+        "key":{
+          "shape":"GenerationAttributeFilterKeyString",
+          "documentation":"<p>The attribute key.</p>"
+        },
+        "operator":{
+          "shape":"GenerationFilterOperator",
+          "documentation":"<p>How to compare the attribute with <code>value</code>.</p>"
+        },
+        "value":{
+          "shape":"GenerationFilterValue",
+          "documentation":"<p>The value to compare the attribute with.</p>"
+        }
+      },
+      "documentation":"<p>A condition on a session attribute.</p>"
+    },
+    "GenerationAttributeFilterKeyString":{
+      "type":"string",
+      "max":256,
+      "min":1,
+      "pattern":"[a-zA-Z0-9._-]+"
+    },
+    "GenerationAttributeFilterList":{
+      "type":"list",
+      "member":{"shape":"GenerationAttributeFilter"},
+      "max":5,
+      "min":0
+    },
+    "GenerationErrorCode":{
+      "type":"string",
+      "max":128,
+      "min":1,
+      "pattern":"[A-Z][A-Z0-9_]*"
+    },
+    "GenerationErrorDetail":{
+      "type":"structure",
+      "members":{
+        "errorCode":{
+          "shape":"GenerationErrorCode",
+          "documentation":"<p>The error code, for example <code>ACCESS_DENIED</code> or <code>EXPIRED_CREDENTIALS</code>. New codes can be added.</p>"
+        },
+        "errorMessage":{
+          "shape":"GenerationErrorMessage",
+          "documentation":"<p>A description of the error.</p>"
+        },
+        "count":{
+          "shape":"GenerationErrorDetailCountInteger",
+          "documentation":"<p>The number of sessions and traces that failed with this error code. Absent for a generation that finished before failures were counted by code. In that case, <code>sessionIds</code> is a sample.</p>"
+        },
+        "sessionIds":{
+          "shape":"GenerationErrorSessionIdList",
+          "documentation":"<p>Up to 10 of the sessions that failed with this error code. Each entry is a session ID, or the ID of a trace named in the request.</p>"
+        }
+      },
+      "documentation":"<p>The failures in a dataset generation that share an error code.</p>"
+    },
+    "GenerationErrorDetailCountInteger":{
+      "type":"integer",
+      "box":true,
+      "min":1
+    },
+    "GenerationErrorDetailsList":{
+      "type":"list",
+      "member":{"shape":"GenerationErrorDetail"},
+      "max":10,
+      "min":0
+    },
+    "GenerationErrorMessage":{
+      "type":"string",
+      "max":1024,
+      "min":1
+    },
+    "GenerationErrorSessionIdList":{
+      "type":"list",
+      "member":{"shape":"SessionId"},
+      "max":10,
+      "min":0
+    },
+    "GenerationFilterOperator":{
+      "type":"string",
+      "documentation":"<p>How a filter compares a value.</p>",
+      "enum":[
+        "Equals",
+        "NotEquals",
+        "GreaterThan",
+        "LessThan",
+        "GreaterThanOrEqual",
+        "LessThanOrEqual",
+        "Contains",
+        "NotContains"
+      ]
+    },
+    "GenerationFilterStringValue":{
+      "type":"string",
+      "max":1024,
+      "min":0
+    },
+    "GenerationFilterValue":{
+      "type":"structure",
+      "members":{
+        "stringValue":{
+          "shape":"GenerationFilterStringValue",
+          "documentation":"<p>A string value.</p>"
+        },
+        "doubleValue":{
+          "shape":"Double",
+          "documentation":"<p>A numeric value.</p>"
+        },
+        "booleanValue":{
+          "shape":"Boolean",
+          "documentation":"<p>A Boolean value.</p>"
+        }
+      },
+      "documentation":"<p>The value a filter compares with. Specify exactly one. Attribute filters support all three types. Evaluator filters support <code>stringValue</code> and <code>doubleValue</code>.</p>",
+      "union":true
+    },
+    "GenerationFilters":{
+      "type":"structure",
+      "members":{
+        "attributeFilters":{
+          "shape":"GenerationAttributeFilterList",
+          "documentation":"<p>Attribute conditions, up to 5. A session must meet all of them. An attribute on a span matches when any span in the session meets the condition.</p>"
+        },
+        "turnCount":{
+          "shape":"TurnCountRange",
+          "documentation":"<p>The range of turns a session can have. For example, set <code>max</code> to 1 for single-turn sessions only, or <code>min</code> to 2 for multi-turn sessions only. Sessions with more than 100 turns are never selected.</p>"
+        },
+        "evaluatorFilters":{
+          "shape":"EvaluatorFilterList",
+          "documentation":"<p>Conditions on evaluation results, up to 10. A session must meet all of them. You can use these only with an <code>onlineEvaluation</code> or <code>batchEvaluation</code> source. A <code>cloudWatchLogs</code> source has no evaluation results.</p>"
+        }
+      },
+      "documentation":"<p>Conditions that a session must meet to be selected. A session must meet every condition you specify. Attribute and turn count filters work with any source. Evaluator filters need a source that has evaluation results.</p>"
+    },
+    "GenerationIdentifierCounts":{
+      "type":"structure",
+      "members":{
+        "sessionIdCount":{
+          "shape":"Integer",
+          "documentation":"<p>The number of session IDs in the request.</p>"
+        },
+        "traceIdCount":{
+          "shape":"Integer",
+          "documentation":"<p>The number of trace IDs in the request.</p>"
+        }
+      },
+      "documentation":"<p>The number of session and trace IDs a dataset generation was started with.</p>"
+    },
+    "GenerationIdentifiers":{
+      "type":"structure",
+      "members":{
+        "sessionIds":{
+          "shape":"GenerationSessionIdList",
+          "documentation":"<p>The IDs of the sessions to use, up to 25.</p>"
+        },
+        "traceIds":{
+          "shape":"GenerationTraceIdList",
+          "documentation":"<p>The IDs of the traces to use, up to 25.</p>"
+        }
+      },
+      "documentation":"<p>The sessions and traces to generate examples from. Specify at least one session ID or trace ID. A session with more than 100 turns is reported as an error and produces no example.</p>"
+    },
+    "GenerationResults":{
+      "type":"structure",
+      "members":{
+        "sessionsMatched":{
+          "shape":"Integer",
+          "documentation":"<p>The number of sessions that matched the filters or were named in the request, before sampling. This includes sessions that later failed.</p>"
+        },
+        "sessionsSelected":{
+          "shape":"Integer",
+          "documentation":"<p>The number of sessions left after sampling.</p>"
+        },
+        "sessionsUnscored":{
+          "shape":"Integer",
+          "documentation":"<p>The number of sessions left out because an evaluator filter had no result to compare, either because the session wasn't evaluated yet or because the evaluation failed.</p>"
+        },
+        "sessionsFailed":{
+          "shape":"Integer",
+          "documentation":"<p>The number of sessions dropped because of an error. See <code>errorDetails</code> for the errors.</p>"
+        },
+        "scenariosGenerated":{
+          "shape":"Integer",
+          "documentation":"<p>The number of scenarios generated.</p>"
+        },
+        "scenariosDeduplicated":{
+          "shape":"Integer",
+          "documentation":"<p>The number of scenarios left out as duplicates, of each other or of examples already in the draft.</p>"
+        },
+        "examplesWritten":{
+          "shape":"Integer",
+          "documentation":"<p>The number of examples added to the dataset's draft.</p>"
+        },
+        "examplesWithGroundTruth":{
+          "shape":"Integer",
+          "documentation":"<p>The number of added examples that have reference fields.</p>"
+        }
+      },
+      "documentation":"<p>Counts of the sessions, scenarios and examples a dataset generation has processed.</p>"
+    },
+    "GenerationSamplingConfig":{
+      "type":"structure",
+      "members":{
+        "maxScenarios":{
+          "shape":"GenerationSamplingConfigMaxScenariosInteger",
+          "documentation":"<p>The maximum number of scenarios to generate, from 1 to 1,000. The default is 100. The generation produces at most one scenario for each selected session. The dataset's draft examples plus this value can't be more than 1,000.</p>"
+        }
+      },
+      "documentation":"<p>How many scenarios a dataset generation produces.</p>"
+    },
+    "GenerationSamplingConfigMaxScenariosInteger":{
+      "type":"integer",
+      "box":true,
+      "max":1000,
+      "min":1
+    },
+    "GenerationSelection":{
+      "type":"structure",
+      "members":{
+        "filters":{
+          "shape":"GenerationFilters",
+          "documentation":"<p>Conditions that a session must meet to be selected.</p>"
+        },
+        "identifiers":{
+          "shape":"GenerationIdentifiers",
+          "documentation":"<p>The sessions and traces to use.</p>"
+        }
+      },
+      "documentation":"<p>How a dataset generation chooses sessions. Specify exactly one: filters, to have AgentCore find matching sessions, or identifiers, to name the sessions and traces yourself. Sessions and traces you name aren't filtered further.</p>",
+      "union":true
+    },
+    "GenerationSelectionRecord":{
+      "type":"structure",
+      "members":{
+        "filters":{
+          "shape":"GenerationFilters",
+          "documentation":"<p>The filters the generation was started with.</p>"
+        },
+        "identifiers":{
+          "shape":"GenerationIdentifierCounts",
+          "documentation":"<p>The number of session and trace IDs the generation was started with.</p>"
+        }
+      },
+      "documentation":"<p>How a dataset generation was asked to choose sessions. Filters are returned as submitted. Session and trace IDs are returned as counts, and the IDs themselves are never returned.</p>",
+      "union":true
+    },
+    "GenerationSessionIdList":{
+      "type":"list",
+      "member":{"shape":"SessionId"},
+      "max":25,
+      "min":0
+    },
+    "GenerationSource":{
+      "type":"structure",
+      "members":{
+        "traceGeneration":{
+          "shape":"TraceGenerationSource",
+          "documentation":"<p>Generates examples from your agent's traces.</p>"
+        }
+      },
+      "documentation":"<p>The source of a dataset generation.</p>",
+      "union":true
+    },
+    "GenerationSourceRecord":{
+      "type":"structure",
+      "members":{
+        "traceGeneration":{
+          "shape":"TraceGenerationRecord",
+          "documentation":"<p>The trace source the generation was started with.</p>"
+        }
+      },
+      "documentation":"<p>The source a dataset generation was started with.</p>",
+      "union":true
+    },
+    "GenerationTraceIdList":{
+      "type":"list",
+      "member":{"shape":"TraceId"},
+      "max":25,
+      "min":0
     },
     "GetABTestRequest":{
       "type":"structure",
@@ -4777,6 +5698,101 @@
       },
       "payload":"agentCard"
     },
+    "GetAgentInsightRequest":{
+      "type":"structure",
+      "required":[
+        "applicationName",
+        "agentInsightId"
+      ],
+      "members":{
+        "applicationName":{
+          "shape":"AgentApplicationName",
+          "documentation":"<p>The application that the Agent Insight belongs to.</p>",
+          "location":"querystring",
+          "locationName":"applicationName"
+        },
+        "agentInsightId":{
+          "shape":"AgentInsightId",
+          "documentation":"<p>The unique identifier of the Agent Insight to retrieve.</p>",
+          "location":"uri",
+          "locationName":"agentInsightId"
+        }
+      }
+    },
+    "GetAgentInsightResponse":{
+      "type":"structure",
+      "required":[
+        "type",
+        "name",
+        "description",
+        "createdAt",
+        "agentInsightId",
+        "applicationName",
+        "customerMetadataStatus",
+        "updatedAt",
+        "archiveStatus"
+      ],
+      "members":{
+        "type":{"shape":"InsightType"},
+        "name":{
+          "shape":"InsightName",
+          "documentation":"<p>A generated display label for the Agent Insight. This is a human-readable summary of the detected pattern, not an identifier.</p>"
+        },
+        "description":{
+          "shape":"InsightDescription",
+          "documentation":"<p>A generated description of the Agent Insight that explains the detected pattern and its observed behavior across sessions.</p>"
+        },
+        "createdAt":{
+          "shape":"SyntheticTimestamp_date_time",
+          "documentation":"<p>The date and time when the Agent Insight was first created.</p>"
+        },
+        "affectedSessionCount":{
+          "shape":"GetAgentInsightResponseAffectedSessionCountInteger",
+          "documentation":"<p>The number of sessions affected by the insight pattern.</p>"
+        },
+        "sampleSessions":{
+          "shape":"InsightSampleSessionList",
+          "documentation":"<p>A list of sample sessions that illustrate the Agent Insight, including per-session findings that point to the relevant spans or traces.</p>"
+        },
+        "rootCauses":{
+          "shape":"InsightRootCauseList",
+          "documentation":"<p>The root causes identified for the Agent Insight, each with an explanation, an affected session count, an optional suggested fix, and sample sessions that illustrate the root cause.</p>"
+        },
+        "agentInsightId":{
+          "shape":"AgentInsightId",
+          "documentation":"<p>The unique identifier of the Agent Insight.</p>"
+        },
+        "applicationName":{
+          "shape":"AgentApplicationName",
+          "documentation":"<p>The application that the Agent Insight belongs to.</p>"
+        },
+        "batchEvaluationId":{
+          "shape":"BatchEvaluationId",
+          "documentation":"<p>The Batch Evaluation that produced this Insight, when applicable.</p>"
+        },
+        "customerMetadataStatus":{
+          "shape":"AgentInsightCustomerMetadataStatus",
+          "documentation":"<p>Specifies whether customer-encrypted metadata is available for the Agent Insight.</p>"
+        },
+        "updatedAt":{
+          "shape":"SyntheticTimestamp_date_time",
+          "documentation":"<p>The date and time when the Agent Insight was last updated.</p>"
+        },
+        "archiveStatus":{
+          "shape":"AgentInsightArchiveStatus",
+          "documentation":"<p>Specifies whether the Agent Insight is active or archived. Valid values:</p> <ul> <li> <p> <code>ACTIVE</code> - The insight is currently active.</p> </li> <li> <p> <code>ARCHIVED</code> - The insight has been archived.</p> </li> </ul>"
+        },
+        "lastSeenAt":{
+          "shape":"SyntheticTimestamp_date_time",
+          "documentation":"<p>The most recent date and time when the insight pattern was observed.</p>"
+        }
+      }
+    },
+    "GetAgentInsightResponseAffectedSessionCountInteger":{
+      "type":"integer",
+      "box":true,
+      "min":0
+    },
     "GetBatchEvaluationRequest":{
       "type":"structure",
       "required":["batchEvaluationId"],
@@ -4870,6 +5886,10 @@
         "kmsKeyArn":{
           "shape":"KmsKeyArn",
           "documentation":"<p>The ARN of the KMS key used to encrypt evaluation data.</p>"
+        },
+        "datasetExecutionDetails":{
+          "shape":"DatasetExecutionDetails",
+          "documentation":"<p>The details of the dataset and agent that the batch evaluation ran, including the dataset version and agent runtime version that the service resolved when the batch evaluation started. This field is present only if the batch evaluation was started with a <code>datasetExecutionConfig</code>.</p>"
         }
       }
     },
@@ -5025,6 +6045,96 @@
         "filesystemConfigurations":{
           "shape":"ToolsFileSystemConfigurations",
           "documentation":"<p>The file system configurations for the code interpreter session. Each entry describes an access point and its mount path.</p>"
+        }
+      }
+    },
+    "GetDatasetGenerationRequest":{
+      "type":"structure",
+      "required":[
+        "datasetId",
+        "generationId"
+      ],
+      "members":{
+        "datasetId":{
+          "shape":"DatasetId",
+          "documentation":"<p>The unique identifier of the dataset.</p>",
+          "location":"uri",
+          "locationName":"datasetId"
+        },
+        "generationId":{
+          "shape":"DatasetGenerationId",
+          "documentation":"<p>The unique identifier of the dataset generation.</p>",
+          "location":"uri",
+          "locationName":"generationId"
+        }
+      }
+    },
+    "GetDatasetGenerationResponse":{
+      "type":"structure",
+      "required":[
+        "generationId",
+        "name",
+        "datasetId",
+        "scenarioType",
+        "status",
+        "createdAt"
+      ],
+      "members":{
+        "generationId":{
+          "shape":"DatasetGenerationId",
+          "documentation":"<p>The unique identifier of the dataset generation.</p>"
+        },
+        "name":{
+          "shape":"DatasetGenerationName",
+          "documentation":"<p>The name of the dataset generation.</p>"
+        },
+        "description":{
+          "shape":"DatasetGenerationDescription",
+          "documentation":"<p>The description of the dataset generation.</p>"
+        },
+        "datasetId":{
+          "shape":"DatasetId",
+          "documentation":"<p>The unique identifier of the dataset.</p>"
+        },
+        "scenarioType":{
+          "shape":"ScenarioType",
+          "documentation":"<p>The type of scenario the generation produces. This is the value from the request, or <code>DYNAMIC</code> if the request didn't specify one.</p>"
+        },
+        "status":{
+          "shape":"DatasetGenerationStatus",
+          "documentation":"<p>The status of the dataset generation.</p>"
+        },
+        "failureReason":{
+          "shape":"String",
+          "documentation":"<p>The reason the dataset generation failed. Present only when the status is <code>FAILED</code>.</p>"
+        },
+        "createdAt":{
+          "shape":"SyntheticTimestamp_date_time",
+          "documentation":"<p>The time at which the dataset generation started.</p>"
+        },
+        "updatedAt":{
+          "shape":"SyntheticTimestamp_date_time",
+          "documentation":"<p>The time at which the dataset generation last changed status.</p>"
+        },
+        "completedAt":{
+          "shape":"SyntheticTimestamp_date_time",
+          "documentation":"<p>The time at which the dataset generation finished. Present only when the generation has finished.</p>"
+        },
+        "source":{
+          "shape":"GenerationSourceRecord",
+          "documentation":"<p>The source the generation was started with, including the resolved time window. If you selected sessions and traces by ID, the response gives the number of IDs instead of the IDs.</p>"
+        },
+        "generationResults":{
+          "shape":"GenerationResults",
+          "documentation":"<p>Counts of the sessions, scenarios and examples the generation has processed.</p>"
+        },
+        "redactionSummary":{
+          "shape":"RedactionSummary",
+          "documentation":"<p>A summary of what redaction found. Present only when the generation was started with redaction.</p>"
+        },
+        "errorDetails":{
+          "shape":"GenerationErrorDetailsList",
+          "documentation":"<p>The errors the generation hit, grouped by error code. The list holds the 10 most frequent error codes, most frequent first.</p>"
         }
       }
     },
@@ -5538,6 +6648,35 @@
           "documentation":"<p>An opaque token representing the identity of both the workload and the user.</p>"
         }
       }
+    },
+    "GroundTruthConfig":{
+      "type":"structure",
+      "required":["fields"],
+      "members":{
+        "fields":{
+          "shape":"GroundTruthFieldList",
+          "documentation":"<p>The reference fields to copy. Values are copied from the session as observed, not generated.</p>"
+        },
+        "qualityFilters":{
+          "shape":"EvaluatorFilterList",
+          "documentation":"<p>Evaluator conditions that a selected session must also meet to have reference fields copied. If you don't specify these, the generation uses the evaluator filters from <code>selection</code>. If the selection names sessions and traces by ID, every selected session gets reference fields. Specify an empty list to give every selected session reference fields. You can't specify quality filters with a <code>cloudWatchLogs</code> source.</p>"
+        }
+      },
+      "documentation":"<p>Reference fields to copy from the sessions into the generated examples.</p>"
+    },
+    "GroundTruthField":{
+      "type":"string",
+      "documentation":"<p>A reference field in a dataset example.</p>",
+      "enum":[
+        "expected_response",
+        "expected_trajectory"
+      ]
+    },
+    "GroundTruthFieldList":{
+      "type":"list",
+      "member":{"shape":"GroundTruthField"},
+      "max":2,
+      "min":1
     },
     "GroundTruthSource":{
       "type":"structure",
@@ -8166,6 +9305,61 @@
         }
       }
     },
+    "ListAgentInsightsRequest":{
+      "type":"structure",
+      "members":{
+        "applicationName":{
+          "shape":"AgentApplicationName",
+          "documentation":"<p>Filters the results to Agent Insights for an application.</p>",
+          "location":"querystring",
+          "locationName":"applicationName"
+        },
+        "batchEvaluationId":{
+          "shape":"BatchEvaluationId",
+          "documentation":"<p>Filters the results to Agent Insights produced by a batch evaluation.</p>",
+          "location":"querystring",
+          "locationName":"batchEvaluationId"
+        },
+        "archiveStatus":{
+          "shape":"AgentInsightArchiveStatus",
+          "documentation":"<p>Filters the results by archive status.</p>",
+          "location":"querystring",
+          "locationName":"archiveStatus"
+        },
+        "maxResults":{
+          "shape":"ListAgentInsightsRequestMaxResultsInteger",
+          "documentation":"<p>The maximum number of Agent Insight summaries to return in one response. If you don't specify a value, the operation returns up to 50 summaries.</p>",
+          "location":"querystring",
+          "locationName":"maxResults"
+        },
+        "nextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>A token to specify where to start paginating the results. This token is returned in a previous response.</p>",
+          "location":"querystring",
+          "locationName":"nextToken"
+        }
+      }
+    },
+    "ListAgentInsightsRequestMaxResultsInteger":{
+      "type":"integer",
+      "box":true,
+      "max":50,
+      "min":1
+    },
+    "ListAgentInsightsResponse":{
+      "type":"structure",
+      "required":["agentInsights"],
+      "members":{
+        "agentInsights":{
+          "shape":"AgentInsightSummaryList",
+          "documentation":"<p>The Agent Insight summaries.</p>"
+        },
+        "nextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>A token to use to retrieve the next page of results. This value is present only when additional results are available.</p>"
+        }
+      }
+    },
     "ListBatchEvaluationsRequest":{
       "type":"structure",
       "members":{
@@ -8276,6 +9470,50 @@
         "nextToken":{
           "shape":"NextToken",
           "documentation":"<p>The token to use in a subsequent <code>ListCodeInterpreterSessions</code> request to get the next set of results.</p>"
+        }
+      }
+    },
+    "ListDatasetGenerationsRequest":{
+      "type":"structure",
+      "required":["datasetId"],
+      "members":{
+        "datasetId":{
+          "shape":"DatasetId",
+          "documentation":"<p>The unique identifier of the dataset.</p>",
+          "location":"uri",
+          "locationName":"datasetId"
+        },
+        "maxResults":{
+          "shape":"ListDatasetGenerationsRequestMaxResultsInteger",
+          "documentation":"<p>The maximum number of results to return in the response. The default is 20. If the total number of results is greater than this value, use the token returned in the response in the <code>nextToken</code> field when making another request to return the next batch of results.</p>",
+          "location":"querystring",
+          "locationName":"maxResults"
+        },
+        "nextToken":{
+          "shape":"String",
+          "documentation":"<p>If the total number of results is greater than the <code>maxResults</code> value provided in the request, enter the token returned in the <code>nextToken</code> field in the response in this field to return the next batch of results.</p>",
+          "location":"querystring",
+          "locationName":"nextToken"
+        }
+      }
+    },
+    "ListDatasetGenerationsRequestMaxResultsInteger":{
+      "type":"integer",
+      "box":true,
+      "max":100,
+      "min":1
+    },
+    "ListDatasetGenerationsResponse":{
+      "type":"structure",
+      "required":["datasetGenerations"],
+      "members":{
+        "datasetGenerations":{
+          "shape":"DatasetGenerationSummaryList",
+          "documentation":"<p>The dataset generations.</p>"
+        },
+        "nextToken":{
+          "shape":"String",
+          "documentation":"<p>If the total number of results is greater than the <code>maxResults</code> value provided in the request, use this token when making another request in the <code>nextToken</code> field to return the next batch of results.</p>"
         }
       }
     },
@@ -9591,6 +10829,25 @@
       },
       "documentation":"<p>A reference to an existing online evaluation configuration to use as the data source for batch evaluation.</p>"
     },
+    "OnlineEvaluationSourceConfig":{
+      "type":"structure",
+      "required":["onlineEvaluationConfigArn"],
+      "members":{
+        "onlineEvaluationConfigArn":{
+          "shape":"OnlineEvaluationConfigArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the online evaluation configuration.</p>"
+        },
+        "startTime":{
+          "shape":"SyntheticTimestamp_date_time",
+          "documentation":"<p>The start of the time window to read sessions from. The default is 7 days before <code>endTime</code>.</p>"
+        },
+        "endTime":{
+          "shape":"SyntheticTimestamp_date_time",
+          "documentation":"<p>The end of the time window to read sessions from. The default is the time the generation starts.</p>"
+        }
+      },
+      "documentation":"<p>An online evaluation source for a dataset generation.</p>"
+    },
     "OnlineEvaluationTraceConfig":{
       "type":"structure",
       "required":[
@@ -10458,6 +11715,152 @@
       "documentation":"<p>Specifies the record expiry (long-term memory time-to-live) applied to the records in a batch request. Provide exactly one of <code>recordExpiryDurationDays</code> or <code>action</code>. Set <code>recordExpiryDurationDays</code> to configure or update the expiry, or set <code>action</code> to <code>REMOVE</code> to remove a previously configured expiry.</p>",
       "union":true
     },
+    "RedactionConfiguration":{
+      "type":"structure",
+      "members":{
+        "identifiers":{
+          "shape":"RedactionIdentifierList",
+          "documentation":"<p>The managed data identifiers to apply. These match the CloudWatch Logs managed data identifiers.</p>"
+        },
+        "customDataIdentifiers":{
+          "shape":"RedactionConfigurationCustomDataIdentifiersList",
+          "documentation":"<p>Custom data identifiers to apply, up to 10. You can use custom identifiers without any managed identifiers.</p>"
+        }
+      },
+      "documentation":"<p>Sensitive data to mask in generated examples. Nothing is redacted unless you specify at least one identifier. Each character of a match is replaced with <code>*</code>, so a masked value keeps its length. If detection fails, the generation fails and no examples are written.</p>"
+    },
+    "RedactionConfigurationCustomDataIdentifiersList":{
+      "type":"list",
+      "member":{"shape":"CustomDataIdentifier"},
+      "max":10,
+      "min":0
+    },
+    "RedactionIdentifier":{
+      "type":"string",
+      "documentation":"<p>A managed data identifier. The values match the CloudWatch Logs managed data identifiers.</p>",
+      "enum":[
+        "ADDRESS",
+        "AWS_SECRET_KEY",
+        "BANK_ACCOUNT_NUMBER_DE",
+        "BANK_ACCOUNT_NUMBER_ES",
+        "BANK_ACCOUNT_NUMBER_FR",
+        "BANK_ACCOUNT_NUMBER_GB",
+        "BANK_ACCOUNT_NUMBER_IT",
+        "BANK_ACCOUNT_NUMBER_US",
+        "CEP_CODE_BR",
+        "CNPJ_BR",
+        "CPF_CODE_BR",
+        "CREDIT_CARD_EXPIRATION",
+        "CREDIT_CARD_MAGNETIC_STRIPE",
+        "CREDIT_CARD_NUMBER",
+        "CREDIT_CARD_SECURITY_CODE",
+        "DATE_OF_BIRTH",
+        "DRIVERS_LICENSE_AT",
+        "DRIVERS_LICENSE_AU",
+        "DRIVERS_LICENSE_BE",
+        "DRIVERS_LICENSE_BG",
+        "DRIVERS_LICENSE_CA",
+        "DRIVERS_LICENSE_CY",
+        "DRIVERS_LICENSE_CZ",
+        "DRIVERS_LICENSE_DE",
+        "DRIVERS_LICENSE_DK",
+        "DRIVERS_LICENSE_EE",
+        "DRIVERS_LICENSE_ES",
+        "DRIVERS_LICENSE_FI",
+        "DRIVERS_LICENSE_FR",
+        "DRIVERS_LICENSE_GB",
+        "DRIVERS_LICENSE_GR",
+        "DRIVERS_LICENSE_HR",
+        "DRIVERS_LICENSE_HU",
+        "DRIVERS_LICENSE_IE",
+        "DRIVERS_LICENSE_IT",
+        "DRIVERS_LICENSE_LT",
+        "DRIVERS_LICENSE_LU",
+        "DRIVERS_LICENSE_LV",
+        "DRIVERS_LICENSE_MT",
+        "DRIVERS_LICENSE_NL",
+        "DRIVERS_LICENSE_PL",
+        "DRIVERS_LICENSE_PT",
+        "DRIVERS_LICENSE_RO",
+        "DRIVERS_LICENSE_SE",
+        "DRIVERS_LICENSE_SI",
+        "DRIVERS_LICENSE_SK",
+        "DRIVERS_LICENSE_US",
+        "DRUG_ENFORCEMENT_AGENCY_NUMBER_US",
+        "ELECTORAL_ROLL_NUMBER_GB",
+        "EMAIL_ADDRESS",
+        "HEALTH_INSURANCE_CARD_NUMBER_EU",
+        "HEALTH_INSURANCE_CLAIM_NUMBER_US",
+        "HEALTH_INSURANCE_NUMBER_FR",
+        "HEALTHCARE_PROCEDURE_CODE_US",
+        "INDIVIDUAL_TAX_IDENTIFICATION_NUMBER_US",
+        "INSEE_CODE_FR",
+        "IP_ADDRESS",
+        "LAT_LONG",
+        "MEDICARE_BENEFICIARY_NUMBER_US",
+        "NAME",
+        "NATIONAL_DRUG_CODE_US",
+        "NATIONAL_IDENTIFICATION_NUMBER_DE",
+        "NATIONAL_IDENTIFICATION_NUMBER_ES",
+        "NATIONAL_IDENTIFICATION_NUMBER_IT",
+        "NATIONAL_INSURANCE_NUMBER_GB",
+        "NATIONAL_PROVIDER_ID_US",
+        "NHS_NUMBER_GB",
+        "NIE_NUMBER_ES",
+        "NIF_NUMBER_ES",
+        "OPEN_SSH_PRIVATE_KEY",
+        "PASSPORT_NUMBER_CA",
+        "PASSPORT_NUMBER_DE",
+        "PASSPORT_NUMBER_ES",
+        "PASSPORT_NUMBER_FR",
+        "PASSPORT_NUMBER_GB",
+        "PASSPORT_NUMBER_IT",
+        "PASSPORT_NUMBER_US",
+        "PERMANENT_RESIDENCE_NUMBER_CA",
+        "PERSONAL_HEALTH_NUMBER_CA",
+        "PGP_PRIVATE_KEY",
+        "PHONE_NUMBER_BR",
+        "PHONE_NUMBER_DE",
+        "PHONE_NUMBER_ES",
+        "PHONE_NUMBER_FR",
+        "PHONE_NUMBER_GB",
+        "PHONE_NUMBER_IT",
+        "PHONE_NUMBER_US",
+        "PKCS_PRIVATE_KEY",
+        "POSTAL_CODE_CA",
+        "PUTTY_PRIVATE_KEY",
+        "RG_NUMBER_BR",
+        "SOCIAL_INSURANCE_NUMBER_CA",
+        "SSN_ES",
+        "SSN_US",
+        "TAX_ID_DE",
+        "TAX_ID_ES",
+        "TAX_ID_FR",
+        "TAX_ID_GB",
+        "VEHICLE_IDENTIFICATION_NUMBER",
+        "ZIP_CODE_US"
+      ]
+    },
+    "RedactionIdentifierList":{
+      "type":"list",
+      "member":{"shape":"RedactionIdentifier"},
+      "max":100,
+      "min":0
+    },
+    "RedactionSummary":{
+      "type":"structure",
+      "members":{
+        "scenariosScanned":{
+          "shape":"Integer",
+          "documentation":"<p>The number of scenarios scanned for sensitive data.</p>"
+        },
+        "findingCounts":{
+          "shape":"FindingCountMap",
+          "documentation":"<p>The number of matches for each data identifier.</p>"
+        }
+      },
+      "documentation":"<p>A summary of what redaction found in a dataset generation. It contains counts only, never the masked data.</p>"
+    },
     "RegistryArn":{
       "type":"string",
       "max":2048,
@@ -10577,6 +11980,12 @@
       "min":1,
       "pattern":"[a-zA-Z0-9_-]+"
     },
+    "RequestTemplate":{
+      "type":"string",
+      "documentation":"<p>A JSON object template for the request payload sent to an agent.</p>",
+      "max":10240,
+      "min":0
+    },
     "RequestUri":{
       "type":"string",
       "max":1024,
@@ -10678,6 +12087,17 @@
       "type":"blob",
       "sensitive":true,
       "streaming":true
+    },
+    "ResultAggregation":{
+      "type":"string",
+      "documentation":"<p>How to combine per-trace or per-span evaluation results into one result for the session.</p>",
+      "enum":[
+        "Min",
+        "Max",
+        "Mean",
+        "AllMatch",
+        "AnyMatch"
+      ]
     },
     "ResultDestination":{
       "type":"string",
@@ -11013,6 +12433,14 @@
           "documentation":"<p>The timestamp when the browser profile was last updated. This value is in ISO 8601 format.</p>"
         }
       }
+    },
+    "ScenarioType":{
+      "type":"string",
+      "documentation":"<p>The type of scenario a dataset generation produces. Each generation produces one type.</p>",
+      "enum":[
+        "FIXED",
+        "DYNAMIC"
+      ]
     },
     "SchemaVersion":{
       "type":"string",
@@ -11530,7 +12958,11 @@
           "shape":"BatchEvaluationDescription",
           "documentation":"<p>The description of the batch evaluation.</p>"
         },
-        "outputConfig":{"shape":"OutputConfig"}
+        "outputConfig":{"shape":"OutputConfig"},
+        "datasetExecutionConfig":{
+          "shape":"DatasetExecutionConfig",
+          "documentation":"<p>The configuration for running the scenarios in a dataset against an agent before evaluating the resulting sessions. When you specify this field, the batch evaluation runs each scenario in the dataset against the agent. It then evaluates the sessions that the agent produces. You must also specify <code>evaluators</code> and a <code>dataSourceConfig</code> that uses <code>cloudWatchLogs</code>. Configure <code>cloudWatchLogs</code> with the service name and log groups that the agent uses for its traces. You can't specify <code>insights</code> or an <code>onlineEvaluationConfigSource</code> data source with this field.</p>"
+        }
       }
     },
     "StartBatchEvaluationRequestEvaluatorsList":{
@@ -11776,6 +13208,75 @@
         "createdAt":{
           "shape":"DateTimestamp",
           "documentation":"<p>The time at which the code interpreter session was created.</p>"
+        }
+      }
+    },
+    "StartDatasetGenerationRequest":{
+      "type":"structure",
+      "required":[
+        "datasetId",
+        "name",
+        "source"
+      ],
+      "members":{
+        "datasetId":{
+          "shape":"DatasetId",
+          "documentation":"<p>The unique identifier of the dataset to add the generated examples to. The dataset must be <code>ACTIVE</code>.</p>",
+          "location":"uri",
+          "locationName":"datasetId"
+        },
+        "name":{
+          "shape":"DatasetGenerationName",
+          "documentation":"<p>The name of the dataset generation. The generation ID starts with this name.</p>"
+        },
+        "description":{
+          "shape":"DatasetGenerationDescription",
+          "documentation":"<p>A description of the dataset generation.</p>"
+        },
+        "scenarioType":{
+          "shape":"ScenarioType",
+          "documentation":"<p>The type of scenario to generate. If you don't specify a value, the generation produces <code>DYNAMIC</code> scenarios.</p>"
+        },
+        "source":{
+          "shape":"GenerationSource",
+          "documentation":"<p>Where the generation reads sessions from, and how it selects, samples, labels and redacts them.</p>"
+        },
+        "clientToken":{
+          "shape":"ClientToken",
+          "documentation":"<p>A unique, case-sensitive identifier to ensure that the API request completes no more than one time. If this token matches a previous request, the service ignores the request, but does not return an error.</p>",
+          "idempotencyToken":true
+        }
+      }
+    },
+    "StartDatasetGenerationResponse":{
+      "type":"structure",
+      "required":[
+        "generationId",
+        "name",
+        "datasetId",
+        "status",
+        "createdAt"
+      ],
+      "members":{
+        "generationId":{
+          "shape":"DatasetGenerationId",
+          "documentation":"<p>The unique identifier of the dataset generation.</p>"
+        },
+        "name":{
+          "shape":"DatasetGenerationName",
+          "documentation":"<p>The name of the dataset generation.</p>"
+        },
+        "datasetId":{
+          "shape":"DatasetId",
+          "documentation":"<p>The unique identifier of the dataset.</p>"
+        },
+        "status":{
+          "shape":"DatasetGenerationStatus",
+          "documentation":"<p>The status of the dataset generation.</p>"
+        },
+        "createdAt":{
+          "shape":"SyntheticTimestamp_date_time",
+          "documentation":"<p>The time at which the dataset generation started.</p>"
         }
       }
     },
@@ -12824,6 +14325,59 @@
       "max":1.0,
       "min":0.0
     },
+    "TraceGenerationRecord":{
+      "type":"structure",
+      "members":{
+        "sourceConfig":{
+          "shape":"TraceSourceConfig",
+          "documentation":"<p>Where the generation reads sessions from, including the resolved time window.</p>"
+        },
+        "selection":{
+          "shape":"GenerationSelectionRecord",
+          "documentation":"<p>How the generation chooses sessions. Filters are returned as submitted, with the resolved maximum turn count. Session and trace IDs are returned as counts. If this is absent, the request had no selection.</p>"
+        },
+        "sampling":{
+          "shape":"GenerationSamplingConfig",
+          "documentation":"<p>How many scenarios the generation produces.</p>"
+        },
+        "groundTruth":{
+          "shape":"GroundTruthConfig",
+          "documentation":"<p>The reference fields the generation copies into the examples. If the request didn't specify quality filters, the filters the generation applies are returned here.</p>"
+        },
+        "redactionConfiguration":{
+          "shape":"RedactionConfiguration",
+          "documentation":"<p>The sensitive data the generation masks in the examples.</p>"
+        }
+      },
+      "documentation":"<p>The trace source a dataset generation was started with.</p>"
+    },
+    "TraceGenerationSource":{
+      "type":"structure",
+      "required":["sourceConfig"],
+      "members":{
+        "sourceConfig":{
+          "shape":"TraceSourceConfig",
+          "documentation":"<p>Where to read the sessions from.</p>"
+        },
+        "selection":{
+          "shape":"GenerationSelection",
+          "documentation":"<p>How to choose sessions from the source. If you don't specify a selection, the generation uses every session in the source and time window that has at most 100 turns.</p>"
+        },
+        "sampling":{
+          "shape":"GenerationSamplingConfig",
+          "documentation":"<p>How many scenarios to generate from the selected sessions.</p>"
+        },
+        "groundTruth":{
+          "shape":"GroundTruthConfig",
+          "documentation":"<p>Reference fields to copy from the sessions into the examples. If you don't specify this, the examples have no reference fields.</p>"
+        },
+        "redactionConfiguration":{
+          "shape":"RedactionConfiguration",
+          "documentation":"<p>Sensitive data to mask in the examples. If you don't specify this, nothing is redacted.</p>"
+        }
+      },
+      "documentation":"<p>Settings for generating examples from your agent's traces.</p>"
+    },
     "TraceId":{
       "type":"string",
       "max":32,
@@ -12839,6 +14393,51 @@
       "type":"list",
       "member":{"shape":"TraceId"},
       "max":10,
+      "min":1
+    },
+    "TraceSourceConfig":{
+      "type":"structure",
+      "members":{
+        "cloudWatchLogs":{
+          "shape":"CloudWatchLogsSourceConfig",
+          "documentation":"<p>Reads sessions from CloudWatch Logs log groups.</p>"
+        },
+        "onlineEvaluation":{
+          "shape":"OnlineEvaluationSourceConfig",
+          "documentation":"<p>Reads sessions, with their evaluation results, from an online evaluation configuration.</p>"
+        },
+        "batchEvaluation":{
+          "shape":"BatchEvaluationSourceConfig",
+          "documentation":"<p>Reads sessions, with their evaluation results, from a batch evaluation.</p>"
+        }
+      },
+      "documentation":"<p>Where a dataset generation reads sessions from. Specify exactly one source.</p>",
+      "union":true
+    },
+    "TurnCountRange":{
+      "type":"structure",
+      "members":{
+        "min":{
+          "shape":"TurnCountRangeMinInteger",
+          "documentation":"<p>The minimum number of turns.</p>"
+        },
+        "max":{
+          "shape":"TurnCountRangeMaxInteger",
+          "documentation":"<p>The maximum number of turns. The default is 100.</p>"
+        }
+      },
+      "documentation":"<p>A range of turn counts. Each bound is from 1 to 100, and <code>min</code> can't be greater than <code>max</code>.</p>"
+    },
+    "TurnCountRangeMaxInteger":{
+      "type":"integer",
+      "box":true,
+      "max":100,
+      "min":1
+    },
+    "TurnCountRangeMinInteger":{
+      "type":"integer",
+      "box":true,
+      "max":100,
       "min":1
     },
     "UnauthorizedException":{
@@ -12931,6 +14530,54 @@
         "updatedAt":{
           "shape":"Timestamp",
           "documentation":"<p>The timestamp when the A/B test was updated.</p>"
+        }
+      }
+    },
+    "UpdateAgentInsightRequest":{
+      "type":"structure",
+      "required":[
+        "applicationName",
+        "agentInsightId",
+        "archiveStatus"
+      ],
+      "members":{
+        "applicationName":{
+          "shape":"AgentApplicationName",
+          "documentation":"<p>The application that the Agent Insight belongs to.</p>",
+          "location":"querystring",
+          "locationName":"applicationName"
+        },
+        "agentInsightId":{
+          "shape":"AgentInsightId",
+          "documentation":"<p>The unique identifier of the Agent Insight to update.</p>",
+          "location":"uri",
+          "locationName":"agentInsightId"
+        },
+        "archiveStatus":{
+          "shape":"AgentInsightArchiveStatus",
+          "documentation":"<p>The archive status to apply to the Agent Insight. Valid values:</p> <ul> <li> <p> <code>ACTIVE</code> - Marks the insight as active.</p> </li> <li> <p> <code>ARCHIVED</code> - Marks the insight as archived.</p> </li> </ul>"
+        }
+      }
+    },
+    "UpdateAgentInsightResponse":{
+      "type":"structure",
+      "required":[
+        "agentInsightId",
+        "archiveStatus",
+        "updatedAt"
+      ],
+      "members":{
+        "agentInsightId":{
+          "shape":"AgentInsightId",
+          "documentation":"<p>The unique identifier of the updated Agent Insight.</p>"
+        },
+        "archiveStatus":{
+          "shape":"AgentInsightArchiveStatus",
+          "documentation":"<p>The archive status of the updated Agent Insight. Valid values:</p> <ul> <li> <p> <code>ACTIVE</code> - The insight is active.</p> </li> <li> <p> <code>ARCHIVED</code> - The insight is archived.</p> </li> </ul>"
+        },
+        "updatedAt":{
+          "shape":"SyntheticTimestamp_date_time",
+          "documentation":"<p>The date and time when the Agent Insight was updated.</p>"
         }
       }
     },

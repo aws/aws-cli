@@ -2,6 +2,43 @@
 CHANGELOG
 =========
 
+2.41.0
+======
+
+* api-change:``controltower``: AWS Control Tower now reports source drift when an enabled baseline no longer matches the landing zone's configuration.
+* api-change:``bedrock-agentcore``: Adds support for continuous insights and automatic dataset generation
+* enhancement:login: When ``aws login`` signs in with a region from ``--region`` or the environment and the profile has no region, prompt for the profile's region after sign-in and save the answer. For accounts with a home region, the prompt defaults to it, and ``aws login`` asks before replacing a different profile region with it.
+* api-change:``apigateway``: API Gateway now adds support for JWT authorizers on REST APIs.
+* feature:login: Add the ``aws signup`` command, which creates an AWS account in the browser and returns credentials for it to the CLI, setting the profile region to the account's home region.
+* api-change:``bedrock-agentcore-control``: Adds support for agent insight stores that help frame insight evaluators, and dataset source support for batch evaluation
+* api-change:``route53globalresolver``: Adds AWS Cloud WAN support to Route 53 Global Resolver via new core network endpoint APIs to connect a global resolver to a core network, segment-based access sources, and a publicIpStatus setting to disable public IPs so a resolver is reachable only over Cloud WAN.
+* api-change:``s3``: For the S3 operations AbortMultipartUpload, CreateMultipartUpload, ListParts, UploadPart, UploadPartCopy, the Object Version ID is returned as a response header, if the bucket has versioning enabled. For ListMultipartUploads, it will be returned in the response body.
+* api-change:``connect``: Evaluation forms can now adapt to each contact. Questions and sections can be shown or hidden, and single-select answers can be set automatically, based on answers to other questions, contact data (Contact Lens categories, sentiment, agent, queue, contact attributes and more).
+* api-change:``securityhub``: Security Hub now supports Google Cloud. Use connector APIs to connect GCP organizations or projects and monitor their security posture. It also infers resource criticality from tags, CloudWatch metrics, and SBOM data to help you prioritize findings
+* api-change:``networkmanager``: Adds support for Multipath Resilience change values to be delivered when reviewing a core network change set.
+* api-change:``rum``: Add SessionMetadata to PutRumEvents for attributes that apply to every event in a batch, such as browser, device, and operating system.
+* api-change:``inspector2``: This release extends vulnerability management to Google Cloud Platform (GCP) Compute Engine virtual machine (VM) instances, container images in Google Artifact Registry (GAR), and Cloud Run functions.
+* api-change:``marketplace-agreement``: Adds buyer agreement request and approval APIs. Buyers can get, list and cancel agreement requests and start approvals, which organization administrators approve or reject. Buyers can share a contact when they create an agreement request, and sellers can retrieve it with GetAgreementContacts.
+* api-change:``devops-agent``: AWS DevOps Agent adds Code Change Risk Analysis capability and task types, and GetChat and UpdateChat operations to rename, archive, and unarchive chats and filter ListChats by archive status.
+* api-change:``kinesis``: Adds support for queues on on-demand streams with new CreateQueue, UpdateQueue, DeleteQueue, DescribeQueue, ListQueues, ReceiveQueueRecords, AcknowledgeQueueRecords, and UpdateQueueRecordsVisibility APIs, plus four dead-letter APIs, for Amazon Kinesis Data Streams.
+* api-change:``ec2``: Adds multipath resilience for inter-Region VPC peering connections and Transit Gateway peering attachments. Adds support for quantum-resistant key exchanges to Site-to-Site VPN. Allows querying multiple instance types in a single DescribeCapacityBlockOfferings request.
+* api-change:``billing``: Adds the SplitCredit and TransferCredit APIs to split or transfer credits, and adds benefit level sharing for Reserved Instances and Savings Plans to GetBillingPreferences and UpdateBillingPreferences.
+* api-change:``workspaces``: Added the NestedVirtualization and EnableEndUserAdvisor self-service permissions. Use them with ModifySelfservicePermissions to turn nested virtualization and End User Advisor on or off for a directory, and view the settings with DescribeWorkspaceDirectories. End User Advisor is on by default.
+* api-change:``elementalinference``: AWS Elemental Inference now supports functions, for running your own analysis on feed media, and question sets, for custom decisions on contextual metadata shots and scenes.
+* api-change:``lambda``: AWS Lambda durable functions now supports pausing, resuming, and deleting durable executions with the new PauseDurableExecution, ResumeDurableExecution, and DeleteDurableExecution APIs.
+* api-change:``connectcases``: PutCaseEventConfiguration now supports an optional autoIncludeFields attribute on case event included data. Set it to All, System, or Custom to automatically include a category of case fields in case event data, combined as a union with any fields you list explicitly.
+* enhancement:agent-toolkit: Adds automatic skill updates. ``aws configure agent-toolkit`` now offers to install a session start hook into supported agents to keep installed AWS skills up to date and install new core AWS skills. Pass ``--no-auto-update`` to turn automatic updates off and remove the hooks.
+* api-change:``appstream``: Adds support for In-Session SmartCard Redirection for Windows Multi-Session fleets
+* api-change:``config``: Adds support for AWS Config managed conformance packs, with new Source and Scope parameters on PutConformancePack, a new Type field and type Filters on DescribeConformancePacks and DescribeConformancePackStatus, and an optional StackArn in DescribeConformancePackStatus.
+* api-change:``s3control``: Adds support for S3 Intelligent Tiering Access Tier and publishing to AWS Billing and Cost Management in S3 Storage Lens
+* enhancement:``sso``: The authorization code callback server for ``aws sso login`` and ``aws login`` now ignores requests on other paths or without the expected ``state``, and keeps waiting for the real redirect instead of failing. It also no longer prints a traceback when the browser disconnects early.
+* api-change:``ecr``: Adds a new image scan status for images that exceed the maximum size supported by Amazon ECR enhanced scanning.
+* api-change:``elasticache``: Enables creation of a serverless Valkey cache that supports write-through caching for DynamoDB table data.
+* api-change:``connect-contact-lens``: Amazon Connect Customer now allows conversational analytics for voice contacts to be analyzed in more than one language. The languages detected will be present in the output.
+* api-change:``mgn``: AWS Transform adds Express Migration for MAP, remote source actions, per-server default launch settings, F5 BIG-IP to Elastic Load Balancing migration, AWS Outposts support, greenfield network design, and replication of volumes up to 64 TB.
+* api-change:``observabilityadmin``: This release adds Microsoft Azure connectors, third-party telemetry enrichment and StartTelemetryPipelineRefresh, to discover Azure resources, enrich their telemetry and refresh external-cloud pipelines.
+
+
 2.40.4
 ======
 

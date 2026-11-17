@@ -31,6 +31,7 @@ class ModelIndexer:
         'cli-dev',
         'login',
         'logout',
+        'signup',
         'agent-toolkit',
         'update',
     ]

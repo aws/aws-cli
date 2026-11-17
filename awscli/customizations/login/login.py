@@ -159,7 +159,10 @@ class LoginCommand(BasicCommand):
 
         # Update the specified profile with the session (and region if not set)
         self._update_profile_with_login_session(
-            profile_name, session_id, region
+            profile_name,
+            session_id,
+            region,
+            explicit_region=parsed_globals.region,
         )
 
         uni_print(
@@ -292,7 +295,7 @@ class LoginCommand(BasicCommand):
         return new_region if new_region else DEFAULT_REGION_FOR_PROMPT
 
     def _update_profile_with_login_session(
-        self, profile_name, session_id, region
+        self, profile_name, session_id, region, explicit_region=None
     ):
         config_filename = os.path.expanduser(
             self._session.get_config_variable('config_file')
@@ -309,7 +312,12 @@ class LoginCommand(BasicCommand):
             'login_session': session_id,
         }
 
-        if self._prompted_for_region:
+        profile_config = self._session.full_config.get('profiles', {}).get(
+            profile_name, {}
+        )
+        if self._prompted_for_region or (
+            explicit_region and not profile_config.get('region')
+        ):
             new_values['region'] = region
 
         self._config_file_writer.update_config(new_values, config_filename)

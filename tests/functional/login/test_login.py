@@ -126,6 +126,7 @@ def test_run_main_same_device_flow(
         {
             '__section__': "profile profile-name",
             'login_session': 'arn:aws:iam::0123456789012:user/Admin',
+            'region': 'us-east-1',
         },
         'configfile',
     )
@@ -190,6 +191,7 @@ def test_run_main_cross_device_flow(
         {
             '__section__': "profile profile-name",
             'login_session': 'arn:aws:iam::0123456789012:user/Admin',
+            'region': 'us-east-1',
         },
         'configfile',
     )
@@ -502,3 +504,84 @@ def test_sign_in_region_when_configured_endpoints_ignored(
 
     saved_token = mock_token_loader.save_token.call_args[0][1]
     assert saved_token['signInRegion'] == 'us-east-1'
+
+
+@pytest.mark.parametrize('remote', [False, True])
+@pytest.mark.parametrize(
+    'profile_name,profile_config,explicit,environment,expected',
+    [
+        ('new-profile', None, 'us-east-1', None, 'us-east-1'),
+        ('profile-name', {}, 'us-east-1', None, 'us-east-1'),
+        ('default', None, 'us-east-1', None, 'us-east-1'),
+        ('profile-name', {'region': ''}, 'us-east-1', None, 'us-east-1'),
+        ('profile-name', {'region': 'eu-west-1'}, 'us-east-1', None, 'eu-west-1'),
+        ('profile-name', {}, None, 'us-east-1', None),
+        ('profile-name', {'region': 'us-east-1'}, 'us-east-1', None, 'us-east-1'),
+    ],
+)
+def test_region_persistence_with_real_config_writer(
+    tmp_path, mock_session, mock_token_loader, remote, profile_name,
+    profile_config, explicit, environment, expected,
+):
+    from configparser import RawConfigParser
+    from awscli.customizations.configure.writer import ConfigFileWriter
+
+    config_file = tmp_path / 'config'
+    config_file.write_text('[profile untouched]\nregion = ap-south-1\n')
+    section = 'default' if profile_name == 'default' else 'profile ' + profile_name
+    if profile_config is not None:
+        with config_file.open('a') as f:
+            f.write('\n[' + section + ']\noutput = json\n')
+            for k, v in profile_config.items():
+                f.write(k + ' = ' + v + '\n')
+    mock_session.profile = profile_name
+    mock_session.available_profiles = [] if profile_config is None else [profile_name]
+    mock_session.full_config = {
+        'profiles': {} if profile_config is None else {profile_name: profile_config}
+    }
+    mock_session.get_config_variable.side_effect = lambda key: {
+        'config_file': str(config_file),
+        'region': environment or (profile_config or {}).get('region'),
+    }.get(key)
+    command = LoginCommand(mock_session, mock_token_loader, ConfigFileWriter())
+    token_result = ({'accessToken': 'access_token', 'idToken': SAMPLE_ID_TOKEN,
+                     'expiresIn': 3600}, 'arn:aws:iam::0123456789012:user/Admin')
+    fetcher = 'CrossDeviceLoginTokenFetcher' if remote else 'SameDeviceLoginTokenFetcher'
+    with mock.patch('awscli.customizations.login.utils.get_base_sign_in_uri',
+                    return_value='https://foo'), mock.patch(
+        'awscli.customizations.login.utils.' + fetcher + '.fetch_token',
+        return_value=token_result,
+    ), mock.patch('awscli.customizations.login.login.maybe_prompt_agent_toolkit'):
+        command(['--remote'] if remote else [],
+                Namespace(region=explicit, endpoint_url=None, verify_ssl=None))
+    parsed = RawConfigParser()
+    parsed.read(config_file)
+    assert parsed.get(section, 'region', fallback=None) == expected
+    assert parsed.get(section, 'login_session') == token_result[1]
+    assert parsed.get('profile untouched', 'region') == 'ap-south-1'
+    if profile_config is not None:
+        assert parsed.get(section, 'output') == 'json'
+
+
+@pytest.mark.parametrize('remote', [False, True])
+def test_failed_login_does_not_persist_region(
+    tmp_path, mock_session, mock_token_loader, remote,
+):
+    from awscli.customizations.configure.writer import ConfigFileWriter
+    config_file = tmp_path / 'config'
+    original = '[profile profile-name]\noutput = json\n'
+    config_file.write_text(original)
+    mock_session.get_config_variable.side_effect = lambda key: (
+        str(config_file) if key == 'config_file' else None
+    )
+    command = LoginCommand(mock_session, mock_token_loader, ConfigFileWriter())
+    fetcher = 'CrossDeviceLoginTokenFetcher' if remote else 'SameDeviceLoginTokenFetcher'
+    with mock.patch('awscli.customizations.login.utils.get_base_sign_in_uri',
+                    return_value='https://foo'), mock.patch(
+        'awscli.customizations.login.utils.' + fetcher + '.fetch_token',
+        side_effect=RuntimeError('test authentication failure'),
+    ):
+        with pytest.raises(RuntimeError, match='test authentication failure'):
+            command(['--remote'] if remote else [], DEFAULT_GLOBAL_ARGS)
+    assert config_file.read_text() == original
+    mock_token_loader.save_token.assert_not_called()

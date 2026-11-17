@@ -395,6 +395,13 @@ AGENT_CONFIGS = [
         mcp_config_path='~/.codeium/mcp_config.json',
         mcp_servers_key='mcpServers',
     ),
+    # A github repository exists so add for copilot
+    # Install skills only
+    AgentConfig(
+        id='github-copilot',
+        display_name='GitHub Copilot',
+        detection_path='.github/',
+    ),
 ]
 
 

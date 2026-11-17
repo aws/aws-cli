@@ -11,6 +11,7 @@
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
 import datetime
+import hmac
 import json
 import logging
 import os
@@ -256,10 +257,13 @@ class AuthCodeFetcher:
     _REQUEST_TIMEOUT = 10
     # How long we wait overall for the callback
     _OVERALL_TIMEOUT = 60 * 10
+    # The path of the redirect URI that the callback is expected on
+    _REDIRECT_PATH = '/oauth/callback'
 
     def __init__(self, redirect_port=None):
         self._auth_code = None
         self._state = None
+        self._error = None
         self._is_done = False
 
         # We do this so that the request handler can have a reference to this
@@ -267,23 +271,47 @@ class AuthCodeFetcher:
         try:
             handler = partial(OAuthCallbackHandler, self)
             server_port = 0 if redirect_port is None else redirect_port
-            self.http_server = HTTPServer(('127.0.0.1', server_port), handler)
+            self.http_server = _QuietHTTPServer(
+                ('127.0.0.1', server_port), handler
+            )
             self.http_server.timeout = self._REQUEST_TIMEOUT
         except OSError as e:
             raise AuthCodeFetcherError(error_msg=e)
 
     def redirect_uri_without_port(self):
-        return 'http://127.0.0.1/oauth/callback'
+        return f'http://127.0.0.1{self._REDIRECT_PATH}'
 
     def redirect_uri_with_port(self):
         return (
-            f'http://127.0.0.1:{self.http_server.server_port}/oauth/callback'
+            f'http://127.0.0.1:{self.http_server.server_port}'
+            f'{self._REDIRECT_PATH}'
         )
 
-    def get_auth_code_and_state(self):
+    @property
+    def error(self):
+        """The error the authorization server redirected back with, as a
+        dict with ``error`` and ``error_description`` keys, or None. Only
+        recorded when waiting with an ``expected_state``.
+        """
+        if self._error is None:
+            return None
+        return dict(self._error)
+
+    def get_auth_code_and_state(self, expected_state=None):
         """Blocks until the expected redirect request with either the
         authorization code/state or and error is handled
+
+        When ``expected_state`` (a string) is given, only a GET on the
+        redirect URI's path whose ``state`` matches it ends the wait, and
+        each connection gets ``_REQUEST_TIMEOUT`` to send its request.
+        Anything else is rejected and the wait continues.
         """
+        if expected_state is not None:
+            self.http_server.RequestHandlerClass = partial(
+                OAuthCallbackHandler,
+                self,
+                expected_state=expected_state,
+            )
         LOG.debug(f'Waiting for auth code at {self.redirect_uri_with_port()}')
         start = time.time()
         while (
@@ -302,15 +330,43 @@ class AuthCodeFetcher:
         self._state = state
         self._is_done = True
 
+    def set_error_and_state(self, error, error_description, state):
+        self._error = {
+            'error': error,
+            'error_description': error_description,
+        }
+        self.set_auth_code_and_state(None, state)
+
+
+class _QuietHTTPServer(HTTPServer):
+    def handle_error(self, request, client_address):
+        # The default prints a traceback to stderr, e.g. when the browser
+        # disconnects before reading the page.
+        LOG.debug('Auth callback request failed', exc_info=True)
+
 
 class OAuthCallbackHandler(BaseHTTPRequestHandler):
     """HTTP handler to handle OAuth callback requests, extracting
     the auth code and state parameters, and displaying a page directing
     the user to return to the CLI.
+
+    When ``expected_state`` is given, any local process or web page can
+    reach the callback server, so only a GET on the redirect URI's path with
+    the expected state is acted on. Everything else gets an error response
+    and the wait continues.
     """
 
-    def __init__(self, auth_code_fetcher, *args, **kwargs):
+    def __init__(
+        self, auth_code_fetcher, *args, expected_state=None, **kwargs
+    ):
         self._auth_code_fetcher = auth_code_fetcher
+        self._expected_state = None
+        if expected_state is not None:
+            self._expected_state = expected_state.encode('utf-8')
+            # StreamRequestHandler.setup() applies this to the connection,
+            # so a client that never sends its request can't hold up the
+            # server
+            self.timeout = auth_code_fetcher._REQUEST_TIMEOUT
         super().__init__(*args, **kwargs)
 
     def log_message(self, format, *args):
@@ -323,13 +379,11 @@ class OAuthCallbackHandler(BaseHTTPRequestHandler):
         return f'AWS CLI/{awscli_version}'
 
     def do_GET(self):
-        self.send_response(200)
-        self.end_headers()
-        with open(
-            os.path.join(os.path.dirname(__file__), 'index.html'),
-            'rb',
-        ) as file:
-            self.wfile.write(file.read())
+        if self._expected_state is not None:
+            self._handle_strict_callback()
+            return
+
+        self._send_index_page()
 
         query_params = parse_qs(urlparse(self.path).query)
 
@@ -343,6 +397,63 @@ class OAuthCallbackHandler(BaseHTTPRequestHandler):
                 query_params['code'][0],
                 query_params['state'][0],
             )
+
+    def _handle_strict_callback(self):
+        parsed_url = urlparse(self.path)
+        if parsed_url.path != self._auth_code_fetcher._REDIRECT_PATH:
+            self._send_text(404, 'Not found.')
+            return
+
+        query_params = parse_qs(parsed_url.query)
+        state = query_params.get('state', [None])[0]
+        if state is None or not hmac.compare_digest(
+            state.encode('utf-8'), self._expected_state
+        ):
+            self._send_text(
+                400,
+                'This request does not belong to the sign-in in progress. '
+                'Return to the terminal and use the URL it displayed.',
+            )
+            return
+
+        if 'error' in query_params:
+            self._auth_code_fetcher.set_error_and_state(
+                query_params['error'][0],
+                query_params.get('error_description', [None])[0],
+                state,
+            )
+        elif 'code' in query_params:
+            self._auth_code_fetcher.set_auth_code_and_state(
+                query_params['code'][0],
+                state,
+            )
+        else:
+            self._send_text(
+                400,
+                'The request has neither an authorization code nor an error.',
+            )
+            return
+
+        # The page shows the error from the query string, if there is one
+        self._send_index_page()
+
+    def _send_index_page(self):
+        self.send_response(200)
+        self.end_headers()
+        with open(
+            os.path.join(os.path.dirname(__file__), 'index.html'),
+            'rb',
+        ) as file:
+            self.wfile.write(file.read())
+
+    def _send_text(self, status, text):
+        LOG.debug(f'Rejected OAuth callback request with HTTP {status}')
+        body = f'{text}\n'.encode()
+        self.send_response(status)
+        self.send_header('Content-Type', 'text/plain; charset=utf-8')
+        self.send_header('Content-Length', str(len(body)))
+        self.end_headers()
+        self.wfile.write(body)
 
 
 class InvalidSSOConfigError(ConfigurationError):

@@ -23,7 +23,6 @@ only shows on a TTY and can be suppressed.
 """
 
 import copy
-import json
 import logging
 import os
 import re
@@ -37,14 +36,17 @@ from awscli.customizations.agenttoolkit.agents import (
 from awscli.customizations.agenttoolkit.configure import (
     ConfigureAgentToolkitCommand,
 )
+from awscli.customizations.agenttoolkit.state import (
+    StateFileError,
+    dismiss_hint,
+    is_hint_dismissed,
+)
 from awscli.customizations.agenttoolkit.utils import AGENT_TOOLKIT_REGION
 from awscli.customizations.prompts import yes_no_never_choice
 from awscli.customizations.utils import uni_print
 from awscli.utils import is_stdin_a_tty
 
 LOG = logging.getLogger(__name__)
-
-STATE_PATH = '~/.aws/cli/agent-toolkit/state.json'
 
 HINT_DISABLED_ENV_VAR = 'AWS_CLI_AGENT_TOOLKIT_HINT_DISABLED'
 
@@ -64,40 +66,6 @@ HINT_TEXT = (
 )
 
 
-def _state_file():
-    return os.path.expanduser(STATE_PATH)
-
-
-def _load_state():
-    try:
-        with open(_state_file(), encoding='utf-8') as f:
-            return json.load(f)
-    except FileNotFoundError:
-        return {}
-    except (OSError, json.JSONDecodeError) as e:
-        LOG.debug('Could not read agent toolkit hint state: %s', e)
-        return {}
-
-
-def _save_state(state):
-    path = _state_file()
-    try:
-        os.makedirs(os.path.dirname(path), exist_ok=True)
-        tmp_path = f'{path}.tmp'
-        with open(tmp_path, 'w', encoding='utf-8') as f:
-            json.dump(state, f)
-            f.write('\n')
-        os.replace(tmp_path, path)
-    except OSError as e:
-        LOG.debug('Could not write agent toolkit hint state: %s', e)
-
-
-def _dismiss_forever():
-    state = _load_state()
-    state['hint_dismissed'] = True
-    _save_state(state)
-
-
 def _has_installed_skills(detected_agents):
     return any(agent.get_installed_skills() for agent in detected_agents)
 
@@ -111,7 +79,7 @@ def _is_eligible():
         return False
     if hint_disabled():
         return False
-    if _load_state().get('hint_dismissed'):
+    if is_hint_dismissed():
         return False
     detected_agents = get_detected_real_agents()
     if not detected_agents:
@@ -173,7 +141,10 @@ def maybe_prompt_agent_toolkit(session, parsed_globals, region):
             return
         choice = yes_no_never_choice(PROMPT_TEXT)
         if choice == 'never':
-            _dismiss_forever()
+            try:
+                dismiss_hint()
+            except StateFileError as e:
+                uni_print(f'Could not save your choice to {e}\n')
         run_wizard = choice == 'yes'
     except Exception as e:
         LOG.debug('Agent toolkit hint failed: %s', e, exc_info=True)

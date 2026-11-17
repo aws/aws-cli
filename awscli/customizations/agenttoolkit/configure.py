@@ -11,6 +11,7 @@
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
 import io
+import os
 import sys
 
 from awscli.customizations.agenttoolkit.agents import (
@@ -20,16 +21,54 @@ from awscli.customizations.agenttoolkit.agents import (
     collapse_home,
     universal_first,
 )
+from awscli.customizations.agenttoolkit.hooks import (
+    CODEX_TRUST_NOTE,
+    KIRO_AGENT_NOTE,
+    KIRO_NO_AGENT_NOTE,
+    KIRO_VERSION_NOTE,
+    HookAction,
+    format_kiro_agent_manual_entry,
+    format_manual_entry,
+    hook_config_path,
+    install_hook,
+    install_kiro_agent_hook,
+    is_hook_supported,
+    kiro_default_agent_path,
+    remove_hook,
+    remove_kiro_agent_hooks,
+)
+from awscli.customizations.agenttoolkit.state import (
+    StateFileError,
+    is_auto_update_enabled,
+    set_auto_update,
+)
 from awscli.customizations.agenttoolkit.utils import (
     AgentToolkitServiceError,
     create_client,
     get_skill_download,
     install_skill,
+    list_core_skills,
 )
 from awscli.customizations.commands import BasicCommand
 from awscli.customizations.exceptions import ConfigurationError
 from awscli.customizations.prompts import multiselect_choice, yes_no_choice
 from awscli.customizations.utils import uni_print
+
+AUTO_UPDATE_PROMPT = (
+    '\nKeep AWS skills up to date automatically? When your agent starts, '
+    'installed AWS skills are updated and new core AWS skills are '
+    'installed. [Y/n]: '
+)
+
+AUTO_UPDATE_KEEP_PROMPT = (
+    '\nAutomatic skill updates are on. Keep them on? [Y/n]: '
+)
+
+
+_INSTALL_STATUS = {
+    HookAction.INSTALLED: 'hook installed',
+    HookAction.ALREADY_INSTALLED: 'already installed',
+}
 
 
 class ConfigureAgentToolkitCommand(BasicCommand):
@@ -47,7 +86,16 @@ class ConfigureAgentToolkitCommand(BasicCommand):
             'help_text': (
                 'Skip all interactive prompts and accept defaults: '
                 'select all detected agents, install default skills, '
-                'and configure the AWS MCP server.'
+                'configure the AWS MCP server, and enable automatic skill '
+                'updates.'
+            ),
+            'default': False,
+            'action': 'store_true',
+        },
+        {
+            'name': 'no-auto-update',
+            'help_text': (
+                'Turn off automatic skill updates without prompting.'
             ),
             'default': False,
             'action': 'store_true',
@@ -64,6 +112,11 @@ class ConfigureAgentToolkitCommand(BasicCommand):
 
     def _run_main(self, parsed_args, parsed_globals):
         yes = getattr(parsed_args, 'yes', False)
+        no_auto_update = getattr(parsed_args, 'no_auto_update', False)
+        if no_auto_update:
+            # Apply the opt-out up front so a failure in a later step
+            # cannot leave automatic updates enabled.
+            self._save_auto_update(False)
         uni_print('\nDetecting installed AI coding agents...\n', self._stream)
         wizard_configs = [
             c for c in self._agent_configs if c.id != UNIVERSAL_ROW_ID
@@ -124,6 +177,12 @@ class ConfigureAgentToolkitCommand(BasicCommand):
         client = self._client or create_client(self._session, parsed_globals)
         self._install_default_skills(install_targets, client, yes=yes)
         self._configure_mcp(selected_agents, yes=yes)
+        if no_auto_update:
+            self._remove_hooks(selected_agents)
+        else:
+            self._configure_auto_update(
+                selected_agents, install_targets, yes=yes
+            )
 
         uni_print(
             '\nYou can discover additional skills with '
@@ -134,10 +193,7 @@ class ConfigureAgentToolkitCommand(BasicCommand):
 
     def _install_default_skills(self, selected_agents, client, yes=False):
         uni_print('\nFetching default AWS skills...\n', self._stream)
-        paginator = client.get_paginator('list_skills')
-        default_skills = []
-        for page in paginator.paginate(categoryFilter='aws-core'):
-            default_skills.extend(page.get('skills', []))
+        default_skills = list_core_skills(client)
 
         if not default_skills:
             return
@@ -194,6 +250,187 @@ class ConfigureAgentToolkitCommand(BasicCommand):
             uni_print(
                 '\nNo skills were installed successfully.\n', self._stream
             )
+
+    def _configure_auto_update(self, agents, skill_targets, yes=False):
+        # This wizard is the only place allowed to change the setting, so it
+        # asks whenever it is on, letting customers opt out as well as in.
+        currently_enabled = is_auto_update_enabled()
+        if not currently_enabled and not any(
+            agent.get_installed_skills() for agent in skill_targets
+        ):
+            # Nothing to keep up to date
+            return
+        if yes:
+            enabled = True
+        else:
+            prompt = (
+                AUTO_UPDATE_KEEP_PROMPT
+                if currently_enabled
+                else AUTO_UPDATE_PROMPT
+            )
+            enabled = yes_no_choice(prompt, default=True)
+        if not self._save_auto_update(enabled):
+            return
+        if enabled:
+            self._install_hooks(agents)
+        else:
+            self._remove_hooks(agents)
+
+    def _save_auto_update(self, enabled):
+        if enabled == is_auto_update_enabled():
+            return True
+        try:
+            set_auto_update(enabled)
+        except StateFileError as e:
+            uni_print(
+                f'\nCould not save the automatic skill update setting to {e}\n',
+                self._stream,
+            )
+            return False
+        if enabled:
+            uni_print('\nAutomatic skill updates enabled.\n', self._stream)
+        else:
+            uni_print('\nAutomatic skill updates turned off.\n', self._stream)
+        return True
+
+    def _install_hooks(self, agents):
+        uni_print('\nAutomatic update hooks:\n', self._stream)
+        unsupported = []
+        for agent in agents:
+            if not is_hook_supported(agent.config.id):
+                unsupported.append(agent)
+                continue
+            try:
+                action, path = install_hook(agent)
+            except OSError as e:
+                path = hook_config_path(agent.config, agent.base_dir)
+                self._print_hook_line(
+                    '\u2717', agent, path, f'could not install the hook ({e})'
+                )
+                continue
+            if action is HookAction.UNREADABLE:
+                self._print_hook_line(
+                    '\u2717',
+                    agent,
+                    path,
+                    'could not be updated because it is not plain JSON',
+                )
+                uni_print(
+                    format_manual_entry(agent.config.id, collapse_home(path)),
+                    self._stream,
+                )
+                continue
+            self._print_hook_line(
+                '\u2713', agent, path, _INSTALL_STATUS[action]
+            )
+            if agent.config.id == 'codex':
+                uni_print(f'    {CODEX_TRUST_NOTE}\n', self._stream)
+            elif agent.config.id == 'kiro':
+                uni_print(f'    {KIRO_VERSION_NOTE}\n', self._stream)
+                self._install_kiro_agent_hook(agent)
+        for agent in unsupported:
+            uni_print(
+                f'  \u2717 {agent.display_name} '
+                '(automatic updates not supported yet)\n',
+                self._stream,
+            )
+
+    def _install_kiro_agent_hook(self, agent):
+        try:
+            action, path = install_kiro_agent_hook(agent)
+        except OSError as e:
+            path = kiro_default_agent_path(agent) or os.path.join(
+                agent.base_dir, 'agents'
+            )
+            self._print_hook_line(
+                '\u2717', agent, path, f'could not install the hook ({e})'
+            )
+            return
+        if path is None:
+            uni_print(
+                f'  \u2717 {agent.display_name} \u2014 {KIRO_NO_AGENT_NOTE}\n'
+                + format_kiro_agent_manual_entry(
+                    collapse_home(
+                        os.path.join(agent.base_dir, 'agents', '<agent>.json')
+                    )
+                ),
+                self._stream,
+            )
+            return
+        if action is HookAction.UNREADABLE:
+            self._print_hook_line(
+                '\u2717',
+                agent,
+                path,
+                'could not be updated because it is not plain JSON',
+            )
+            uni_print(
+                format_kiro_agent_manual_entry(collapse_home(path)),
+                self._stream,
+            )
+        elif action is HookAction.NOT_NEEDED:
+            self._print_hook_line(
+                '\u2713', agent, path, 'not needed for V3 agents'
+            )
+            return
+        else:
+            self._print_hook_line(
+                '\u2713', agent, path, _INSTALL_STATUS[action]
+            )
+        uni_print(f'    {KIRO_AGENT_NOTE}\n', self._stream)
+
+    def _remove_hooks(self, agents):
+        lines = []
+        for agent in agents:
+            config = agent.config
+            if not is_hook_supported(config.id):
+                continue
+            try:
+                results = [remove_hook(agent)]
+            except OSError as e:
+                path = hook_config_path(agent.config, agent.base_dir)
+                lines.append(
+                    ('\u2717', agent, path, f'could not remove the hook ({e})')
+                )
+                continue
+            if config.id == 'kiro':
+                try:
+                    results.extend(remove_kiro_agent_hooks(agent))
+                except OSError as e:
+                    path = os.path.join(agent.base_dir, 'agents')
+                    lines.append(
+                        (
+                            '\u2717',
+                            agent,
+                            path,
+                            f'could not remove the hook ({e})',
+                        )
+                    )
+            for action, path in results:
+                if action is HookAction.REMOVED:
+                    lines.append(('\u2713', agent, path, 'hook removed'))
+                elif action is HookAction.UNREADABLE:
+                    lines.append(
+                        (
+                            '\u2717',
+                            agent,
+                            path,
+                            'could not be updated; remove the "aws '
+                            'agent-toolkit update-skill" hook from it by hand',
+                        )
+                    )
+        if not lines:
+            return
+        uni_print('\nAutomatic update hooks:\n', self._stream)
+        for line in lines:
+            self._print_hook_line(*line)
+
+    def _print_hook_line(self, mark, agent, path, status):
+        uni_print(
+            f'  {mark} {agent.display_name} \u2014 '
+            f'{collapse_home(path)}: {status}\n',
+            self._stream,
+        )
 
     def _configure_mcp(self, agents, yes=False):
         if not yes and not yes_no_choice(

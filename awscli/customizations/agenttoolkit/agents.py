@@ -90,7 +90,14 @@ class AgentConfig:
 
     skills_paths: list[str]
     """Skills directories the agent loads skills from, in priority order,
-    relative to the home directory (e.g. ``.claude/skills``)."""
+    relative to the home directory (e.g. ``.claude/skills``).
+
+    The first entry is where new skills are installed; every entry is
+    checked when looking for installed skills. The home directory follows
+    ``home_env_override``, and entries under ``detection_path`` move with
+    ``detection_path_env_override`` when it is set. List ``.agents/skills``
+    first when the agent reads it, so one copy of a skill serves every
+    agent that shares it."""
 
     detection_path_env_override: Optional[str] = None
     """Environment variable name that overrides ``detection_path`` when

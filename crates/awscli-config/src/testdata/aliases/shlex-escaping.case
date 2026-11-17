@@ -1,0 +1,50 @@
+=== ALIASES JSON ===
+{
+  "text": "[profile a\\ b]\nx=1\n[profile \"a\\qb\"]\nx=2\n[profile \"a\\\"b\"]\nx=3\n[profile 'a\\b']\nx=4\n[profile a#b]\nx=5\n[profile dev' more']\nx=6\n[profile a\\]\nx=7\n[profile x\u00a0y]\nx=8\n"
+}
+=== EXPECTED ===
+{
+  "config": {
+    "status": "omitted",
+    "sections": {}
+  },
+  "credentials": {
+    "status": "omitted",
+    "sections": {}
+  },
+  "aliases": {
+    "status": "loaded",
+    "sections": {
+      "profile a\\ b": {
+        "x": "1"
+      },
+      "profile \"a\\qb\"": {
+        "x": "2"
+      },
+      "profile \"a\\\"b\"": {
+        "x": "3"
+      },
+      "profile 'a\\b'": {
+        "x": "4"
+      },
+      "profile a#b": {
+        "x": "5"
+      },
+      "profile dev' more'": {
+        "x": "6"
+      },
+      "profile a\\": {
+        "x": "7"
+      },
+      "profile x\u00a0y": {
+        "x": "8"
+      }
+    }
+  },
+  "organized": {
+    "profiles": {},
+    "sso_sessions": {},
+    "services": {}
+  },
+  "profiles": {}
+}

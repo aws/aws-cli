@@ -1,0 +1,58 @@
+**Example 1: To describe the notification configurations of a specified group**
+
+The following ``describe-notification-configurations`` example describes the notification configurations for the specified Auto Scaling group. ::
+
+    aws autoscaling describe-notification-configurations \
+        --auto-scaling-group-names my-asg
+
+Output::
+
+    {
+        "NotificationConfigurations": [
+            {
+                "AutoScalingGroupName": "my-asg",
+                "NotificationType": "autoscaling:TEST_NOTIFICATION",
+                "TopicARN": "arn:aws:sns:us-west-2:123456789012:my-sns-topic-2"
+            },
+            {
+                "AutoScalingGroupName": "my-asg",
+                "NotificationType": "autoscaling:TEST_NOTIFICATION",
+                "TopicARN": "arn:aws:sns:us-west-2:123456789012:my-sns-topic"
+            }
+        ]
+    }
+
+For more information, see `Getting Amazon SNS notifications when your Auto Scaling group scales <https://docs.aws.amazon.com/autoscaling/ec2/userguide/ASGettingNotifications.html>`__ in the *Amazon EC2 Auto Scaling User Guide*.
+
+**Example 2: To describe a specified number of notification configurations**
+
+The following ``describe-notification-configurations`` example uses the ``--max-items`` option to return a specific number of notification configurations. ::
+
+    aws autoscaling describe-notification-configurations \
+        --auto-scaling-group-names my-auto-scaling-group \
+        --max-items 1
+
+Output::
+
+    {
+        "NotificationConfigurations": [
+            {
+                "AutoScalingGroupName": "my-asg",
+                "NotificationType": "autoscaling:TEST_NOTIFICATION",
+                "TopicARN": "arn:aws:sns:us-west-2:123456789012:my-sns-topic-2"
+            },
+            {
+                "AutoScalingGroupName": "my-asg",
+                "NotificationType": "autoscaling:TEST_NOTIFICATION",
+                "TopicARN": "arn:aws:sns:us-west-2:123456789012:my-sns-topic"
+            }
+        ]
+    }
+
+If the output includes a ``NextToken`` field, there are more notification configurations. To get the additional notification configurations, use the value of this field with the ``starting-token`` parameter in a subsequent call as follows. ::
+
+    aws autoscaling describe-notification-configurations \
+        --auto-scaling-group-names my-asg \
+        --starting-token Z3M3LMPEXAMPLE
+
+For more information, see `Getting Amazon SNS notifications when your Auto Scaling group scales <https://docs.aws.amazon.com/autoscaling/ec2/userguide/ASGettingNotifications.html>`__ in the *Amazon EC2 Auto Scaling User Guide*.

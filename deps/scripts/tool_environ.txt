@@ -1,0 +1,81 @@
+# Environment variables an external build tool may inherit from the caller.
+#
+# The Rust build scripts embed this file at compile time and
+# build_environ.py reads it from the staged driver directory, so the Rust
+# steps and the Python drivers hand their tools the same environment. One
+# variable name per line; a line starting with # is a comment.
+#
+# Nothing listed here changes what a tool produces. Every
+# output-affecting value (compilers, flags, the SDK) is set explicitly by
+# the step that runs the tool and is part of that step's hashed arguments.
+# That is also why the retained values are never hashed: PATH differs
+# between shells on one machine, and hashing it would rebuild CPython on
+# every shell change.
+#
+# Dropped by omission: CPATH and C_INCLUDE_PATH (header injection into
+# the compiler), CFLAGS, CXXFLAGS, CPPFLAGS, LDFLAGS, and LIBS (CMake,
+# OpenSSL's Configure, and autoconf seed their flags from them),
+# LIBRARY_PATH and LD_LIBRARY_PATH, PKG_CONFIG_PATH, every CMAKE_*
+# variable (toolchain file, compiler launcher, prefix and module paths),
+# MAKEFLAGS, PERL5OPT and PERL5LIB (code injection into Configure), and
+# every PYTHON* variable. LC_ALL is set to C on top of this list.
+#
+# The CI guard's variables are not listed: the guard runs inside the build
+# runner and the Python drivers, which receive the full environment, never
+# inside a tool.
+#
+# The list is one list on every host. A name a host does not define is
+# simply absent from the parent environment and never reaches a tool, so a
+# per-host list would buy nothing and would let the Rust and Python readers
+# drift apart.
+
+# Tool discovery: where cmake, ninja, make, perl, and python are found.
+PATH
+# Per-user state of host tools: pip's configuration, xcrun's caches.
+HOME
+# Scratch space; some hosts have no writable default location.
+TMPDIR
+# macOS: the Xcode or command-line-tools installation that cc resolves to.
+DEVELOPER_DIR
+
+# Windows OS plumbing. These are not tool configuration: they are how the
+# platform itself works, and a process without them cannot load a DLL, run
+# a batch file, or open a temporary file. INCLUDE, LIB, LIBPATH and the
+# CL/_CL_ pair are deliberately still absent, for the same reason CPATH and
+# CFLAGS are: they inject headers, libraries, and compiler options. The one
+# builder that needs the MSVC environment (OpenSSL's nmake build) discovers
+# the installation itself and exports those variables from inside the step,
+# where the toolchain version joins the step's hashed arguments.
+#
+# The loader's own search root; without it every DLL load fails.
+SystemRoot
+# The same directory under its older name, which some tools still read.
+windir
+# The volume SystemRoot lives on, used to compose absolute paths.
+SystemDrive
+# cmd.exe's own path. Spawning a .bat or .cmd wrapper goes through it.
+ComSpec
+# Which extensions name a program, for bare-name resolution.
+PATHEXT
+# Scratch space. Windows has no /tmp, so a tool with neither is stuck.
+TEMP
+# The same scratch space under the name the older CRT reads.
+TMP
+# The home directory. Windows has no passwd fallback, so a tool that asks
+# for one (pip, perl's File::HomeDir) fails outright without it.
+USERPROFILE
+# The two halves of the home directory a domain profile may use instead.
+HOMEDRIVE
+HOMEPATH
+# Per-user and machine-wide state directories for host-tool caches.
+LOCALAPPDATA
+APPDATA
+ProgramData
+# Where 64-bit and 32-bit programs are installed. vswhere lives under the
+# 32-bit tree, and CMake's own modules read these to find host tools.
+ProgramFiles
+ProgramFiles(x86)
+CommonProgramFiles
+# Default parallelism for a build tool that asks the host how wide it is.
+NUMBER_OF_PROCESSORS
+PROCESSOR_ARCHITECTURE

@@ -1,0 +1,40 @@
+=== ALIASES ===
+[DEFAULT]
+region=base
+x=
+ a=b
+[default]
+region=own
+[profile dev]
+y=yes
+=== EXPECTED ===
+{
+  "config": {
+    "status": "omitted",
+    "sections": {}
+  },
+  "credentials": {
+    "status": "omitted",
+    "sections": {}
+  },
+  "aliases": {
+    "status": "loaded",
+    "sections": {
+      "default": {
+        "region": "own",
+        "x": "\na=b"
+      },
+      "profile dev": {
+        "y": "yes",
+        "region": "base",
+        "x": "\na=b"
+      }
+    }
+  },
+  "organized": {
+    "profiles": {},
+    "sso_sessions": {},
+    "services": {}
+  },
+  "profiles": {}
+}

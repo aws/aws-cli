@@ -1,0 +1,29 @@
+[package]
+name = "python-fallback"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+publish.workspace = true
+
+[lints]
+workspace = true
+
+[dependencies]
+pyload = { path = "../pyload", features = ["embedded"] }
+
+[dev-dependencies]
+pyload = { path = "../pyload", features = ["testing"] }
+
+[build-dependencies]
+build-support = { path = "../build-support" }
+
+[[test]]
+name = "finder"
+path = "tests/finder.rs"
+harness = false
+
+[[test]]
+name = "exit_status"
+path = "tests/exit_status.rs"
+harness = false

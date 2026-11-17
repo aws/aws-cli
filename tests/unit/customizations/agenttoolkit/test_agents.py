@@ -558,7 +558,9 @@ def test_shared_skills_path_matches_universal_row(tmp_path, monkeypatch):
     assert codex.skills_path == universal.skills_path
 
 
-@pytest.mark.parametrize('path', ['~/.test-agent/skills', '/abs/skills'])
+@pytest.mark.parametrize(
+    'path', ['~/.test-agent/skills', '/abs/skills', '\\abs\\skills']
+)
 def test_skills_paths_must_be_relative_to_home(tmp_path, path):
     with pytest.raises(ValueError, match='relative to the home directory'):
         make_config(tmp_path, skills_paths=[path])

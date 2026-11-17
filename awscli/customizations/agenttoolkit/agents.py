@@ -134,7 +134,11 @@ class AgentConfig:
                 f'Agent {self.id!r} must have at least one skills path.'
             )
         for path in self.skills_paths:
-            if path.startswith('~') or os.path.isabs(path):
+            drive, rest = os.path.splitdrive(path)
+            # Checks drives and leading separators itself, as isabs() is
+            # False for "/x" and "C:x" on Windows, though join() then
+            # drops the home directory.
+            if path.startswith('~') or drive or rest.startswith(('/', '\\')):
                 raise ValueError(
                     f'Skills path {path!r} of agent {self.id!r} must be '
                     'relative to the home directory.'

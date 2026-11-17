@@ -14,6 +14,8 @@ import json
 import os
 from unittest.mock import patch
 
+import pytest
+
 from awscli.customizations.agenttoolkit.agents import (
     AGENT_CONFIGS,
     DEFAULT_MCP_SERVER_CONFIG,
@@ -26,6 +28,7 @@ from awscli.customizations.agenttoolkit.agents import (
 )
 from awscli.testutils import skip_if_windows
 from tests.unit.customizations.agenttoolkit.utils import (
+    home_relative,
     make_config,
     make_skill,
 )
@@ -82,12 +85,12 @@ def test_get_installed_skills_finds_aws_skills(tmp_path):
     assert skills[1].path.endswith(os.path.join('aws-serverless', 'SKILL.md'))
 
 
-def test_skills_path_override(tmp_path):
+def test_skills_path_outside_detection_dir(tmp_path):
     (tmp_path / '.test-agent').mkdir()
     override_dir = tmp_path / 'shared' / 'skills'
     config = make_config(
         tmp_path,
-        skills_path_override=str(override_dir),
+        skills_paths=[home_relative(tmp_path, override_dir)],
     )
     agent = config.detect()
     assert agent.skills_path == str(override_dir)
@@ -99,9 +102,10 @@ def test_universal_row_display_name_lists_consumers():
     universal = next(c for c in AGENT_CONFIGS if c.id == 'universal')
     assert universal.detection_path == '~/.agents'
     for config in AGENT_CONFIGS:
-        if config.skills_path_override and config.skills_path_override.rstrip(
-            '/'
-        ).endswith('.agents/skills'):
+        if any(
+            p.rstrip('/').endswith('.agents/skills')
+            for p in config.skills_paths
+        ):
             assert config.display_name in universal.display_name
 
 
@@ -127,11 +131,17 @@ def test_get_detected_agents(tmp_path):
             id='kiro',
             display_name='Kiro',
             detection_path=str(tmp_path / '.kiro'),
+            skills_paths=[
+                home_relative(tmp_path, tmp_path / '.kiro', 'skills')
+            ],
         ),
         AgentConfig(
             id='cursor',
             display_name='Cursor',
             detection_path=str(tmp_path / '.cursor'),
+            skills_paths=[
+                home_relative(tmp_path, tmp_path / '.cursor', 'skills')
+            ],
         ),
     ]
     detected = get_detected_agents(agent_configs=test_configs)
@@ -149,11 +159,17 @@ def test_get_detected_real_agents_excludes_universal_row(tmp_path):
             id='cursor',
             display_name='Cursor',
             detection_path=str(tmp_path / '.cursor'),
+            skills_paths=[
+                home_relative(tmp_path, tmp_path / '.cursor', 'skills')
+            ],
         ),
         AgentConfig(
             id=UNIVERSAL_ROW_ID,
             display_name='Universal',
             detection_path=str(tmp_path / '.agents'),
+            skills_paths=[
+                home_relative(tmp_path, tmp_path / '.agents', 'skills')
+            ],
         ),
     ]
     assert get_detected_agents(agent_configs=test_configs)
@@ -197,7 +213,7 @@ def _home_override_config(tmp_path, monkeypatch, **kwargs):
         display_name='Test Agent',
         detection_path='~/.test-agent/',
         home_env_override='TEST_AGENT_HOME',
-        **kwargs,
+        **{'skills_paths': ['.test-agent/skills'], **kwargs},
     )
     return home, config
 
@@ -206,12 +222,12 @@ def test_home_env_override_moves_every_tilde_path(tmp_path, monkeypatch):
     home, config = _home_override_config(
         tmp_path,
         monkeypatch,
-        skills_path_override='~/.agents/skills/',
+        skills_paths=['.agents/skills'],
         mcp_config_path='settings.json',
     )
     agent = config.detect()
     assert agent.base_dir == str(home / '.test-agent')
-    assert agent.skills_path == str(home / '.agents' / 'skills') + os.sep
+    assert agent.skills_path == str(home / '.agents' / 'skills')
     assert agent.mcp_config_file == str(home / '.test-agent' / 'settings.json')
 
 
@@ -230,6 +246,7 @@ def test_home_env_override_not_detected_without_agent_dir(
         id='test-agent',
         display_name='Test Agent',
         detection_path='~/.test-agent/',
+        skills_paths=['.test-agent/skills'],
         home_env_override='TEST_AGENT_HOME',
     )
     assert config.detect() is None
@@ -241,6 +258,7 @@ def test_expand_path_without_home_env_override(monkeypatch):
         id='test-agent',
         display_name='Test Agent',
         detection_path='~/.test-agent/',
+        skills_paths=['.test-agent/skills'],
         home_env_override='TEST_AGENT_HOME',
     )
     assert config.expand_path('~/.x') == os.path.expanduser('~/.x')
@@ -419,7 +437,10 @@ def test_devin_config():
     assert devin.display_name == 'Devin'
     assert devin.detection_path == '~/.config/devin/'
     assert devin.detection_path_env_override is None
-    assert devin.skills_path_override == '~/.agents/skills/'
+    assert devin.skills_paths == [
+        '.agents/skills',
+        '.config/devin/skills',
+    ]
     assert devin.mcp_config_path == 'mcp_config.json'
     assert devin.mcp_servers_key == 'mcpServers'
     assert devin.mcp_extra_config == {}
@@ -444,3 +465,122 @@ def test_devin_configure_mcp_writes_default_entry(tmp_path, monkeypatch):
     )
     data = json.loads((devin_dir / 'mcp_config.json').read_text())
     assert data == {'mcpServers': {'aws-mcp': DEFAULT_MCP_SERVER_CONFIG}}
+
+
+def _multi_path_config(tmp_path):
+    (tmp_path / '.test-agent').mkdir(exist_ok=True)
+    secondary = tmp_path / 'secondary'
+    return make_config(
+        tmp_path,
+        skills_paths=[
+            home_relative(tmp_path, tmp_path / '.test-agent' / 'skills'),
+            home_relative(tmp_path, secondary),
+        ],
+    )
+
+
+def test_skills_paths_resolved_in_priority_order(tmp_path):
+    agent = _multi_path_config(tmp_path).detect()
+    assert agent.skills_paths == [
+        os.path.join(str(tmp_path / '.test-agent'), 'skills'),
+        str(tmp_path / 'secondary'),
+    ]
+    assert agent.skills_path == agent.skills_paths[0]
+
+
+def test_skills_paths_must_not_be_empty(tmp_path):
+    with pytest.raises(ValueError, match='at least one skills path'):
+        make_config(tmp_path, skills_paths=[])
+
+
+def test_get_installed_skills_checks_every_skills_path(tmp_path):
+    agent = _multi_path_config(tmp_path).detect()
+    make_skill(tmp_path, 'secondary', 'aws-iam')
+    (tmp_path / 'secondary' / 'skills' / 'aws-iam').rename(
+        tmp_path / 'secondary' / 'aws-iam'
+    )
+    make_skill(tmp_path, '.test-agent', 'aws-s3')
+    skills = agent.get_installed_skills()
+    assert [s.name for s in skills] == ['aws-s3', 'aws-iam']
+
+
+def test_get_installed_skills_reads_shared_root_once(tmp_path):
+    (tmp_path / '.test-agent').mkdir()
+    shared = os.path.join('.test-agent', 'skills')
+    config = make_config(tmp_path, skills_paths=[shared, shared + '/'])
+    make_skill(tmp_path, '.test-agent', 'aws-s3')
+    assert [s.name for s in config.detect().get_installed_skills()] == [
+        'aws-s3'
+    ]
+
+
+def test_skill_dirs_defaults_to_primary_path(tmp_path):
+    agent = _multi_path_config(tmp_path).detect()
+    assert agent.skill_dirs('aws-s3') == [
+        os.path.join(agent.skills_paths[0], 'aws-s3')
+    ]
+
+
+def test_skill_dirs_returns_existing_locations(tmp_path):
+    agent = _multi_path_config(tmp_path).detect()
+    existing = tmp_path / 'secondary' / 'aws-s3'
+    existing.mkdir(parents=True)
+    assert agent.skill_dirs('aws-s3') == [str(existing)]
+
+
+@pytest.mark.parametrize(
+    'agent_id, skills_paths',
+    [
+        ('claude-code', ['.claude/skills']),
+        ('cline', ['.cline/skills']),
+        ('codex', ['.agents/skills']),
+        ('cursor', ['.agents/skills', '.cursor/skills']),
+        ('devin', ['.agents/skills', '.config/devin/skills']),
+        ('gemini-cli', ['.agents/skills', '.gemini/skills']),
+        ('kiro', ['.kiro/skills']),
+        ('openclaw', ['.agents/skills', '.openclaw/skills']),
+        ('opencode', ['.agents/skills', '.config/opencode/skills']),
+        ('pi', ['.agents/skills', '.pi/agent/skills']),
+        ('windsurf', ['.agents/skills', '.codeium/windsurf/skills']),
+    ],
+)
+def test_agent_skills_paths(agent_id, skills_paths):
+    assert _get_agent_config(agent_id).skills_paths == skills_paths
+
+
+def test_shared_skills_path_matches_universal_row(tmp_path, monkeypatch):
+    monkeypatch.setenv('HOME', str(tmp_path))
+    monkeypatch.setenv('USERPROFILE', str(tmp_path))
+    (tmp_path / '.codex').mkdir()
+    (tmp_path / '.agents').mkdir()
+    codex = _get_agent_config('codex').detect()
+    universal = _get_agent_config(UNIVERSAL_ROW_ID).detect()
+    assert codex.skills_path == universal.skills_path
+
+
+@pytest.mark.parametrize('path', ['~/.test-agent/skills', '/abs/skills'])
+def test_skills_paths_must_be_relative_to_home(tmp_path, path):
+    with pytest.raises(ValueError, match='relative to the home directory'):
+        make_config(tmp_path, skills_paths=[path])
+
+
+def test_skills_path_under_detection_dir_follows_env_override(
+    tmp_path, monkeypatch
+):
+    (tmp_path / '.test-agent').mkdir()
+    override_dir = tmp_path / '.custom-location'
+    override_dir.mkdir()
+    shared = str(tmp_path / 'shared' / 'skills')
+    config = make_config(
+        tmp_path,
+        detection_path_env_override='TEST_CONFIG_DIR',
+        skills_paths=[
+            home_relative(tmp_path, tmp_path / '.test-agent' / 'skills'),
+            home_relative(tmp_path, shared),
+        ],
+    )
+    monkeypatch.setenv('TEST_CONFIG_DIR', str(override_dir))
+    assert config.detect().skills_paths == [
+        str(override_dir / 'skills'),
+        shared,
+    ]

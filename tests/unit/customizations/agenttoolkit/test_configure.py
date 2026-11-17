@@ -40,6 +40,7 @@ from awscli.customizations.agenttoolkit.hooks import (
 from awscli.customizations.agenttoolkit.utils import AgentToolkitServiceError
 from awscli.customizations.exceptions import ConfigurationError
 from tests.unit.customizations.agenttoolkit.utils import (
+    home_relative,
     make_config,
     make_session,
     make_skill,
@@ -122,6 +123,9 @@ def test_no_agents_detected_raises_error(tmp_path):
             id='missing',
             display_name='Missing',
             detection_path=str(tmp_path / 'nonexistent'),
+            skills_paths=[
+                home_relative(tmp_path, tmp_path / 'nonexistent', 'skills')
+            ],
         )
     ]
     with pytest.raises(ConfigurationError):
@@ -135,6 +139,9 @@ def test_detection_output(tmp_path):
             id='missing',
             display_name='Missing Agent',
             detection_path=str(tmp_path / 'nope'),
+            skills_paths=[
+                home_relative(tmp_path, tmp_path / 'nope', 'skills')
+            ],
         )
     )
     _, stream = _run(configs)
@@ -209,13 +216,16 @@ def test_wizard_hides_universal_row_from_detection(tmp_path):
             id='codex',
             display_name='Codex',
             detection_path=str(real_dir),
-            skills_path_override=str(universal_dir),
+            skills_paths=[home_relative(tmp_path, universal_dir)],
             mcp_config_path='mcp.json',
         ),
         AgentConfig(
             id='universal',
             display_name='Universal (Codex)',
             detection_path=str(tmp_path / '.agents'),
+            skills_paths=[
+                home_relative(tmp_path, tmp_path / '.agents', 'skills')
+            ],
         ),
     ]
     _, stream = _run(configs)
@@ -234,13 +244,16 @@ def test_wizard_credits_universal_row_for_shared_path_install(tmp_path):
             id='codex',
             display_name='Codex',
             detection_path=str(real_dir),
-            skills_path_override=str(universal_dir),
+            skills_paths=[home_relative(tmp_path, universal_dir)],
             mcp_config_path='mcp.json',
         ),
         AgentConfig(
             id='universal',
             display_name='Universal (Codex)',
             detection_path=str(tmp_path / '.agents'),
+            skills_paths=[
+                home_relative(tmp_path, tmp_path / '.agents', 'skills')
+            ],
         ),
     ]
     zip_bytes, checksum = make_skill_zip()

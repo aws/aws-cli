@@ -34,6 +34,18 @@ def collapse_home(path):
     return path
 
 
+def _relative_path_within(path, directory):
+    """Return ``path`` relative to ``directory``, or ``None`` if outside."""
+    try:
+        relative = os.path.relpath(path, directory)
+    except ValueError:
+        # On Windows, the paths are on different drives.
+        return None
+    if relative == os.pardir or relative.startswith(os.pardir + os.sep):
+        return None
+    return relative
+
+
 class McpConfigureAction(enum.Enum):
     CONFIGURED = 'configured'
     ALREADY_CONFIGURED = 'already_configured'
@@ -59,9 +71,10 @@ class AgentConfig:
     """Definition of a supported AI coding agent.
 
     To add a new agent, append an instance to ``AGENT_CONFIGS`` in this
-    module. Most agents only need ``id``, ``display_name``, and
-    ``detection_path``; the remaining fields cover variations across
-    different agents' filesystem layouts and MCP config formats.
+    module. Most agents only need ``id``, ``display_name``,
+    ``detection_path``, and ``skills_paths``; the remaining fields cover
+    variations across different agents' filesystem layouts and MCP config
+    formats.
     """
 
     id: str
@@ -75,6 +88,10 @@ class AgentConfig:
     Tilde expansion is supported. The agent is considered detected when
     this path resolves to an existing directory."""
 
+    skills_paths: list[str]
+    """Skills directories the agent loads skills from, in priority order,
+    relative to the home directory (e.g. ``.claude/skills``)."""
+
     detection_path_env_override: Optional[str] = None
     """Environment variable name that overrides ``detection_path`` when
     set (e.g. ``CLAUDE_CONFIG_DIR``)."""
@@ -83,15 +100,6 @@ class AgentConfig:
     """Environment variable naming the home directory the agent uses in
     place of ``~`` (e.g. ``GEMINI_CLI_HOME``). When set, every
     tilde-prefixed path of this agent is resolved against it."""
-
-    skills_dir: str = 'skills'
-    """Subdirectory of the resolved base directory where skills live.
-    Ignored when ``skills_path_override`` is set."""
-
-    skills_path_override: Optional[str] = None
-    """Absolute path to the skills directory when it is not under the
-    detection directory (e.g. Codex stores skills at ``~/.agents/skills/``).
-    Tilde expansion is supported."""
 
     mcp_config_path: Optional[str] = None
     """Path to the MCP config file. Relative paths are resolved against
@@ -121,15 +129,20 @@ class AgentConfig:
     def __post_init__(self):
         if self.mcp_extra_config is None:
             self.mcp_extra_config = {}
+        if not self.skills_paths:
+            raise ValueError(
+                f'Agent {self.id!r} must have at least one skills path.'
+            )
+        for path in self.skills_paths:
+            if path.startswith('~') or os.path.isabs(path):
+                raise ValueError(
+                    f'Skills path {path!r} of agent {self.id!r} must be '
+                    'relative to the home directory.'
+                )
 
     @property
     def _display_skills_path(self):
-        if self.skills_path_override:
-            return self.skills_path_override.rstrip('/')
-        base = self.detection_path.rstrip('/')
-        if self.skills_dir:
-            return f'{base}/{self.skills_dir}'
-        return base
+        return f'~/{self.skills_paths[0]}'.rstrip('/')
 
     @property
     def display_label(self):
@@ -184,13 +197,52 @@ class DetectedAgent:
 
     @property
     def display_label(self):
-        return f'{self.display_name} — {collapse_home(self.skills_path)}'
+        return self.label_for(self.skills_path)
+
+    def label_for(self, skills_path):
+        """Return a label naming this agent and one of its skills paths."""
+        return f'{self.display_name} — {collapse_home(skills_path)}'
+
+    @property
+    def skills_paths(self):
+        """Every skills directory of this agent, in priority order."""
+        detection_dir = os.path.normpath(
+            self.config.expand_path(self.config.detection_path)
+        )
+        paths = []
+        home = self.config.expand_path('~')
+        for path in self.config.skills_paths:
+            path = os.path.normpath(os.path.join(home, path))
+            relative = _relative_path_within(path, detection_dir)
+            if relative is not None:
+                # Under the detection directory, so it moves with an
+                # override of that directory.
+                path = os.path.normpath(os.path.join(self.base_dir, relative))
+            paths.append(path)
+        return paths
 
     @property
     def skills_path(self):
-        if self.config.skills_path_override:
-            return self.config.expand_path(self.config.skills_path_override)
-        return os.path.join(self.base_dir, self.config.skills_dir)
+        """The skills directory new skills are installed into."""
+        return self.skills_paths[0]
+
+    def skill_dirs(self, skill_name):
+        """Return the directories to install ``skill_name`` into.
+
+        These are the existing entries named ``skill_name`` in any skills
+        directory, so an installed skill is changed where it is. When there
+        are none, it is the directory under :attr:`skills_path`.
+        """
+        dirs = []
+        seen = set()
+        for root in self.skills_paths:
+            skill_dir = os.path.join(root, skill_name)
+            real_dir = os.path.realpath(skill_dir)
+            if real_dir in seen or not os.path.lexists(skill_dir):
+                continue
+            seen.add(real_dir)
+            dirs.append(skill_dir)
+        return dirs or [os.path.join(self.skills_path, skill_name)]
 
     @property
     def mcp_config_file(self):
@@ -204,14 +256,23 @@ class DetectedAgent:
             return self.config.expand_path(self.config.mcp_config_path)
         return os.path.join(self.base_dir, self.config.mcp_config_path)
 
+    def _skill_files(self):
+        seen_roots = set()
+        for root in self.skills_paths:
+            real_root = os.path.realpath(root)
+            if real_root in seen_roots:
+                continue
+            seen_roots.add(real_root)
+            pattern = os.path.join(root, '*', SKILL_FILENAME)
+            yield from sorted(glob.glob(pattern))
+
     def get_installed_skills(self):
-        pattern = os.path.join(
-            self.skills_path,
-            '*',
-            SKILL_FILENAME,
-        )
+        """Return the AWS skills in every skills directory of this agent.
+
+        Skills are ordered by skills directory priority, then by name.
+        """
         results = []
-        for skill_path in sorted(glob.glob(pattern)):
+        for skill_path in self._skill_files():
             skill_dir_path = os.path.dirname(skill_path)
             if not os.path.exists(
                 os.path.join(skill_dir_path, SKILL_METADATA_FILENAME)
@@ -296,6 +357,7 @@ AGENT_CONFIGS = [
         id='claude-code',
         display_name='Claude Code',
         detection_path='~/.claude/',
+        skills_paths=['.claude/skills'],
         mcp_config_path='~/.claude.json',
         mcp_servers_key='mcpServers',
         detection_path_env_override='CLAUDE_CONFIG_DIR',
@@ -306,6 +368,7 @@ AGENT_CONFIGS = [
         id='cline',
         display_name='Cline',
         detection_path='~/.cline/',
+        skills_paths=['.cline/skills'],
         mcp_config_path='mcp.json',
         mcp_servers_key='mcpServers',
     ),
@@ -317,7 +380,7 @@ AGENT_CONFIGS = [
         id='codex',
         display_name='Codex',
         detection_path='~/.codex/',
-        skills_path_override='~/.agents/skills/',
+        skills_paths=['.agents/skills'],
         detection_path_env_override='CODEX_HOME',
         mcp_shell_command=[
             'codex',
@@ -335,6 +398,7 @@ AGENT_CONFIGS = [
         id='cursor',
         display_name='Cursor',
         detection_path='~/.cursor/',
+        skills_paths=['.agents/skills', '.cursor/skills'],
         mcp_config_path='mcp.json',
         mcp_servers_key='mcpServers',
     ),
@@ -348,7 +412,7 @@ AGENT_CONFIGS = [
         id='devin',
         display_name='Devin',
         detection_path='~/.config/devin/',
-        skills_path_override='~/.agents/skills/',
+        skills_paths=['.agents/skills', '.config/devin/skills'],
         mcp_config_path='mcp_config.json',
         mcp_servers_key='mcpServers',
     ),
@@ -359,7 +423,7 @@ AGENT_CONFIGS = [
         display_name='Gemini CLI',
         detection_path='~/.gemini/',
         home_env_override='GEMINI_CLI_HOME',
-        skills_path_override='~/.agents/skills/',
+        skills_paths=['.agents/skills', '.gemini/skills'],
         mcp_config_path='settings.json',
         mcp_servers_key='mcpServers',
     ),
@@ -368,16 +432,19 @@ AGENT_CONFIGS = [
         id='kiro',
         display_name='Kiro',
         detection_path='~/.kiro/',
+        skills_paths=['.kiro/skills'],
         mcp_config_path='settings/mcp.json',
         mcp_servers_key='mcpServers',
         mcp_extra_config={'timeout': 100000, 'transport': 'stdio'},
     ),
     # https://openclaw-openclaw.mintlify.app/configuration
+    # https://github.com/openclaw/openclaw/blob/main/docs/tools/skills.md
     # OpenClaw does not document MCP support — install skills only.
     AgentConfig(
         id='openclaw',
         display_name='OpenClaw',
         detection_path='~/.openclaw/',
+        skills_paths=['.agents/skills', '.openclaw/skills'],
     ),
     # https://docs.opencode.ai/docs/mcp-servers
     # https://docs.opencode.ai/docs/skills
@@ -385,7 +452,7 @@ AGENT_CONFIGS = [
         id='opencode',
         display_name='OpenCode',
         detection_path='~/.config/opencode/',
-        skills_path_override='~/.agents/skills/',
+        skills_paths=['.agents/skills', '.config/opencode/skills'],
         mcp_config_path='opencode.json',
         mcp_servers_key='mcp',
         mcp_server_entry={
@@ -394,11 +461,13 @@ AGENT_CONFIGS = [
         },
     ),
     # https://github.com/badlogic/pi-mono/blob/main/packages/coding-agent/docs/settings.md
+    # https://github.com/badlogic/pi-mono/blob/main/packages/coding-agent/docs/skills.md
     # Pi does not document MCP support — install skills only.
     AgentConfig(
         id='pi',
         display_name='Pi',
         detection_path='~/.pi/agent/',
+        skills_paths=['.agents/skills', '.pi/agent/skills'],
     ),
     # https://docs.windsurf.com/plugins/cascade/mcp
     # https://docs.windsurf.com/windsurf/cascade/skills
@@ -406,7 +475,7 @@ AGENT_CONFIGS = [
         id='windsurf',
         display_name='Windsurf',
         detection_path='~/.codeium/windsurf/',
-        skills_path_override='~/.agents/skills/',
+        skills_paths=['.agents/skills', '.codeium/windsurf/skills'],
         mcp_config_path='~/.codeium/mcp_config.json',
         mcp_servers_key='mcpServers',
     ),
@@ -414,18 +483,19 @@ AGENT_CONFIGS = [
 
 
 def _build_universal_row(configs):
-    universal_path = os.path.expanduser('~/.agents/skills/').rstrip(os.sep)
+    universal_path = os.path.normpath('.agents/skills')
     consumers = [
         c.display_name
         for c in configs
-        if c.skills_path_override
-        and os.path.expanduser(c.skills_path_override).rstrip(os.sep)
-        == universal_path
+        if any(
+            os.path.normpath(path) == universal_path for path in c.skills_paths
+        )
     ]
     return AgentConfig(
         id=UNIVERSAL_ROW_ID,
         display_name=f'Universal ({", ".join(consumers)})',
         detection_path='~/.agents',
+        skills_paths=['.agents/skills'],
     )
 
 

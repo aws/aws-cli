@@ -242,8 +242,12 @@ def install_skill(
         _verify_skill_archive(skill_name, zf)
         skipped = []
         extracted_paths = set()
-        for agent in universal_first(agents):
-            skill_dir = os.path.join(agent.skills_path, skill_name)
+        targets = [
+            (agent, skill_dir)
+            for agent in universal_first(agents)
+            for skill_dir in agent.skill_dirs(skill_name)
+        ]
+        for agent, skill_dir in targets:
             real_dir = os.path.realpath(skill_dir)
             if real_dir in extracted_paths:
                 continue
@@ -273,7 +277,7 @@ def install_skill(
             elif stream:
                 stream.write(
                     f'  {action} {skill_name} ({version})'
-                    f' to {agent.display_label}.\n'
+                    f' to {agent.label_for(os.path.dirname(skill_dir))}.\n'
                 )
     return skipped
 
@@ -394,7 +398,11 @@ def skills_lock(parent, timeout=None):
 
 def _recover_interrupted_changes(agents):
     """Restore or clean up skill directories left by an interrupted change."""
-    roots = {os.path.realpath(agent.skills_path) for agent in agents}
+    roots = {
+        os.path.realpath(path)
+        for agent in agents
+        for path in agent.skills_paths
+    }
     # (parent, skill name), where a name of None means every skill.
     work = [(root, None) for root in sorted(roots)]
     # Changes to a symlinked skill happen at the link's target (see

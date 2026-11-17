@@ -86,6 +86,11 @@ def make_skill(tmp_path, agent_name, skill_name, with_marker=True):
         )
 
 
+def home_relative(home, *parts):
+    """Return the path joined from ``parts`` relative to ``home``."""
+    return os.path.relpath(os.path.join(str(home), *map(str, parts)), home)
+
+
 def make_config(tmp_path, **overrides):
     defaults = {
         'id': 'test-agent',
@@ -93,6 +98,12 @@ def make_config(tmp_path, **overrides):
         'detection_path': str(tmp_path / '.test-agent'),
     }
     defaults.update(overrides)
+    detection_path = defaults['detection_path']
+    if detection_path.startswith('~/'):
+        default_skills_path = os.path.join(detection_path[2:], 'skills')
+    else:
+        default_skills_path = home_relative(tmp_path, detection_path, 'skills')
+    defaults.setdefault('skills_paths', [default_skills_path])
     return AgentConfig(**defaults)
 
 

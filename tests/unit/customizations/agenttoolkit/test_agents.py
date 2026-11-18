@@ -437,10 +437,7 @@ def test_devin_config():
     assert devin.display_name == 'Devin'
     assert devin.detection_path == '~/.config/devin/'
     assert devin.detection_path_env_override is None
-    assert devin.skills_paths == [
-        '.agents/skills',
-        '.config/devin/skills',
-    ]
+    assert devin.skills_paths == ['.agents/skills']
     assert devin.mcp_config_path == 'mcp_config.json'
     assert devin.mcp_servers_key == 'mcpServers'
     assert devin.mcp_extra_config == {}
@@ -535,11 +532,11 @@ def test_skill_dirs_returns_existing_locations(tmp_path):
         ('cline', ['.cline/skills']),
         ('codex', ['.agents/skills']),
         ('cursor', ['.agents/skills', '.cursor/skills']),
-        ('devin', ['.agents/skills', '.config/devin/skills']),
-        ('gemini-cli', ['.agents/skills', '.gemini/skills']),
+        ('devin', ['.agents/skills']),
+        ('gemini-cli', ['.agents/skills']),
         ('kiro', ['.kiro/skills']),
         ('openclaw', ['.agents/skills', '.openclaw/skills']),
-        ('opencode', ['.agents/skills', '.config/opencode/skills']),
+        ('opencode', ['.agents/skills']),
         ('pi', ['.agents/skills', '.pi/agent/skills']),
         ('windsurf', ['.agents/skills', '.codeium/windsurf/skills']),
     ],

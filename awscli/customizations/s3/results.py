@@ -397,6 +397,12 @@ class ResultPrinter(BaseResultHandler):
         if self._error_file is None:
             self._error_file = sys.stderr
         self._progress_length = 0
+        # Lock to ensure progress printing and error/warning output do
+        # not interleave when printed from different threads.
+        self._lock = threading.Lock()
+        # Keep the last progress text (without trailing carriage return)
+        # so we can re-display it when needed.
+        self._last_progress = ''
         self._result_handler_map = {
             ProgressResult: self._print_progress,
             SuccessResult: self._print_success,
@@ -473,6 +479,8 @@ class ResultPrinter(BaseResultHandler):
         # meaning there are no carriage returns to take into account when
         # printing the next line.
         self._progress_length = 0
+        # Re-add progress if there's still remaining work. The actual
+        # printing will acquire the lock.
         self._add_progress_if_needed()
 
     def _add_progress_if_needed(self):
@@ -515,15 +523,20 @@ class ResultPrinter(BaseResultHandler):
         if not self._result_recorder.expected_totals_are_final():
             progress_statement += self._STILL_CALCULATING_TOTALS
 
-        # Make sure that it overrides any previous progress bar.
+        # Make sure that it overrides any previous progress bar. Use a
+        # trailing carriage return so the next write will overwrite this
+        # line.
         progress_statement = self._adjust_statement_padding(
-                progress_statement, ending_char='\r')
+            progress_statement, ending_char='\r')
         # We do not want to include the carriage return in this calculation
         # as progress length is used for determining whitespace padding.
         # So we subtract one off of the length.
         self._progress_length = len(progress_statement) - 1
+        # Store last progress text (without trailing CR) for potential
+        # re-display after warnings/errors.
+        self._last_progress = progress_statement[:-1]
 
-        # Print the progress out.
+        # Print the progress out (this method handles locking/padding).
         self._print_to_out_file(progress_statement)
 
     def _get_expected_total(self, expected_total):
@@ -544,10 +557,46 @@ class ResultPrinter(BaseResultHandler):
         return actual != expected
 
     def _print_to_out_file(self, statement):
-        uni_print(statement, self._out_file)
+        # Progress statements end with a carriage return. To avoid
+        # interleaving when other threads print warnings/errors, we
+        # synchronize writes with a lock. For progress we write directly
+        # to the stream to preserve the carriage return behavior. For
+        # normal lines, we clear any existing progress line first.
+        if statement.endswith('\r'):
+            # Preserve the trailing carriage return in the output to match
+            # previous behavior where progress lines were printed as
+            # '<text>\r'. Pad with spaces if the previous progress line
+            # was longer so leftover chars are cleared.
+            text = statement[:-1]
+            with self._lock:
+                try:
+                    pad = max(0, self._progress_length - len(text))
+                    # Write text, then padding spaces, then the trailing CR.
+                    self._out_file.write(text)
+                    if pad:
+                        self._out_file.write(' ' * pad)
+                    self._out_file.write('\r')
+                    self._out_file.flush()
+                except Exception:
+                    # Fall back to uni_print if direct write fails.
+                    uni_print(statement, self._out_file)
+        else:
+            # For normal lines, simply write the line under the same lock
+            # so it safely overwrites the progress line (which ends with a
+            # '\r') without inserting extra carriage returns. Do not reset
+            # progress tracking here; callers like `_redisplay_progress`
+            # will handle resetting and reprinting progress if needed.
+            with self._lock:
+                uni_print(statement, self._out_file)
 
     def _print_to_error_file(self, statement):
-        uni_print(statement, self._error_file)
+        # Acquire the same lock used for progress writes so we don't race
+        # with progress printing. Write the error/warning directly so it
+        # overwrites the current progress line (which ends with a '\r'),
+        # matching historical behavior in tests where error output
+        # replaces the progress line.
+        with self._lock:
+            uni_print(statement, self._error_file)
 
     def _clear_progress_if_no_more_expected_transfers(self, **kwargs):
         if self._progress_length and not self._has_remaining_progress():

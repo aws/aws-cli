@@ -28,6 +28,10 @@ def _isolate_agent_toolkit_home(tmp_path_factory):
 @pytest.fixture(autouse=True)
 def _home_is_tmp_path(tmp_path, monkeypatch):
     # Skills paths are relative to the home directory, so point it at the
-    # test's directory. Tests that need another home set it themselves.
+    # test's directory. Tests that need another home or directory set it
+    # themselves.
     monkeypatch.setenv('HOME', str(tmp_path))
     monkeypatch.setenv('USERPROFILE', str(tmp_path))
+    # Start in the home directory, so commands that also act on the current
+    # directory's project-level skills never reach the real checkout.
+    monkeypatch.chdir(tmp_path)

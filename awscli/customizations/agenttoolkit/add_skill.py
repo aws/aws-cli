@@ -15,12 +15,14 @@ import sys
 from awscli.customizations.agenttoolkit.agents import AGENT_CONFIGS
 from awscli.customizations.agenttoolkit.utils import (
     AGENT_ARG,
+    SCOPE_ARGS,
     SKILL_NAME_ARG,
     SKILL_VERSION_ARG,
+    SYMLINK_ARGS,
     create_client,
     get_skill_download,
     install_skill,
-    resolve_agents,
+    resolve_agents_for_args,
 )
 from awscli.customizations.commands import BasicCommand
 from awscli.customizations.exceptions import ParamValidationError
@@ -38,6 +40,8 @@ class AddSkillCommand(BasicCommand):
         SKILL_NAME_ARG,
         SKILL_VERSION_ARG,
         AGENT_ARG,
+        *SCOPE_ARGS,
+        *SYMLINK_ARGS,
     ]
 
     def __init__(self, session, stream=None, client=None, agent_configs=None):
@@ -53,9 +57,8 @@ class AddSkillCommand(BasicCommand):
     def _run_main(self, parsed_args, parsed_globals):
         skill_name = parsed_args.skill_name
         version = getattr(parsed_args, 'skill_version', None)
-        agent_filter = getattr(parsed_args, 'agent', None)
 
-        agents = resolve_agents(agent_filter, self._agent_configs)
+        agents = resolve_agents_for_args(parsed_args, self._agent_configs)
         if not agents:
             raise ParamValidationError('No supported AI coding agents found.')
 

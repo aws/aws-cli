@@ -24,6 +24,7 @@ from botocore.exceptions import ClientError, HTTPClientError
 from awscli.customizations.agenttoolkit.agents import (
     AGENT_CONFIGS,
     SKILL_METADATA_FILENAME,
+    Scope,
 )
 from awscli.customizations.agenttoolkit.filelock import file_lock
 from awscli.customizations.agenttoolkit.hooks import (
@@ -42,7 +43,10 @@ from awscli.customizations.agenttoolkit.state import (
 )
 from awscli.customizations.agenttoolkit.utils import (
     AGENT_ARG,
+    SCOPE_ARGS,
     SKILL_NAME_ARG,
+    SYMLINK_ARGS,
+    SYMLINK_SKIP_REASON,
     AgentToolkitServiceError,
     agents_with_skill,
     collect_installed_skills,
@@ -52,8 +56,10 @@ from awscli.customizations.agenttoolkit.utils import (
     install_skill,
     list_core_skills,
     read_installed_version,
-    resolve_agents,
+    resolve_agents_for_args,
+    resolve_agents_in_scopes,
     resolve_latest_version,
+    resolve_scopes,
 )
 from awscli.customizations.commands import BasicCommand
 from awscli.customizations.exceptions import ParamValidationError
@@ -204,12 +210,16 @@ class UpdateSkillCommand(BasicCommand):
         'to update a single skill or ``--all`` to update every installed '
         'skill that is out of date. By default skills are '
         'updated for all detected agents, use ``--agent`` to update '
-        'for only a specific tool.'
+        'for only a specific tool. By default both global skills and '
+        'project-level skills in the current directory are updated, use '
+        '``--global`` or ``--project`` to update only one of them.'
     )
     ARG_TABLE = [
         UPDATE_SKILL_NAME_ARG,
         ALL_SKILLS_ARG,
         AGENT_ARG,
+        *SCOPE_ARGS,
+        *SYMLINK_ARGS,
         HOOK_ARG,
     ]
 
@@ -240,6 +250,11 @@ class UpdateSkillCommand(BasicCommand):
         hook = getattr(parsed_args, 'hook', False)
 
         if hook:
+            for flag in ('project', 'global'):
+                if getattr(parsed_args, flag, False):
+                    raise ParamValidationError(
+                        f'Cannot use --{flag} together with --hook.'
+                    )
             if skill_name:
                 raise ParamValidationError(
                     'Cannot use --skill-name together with --hook.'
@@ -259,7 +274,10 @@ class UpdateSkillCommand(BasicCommand):
                 'Either --skill-name or --all is required.'
             )
 
-        agents = resolve_agents(agent_filter, self._agent_configs)
+        # Updates cover both scopes unless a scope flag picks one.
+        agents = resolve_agents_for_args(
+            parsed_args, self._agent_configs, both_by_default=True
+        )
         if not agents:
             raise ParamValidationError('No supported AI coding agents found.')
 
@@ -345,8 +363,14 @@ class UpdateSkillCommand(BasicCommand):
         error = None
         due_roots = []
         try:
+            # The hook runs in the directory the agent was started in, so it
+            # also updates that project's skills.
             agents, due_roots = self._agents_due_for_check(
-                resolve_agents(agent_id, self._agent_configs)
+                resolve_agents_in_scopes(
+                    agent_id,
+                    self._agent_configs,
+                    resolve_scopes(None, both_by_default=True),
+                )
             )
             if not agents:
                 return 0
@@ -484,9 +508,15 @@ class UpdateSkillCommand(BasicCommand):
 
         Agents the customer never set up with the toolkit are left alone.
         A core skill removed with ``remove-skill`` is installed again.
-        Outcomes are added to ``results`` like :meth:`_collect_updates`.
+        Only global skills are added to, so a project gets no new files it
+        may commit. Outcomes are added to ``results`` like
+        :meth:`_collect_updates`.
         """
-        targets = [agent for agent in agents if agent.get_installed_skills()]
+        targets = [
+            agent
+            for agent in agents
+            if agent.scope is Scope.GLOBAL and agent.get_installed_skills()
+        ]
         if not targets:
             return
         core_skills = list_core_skills(client)
@@ -557,10 +587,18 @@ class UpdateSkillCommand(BasicCommand):
         self._stream.write('\nSkipped:\n')
         for skill_name, skill_dir, reason in skipped:
             self._stream.write(f'  {skill_name} at {skill_dir}: {reason}.\n')
-        self._stream.write(
-            'To install the AWS skill there, move the existing path aside and '
-            'run "aws agent-toolkit add-skill --skill-name <name>".\n'
-        )
+        reasons = {reason for _, _, reason in skipped}
+        if reasons - {SYMLINK_SKIP_REASON}:
+            self._stream.write(
+                'To install the AWS skill there, move the existing path '
+                'aside and run "aws agent-toolkit add-skill --skill-name '
+                '<name>".\n'
+            )
+        if SYMLINK_SKIP_REASON in reasons:
+            self._stream.write(
+                'To update skills under symbolic links, run the command '
+                'without --no-follow-symlinks.\n'
+            )
 
     def _write_failed(self, failed):
         if not failed:

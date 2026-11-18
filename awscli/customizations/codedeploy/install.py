@@ -113,16 +113,29 @@ class Install(BasicCommand):
         except OSError as e:
             if e.errno != errno.EEXIST:
                 raise e
-        if params.config_file != params.system.CONFIG_PATH:
+        # On Windows the file is always replaced, even when it is already the
+        # installed config, so it never keeps an ACL it had before.
+        if (
+            params.config_file != params.system.CONFIG_PATH
+            or params.system.RECREATE_CONFIG_FILE
+        ):
+            # Read the contents first, since the source may be the file that
+            # is about to be replaced.
             with open(params.config_file, 'rb') as f:
                 contents = f.read()
-            fd = os.open(
-                params.system.CONFIG_PATH,
-                os.O_WRONLY | os.O_CREAT | os.O_TRUNC | _O_BINARY,
-                0o600,
-            )
+            if params.system.RECREATE_CONFIG_FILE:
+                fd = params.system.create_config_file()
+            else:
+                fd = os.open(
+                    params.system.CONFIG_PATH,
+                    os.O_WRONLY | os.O_CREAT | os.O_TRUNC | _O_BINARY,
+                    0o600,
+                )
             with os.fdopen(fd, 'wb') as f:
-                os.chmod(params.system.CONFIG_PATH, 0o600)
+                # create_config_file sets the file's ACL itself, and Windows
+                # ignores the mode, so chmod is only needed for os.open.
+                if not params.system.RECREATE_CONFIG_FILE:
+                    os.chmod(params.system.CONFIG_PATH, 0o600)
                 f.write(contents)
         sys.stdout.write('DONE\n')
 

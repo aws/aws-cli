@@ -14,6 +14,7 @@
 
 import json
 import os
+import sys
 from io import StringIO
 from types import SimpleNamespace
 from unittest.mock import Mock, patch
@@ -264,6 +265,16 @@ def test_resolve_scopes_project_without_cwd_fails_clearly(cwd_deleted):
         utils.resolve_scopes(_args(project=True))
 
 
+# Windows does not let a process's current directory be deleted, and its
+# os.path.realpath calls os.getcwd, so the fixture would break more than
+# the current directory lookup.
+requires_deletable_cwd = pytest.mark.skipif(
+    sys.platform == 'win32',
+    reason='The current directory cannot be deleted on Windows.',
+)
+
+
+@requires_deletable_cwd
 def test_add_skill_global_works_when_cwd_deleted(tmp_path, cwd_deleted):
     (tmp_path / '.test-agent').mkdir()
     rc, _ = _run_add([make_config(tmp_path)], ['--skill-name', 'aws-s3'])
@@ -271,6 +282,7 @@ def test_add_skill_global_works_when_cwd_deleted(tmp_path, cwd_deleted):
     assert (tmp_path / '.test-agent' / 'skills' / 'aws-s3').is_dir()
 
 
+@requires_deletable_cwd
 def test_update_hook_works_when_cwd_deleted(tmp_path, cwd_deleted):
     # Without a current directory the hook still updates global skills.
     (tmp_path / '.test-agent').mkdir()

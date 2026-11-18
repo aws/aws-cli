@@ -95,6 +95,7 @@ def test_check_skill_updates_reports_available_update(tmp_path, monkeypatch):
         'skills': [
             {
                 'agent': 'Test Agent',
+                'scope': 'global',
                 'name': 'aws-s3',
                 'path': skill_path,
                 'installedVersion': 'v1',

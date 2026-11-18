@@ -46,6 +46,26 @@ def _relative_path_within(path, directory):
     return relative
 
 
+def _has_symlink_below(root, relative):
+    """Whether a path component of ``relative``, joined to ``root`` one at
+    a time, is a symbolic link. ``root`` itself is not checked."""
+    if relative == os.curdir:
+        return False
+    current = root
+    for part in relative.split(os.sep):
+        current = os.path.join(current, part)
+        if os.path.islink(current):
+            return True
+    return False
+
+
+class Scope(enum.Enum):
+    """Where skills are installed: the home or the current directory."""
+
+    GLOBAL = 'global'
+    PROJECT = 'project'
+
+
 class McpConfigureAction(enum.Enum):
     CONFIGURED = 'configured'
     ALREADY_CONFIGURED = 'already_configured'
@@ -97,7 +117,10 @@ class AgentConfig:
     ``home_env_override``, and entries under ``detection_path`` move with
     ``detection_path_env_override`` when it is set. List ``.agents/skills``
     first when the agent reads it, so one copy of a skill serves every
-    agent that shares it."""
+    agent that shares it.
+
+    For project-level skills, the same entries are resolved against the
+    project directory instead of the home directory."""
 
     detection_path_env_override: Optional[str] = None
     """Environment variable name that overrides ``detection_path`` when
@@ -188,19 +211,36 @@ class AgentConfig:
             return expanded
         return None
 
-    def detect(self):
+    def detect(
+        self, scope=Scope.GLOBAL, project_dir=None, follow_symlinks=True
+    ):
+        """Return the agent if installed, with skills paths for ``scope``."""
         base_dir = self.resolve_base_dir()
         if base_dir is None:
             return None
-        return DetectedAgent(self, base_dir)
+        return DetectedAgent(
+            self, base_dir, scope, project_dir, follow_symlinks
+        )
 
 
 class DetectedAgent:
     """An agent that was found installed on this machine."""
 
-    def __init__(self, config, base_dir):
+    def __init__(
+        self,
+        config,
+        base_dir,
+        scope=Scope.GLOBAL,
+        project_dir=None,
+        follow_symlinks=True,
+    ):
+        if scope is Scope.PROJECT and project_dir is None:
+            raise ValueError('A project directory is required.')
         self.config = config
         self.base_dir = base_dir
+        self.scope = scope
+        self.project_dir = project_dir
+        self.follow_symlinks = follow_symlinks
 
     @property
     def display_name(self):
@@ -216,7 +256,13 @@ class DetectedAgent:
 
     @property
     def skills_paths(self):
-        """Every skills directory of this agent, in priority order."""
+        """Every skills directory of this agent in its scope, in priority
+        order."""
+        if self.scope is Scope.PROJECT:
+            return [
+                os.path.normpath(os.path.join(self.project_dir, path))
+                for path in self.config.skills_paths
+            ]
         detection_dir = os.path.normpath(
             self.config.expand_path(self.config.detection_path)
         )
@@ -236,6 +282,39 @@ class DetectedAgent:
     def skills_path(self):
         """The skills directory new skills are installed into."""
         return self.skills_paths[0]
+
+    def can_write(self, path):
+        """Whether the CLI may change ``path``.
+
+        Symbolic links are followed unless ``follow_symlinks`` is off. Then
+        a path that is a symbolic link, or is under one, is refused,
+        starting below the scope's root: the project directory, or the home
+        directory for global skills. Links above the root are still
+        followed.
+        """
+        if self.follow_symlinks:
+            return True
+        path = os.path.normpath(path)
+        for root in self._symlink_check_roots():
+            relative = _relative_path_within(path, root)
+            if relative is not None:
+                return not _has_symlink_below(root, relative)
+        return not os.path.islink(path)
+
+    def _symlink_check_roots(self):
+        """Roots that symbolic links are checked below. The first root
+        that contains a path is used.
+
+        An agent directory moved out of the home directory by
+        ``detection_path_env_override`` is checked like one in it, so the
+        moved directory itself counts as below the root.
+        """
+        if self.scope is Scope.PROJECT:
+            return [os.path.normpath(self.project_dir)]
+        return [
+            os.path.normpath(self.config.expand_path('~')),
+            os.path.dirname(os.path.normpath(self.base_dir)),
+        ]
 
     def skill_dirs(self, skill_name):
         """Return the directories to install ``skill_name`` into.
@@ -520,12 +599,17 @@ def universal_first(items, get_id=lambda a: a.config.id):
     )
 
 
-def get_detected_agents(agent_configs=None):
+def get_detected_agents(
+    agent_configs=None,
+    scope=Scope.GLOBAL,
+    project_dir=None,
+    follow_symlinks=True,
+):
     if agent_configs is None:
         agent_configs = AGENT_CONFIGS
     detected = []
     for config in agent_configs:
-        agent = config.detect()
+        agent = config.detect(scope, project_dir, follow_symlinks)
         if agent is not None:
             detected.append(agent)
     return detected

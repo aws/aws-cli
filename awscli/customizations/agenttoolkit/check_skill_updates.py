@@ -14,10 +14,11 @@ import os
 
 from awscli.customizations.agenttoolkit.utils import (
     AGENT_ARG,
+    SCOPE_ARGS,
     collect_installed_skills,
     create_client,
     read_installed_version,
-    resolve_agents,
+    resolve_agents_for_args,
     resolve_latest_version,
 )
 from awscli.customizations.commands import BasicCommand
@@ -44,11 +45,15 @@ class CheckSkillUpdatesCommand(BasicCommand):
         'installed skill. Nothing is downloaded or modified, run '
         '``aws agent-toolkit update-skill`` to apply an update. By default it '
         'checks skills for all detected agents, use ``--agent`` to check only '
-        'a specific tool.'
+        'a specific tool. By default both global skills and project-level '
+        'skills in the current directory are checked, and ``scope`` tells '
+        'them apart, use ``--global`` or ``--project`` to check only one of '
+        'them.'
     )
     ARG_TABLE = [
         ALL_SKILLS_ARG,
         AGENT_ARG,
+        *SCOPE_ARGS,
     ]
 
     def __init__(
@@ -66,9 +71,10 @@ class CheckSkillUpdatesCommand(BasicCommand):
         self._output_stream_factory = output_stream_factory
 
     def _run_main(self, parsed_args, parsed_globals):
-        agent_filter = getattr(parsed_args, 'agent', None)
         include_up_to_date = getattr(parsed_args, 'all', False)
-        agents = resolve_agents(agent_filter, self._agent_configs)
+        agents = resolve_agents_for_args(
+            parsed_args, self._agent_configs, both_by_default=True
+        )
         installed_skills = collect_installed_skills(agents)
 
         rows = []
@@ -106,6 +112,7 @@ class CheckSkillUpdatesCommand(BasicCommand):
             rows.append(
                 {
                     'agent': skill.agent.display_name,
+                    'scope': skill.agent.scope.value,
                     'name': skill.name,
                     'path': skill.path,
                     'installedVersion': installed_version,

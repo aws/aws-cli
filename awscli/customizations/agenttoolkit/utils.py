@@ -24,6 +24,7 @@ from awscli.customizations.agenttoolkit.agents import (
     AGENT_CONFIGS,
     SKILL_FILENAME,
     SKILL_METADATA_FILENAME,
+    Scope,
     get_detected_agents,
     universal_first,
 )
@@ -68,6 +69,58 @@ SKILL_VERSION_ARG = {
     'cli_type_name': 'string',
     'required': False,
 }
+
+PROJECT_ARG = {
+    'name': 'project',
+    'help_text': (
+        'Act only on project-level skills in the current directory. '
+        'Cannot be used with ``--global``.'
+    ),
+    'action': 'store_true',
+    'required': False,
+}
+
+GLOBAL_ARG = {
+    'name': 'global',
+    'help_text': (
+        'Act only on global skills in your home directory. '
+        'Cannot be used with ``--project``.'
+    ),
+    'action': 'store_true',
+    'required': False,
+}
+
+SCOPE_ARGS = [PROJECT_ARG, GLOBAL_ARG]
+
+FOLLOW_SYMLINKS_ARG = {
+    'name': 'follow-symlinks',
+    'action': 'store_true',
+    'default': True,
+    'group_name': 'follow_symlinks',
+    'help_text': (
+        'Symbolic links are followed when changing skills, so a skill is '
+        'changed where a linked skills directory or skill points. '
+        '``--no-follow-symlinks`` skips any skill whose directory is a '
+        'symbolic link, or is located under one, starting at the current '
+        'directory for ``--project`` or the home directory otherwise. '
+        'Symbolic links in the path leading up to that directory are still '
+        'followed. When neither ``--follow-symlinks`` nor '
+        '``--no-follow-symlinks`` is specified, the default is to follow '
+        'symlinks.'
+    ),
+}
+
+NO_FOLLOW_SYMLINKS_ARG = {
+    'name': 'no-follow-symlinks',
+    'action': 'store_false',
+    'dest': 'follow_symlinks',
+    'default': True,
+    'group_name': 'follow_symlinks',
+}
+
+SYMLINK_ARGS = [FOLLOW_SYMLINKS_ARG, NO_FOLLOW_SYMLINKS_ARG]
+
+SYMLINK_SKIP_REASON = 'the path is a symbolic link or is under one'
 
 AGENT_ARG = {
     'name': 'agent',
@@ -243,15 +296,28 @@ def install_skill(
         skipped = []
         extracted_paths = set()
         targets = [
-            (agent, skill_dir)
+            (agent, skill_dir, agent.can_write(skill_dir))
             for agent in universal_first(agents)
             for skill_dir in agent.skill_dirs(skill_name)
         ]
-        for agent, skill_dir in targets:
+        # Writable paths first, so a directory that is also reached through
+        # a path the CLI may not change is still installed.
+        targets.sort(key=lambda t: not t[2])
+        for agent, skill_dir, is_writable in targets:
             real_dir = os.path.realpath(skill_dir)
             if real_dir in extracted_paths:
                 continue
             extracted_paths.add(real_dir)
+            if not is_writable:
+                # Report the unresolved path, unlike the other skips: the
+                # resolved one would hide the symbolic link that caused it.
+                if stream:
+                    stream.write(
+                        f'  Skipped {skill_name} at {skill_dir}: '
+                        f'{SYMLINK_SKIP_REASON}.\n'
+                    )
+                skipped.append((skill_dir, SYMLINK_SKIP_REASON))
+                continue
             try:
                 # Check before locking, so a skill that won't change is
                 # skipped even if its directory isn't writable.
@@ -402,12 +468,23 @@ def _recover_interrupted_changes(agents):
         os.path.realpath(path)
         for agent in agents
         for path in agent.skills_paths
+        if agent.can_write(path)
     }
     # (parent, skill name), where a name of None means every skill.
     work = [(root, None) for root in sorted(roots)]
     # Changes to a symlinked skill happen at the link's target (see
-    # install_skill), so its leftovers sit next to the target.
-    work += [os.path.split(t) for t in sorted(_symlinked_skill_targets(roots))]
+    # install_skill), so its leftovers sit next to the target. Those are
+    # left alone when symbolic links are not followed.
+    linked_roots = {
+        os.path.realpath(path)
+        for agent in agents
+        if agent.follow_symlinks
+        for path in agent.skills_paths
+    }
+    work += [
+        os.path.split(t)
+        for t in sorted(_symlinked_skill_targets(linked_roots))
+    ]
     for parent, name in work:
         try:
             if not atomic.has_leftovers(parent, name):
@@ -462,14 +539,108 @@ def find_agent_config(agent_id, agent_configs=None):
     return config
 
 
-def resolve_agents(agent_filter, agent_configs=None):
-    """Resolve agents, optionally filtered by agent id."""
+def resolve_scopes(parsed_args, cwd=None, both_by_default=False):
+    """Return the ``(scope, project_dir)`` pairs chosen by the scope flags.
+
+    Without a flag this is the global scope, or the global scope and then
+    the project scope of ``cwd`` when ``both_by_default`` is set.
+    """
+    project = getattr(parsed_args, 'project', False)
+    is_global = getattr(parsed_args, 'global', False)
+    if project and is_global:
+        raise ParamValidationError(
+            'Cannot use --project together with --global.'
+        )
+    global_scope = (Scope.GLOBAL, None)
+    if is_global or not (project or both_by_default):
+        # Only the global scope, so the current directory isn't needed,
+        # and may not even exist.
+        return [global_scope]
+    if cwd is None:
+        try:
+            cwd = os.getcwd()
+        except OSError as e:
+            if project:
+                raise ParamValidationError(
+                    f'Cannot use --project: the current directory is not '
+                    f'available ({e}).'
+                ) from e
+            return [global_scope]
+    project_scope = (Scope.PROJECT, cwd)
+    if project:
+        return [project_scope]
+    return [global_scope, project_scope]
+
+
+def _detect_agents(
+    agent_filter, agent_configs, scope, project_dir, follow_symlinks
+):
     if agent_configs is None:
         agent_configs = AGENT_CONFIGS
     if agent_filter:
-        agent = find_agent_config(agent_filter, agent_configs).detect()
-        agents = [agent] if agent is not None else []
-    else:
-        agents = get_detected_agents(agent_configs=agent_configs)
+        config = find_agent_config(agent_filter, agent_configs)
+        agent = config.detect(scope, project_dir, follow_symlinks)
+        return [agent] if agent is not None else []
+    return get_detected_agents(
+        agent_configs=agent_configs,
+        scope=scope,
+        project_dir=project_dir,
+        follow_symlinks=follow_symlinks,
+    )
+
+
+def resolve_agents(
+    agent_filter,
+    agent_configs=None,
+    scope=Scope.GLOBAL,
+    project_dir=None,
+    follow_symlinks=True,
+):
+    """Resolve agents in ``scope``, optionally filtered by agent id."""
+    return resolve_agents_in_scopes(
+        agent_filter,
+        agent_configs,
+        [(scope, project_dir)],
+        follow_symlinks,
+    )
+
+
+def resolve_agents_in_scopes(
+    agent_filter, agent_configs, scopes, follow_symlinks=True
+):
+    """Resolve agents in each of ``scopes``, optionally filtered by agent id.
+
+    An agent whose skills directories in a later scope are the same as in
+    an earlier one, as in the home directory when no environment override
+    moves the global directories, is listed once, in the earlier scope.
+    """
+    agents = []
+    seen = set()
+    for scope, project_dir in scopes:
+        for agent in _detect_agents(
+            agent_filter, agent_configs, scope, project_dir, follow_symlinks
+        ):
+            key = (
+                agent.config.id,
+                tuple(
+                    os.path.normcase(os.path.realpath(p))
+                    for p in agent.skills_paths
+                ),
+            )
+            if key in seen:
+                continue
+            seen.add(key)
+            agents.append(agent)
     _recover_interrupted_changes(agents)
     return agents
+
+
+def resolve_agents_for_args(parsed_args, agent_configs, both_by_default=False):
+    """Resolve the agents chosen by ``--agent``, the scope flags, and the
+    symbolic link flags, in each chosen scope."""
+    return resolve_agents_in_scopes(
+        getattr(parsed_args, 'agent', None),
+        agent_configs,
+        resolve_scopes(parsed_args, both_by_default=both_by_default),
+        getattr(parsed_args, 'follow_symlinks', True),
+    )

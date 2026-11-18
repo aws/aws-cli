@@ -33,8 +33,9 @@ class AddSkillCommand(BasicCommand):
     DESCRIPTION = (
         'Download and install an AWS skill to detected AI coding agents. '
         'By default the latest version is installed globally to all detected '
-        'agents. Use ``--agent`` to target a specific tool, or '
-        '``--skill-version`` to pin a specific version.'
+        'agents. Use ``--project`` to install into the skills directories '
+        'of the current directory instead. Use ``--agent`` to target a '
+        'specific tool, or ``--skill-version`` to pin a specific version.'
     )
     ARG_TABLE = [
         SKILL_NAME_ARG,

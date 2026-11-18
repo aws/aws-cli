@@ -1,6 +1,6 @@
 **Example 1: To check installed skills for updates**
 
-The following ``check-skill-updates`` example lists the installed AWS skills that have a newer version available. ::
+The following ``check-skill-updates`` example lists the installed AWS skills that have a newer version available. Without ``--project`` or ``--global``, both global skills and the skills of the current directory are checked, and ``scope`` tells them apart. ::
 
     aws agent-toolkit check-skill-updates
 
@@ -10,6 +10,7 @@ Output::
         "skills": [
             {
                 "agent": "Kiro",
+                "scope": "global",
                 "name": "aws-serverless",
                 "path": "/Users/username/.kiro/skills/aws-serverless/SKILL.md",
                 "installedVersion": "v1",
@@ -48,6 +49,7 @@ Output::
         "skills": [
             {
                 "agent": "Kiro",
+                "scope": "global",
                 "name": "aws-cloudformation",
                 "path": "/Users/username/.kiro/skills/aws-cloudformation/SKILL.md",
                 "installedVersion": "v2",
@@ -56,6 +58,7 @@ Output::
             },
             {
                 "agent": "Kiro",
+                "scope": "global",
                 "name": "aws-serverless",
                 "path": "/Users/username/.kiro/skills/aws-serverless/SKILL.md",
                 "installedVersion": "v1",
@@ -80,8 +83,34 @@ Output::
         "skills": [
             {
                 "agent": "Kiro",
+                "scope": "global",
                 "name": "aws-serverless",
                 "path": "/Users/username/.kiro/skills/aws-serverless/SKILL.md",
+                "installedVersion": "v1",
+                "latestVersion": "v2",
+                "updateAvailable": true
+            }
+        ]
+    }
+
+For more information, see `Getting started <https://docs.aws.amazon.com/agent-toolkit/latest/userguide/quick-start.html>`__ in the *AWS Agent Toolkit User Guide*.
+
+**Example 5: To check the skills of the current project for updates**
+
+The following ``check-skill-updates`` example uses ``--project`` to check only the skills of the current directory. Use ``--global`` to check only global skills. ::
+
+    aws agent-toolkit check-skill-updates \
+        --project
+
+Output::
+
+    {
+        "skills": [
+            {
+                "agent": "Kiro",
+                "scope": "project",
+                "name": "aws-serverless",
+                "path": "/Users/username/my-project/.kiro/skills/aws-serverless/SKILL.md",
                 "installedVersion": "v1",
                 "latestVersion": "v2",
                 "updateAvailable": true

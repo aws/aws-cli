@@ -39,7 +39,9 @@ class RemoveCommand(BasicCommand):
     DESCRIPTION = (
         'Remove a previously installed AWS skill from detected agents. '
         'By default the skill is removed from all detected agents, use '
-        '``--agent`` to remove from a specific tool only.'
+        '``--agent`` to remove from a specific tool only. By default only '
+        'global skills are removed, use ``--project`` to remove the skill '
+        'from the current directory instead.'
     )
     ARG_TABLE = [
         SKILL_NAME_ARG,

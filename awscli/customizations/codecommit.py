@@ -103,6 +103,7 @@ class CodeCommitGetCommand(BasicCommand):
         if (
             'amazon.com' in git_parameters['host']
             or 'amazonaws.com' in git_parameters['host']
+            or 'amazonaws.eu' in git_parameters['host']
             or args.ignore_host_check
         ):
             theUrl = self.extract_url(git_parameters)
@@ -143,7 +144,7 @@ class CodeCommitGetCommand(BasicCommand):
 
     def extract_region(self, parameters, parsed_globals):
         match = re.match(
-            r'(vpce-.+\.)?git-codecommit(-fips)?\.([^.]+)\.(vpce\.)?amazonaws\.com',
+            r'(vpce-.+\.)?git-codecommit(-fips)?\.([^.]+)\.(vpce\.)?amazonaws\.(com|eu)',
             parameters['host'],
         )
         if match is not None:

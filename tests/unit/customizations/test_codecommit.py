@@ -77,6 +77,18 @@ class TestCodeCommitCredentialHelper(unittest.TestCase):
         'path=/v1/repos/myrepo'
     )
 
+    EUSC_PROTOCOL_HOST_PATH = (
+        'protocol=https\n'
+        'host=git-codecommit.eusc-de-east-1.amazonaws.eu\n'
+        'path=/v1/repos/myrepo'
+    )
+
+    EUSC_VPC_PROTOCOL_HOST_PATH = (
+        'protocol=https\n'
+        'host=vpce-0b47ea360adebf88a-jkl88hez.git-codecommit.eusc-de-east-1.vpce.amazonaws.eu\n'
+        'path=/v1/repos/myrepo'
+    )
+
     NO_REGION_PROTOCOL_HOST_PATH = (
         'protocol=https\n'
         'host=git-codecommit.amazonaws.com\n'
@@ -181,6 +193,43 @@ class TestCodeCommitCredentialHelper(unittest.TestCase):
         self.get_command._run_main(self.args, self.globals)
         output = stdout_mock.getvalue().strip()
         self.assertRegex(output, 'username={0}\npassword=.+'.format('access'))
+
+    @mock.patch('sys.stdout', new_callable=MOCK_STDOUT_CLASS)
+    @mock.patch('sys.stdin', StringIO(EUSC_PROTOCOL_HOST_PATH))
+    def test_generate_credentials_eusc_reads_region_from_url(
+        self, stdout_mock
+    ):
+        self.globals.region = None
+        self.session.get_config_variable.return_value = None
+        self.get_command = CodeCommitGetCommand(self.session)
+        self.get_command._run_main(self.args, self.globals)
+        output = stdout_mock.getvalue().strip()
+        self.assertRegex(output, 'username=access\npassword=.+')
+
+    @mock.patch('sys.stdout', new_callable=MOCK_STDOUT_CLASS)
+    @mock.patch('sys.stdin', StringIO(EUSC_VPC_PROTOCOL_HOST_PATH))
+    def test_generate_credentials_eusc_vpc_reads_region_from_url(
+        self, stdout_mock
+    ):
+        self.globals.region = None
+        self.session.get_config_variable.return_value = None
+        self.get_command = CodeCommitGetCommand(self.session)
+        self.get_command._run_main(self.args, self.globals)
+        output = stdout_mock.getvalue().strip()
+        self.assertRegex(output, 'username=access\npassword=.+')
+
+    def test_extract_region_from_eusc_hosts(self):
+        self.globals.region = None
+        self.session.get_config_variable.return_value = None
+        self.get_command = CodeCommitGetCommand(self.session)
+        for host in (
+            'git-codecommit.eusc-de-east-1.amazonaws.eu',
+            'vpce-0b47ea360adebf88a-jkl88hez.git-codecommit.eusc-de-east-1.vpce.amazonaws.eu',
+        ):
+            self.assertEqual(
+                'eusc-de-east-1',
+                self.get_command.extract_region({'host': host}, self.globals),
+            )
 
     @mock.patch('sys.stdout', new_callable=MOCK_STDOUT_CLASS)
     @mock.patch('sys.stdin', StringIO(NO_REGION_PROTOCOL_HOST_PATH))

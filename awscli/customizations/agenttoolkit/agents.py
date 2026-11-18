@@ -486,7 +486,7 @@ AGENT_CONFIGS = [
         id='windsurf',
         display_name='Windsurf',
         detection_path='~/.codeium/windsurf/',
-        skills_paths=['.agents/skills', '.codeium/windsurf/skills'],
+        skills_paths=['.agents/skills'],
         mcp_config_path='~/.codeium/mcp_config.json',
         mcp_servers_key='mcpServers',
     ),

@@ -538,7 +538,7 @@ def test_skill_dirs_returns_existing_locations(tmp_path):
         ('openclaw', ['.agents/skills', '.openclaw/skills']),
         ('opencode', ['.agents/skills']),
         ('pi', ['.agents/skills', '.pi/agent/skills']),
-        ('windsurf', ['.agents/skills', '.codeium/windsurf/skills']),
+        ('windsurf', ['.agents/skills']),
     ],
 )
 def test_agent_skills_paths(agent_id, skills_paths):

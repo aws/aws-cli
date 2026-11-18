@@ -136,6 +136,12 @@ class AgentConfig:
     the detection directory; tilde-prefixed paths are absolute. Leave
     ``None`` for agents that don't have JSON-based MCP config."""
 
+    project_mcp_config_path: Optional[str] = None
+    """Path to the project-level MCP config file, relative to the project
+    directory (e.g. ``.mcp.json``). It uses the same format as
+    ``mcp_config_path``. Leave ``None`` for agents without a JSON-based
+    project-level MCP config."""
+
     mcp_servers_key: str = 'mcpServers'
     """Top-level JSON key under which MCP servers are stored. Most
     agents use ``mcpServers``; OpenCode uses ``mcp``."""
@@ -341,6 +347,13 @@ class DetectedAgent:
 
     @property
     def mcp_config_file(self):
+        if self.scope is Scope.PROJECT:
+            if self.config.project_mcp_config_path is None:
+                return None
+            return os.path.join(
+                self.project_dir,
+                os.path.normpath(self.config.project_mcp_config_path),
+            )
         if self.config.mcp_config_path is None:
             return None
         if self.config.mcp_config_path.startswith('~'):
@@ -384,8 +397,14 @@ class DetectedAgent:
         McpConfigureAction. detail is the config file path for JSON-based
         agents, the executable name for shell-based agents, or None when
         no MCP setup is wired up.
+
+        For project-level skills the project's MCP config is used. A shell
+        command changes the global config, so it is not run then.
         """
-        if self.config.mcp_shell_command is not None:
+        if (
+            self.scope is Scope.GLOBAL
+            and self.config.mcp_shell_command is not None
+        ):
             return self._configure_via_shell()
 
         config_path = self.mcp_config_file
@@ -454,6 +473,7 @@ AGENT_CONFIGS = [
         detection_path='~/.claude/',
         skills_paths=['.claude/skills'],
         mcp_config_path='~/.claude.json',
+        project_mcp_config_path='.mcp.json',
         mcp_servers_key='mcpServers',
         detection_path_env_override='CLAUDE_CONFIG_DIR',
     ),
@@ -495,6 +515,7 @@ AGENT_CONFIGS = [
         detection_path='~/.cursor/',
         skills_paths=['.agents/skills', '.cursor/skills'],
         mcp_config_path='mcp.json',
+        project_mcp_config_path='.cursor/mcp.json',
         mcp_servers_key='mcpServers',
     ),
     # https://docs.devin.ai/cli/extensibility/mcp/configuration
@@ -509,6 +530,7 @@ AGENT_CONFIGS = [
         detection_path='~/.config/devin/',
         skills_paths=['.agents/skills'],
         mcp_config_path='mcp_config.json',
+        project_mcp_config_path='.devin/mcp_config.json',
         mcp_servers_key='mcpServers',
     ),
     # https://geminicli.com/docs/cli/tutorials/mcp-setup/
@@ -520,6 +542,7 @@ AGENT_CONFIGS = [
         home_env_override='GEMINI_CLI_HOME',
         skills_paths=['.agents/skills'],
         mcp_config_path='settings.json',
+        project_mcp_config_path='.gemini/settings.json',
         mcp_servers_key='mcpServers',
     ),
     # https://kiro.dev/docs/mcp/configuration/
@@ -529,6 +552,7 @@ AGENT_CONFIGS = [
         detection_path='~/.kiro/',
         skills_paths=['.kiro/skills'],
         mcp_config_path='settings/mcp.json',
+        project_mcp_config_path='.kiro/settings/mcp.json',
         mcp_servers_key='mcpServers',
         mcp_extra_config={'timeout': 100000, 'transport': 'stdio'},
     ),
@@ -549,6 +573,7 @@ AGENT_CONFIGS = [
         detection_path='~/.config/opencode/',
         skills_paths=['.agents/skills'],
         mcp_config_path='opencode.json',
+        project_mcp_config_path='opencode.json',
         mcp_servers_key='mcp',
         mcp_server_entry={
             'type': 'local',

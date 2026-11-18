@@ -707,6 +707,26 @@
       "authtype":"none",
       "auth":["smithy.api#noAuth"]
     },
+    "CancelPointInTimeRecovery":{
+      "name":"CancelPointInTimeRecovery",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"CancelPointInTimeRecoveryRequest"},
+      "output":{"shape":"CancelPointInTimeRecoveryResponse"},
+      "errors":[
+        {"shape":"InvalidParameterException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"FeatureUnavailableInTierException"},
+        {"shape":"ConcurrentModificationException"},
+        {"shape":"TooManyRequestsException"},
+        {"shape":"NotAuthorizedException"},
+        {"shape":"OperationNotEnabledException"},
+        {"shape":"InternalErrorException"}
+      ],
+      "documentation":"<p>Cancels a point-in-time recovery of a user pool before Amazon Cognito applies any changes. You can cancel a recovery when its status is <code>PREVIEW_GENERATING</code> or <code>PREVIEW_GENERATED</code>. When you cancel a recovery, Amazon Cognito discards the recovery preview, resumes write operations in the user pool, and sets the status of the recovery to <code>PREVIEW_CANCELLED</code>. Your user pool data doesn't change.</p> <p>You can't cancel a recovery after you start it with a request.</p> <note> <p>Amazon Cognito evaluates Identity and Access Management (IAM) policies in requests for this API operation. For this operation, you must use IAM credentials to authorize requests, and you must grant yourself the corresponding IAM permission in a policy.</p> <p class=\"title\"> <b>Learn more</b> </p> <ul> <li> <p> <a href=\"https://docs.aws.amazon.com/IAM/latest/UserGuide/reference_aws-signing.html\">Signing Amazon Web Services API Requests</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/cognito/latest/developerguide/user-pools-API-operations.html\">Using the Amazon Cognito user pools API and user pool endpoints</a> </p> </li> </ul> </note>"
+    },
     "ChangePassword":{
       "name":"ChangePassword",
       "http":{
@@ -1359,6 +1379,25 @@
       ],
       "documentation":"<p>Given the ID of a user pool app client, returns detailed information about the style assigned to the app client.</p>"
     },
+    "DescribePointInTimeRecovery":{
+      "name":"DescribePointInTimeRecovery",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"DescribePointInTimeRecoveryRequest"},
+      "output":{"shape":"DescribePointInTimeRecoveryResponse"},
+      "errors":[
+        {"shape":"InvalidParameterException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"FeatureUnavailableInTierException"},
+        {"shape":"TooManyRequestsException"},
+        {"shape":"NotAuthorizedException"},
+        {"shape":"OperationNotEnabledException"},
+        {"shape":"InternalErrorException"}
+      ],
+      "documentation":"<p>Returns details about a point-in-time recovery of a user pool, including its status and the point in time that it restores the user pool to. After Amazon Cognito generates the recovery preview, the response also includes the number of entities that the recovery creates, updates, and deletes. Review the preview before you apply the recovery with a request or discard it with a request.</p> <note> <p>Amazon Cognito evaluates Identity and Access Management (IAM) policies in requests for this API operation. For this operation, you must use IAM credentials to authorize requests, and you must grant yourself the corresponding IAM permission in a policy.</p> <p class=\"title\"> <b>Learn more</b> </p> <ul> <li> <p> <a href=\"https://docs.aws.amazon.com/IAM/latest/UserGuide/reference_aws-signing.html\">Signing Amazon Web Services API Requests</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/cognito/latest/developerguide/user-pools-API-operations.html\">Using the Amazon Cognito user pools API and user pool endpoints</a> </p> </li> </ul> </note>"
+    },
     "DescribeResourceServer":{
       "name":"DescribeResourceServer",
       "http":{
@@ -1963,6 +2002,27 @@
       "authtype":"none",
       "auth":["smithy.api#noAuth"]
     },
+    "InitiatePointInTimeRecovery":{
+      "name":"InitiatePointInTimeRecovery",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"InitiatePointInTimeRecoveryRequest"},
+      "output":{"shape":"InitiatePointInTimeRecoveryResponse"},
+      "errors":[
+        {"shape":"InvalidParameterException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ConcurrentModificationException"},
+        {"shape":"FeatureUnavailableInTierException"},
+        {"shape":"LimitExceededException"},
+        {"shape":"TooManyRequestsException"},
+        {"shape":"NotAuthorizedException"},
+        {"shape":"OperationNotEnabledException"},
+        {"shape":"InternalErrorException"}
+      ],
+      "documentation":"<p>Initiates a point-in-time recovery of a user pool to a time in the past that you specify. This operation is the first step of a recovery and doesn't change your user pool data. Amazon Cognito pauses write operations in the user pool and generates a recovery preview when capacity is available in the Amazon Web Services Region, so the preview might not be available immediately. The preview shows the number of entities that the recovery creates, updates, and deletes. To check the status of the recovery and review the preview, make a request. When the status is <code>PREVIEW_GENERATED</code>, apply the recovery with a request or discard it with a request. The time that it takes to generate the recovery preview doesn't depend on the size of your user pool.</p> <important> <p>Point-in-time recovery is a disaster recovery feature. Use it to recover from accidental or unauthorized changes that affect your user data, for example the deletion or corruption of many users. Don't use point-in-time recovery to remove users that were created recently or to revert changes to individual users. To delete or update individual users, use operations like and .</p> </important> <p>While a recovery is in progress, Amazon Cognito blocks operations that write to the user pool, for example user sign-up, user creation, and attribute updates. Sign-in and read operations continue to work, with the following exceptions.</p> <ul> <li> <p>Users who must set a new password, set up MFA, or respond to a TOTP MFA challenge can't complete sign-in. Sign-in with the <code>NEW_PASSWORD_REQUIRED</code>, <code>MFA_SETUP</code>, and <code>SOFTWARE_TOKEN_MFA</code> challenges fails until the recovery ends.</p> </li> <li> <p>Federated users can sign in only if they have previously signed in to the user pool and their attributes from the external identity provider haven't changed.</p> </li> <li> <p>You can't create or start user import jobs. Start your import jobs after the recovery ends.</p> </li> </ul> <p>If you don't start or cancel the recovery within 24 hours after you initiate it, the recovery preview expires. Amazon Cognito then resumes write operations and doesn't change your user pool data. The 24-hour period includes the time that Amazon Cognito waits for available capacity.</p> <p>A point-in-time recovery restores user data, including user profiles and attributes, group memberships, passwords, MFA settings, and passkeys. It doesn't restore user pool configuration, for example app clients, the attribute schema, encryption settings, or multi-Region replication settings. Users who changed their password after the recovery point keep their current password.</p> <p>The following requirements and limits apply to point-in-time recovery.</p> <ul> <li> <p>Your user pool must be on the Essentials or Plus <a href=\"https://docs.aws.amazon.com/cognito/latest/developerguide/cognito-sign-in-feature-plans.html\">feature plan</a>. With the Essentials feature plan, you can recover your user pool to a point in time up to 1 day in the past. With the Plus feature plan, you can recover up to 14 days in the past. Your user pool must have been on the required feature plan at the recovery point. For example, to recover to a point in time 14 days ago, your user pool must have been on the Plus feature plan for the past 14 days.</p> </li> <li> <p>The recovery point must be at least 15 minutes in the past and can't be earlier than the creation time of the user pool.</p> </li> <li> <p>A user pool can have only one active recovery at a time.</p> </li> <li> <p>An Amazon Web Services account can have up to five active recoveries at a time across all of its user pools. An organization in Amazon Web Services Organizations can have up to ten active recoveries at a time across all of its accounts.</p> </li> <li> <p>You can complete one recovery of a user pool in a 24-hour period.</p> </li> <li> <p>You can create up to three recovery previews of a user pool, ten recovery previews in an Amazon Web Services account, and 15 recovery previews in an organization in Amazon Web Services Organizations in a 24-hour period. You can create up to ten recovery previews of a user pool in a 30-day period.</p> </li> <li> <p>You can't initiate a recovery while a user import job is in progress in your user pool. Wait for the import job to complete, or stop it with a request, and then initiate the recovery.</p> </li> <li> <p>In a user pool with multi-Region replication, you can initiate a recovery only in the primary Amazon Web Services Region, and only after replication is complete.</p> </li> <li> <p>If your user pool uses a customer managed key in KMS for encryption, the key must remain enabled and accessible to Amazon Cognito for the duration of the recovery.</p> </li> <li> <p>Some user pools don't support point-in-time recovery, for example some older user pools and user pools that contain user data with characters or formats that point-in-time recovery doesn't support. If your user pool doesn't support it, Amazon Cognito returns an error when you initiate a recovery. To get help with this limitation, contact Amazon Web Services Support.</p> </li> </ul> <note> <p>Amazon Cognito evaluates Identity and Access Management (IAM) policies in requests for this API operation. For this operation, you must use IAM credentials to authorize requests, and you must grant yourself the corresponding IAM permission in a policy.</p> <p class=\"title\"> <b>Learn more</b> </p> <ul> <li> <p> <a href=\"https://docs.aws.amazon.com/IAM/latest/UserGuide/reference_aws-signing.html\">Signing Amazon Web Services API Requests</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/cognito/latest/developerguide/user-pools-API-operations.html\">Using the Amazon Cognito user pools API and user pool endpoints</a> </p> </li> </ul> </note>"
+    },
     "ListDevices":{
       "name":"ListDevices",
       "http":{
@@ -2022,6 +2082,25 @@
         {"shape":"InternalErrorException"}
       ],
       "documentation":"<p>Given a user pool ID, returns information about configured identity providers (IdPs). For more information about IdPs, see <a href=\"https://docs.aws.amazon.com/cognito/latest/developerguide/cognito-user-pools-identity-federation.html\">Third-party IdP sign-in</a>.</p> <note> <p>Amazon Cognito evaluates Identity and Access Management (IAM) policies in requests for this API operation. For this operation, you must use IAM credentials to authorize requests, and you must grant yourself the corresponding IAM permission in a policy.</p> <p class=\"title\"> <b>Learn more</b> </p> <ul> <li> <p> <a href=\"https://docs.aws.amazon.com/IAM/latest/UserGuide/reference_aws-signing.html\">Signing Amazon Web Services API Requests</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/cognito/latest/developerguide/user-pools-API-operations.html\">Using the Amazon Cognito user pools API and user pool endpoints</a> </p> </li> </ul> </note>"
+    },
+    "ListPointInTimeRecoveries":{
+      "name":"ListPointInTimeRecoveries",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"ListPointInTimeRecoveriesRequest"},
+      "output":{"shape":"ListPointInTimeRecoveriesResponse"},
+      "errors":[
+        {"shape":"InvalidParameterException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"FeatureUnavailableInTierException"},
+        {"shape":"TooManyRequestsException"},
+        {"shape":"NotAuthorizedException"},
+        {"shape":"OperationNotEnabledException"},
+        {"shape":"InternalErrorException"}
+      ],
+      "documentation":"<p>Lists the point-in-time recoveries of a user pool, including the active recovery and past recoveries. The response lists the most recent recoveries first and doesn't include recovery previews. To get the recovery preview of a recovery, make a request.</p> <note> <p>Amazon Cognito evaluates Identity and Access Management (IAM) policies in requests for this API operation. For this operation, you must use IAM credentials to authorize requests, and you must grant yourself the corresponding IAM permission in a policy.</p> <p class=\"title\"> <b>Learn more</b> </p> <ul> <li> <p> <a href=\"https://docs.aws.amazon.com/IAM/latest/UserGuide/reference_aws-signing.html\">Signing Amazon Web Services API Requests</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/cognito/latest/developerguide/user-pools-API-operations.html\">Using the Amazon Cognito user pools API and user pool endpoints</a> </p> </li> </ul> </note>"
     },
     "ListResourceServers":{
       "name":"ListResourceServers",
@@ -2556,6 +2635,26 @@
       "documentation":"<p>Registers a user with an app client and requests a user name, password, and user attributes in the user pool.</p> <note> <p>Amazon Cognito doesn't evaluate Identity and Access Management (IAM) policies in requests for this API operation. For this operation, you can't use IAM credentials to authorize requests, and you can't grant IAM permissions in policies. For more information about authorization models in Amazon Cognito, see <a href=\"https://docs.aws.amazon.com/cognito/latest/developerguide/user-pools-API-operations.html\">Using the Amazon Cognito user pools API and user pool endpoints</a>.</p> </note> <note> <p>This action might generate an SMS text message. Starting June 1, 2021, US telecom carriers require you to register an origination phone number before you can send SMS messages to US phone numbers. If you use SMS text messages in Amazon Cognito, you must register a phone number with <a href=\"https://console.aws.amazon.com/pinpoint/home/\">Amazon Pinpoint</a>. Amazon Cognito uses the registered number automatically. Otherwise, Amazon Cognito users who must receive SMS messages might not be able to sign up, activate their accounts, or sign in.</p> <p>If you have never used SMS text messages with Amazon Cognito or any other Amazon Web Services service, Amazon Simple Notification Service might place your account in the SMS sandbox. In <i> <a href=\"https://docs.aws.amazon.com/sns/latest/dg/sns-sms-sandbox.html\">sandbox mode</a> </i>, you can send messages only to verified phone numbers. After you test your app while in the sandbox environment, you can move out of the sandbox and into production. For more information, see <a href=\"https://docs.aws.amazon.com/cognito/latest/developerguide/user-pool-sms-settings.html\"> SMS message settings for Amazon Cognito user pools</a> in the <i>Amazon Cognito Developer Guide</i>.</p> </note> <p>You might receive a <code>LimitExceeded</code> exception in response to this request if you have exceeded a rate quota for email or SMS messages, and if your user pool automatically verifies email addresses or phone numbers. When you get this exception in the response, the user is successfully created and is in an <code>UNCONFIRMED</code> state.</p>",
       "authtype":"none",
       "auth":["smithy.api#noAuth"]
+    },
+    "StartPointInTimeRecovery":{
+      "name":"StartPointInTimeRecovery",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"StartPointInTimeRecoveryRequest"},
+      "output":{"shape":"StartPointInTimeRecoveryResponse"},
+      "errors":[
+        {"shape":"InvalidParameterException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"FeatureUnavailableInTierException"},
+        {"shape":"ConcurrentModificationException"},
+        {"shape":"TooManyRequestsException"},
+        {"shape":"NotAuthorizedException"},
+        {"shape":"OperationNotEnabledException"},
+        {"shape":"InternalErrorException"}
+      ],
+      "documentation":"<p>Applies a point-in-time recovery to a user pool. Before you start a recovery, review the recovery preview in the response to a request. You can start a recovery when its status is <code>PREVIEW_GENERATED</code>.</p> <p>When you start a recovery, Amazon Cognito sets its status to <code>RESTORING</code> and restores user data in the user pool to its state at the recovery point. Write operations in the user pool remain paused until the recovery is complete. Sign-in and read operations continue to work. When the status of the recovery changes to <code>RESTORE_COMPLETED</code>, Amazon Cognito resumes write operations.</p> <p>You can't cancel a recovery after you start it.</p> <note> <p>Amazon Cognito evaluates Identity and Access Management (IAM) policies in requests for this API operation. For this operation, you must use IAM credentials to authorize requests, and you must grant yourself the corresponding IAM permission in a policy.</p> <p class=\"title\"> <b>Learn more</b> </p> <ul> <li> <p> <a href=\"https://docs.aws.amazon.com/IAM/latest/UserGuide/reference_aws-signing.html\">Signing Amazon Web Services API Requests</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/cognito/latest/developerguide/user-pools-API-operations.html\">Using the Amazon Cognito user pools API and user pool endpoints</a> </p> </li> </ul> </note>"
     },
     "StartUserImportJob":{
       "name":"StartUserImportJob",
@@ -4593,6 +4692,32 @@
       "max":100,
       "min":0
     },
+    "CancelPointInTimeRecoveryRequest":{
+      "type":"structure",
+      "required":[
+        "UserPoolId",
+        "RestoreId"
+      ],
+      "members":{
+        "UserPoolId":{
+          "shape":"UserPoolIdType",
+          "documentation":"<p>The ID of the user pool that contains the recovery that you want to cancel.</p>"
+        },
+        "RestoreId":{
+          "shape":"RestoreIdType",
+          "documentation":"<p>The ID of the recovery that you want to cancel. Amazon Cognito returns this ID in the response to an <code>InitiatePointInTimeRecovery</code> request.</p>"
+        }
+      }
+    },
+    "CancelPointInTimeRecoveryResponse":{
+      "type":"structure",
+      "members":{
+        "Restoration":{
+          "shape":"RestorationType",
+          "documentation":"<p>The details of the canceled recovery, including its status.</p>"
+        }
+      }
+    },
     "ChallengeName":{
       "type":"string",
       "enum":[
@@ -6116,6 +6241,32 @@
         "ManagedLoginBranding":{
           "shape":"ManagedLoginBrandingType",
           "documentation":"<p>The details of the requested branding style.</p>"
+        }
+      }
+    },
+    "DescribePointInTimeRecoveryRequest":{
+      "type":"structure",
+      "required":[
+        "UserPoolId",
+        "RestoreId"
+      ],
+      "members":{
+        "UserPoolId":{
+          "shape":"UserPoolIdType",
+          "documentation":"<p>The ID of the user pool that contains the recovery that you want to describe.</p>"
+        },
+        "RestoreId":{
+          "shape":"RestoreIdType",
+          "documentation":"<p>The ID of the recovery that you want to describe. Amazon Cognito returns this ID in the response to an <code>InitiatePointInTimeRecovery</code> request.</p>"
+        }
+      }
+    },
+    "DescribePointInTimeRecoveryResponse":{
+      "type":"structure",
+      "members":{
+        "Restoration":{
+          "shape":"RestorationType",
+          "documentation":"<p>The details of the requested recovery, including its status, the point in time that it restores the user pool to, and the recovery preview.</p>"
         }
       }
     },
@@ -7737,6 +7888,32 @@
       },
       "documentation":"<p>Initiates the authentication response.</p>"
     },
+    "InitiatePointInTimeRecoveryRequest":{
+      "type":"structure",
+      "required":[
+        "UserPoolId",
+        "RestoreTimestamp"
+      ],
+      "members":{
+        "UserPoolId":{
+          "shape":"UserPoolIdType",
+          "documentation":"<p>The ID of the user pool that you want to recover.</p>"
+        },
+        "RestoreTimestamp":{
+          "shape":"DateType",
+          "documentation":"<p>The point in time that you want to recover your user pool to. Amazon Cognito reverts changes to user data that occurred after this time. The recovery point must be at least 15 minutes in the past and within the recovery period of your user pool feature plan: up to 1 day in the past with the Essentials feature plan, or up to 14 days in the past with the Plus feature plan.</p>"
+        }
+      }
+    },
+    "InitiatePointInTimeRecoveryResponse":{
+      "type":"structure",
+      "members":{
+        "Restoration":{
+          "shape":"RestorationType",
+          "documentation":"<p>The details of the recovery that you initiated. Includes the recovery ID that you can use in later requests to describe, start, or cancel the recovery.</p>"
+        }
+      }
+    },
     "IntegerType":{"type":"integer"},
     "InternalErrorException":{
       "type":"structure",
@@ -8125,6 +8302,37 @@
     "ListOfStringTypes":{
       "type":"list",
       "member":{"shape":"StringType"}
+    },
+    "ListPointInTimeRecoveriesRequest":{
+      "type":"structure",
+      "required":["UserPoolId"],
+      "members":{
+        "UserPoolId":{
+          "shape":"UserPoolIdType",
+          "documentation":"<p>The ID of the user pool where you want to list point-in-time recoveries.</p>"
+        },
+        "NextToken":{
+          "shape":"PaginationKeyType",
+          "documentation":"<p>This API operation returns a limited number of results. The pagination token is an identifier that you can present in an additional API request with the same parameters. When you include the pagination token, Amazon Cognito returns the next set of items after the current list. Subsequent requests return a new pagination token. By use of this token, you can paginate through the full list of items.</p>"
+        },
+        "MaxResults":{
+          "shape":"PoolQueryLimitType",
+          "documentation":"<p>The maximum number of recoveries that you want Amazon Cognito to return in the response. Valid values are 1 through 60. The default value is 60.</p>"
+        }
+      }
+    },
+    "ListPointInTimeRecoveriesResponse":{
+      "type":"structure",
+      "members":{
+        "Restorations":{
+          "shape":"RestorationListType",
+          "documentation":"<p>A summary of each requested recovery, including its ID, status, and the point in time that it restores the user pool to.</p>"
+        },
+        "NextToken":{
+          "shape":"PaginationKeyType",
+          "documentation":"<p>The identifier that Amazon Cognito returned with the previous request to this operation. When you include a pagination token in your request, Amazon Cognito returns the next set of items in the list. By use of this token, you can paginate through the full list of items.</p>"
+        }
+      }
     },
     "ListProvidersLimitType":{
       "type":"integer",
@@ -9362,6 +9570,100 @@
       },
       "documentation":"<p>The response to respond to the authentication challenge.</p>"
     },
+    "RestorationDescriptionType":{
+      "type":"structure",
+      "members":{
+        "RestoreId":{
+          "shape":"RestoreIdType",
+          "documentation":"<p>The ID of the recovery.</p>"
+        },
+        "RestoreStatus":{
+          "shape":"RestoreStatusType",
+          "documentation":"<p>The status of the recovery. For a description of each status, see the <code>RestoreStatus</code> parameter of <code>RestorationType</code>.</p>"
+        },
+        "RestoreTimestamp":{
+          "shape":"DateType",
+          "documentation":"<p>The point in time that the recovery restores the user pool to.</p>"
+        }
+      },
+      "documentation":"<p>A summary of a point-in-time recovery of a user pool.</p>"
+    },
+    "RestorationListType":{
+      "type":"list",
+      "member":{"shape":"RestorationDescriptionType"}
+    },
+    "RestorationType":{
+      "type":"structure",
+      "members":{
+        "RestoreId":{
+          "shape":"RestoreIdType",
+          "documentation":"<p>The ID of the recovery. Use this ID in requests to describe, start, or cancel the recovery.</p>"
+        },
+        "RestoreStatus":{
+          "shape":"RestoreStatusType",
+          "documentation":"<p>The status of the recovery. Can be one of the following values.</p> <dl> <dt>PREVIEW_GENERATING</dt> <dd> <p>Amazon Cognito is waiting for available capacity in the Amazon Web Services Region or is generating the recovery preview. Write operations in the user pool are paused.</p> </dd> <dt>PREVIEW_GENERATED</dt> <dd> <p>The recovery preview is ready for review. Write operations in the user pool are paused. Within 24 hours after you initiate the recovery, apply it with a <code>StartPointInTimeRecovery</code> request or discard it with a <code>CancelPointInTimeRecovery</code> request.</p> </dd> <dt>PREVIEW_CANCELLED</dt> <dd> <p>You canceled the recovery. Amazon Cognito resumed write operations and didn't change your user pool data.</p> </dd> <dt>PREVIEW_GENERATION_FAILED</dt> <dd> <p>Amazon Cognito couldn't generate the recovery preview. Amazon Cognito resumed write operations and didn't change your user pool data. You can initiate a new recovery.</p> </dd> <dt>PREVIEW_EXPIRED</dt> <dd> <p>You didn't start or cancel the recovery within 24 hours after you initiated it. Amazon Cognito resumed write operations and didn't change your user pool data.</p> </dd> <dt>RESTORING</dt> <dd> <p>Amazon Cognito is restoring user data in the user pool to its state at the recovery point. Write operations in the user pool are paused.</p> </dd> <dt>RESTORE_COMPLETED</dt> <dd> <p>Amazon Cognito restored your user pool to its state at the recovery point and resumed write operations.</p> </dd> <dt>TEMPORARY_INTERNAL_ERROR_SEE_SUPPORT_CASE</dt> <dd> <p>The recovery encountered an internal error. Write operations in the user pool remain paused. Amazon Web Services Support contacts you through a support case to resolve the issue.</p> </dd> <dt>AWS_ABORTED</dt> <dd> <p>Amazon Cognito stopped the recovery because of an internal failure. Write operations in the user pool remain paused, and you can't cancel or retry the recovery. Amazon Web Services Support contacts you through a support case to resolve the issue.</p> </dd> </dl>"
+        },
+        "RestoreTimestamp":{
+          "shape":"DateType",
+          "documentation":"<p>The point in time that the recovery restores the user pool to.</p>"
+        },
+        "TriggerTimestamp":{
+          "shape":"DateType",
+          "documentation":"<p>The end of the period of changes that the recovery reverts. This time is shortly after the time that you initiated the recovery. The recovery reverts changes to user data that occurred between <code>RestoreTimestamp</code> and <code>TriggerTimestamp</code>.</p>"
+        },
+        "RestorePreview":{
+          "shape":"RestorePreviewListType",
+          "documentation":"<p>The recovery preview. For each type of entity, the preview shows the number of entities that the recovery creates, updates, and deletes. The preview doesn't include user data. Amazon Cognito returns the preview when it's available.</p>"
+        }
+      },
+      "documentation":"<p>The details of a point-in-time recovery of a user pool.</p>"
+    },
+    "RestoreIdType":{
+      "type":"string",
+      "max":36,
+      "min":36,
+      "pattern":"^[0-9a-f]{8}\\b-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-\\b[0-9a-f]{12}$"
+    },
+    "RestorePreviewListType":{
+      "type":"list",
+      "member":{"shape":"RestorePreviewType"}
+    },
+    "RestorePreviewType":{
+      "type":"structure",
+      "members":{
+        "Entity":{
+          "shape":"StringType",
+          "documentation":"<p>The type of user pool entity that the recovery changes. Can be one of the following values.</p> <dl> <dt>Users</dt> <dd> <p>User profiles, including their attributes.</p> </dd> <dt>Groups</dt> <dd> <p>User pool groups.</p> </dd> <dt>User MFAs</dt> <dd> <p>The MFA settings of users.</p> </dd> <dt>Passkeys</dt> <dd> <p>The passkeys that users registered.</p> </dd> </dl>"
+        },
+        "CreateCount":{
+          "shape":"LongType",
+          "documentation":"<p>The number of entities of this type that the recovery creates. These entities existed at the recovery point and were deleted after it.</p>"
+        },
+        "UpdateCount":{
+          "shape":"LongType",
+          "documentation":"<p>The number of entities of this type that the recovery reverts to their state at the recovery point. These entities were modified after the recovery point.</p>"
+        },
+        "DeleteCount":{
+          "shape":"LongType",
+          "documentation":"<p>The number of entities of this type that the recovery deletes. These entities were created after the recovery point.</p>"
+        }
+      },
+      "documentation":"<p>The number of entities of one type that a point-in-time recovery creates, updates, and deletes.</p>"
+    },
+    "RestoreStatusType":{
+      "type":"string",
+      "enum":[
+        "PREVIEW_GENERATING",
+        "PREVIEW_GENERATED",
+        "PREVIEW_CANCELLED",
+        "PREVIEW_GENERATION_FAILED",
+        "PREVIEW_EXPIRED",
+        "RESTORING",
+        "RESTORE_COMPLETED",
+        "TEMPORARY_INTERNAL_ERROR_SEE_SUPPORT_CASE",
+        "AWS_ABORTED"
+      ]
+    },
     "RetryGracePeriodSecondsType":{
       "type":"integer",
       "max":60,
@@ -10206,6 +10508,32 @@
         }
       },
       "documentation":"<p>A user's preference for using time-based one-time password (TOTP) multi-factor authentication (MFA). Turns TOTP MFA on and off, and can set TOTP as preferred when other MFA options are available. You can't turn off TOTP MFA for any of your users when MFA is required in your user pool; you can only set the type that your user prefers. </p>"
+    },
+    "StartPointInTimeRecoveryRequest":{
+      "type":"structure",
+      "required":[
+        "UserPoolId",
+        "RestoreId"
+      ],
+      "members":{
+        "UserPoolId":{
+          "shape":"UserPoolIdType",
+          "documentation":"<p>The ID of the user pool that contains the recovery that you want to start.</p>"
+        },
+        "RestoreId":{
+          "shape":"RestoreIdType",
+          "documentation":"<p>The ID of the recovery that you want to start. Amazon Cognito returns this ID in the response to an <code>InitiatePointInTimeRecovery</code> request.</p>"
+        }
+      }
+    },
+    "StartPointInTimeRecoveryResponse":{
+      "type":"structure",
+      "members":{
+        "Restoration":{
+          "shape":"RestorationType",
+          "documentation":"<p>The details of the recovery that you started, including its status.</p>"
+        }
+      }
     },
     "StartUserImportJobRequest":{
       "type":"structure",

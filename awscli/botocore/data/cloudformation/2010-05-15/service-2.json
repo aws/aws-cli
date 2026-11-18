@@ -91,7 +91,7 @@
       "errors":[
         {"shape":"TokenAlreadyExistsException"}
       ],
-      "documentation":"<p>Continues rolling back a stack from <code>UPDATE_ROLLBACK_FAILED</code> to <code>UPDATE_ROLLBACK_COMPLETE</code> state. Depending on the cause of the failure, you can manually fix the error and continue the rollback. By continuing the rollback, you can return your stack to a working state (the <code>UPDATE_ROLLBACK_COMPLETE</code> state) and then try to update the stack again.</p> <p>A stack enters the <code>UPDATE_ROLLBACK_FAILED</code> state when CloudFormation can't roll back all changes after a failed stack update. For example, this might occur when a stack attempts to roll back to an old database that was deleted outside of CloudFormation. Because CloudFormation doesn't know the instance was deleted, it assumes the instance still exists and attempts to roll back to it, causing the update rollback to fail.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/using-cfn-updating-stacks-continueupdaterollback.html\">Continue rolling back an update</a> in the <i>CloudFormation User Guide</i>. For information for troubleshooting a failed update rollback, see <a href=\"https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/troubleshooting.html#troubleshooting-errors-update-rollback-failed\">Update rollback failed</a>.</p> <p> <code>ForceRollback</code> and <code>ResourcesToSkip</code> are mutually exclusive. For details, see <a>ContinueUpdateRollbackInput$ForceRollback</a>.</p>"
+      "documentation":"<p>Continues rolling back a stack from <code>UPDATE_ROLLBACK_FAILED</code> to <code>UPDATE_ROLLBACK_COMPLETE</code> state. Depending on the cause of the failure, you can manually fix the error and continue the rollback. By continuing the rollback, you can return your stack to a working state (the <code>UPDATE_ROLLBACK_COMPLETE</code> state) and then try to update the stack again.</p> <p>A stack enters the <code>UPDATE_ROLLBACK_FAILED</code> state when CloudFormation can't roll back all changes after a failed stack update. For example, this might occur when a stack attempts to roll back to an old database that was deleted outside of CloudFormation. Because CloudFormation doesn't know the instance was deleted, it assumes the instance still exists and attempts to roll back to it, causing the update rollback to fail.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/using-cfn-updating-stacks-continueupdaterollback.html\">Continue rolling back an update</a> in the <i>CloudFormation User Guide</i>. For information for troubleshooting a failed update rollback, see <a href=\"https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/troubleshooting.html#troubleshooting-errors-update-rollback-failed\">Update rollback failed</a>.</p> <p> <code>ForceRollback</code> and <code>ResourcesToSkip</code> are mutually exclusive. For details, see the <code>ForceRollback</code> parameter.</p>"
     },
     "CreateChangeSet":{
       "name":"CreateChangeSet",
@@ -584,7 +584,7 @@
         {"shape":"StackSetNotFoundException"},
         {"shape":"OperationNotFoundException"}
       ],
-      "documentation":"<p>Returns the description of the specified StackSet operation.</p> <note> <p>This API provides <i>strongly consistent</i> reads meaning it will always return the most up-to-date data.</p> </note>"
+      "documentation":"<p>Returns the description of the specified StackSet operation.</p> <p>Reports role provisioning and stack instances deployment progress in <code>StatusDetails.Stages</code>. A breakdown for each Amazon Web Services Region is available in <code>RegionalStatusDetails</code>.</p> <note> <p>This API provides <i>strongly consistent</i> reads meaning it will always return the most up-to-date data.</p> </note>"
     },
     "DescribeStacks":{
       "name":"DescribeStacks",
@@ -1053,7 +1053,7 @@
       "errors":[
         {"shape":"StackSetNotFoundException"}
       ],
-      "documentation":"<p>Returns summary information about operations performed on a StackSet.</p> <note> <p>This API provides <i>eventually consistent</i> reads meaning it may take some time but will eventually return the most up-to-date data.</p> </note>"
+      "documentation":"<p>Returns summary information about operations performed on a StackSet.</p> <p>Reports role provisioning and stack instances deployment progress in <code>StatusDetails.Stages</code>. The breakdown for each Amazon Web Services Region is available only from <a>DescribeStackSetOperation</a>.</p> <note> <p>This API provides <i>eventually consistent</i> reads meaning it may take some time but will eventually return the most up-to-date data.</p> </note>"
     },
     "ListStackSets":{
       "name":"ListStackSets",
@@ -1811,6 +1811,10 @@
       },
       "documentation":"<p>The input for the <a>CancelUpdateStack</a> action.</p>"
     },
+    "CancelledStackInstancesCount":{
+      "type":"integer",
+      "min":0
+    },
     "Capabilities":{
       "type":"list",
       "member":{"shape":"Capability"}
@@ -2078,6 +2082,14 @@
       "type":"string",
       "max":128,
       "min":1
+    },
+    "CompletedAccountsCount":{
+      "type":"integer",
+      "min":0
+    },
+    "CompletedStackInstancesCount":{
+      "type":"integer",
+      "min":0
     },
     "ConcurrencyMode":{
       "type":"string",
@@ -3981,6 +3993,10 @@
     "Exports":{
       "type":"list",
       "member":{"shape":"Export"}
+    },
+    "FailedAccountsCount":{
+      "type":"integer",
+      "min":0
     },
     "FailedEventsFilter":{"type":"boolean"},
     "FailedStackInstancesCount":{
@@ -5913,6 +5929,14 @@
       "type":"list",
       "member":{"shape":"Parameter"}
     },
+    "PendingAccountsCount":{
+      "type":"integer",
+      "min":0
+    },
+    "PendingStackInstancesCount":{
+      "type":"integer",
+      "min":0
+    },
     "PercentageCompleted":{"type":"double"},
     "PermissionModels":{
       "type":"string",
@@ -6123,6 +6147,77 @@
     "RegionList":{
       "type":"list",
       "member":{"shape":"Region"}
+    },
+    "RegionalStackInstancesDeployment":{
+      "type":"structure",
+      "members":{
+        "Status":{
+          "shape":"StageStatus",
+          "documentation":"<p>The status of the stack instances deployment stage can be one of the following values:</p> <ul> <li> <p> <code>NOT_APPLICABLE</code>: The operation does not deploy stack instances, such as a drift detection operation.</p> </li> <li> <p> <code>NOT_STARTED</code>: Stack instances deployment has not started. The operation is still provisioning roles, has not begun, or failed before this stage was reached.</p> </li> <li> <p> <code>IN_PROGRESS</code>: At least one stack instance has started deploying.</p> </li> <li> <p> <code>SUCCEEDED</code>: Deployment finished and succeeded for all stack instances that were not skipped.</p> </li> <li> <p> <code>PARTIAL_SUCCESS</code>: Deployment finished with a mix of succeeded, failed, and canceled stack instances.</p> </li> <li> <p> <code>FAILED</code>: Deployment finished and every stack instance that was not skipped failed or was canceled.</p> </li> </ul>"
+        },
+        "SucceededStackInstancesCount":{
+          "shape":"SucceededStackInstancesCount",
+          "documentation":"<p>The number of stack instances that deployed successfully in this Region.</p>"
+        },
+        "FailedStackInstancesCount":{
+          "shape":"StackInstancesDeploymentFailedStackInstancesCount",
+          "documentation":"<p>The number of stack instances that failed to deploy in this Region.</p>"
+        },
+        "CompletedStackInstancesCount":{
+          "shape":"CompletedStackInstancesCount",
+          "documentation":"<p>The number of stack instances in this Region that have reached a final state. This count includes stack instances that succeeded, failed, were skipped, or were canceled.</p>"
+        },
+        "PendingStackInstancesCount":{
+          "shape":"PendingStackInstancesCount",
+          "documentation":"<p>The number of stack instances in this Region that have not reached a final state. This is the total number of stack instances in this Region minus the completed count.</p>"
+        },
+        "CancelledStackInstancesCount":{
+          "shape":"CancelledStackInstancesCount",
+          "documentation":"<p>The number of stack instances in this Region that were canceled because the operation exceeded its failure tolerance or was stopped.</p>"
+        },
+        "SkippedStackInstancesCount":{
+          "shape":"SkippedStackInstancesCount",
+          "documentation":"<p>The number of stack instances in this Region that were skipped because role provisioning failed for their target account.</p>"
+        },
+        "TotalStackInstancesCount":{
+          "shape":"RegionalTotalStackInstancesCount",
+          "documentation":"<p>The total number of stack instances targeted by this operation in this Region.</p>"
+        },
+        "PercentageCompleted":{
+          "shape":"StagePercentageCompleted",
+          "documentation":"<p>The percentage of stack instances in this Region that have reached a final state.</p>"
+        }
+      },
+      "documentation":"<p>Provides visibility into the stack instances deployment stage for a single Region, including per-stack-instance progress counts and a completion percentage for that Region.</p>"
+    },
+    "RegionalStages":{
+      "type":"structure",
+      "members":{
+        "RegionalStackInstancesDeployment":{
+          "shape":"RegionalStackInstancesDeployment",
+          "documentation":"<p>The progress detail for the stack instances deployment stage in this Region.</p>"
+        }
+      },
+      "documentation":"<p>Contains the progress information for the individual stages of a StackSet operation in a single Region. Currently reports the stack instances deployment stage for the Region.</p>"
+    },
+    "RegionalStatusDetail":{
+      "type":"structure",
+      "members":{
+        "Stages":{
+          "shape":"RegionalStages",
+          "documentation":"<p>The progress information for the individual stages of the operation in this Region.</p>"
+        }
+      },
+      "documentation":"<p>Contains the progress detail for a single Region of a StackSet operation. This information is returned only by <a>DescribeStackSetOperation</a>.</p>"
+    },
+    "RegionalStatusDetails":{
+      "type":"map",
+      "key":{"shape":"Region"},
+      "value":{"shape":"RegionalStatusDetail"}
+    },
+    "RegionalTotalStackInstancesCount":{
+      "type":"integer",
+      "min":0
     },
     "RegisterPublisherInput":{
       "type":"structure",
@@ -6838,6 +6933,36 @@
       "min":1,
       "pattern":"arn:.+:iam::[0-9]{12}:role/.+"
     },
+    "RoleProvisioning":{
+      "type":"structure",
+      "members":{
+        "Status":{
+          "shape":"StageStatus",
+          "documentation":"<p>The status of the role provisioning stage can be one of the following values:</p> <ul> <li> <p> <code>NOT_APPLICABLE</code>: The operation does not provision roles. This includes self-managed operations and service-managed operations whose configuration does not require role provisioning.</p> </li> <li> <p> <code>NOT_STARTED</code>: Role provisioning has not started. The operation has not begun resolving target accounts, or it failed or stopped before the total number of target accounts was resolved.</p> </li> <li> <p> <code>IN_PROGRESS</code>: Role provisioning is actively processing target accounts.</p> </li> <li> <p> <code>SUCCEEDED</code>: Role provisioning finished and succeeded for all target accounts.</p> </li> <li> <p> <code>PARTIAL_SUCCESS</code>: Role provisioning finished, but succeeded for only a subset of target accounts; one or more accounts failed.</p> </li> <li> <p> <code>FAILED</code>: Role provisioning finished and failed for all target accounts.</p> </li> </ul>"
+        },
+        "SucceededAccountsCount":{
+          "shape":"SucceededAccountsCount",
+          "documentation":"<p>The number of accounts for which role provisioning succeeded.</p>"
+        },
+        "FailedAccountsCount":{
+          "shape":"FailedAccountsCount",
+          "documentation":"<p>The number of accounts for which role provisioning failed.</p>"
+        },
+        "CompletedAccountsCount":{
+          "shape":"CompletedAccountsCount",
+          "documentation":"<p>The number of accounts that have finished role provisioning, including both succeeded and failed accounts.</p>"
+        },
+        "PendingAccountsCount":{
+          "shape":"PendingAccountsCount",
+          "documentation":"<p>The number of accounts that are still awaiting role provisioning.</p>"
+        },
+        "PercentageCompleted":{
+          "shape":"StagePercentageCompleted",
+          "documentation":"<p>The percentage of accounts that have completed role provisioning.</p>"
+        }
+      },
+      "documentation":"<p>Provides visibility into the role provisioning stage of a StackSet operation, including per-account progress counts and a completion percentage. For operations that do not provision IAM roles in target accounts, the <code>Status</code> is <code>NOT_APPLICABLE</code> and the progress counts are omitted.</p>"
+    },
     "RollbackConfiguration":{
       "type":"structure",
       "members":{
@@ -7120,6 +7245,10 @@
         }
       },
       "documentation":"<p>The input for the <a>SignalResource</a> action.</p>"
+    },
+    "SkippedStackInstancesCount":{
+      "type":"integer",
+      "min":0
     },
     "Stack":{
       "type":"structure",
@@ -7657,6 +7786,48 @@
         }
       },
       "documentation":"<p>The structure that contains summary information about a stack instance.</p>"
+    },
+    "StackInstancesDeployment":{
+      "type":"structure",
+      "members":{
+        "Status":{
+          "shape":"StageStatus",
+          "documentation":"<p>The status of the stack instances deployment stage can be one of the following values:</p> <ul> <li> <p> <code>NOT_APPLICABLE</code>: The operation does not deploy stack instances, such as a drift detection operation.</p> </li> <li> <p> <code>NOT_STARTED</code>: Stack instances deployment has not started. The operation is still provisioning roles, has not begun, or failed before this stage was reached.</p> </li> <li> <p> <code>IN_PROGRESS</code>: At least one stack instance has started deploying.</p> </li> <li> <p> <code>SUCCEEDED</code>: Deployment finished and succeeded for all stack instances that were not skipped.</p> </li> <li> <p> <code>PARTIAL_SUCCESS</code>: Deployment finished with a mix of succeeded, failed, and canceled stack instances.</p> </li> <li> <p> <code>FAILED</code>: Deployment finished and every stack instance that was not skipped failed or was canceled.</p> </li> </ul>"
+        },
+        "SucceededStackInstancesCount":{
+          "shape":"SucceededStackInstancesCount",
+          "documentation":"<p>The number of stack instances that deployed successfully.</p>"
+        },
+        "FailedStackInstancesCount":{
+          "shape":"StackInstancesDeploymentFailedStackInstancesCount",
+          "documentation":"<p>The number of stack instances that failed to deploy.</p>"
+        },
+        "CompletedStackInstancesCount":{
+          "shape":"CompletedStackInstancesCount",
+          "documentation":"<p>The number of stack instances that have reached a final state. This count includes stack instances that succeeded, failed, were skipped, or were canceled.</p>"
+        },
+        "PendingStackInstancesCount":{
+          "shape":"PendingStackInstancesCount",
+          "documentation":"<p>The number of stack instances that have not reached a final state. This is the total number of stack instances minus the completed count.</p>"
+        },
+        "CancelledStackInstancesCount":{
+          "shape":"CancelledStackInstancesCount",
+          "documentation":"<p>The number of stack instances that were canceled because the operation exceeded its failure tolerance or was stopped.</p>"
+        },
+        "SkippedStackInstancesCount":{
+          "shape":"SkippedStackInstancesCount",
+          "documentation":"<p>The number of stack instances that were skipped because role provisioning failed for their target account.</p>"
+        },
+        "PercentageCompleted":{
+          "shape":"StagePercentageCompleted",
+          "documentation":"<p>The percentage of stack instances that have reached a final state.</p>"
+        }
+      },
+      "documentation":"<p>Provides visibility into the stack instances deployment stage of a StackSet operation, including per-stack-instance progress counts and a completion percentage. For service-managed operations that provision roles, this stage begins after role provisioning finishes.</p>"
+    },
+    "StackInstancesDeploymentFailedStackInstancesCount":{
+      "type":"integer",
+      "min":0
     },
     "StackName":{"type":"string"},
     "StackNameOrId":{
@@ -8371,6 +8542,10 @@
         "StatusDetails":{
           "shape":"StackSetOperationStatusDetails",
           "documentation":"<p>Detailed information about the StackSet operation.</p>"
+        },
+        "RegionalStatusDetails":{
+          "shape":"RegionalStatusDetails",
+          "documentation":"<p>The progress detail for each Region of the operation, keyed by Region. Each entry reports the stack instances deployment progress for that Region. This field is returned only by <a>DescribeStackSetOperation</a>. It is not included in the <a>ListStackSetOperations</a> summary.</p>"
         }
       },
       "documentation":"<p>The structure that contains information about a StackSet operation.</p>"
@@ -8476,6 +8651,18 @@
     "StackSetOperationStatusDetails":{
       "type":"structure",
       "members":{
+        "Stages":{
+          "shape":"Stages",
+          "documentation":"<p>The detailed progress information for the individual stages of the StackSet operation: the role provisioning stage and the stack instances deployment stage.</p>"
+        },
+        "TotalAccountsCount":{
+          "shape":"TotalAccountsCount",
+          "documentation":"<p>The total number of accounts targeted by this StackSet operation. Self-managed operations and service-managed operations that do not provision roles also report this value when it is known. CloudFormation populates this value after it resolves the target accounts. Until then, this field is not present.</p>"
+        },
+        "TotalStackInstancesCount":{
+          "shape":"StackSetOperationTotalStackInstancesCount",
+          "documentation":"<p>The total number of stack instances targeted by this StackSet operation. CloudFormation populates this value after it resolves the target stack instances. Until then, this field is not present.</p>"
+        },
         "FailedStackInstancesCount":{
           "shape":"FailedStackInstancesCount",
           "documentation":"<p>The number of stack instances for which the StackSet operation failed.</p>"
@@ -8525,6 +8712,10 @@
         }
       },
       "documentation":"<p>The structures that contain summary information about the specified operation.</p>"
+    },
+    "StackSetOperationTotalStackInstancesCount":{
+      "type":"integer",
+      "min":0
     },
     "StackSetStatus":{
       "type":"string",
@@ -8683,6 +8874,37 @@
       "type":"list",
       "member":{"shape":"TemplateStage"}
     },
+    "StagePercentageCompleted":{
+      "type":"double",
+      "max":100,
+      "min":0
+    },
+    "StageStatus":{
+      "type":"string",
+      "enum":[
+        "PENDING",
+        "NOT_APPLICABLE",
+        "NOT_STARTED",
+        "IN_PROGRESS",
+        "SUCCEEDED",
+        "PARTIAL_SUCCESS",
+        "FAILED"
+      ]
+    },
+    "Stages":{
+      "type":"structure",
+      "members":{
+        "RoleProvisioning":{
+          "shape":"RoleProvisioning",
+          "documentation":"<p>The progress detail for the role provisioning stage. For operations that do not provision roles, this stage is present with a <code>Status</code> of <code>NOT_APPLICABLE</code>.</p>"
+        },
+        "StackInstancesDeployment":{
+          "shape":"StackInstancesDeployment",
+          "documentation":"<p>The progress detail for the stack instances deployment stage. This stage reports the deployment of stack instances to the target accounts and Amazon Web Services Regions, after any role provisioning has finished.</p>"
+        }
+      },
+      "documentation":"<p>Contains detailed progress information for the individual stages of a StackSet operation: the role provisioning stage and the stack instances deployment stage.</p>"
+    },
     "StaleRequestException":{
       "type":"structure",
       "members":{},
@@ -8744,6 +8966,14 @@
     "StopStackSetOperationOutput":{
       "type":"structure",
       "members":{}
+    },
+    "SucceededAccountsCount":{
+      "type":"integer",
+      "min":0
+    },
+    "SucceededStackInstancesCount":{
+      "type":"integer",
+      "min":0
     },
     "SupportedMajorVersion":{
       "type":"integer",
@@ -8988,6 +9218,10 @@
         "senderFault":true
       },
       "exception":true
+    },
+    "TotalAccountsCount":{
+      "type":"integer",
+      "min":0
     },
     "TotalStackInstancesCount":{
       "type":"integer",

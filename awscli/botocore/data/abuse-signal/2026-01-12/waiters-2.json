@@ -1,0 +1,26 @@
+{
+  "version" : 2,
+  "waiters" : {
+    "ReportProcessing" : {
+      "description" : "Wait until an abuse report has at least reached PROCESSING.\n\nA report advances QUEUED -> PROCESSING -> COMPLETED. A report can\ngo from QUEUED all the way to COMPLETED in well under a second,\nso a poller that only accepts PROCESSING can miss the transient\nPROCESSING window entirely and then poll forever. COMPLETED\ntherefore also satisfies this waiter: it implies the report already\npassed through PROCESSING.",
+      "delay" : 1,
+      "maxAttempts" : 5,
+      "operation" : "GetAbuseReportStatus",
+      "acceptors" : [ {
+        "matcher" : "path",
+        "argument" : "status",
+        "state" : "success",
+        "expected" : "PROCESSING"
+      }, {
+        "matcher" : "path",
+        "argument" : "status",
+        "state" : "success",
+        "expected" : "COMPLETED"
+      }, {
+        "matcher" : "error",
+        "state" : "retry",
+        "expected" : "ResourceNotFoundException"
+      } ]
+    }
+  }
+}

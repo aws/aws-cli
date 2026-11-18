@@ -4701,6 +4701,10 @@
         "capacityProviderArn":{
           "shape":"CapacityProviderArn",
           "documentation":"<p>The Amazon Resource Name (ARN) of the capacity provider to use for the AgentCore Runtime.</p>"
+        },
+        "operatingSystemConfiguration":{
+          "shape":"OperatingSystemConfiguration",
+          "documentation":"<p>The operating system configuration of the agents that Amazon Bedrock AgentCore Runtime runs on the capacity provider.</p>"
         }
       },
       "documentation":"<p>Configuration for customer-managed compute capacity for the AgentCore Runtime. A capacity provider runs the AgentCore Runtime on the Instances compute type, using Amazon Web Services managed compute in your account.</p>"
@@ -11157,6 +11161,10 @@
         "capacityProviderVolume":{
           "shape":"CapacityProviderVolumeConfiguration",
           "documentation":"<p>Configuration for a capacity provider volume to mount into the AgentCore Runtime. This mounts a persistent volume that is defined on the capacity provider, referenced by its logical name.</p>"
+        },
+        "s3BucketMount":{
+          "shape":"S3BucketMountConfiguration",
+          "documentation":"<p>Mounts an Amazon S3 bucket as a file system in the AgentCore Runtime.</p>"
         }
       },
       "documentation":"<p>Configuration for a filesystem that can be mounted into the AgentCore Runtime.</p>",
@@ -16599,6 +16607,16 @@
       },
       "documentation":"<p>The configuration details returned for a LinkedIn OAuth2 provider, including the client ID and OAuth2 discovery information.</p>"
     },
+    "LinuxOperatingSystemConfiguration":{
+      "type":"structure",
+      "members":{
+        "privilegeMode":{
+          "shape":"PrivilegeMode",
+          "documentation":"<p>The privilege mode of the agents. If you omit this field, the agents run in <code>STANDARD</code> privilege mode. The following values are possible:</p> <ul> <li> <p> <code>STANDARD</code> – The agent runs without elevated privileges. This is the default.</p> </li> <li> <p> <code>PRIVILEGED</code> – The agent runs with elevated privileges on its instance. Use this mode for agents that build container images, run containers, or install system packages. A session that runs a <code>PRIVILEGED</code> agent runs only that agent.</p> </li> </ul>"
+        }
+      },
+      "documentation":"<p>Contains the operating system configuration of agents that run on Linux instances, such as the privilege mode.</p>"
+    },
     "ListAgentInsightStoresRequest":{
       "type":"structure",
       "members":{
@@ -19828,6 +19846,17 @@
         "LINUX_ARM64"
       ]
     },
+    "OperatingSystemConfiguration":{
+      "type":"structure",
+      "members":{
+        "linux":{
+          "shape":"LinuxOperatingSystemConfiguration",
+          "documentation":"<p>The operating system configuration of agents that run on Linux instances.</p>"
+        }
+      },
+      "documentation":"<p>Contains the operating system configuration of the agents that AgentCore Runtime runs on a capacity provider. Specify the member for the operating system of the capacity provider.</p>",
+      "union":true
+    },
     "OptionalLogGroupName":{
       "type":"string",
       "documentation":"<p>A log group name that may also be empty. The empty string is the @default of members that were relaxed from @required, and carries the meaning &quot;no log group&quot; for that member.</p>",
@@ -20837,6 +20866,14 @@
       "documentation":"<p>Contains the private key source configuration for a JWT client assertion.</p>",
       "union":true
     },
+    "PrivilegeMode":{
+      "type":"string",
+      "documentation":"<p>The privilege mode of the agents, either <code>STANDARD</code> (the default) or <code>PRIVILEGED</code>.</p>",
+      "enum":[
+        "STANDARD",
+        "PRIVILEGED"
+      ]
+    },
     "Prompt":{
       "type":"string",
       "max":30000,
@@ -21739,6 +21776,57 @@
         }
       },
       "documentation":"<p>Configuration for an AgentCore Runtime target. Specifies the agent runtime to route requests to via HTTP.</p>"
+    },
+    "S3BucketMountConfiguration":{
+      "type":"structure",
+      "required":[
+        "bucket",
+        "mountPath"
+      ],
+      "members":{
+        "bucket":{
+          "shape":"S3BucketMountConfigurationBucketString",
+          "documentation":"<p>The name of the S3 bucket to mount. You can specify a general purpose bucket or a directory bucket.</p>"
+        },
+        "mountPath":{
+          "shape":"MountPath",
+          "documentation":"<p>The mount path for the S3 bucket inside the AgentCore Runtime. The path must be under <code>/mnt</code> with exactly one subdirectory level (for example, <code>/mnt/data</code>).</p>"
+        },
+        "prefix":{
+          "shape":"S3BucketMountConfigurationPrefixString",
+          "documentation":"<p>The key prefix to mount. Only objects under this prefix are visible at the mount path. To give each session its own prefix, include <code>{runtimeSessionId}</code> (for example, <code>data/{runtimeSessionId}/</code>). If you omit the prefix, the whole bucket is mounted.</p>"
+        },
+        "s3BucketOwner":{
+          "shape":"S3BucketMountConfigurationS3BucketOwnerString",
+          "documentation":"<p>The AWS account ID that must own the bucket. If you omit it, the bucket must be owned by the account that owns the AgentCore Runtime.</p>"
+        },
+        "s3BucketRegion":{
+          "shape":"S3BucketMountConfigurationS3BucketRegionString",
+          "documentation":"<p>The AWS Region of the S3 bucket. If you omit it, the bucket must be in the same Region as the AgentCore Runtime.</p>"
+        }
+      },
+      "documentation":"<p>Mounts an Amazon S3 bucket in the AgentCore Runtime with Mountpoint for Amazon S3. Files under the mount path map to objects in the bucket.</p>"
+    },
+    "S3BucketMountConfigurationBucketString":{
+      "type":"string",
+      "max":63,
+      "min":3
+    },
+    "S3BucketMountConfigurationPrefixString":{
+      "type":"string",
+      "max":1024,
+      "min":1,
+      "pattern":"[a-zA-Z0-9{][a-zA-Z0-9!_.*'()/{}-]*"
+    },
+    "S3BucketMountConfigurationS3BucketOwnerString":{
+      "type":"string",
+      "pattern":"[0-9]{12}"
+    },
+    "S3BucketMountConfigurationS3BucketRegionString":{
+      "type":"string",
+      "max":32,
+      "min":1,
+      "pattern":"([a-z]+-){2,3}\\d+"
     },
     "S3BucketUri":{
       "type":"string",

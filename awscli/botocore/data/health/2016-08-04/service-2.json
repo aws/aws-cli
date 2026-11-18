@@ -508,11 +508,7 @@
         },
         "accountTags":{
           "shape":"AccountTagSet",
-          "documentation":"<p>A map of account tag key-value pairs attached to the affected entity.</p>"
-        },
-        "tags":{
-          "shape":"tagSet",
-          "documentation":"<p>A map of resource tag key-value pairs attached to the affected entity.</p> <note> <p>Currently, the <code>tags</code> property isn't supported.</p> </note>"
+          "documentation":"<p>A map of account tag key-value pairs for the account that owns the affected entity. This field is returned only by DescribeAffectedEntitiesForOrganization and is not populated by DescribeAffectedEntities.</p>"
         },
         "entityMetadata":{
           "shape":"entityMetadata",
@@ -544,10 +540,16 @@
       "type":"structure",
       "members":{
         "configuredTagKeys":{
-          "shape":"ConfigureTagsForOrganizationTagKeyList",
-          "documentation":"<p>The list of tag keys that were successfully configured for the organization.</p>"
+          "shape":"ConfigureTagsForOrganizationResponseTagKeyList",
+          "documentation":"<p>The list of tag keys that were successfully configured for the organization, with the current status of each tag key.</p>"
         }
       }
+    },
+    "ConfigureTagsForOrganizationResponseTagKeyList":{
+      "type":"list",
+      "member":{"shape":"OrganizationTagKey"},
+      "max":10,
+      "min":1
     },
     "ConfigureTagsForOrganizationTagKeyList":{
       "type":"list",
@@ -560,10 +562,16 @@
       "required":["tagKeys"],
       "members":{
         "tagKeys":{
-          "shape":"ConfigureTagsResourceTagKeyList",
+          "shape":"ConfigureTagsRequestTagKeyList",
           "documentation":"<p>The list of resource tag keys to configure for Health event tracking.</p>"
         }
       }
+    },
+    "ConfigureTagsRequestTagKeyList":{
+      "type":"list",
+      "member":{"shape":"ConfigureTagsTagKey"},
+      "max":10,
+      "min":1
     },
     "ConfigureTagsResourceTagKeyList":{
       "type":"list",
@@ -579,6 +587,21 @@
           "documentation":"<p>The list of resource tag keys that were successfully configured.</p>"
         }
       }
+    },
+    "ConfigureTagsTagKey":{
+      "type":"structure",
+      "required":["key"],
+      "members":{
+        "key":{
+          "shape":"resourceTagKey",
+          "documentation":"<p>The tag key name.</p>"
+        },
+        "enabledForEventBridge":{
+          "shape":"Boolean",
+          "documentation":"<p>Whether this tag key is enabled for EventBridge notifications.</p>"
+        }
+      },
+      "documentation":"<p>A resource tag key to configure for Health event tracking.</p>"
     },
     "DateTimeRange":{
       "type":"structure",
@@ -1233,7 +1256,7 @@
         },
         "tags":{
           "shape":"DescribeAffectedEntitiesTagFilter",
-          "documentation":"<p>A map of resource tag key-value pairs to filter affected entities.</p> <note> <p>Currently, the <code>tags</code> property isn't supported.</p> </note>"
+          "documentation":"<p>A map of tag keys to lists of tag values. A tag matches when its key is in the map and its value is one of the values listed for that key. The filter matches when at least one key in the map matches.</p>"
         },
         "statusCodes":{
           "shape":"entityStatusCodeList",
@@ -1456,7 +1479,7 @@
         },
         "tags":{
           "shape":"DescribeEventsTagFilter",
-          "documentation":"<p>A map of resource tag key-value pairs to filter affected entities.</p> <note> <p>Currently, the <code>tags</code> property isn't supported.</p> </note>"
+          "documentation":"<p>A map of tag keys to lists of tag values. A tag matches when its key is in the map and its value is one of the values listed for that key. The filter matches when at least one key in the map matches.</p>"
         },
         "eventStatusCodes":{
           "shape":"eventStatusCodeList",
@@ -2038,6 +2061,7 @@
     },
     "TagKeyForOrganization":{
       "type":"structure",
+      "required":["key"],
       "members":{
         "key":{
           "shape":"organizationTagKey",
@@ -2319,12 +2343,6 @@
       "type":"string",
       "max":127,
       "pattern":".{0,127}"
-    },
-    "tagSet":{
-      "type":"map",
-      "key":{"shape":"tagKey"},
-      "value":{"shape":"tagValue"},
-      "max":50
     },
     "tagValue":{
       "type":"string",

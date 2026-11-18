@@ -4334,7 +4334,7 @@
           "documentation":"<p>Indicates whether to replicate delete markers.</p> <note> <p>Indicates whether to replicate delete markers.</p> </note>"
         }
       },
-      "documentation":"<p>Specifies whether Amazon S3 replicates delete markers. If you specify a <code>Filter</code> in your replication configuration, you must also include a <code>DeleteMarkerReplication</code> element. If your <code>Filter</code> includes a <code>Tag</code> element, the <code>DeleteMarkerReplication</code> <code>Status</code> must be set to Disabled, because Amazon S3 does not support replicating delete markers for tag-based rules. For an example configuration, see <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/dev/replication-add-config.html#replication-config-min-rule-config\">Basic Rule Configuration</a>. </p> <p>For more information about delete marker replication, see <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/dev/delete-marker-replication.html\">Basic Rule Configuration</a>. </p> <note> <p>If you are using an earlier version of the replication configuration, Amazon S3 handles replication of delete markers differently. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/dev/replication-add-config.html#replication-backward-compat-considerations\">Backward Compatibility</a>.</p> </note>"
+      "documentation":"<p>Specifies whether Amazon S3 replicates delete markers. If you specify a <code>Filter</code> in your replication configuration, you must also include a <code>DeleteMarkerReplication</code> element. If your <code>Filter</code> includes a <code>Tag</code> element, including within a <code>Not</code> or <code>Or</code> element, the <code>DeleteMarkerReplication</code> <code>Status</code> must be set to Disabled, because Amazon S3 does not support replicating delete markers for tag-based rules. For an example configuration, see <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/dev/replication-add-config.html#replication-config-min-rule-config\">Basic Rule Configuration</a>. </p> <p>For more information about delete marker replication, see <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/dev/delete-marker-replication.html\">Basic Rule Configuration</a>. </p> <note> <p>If you are using an earlier version of the replication configuration, Amazon S3 handles replication of delete markers differently. For more information, see <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/dev/replication-add-config.html#replication-backward-compat-considerations\">Backward Compatibility</a>.</p> </note>"
     },
     "DeleteMarkerReplicationStatus":{
       "type":"string",
@@ -4768,6 +4768,10 @@
         "ReplicaKmsKeyID":{
           "shape":"ReplicaKmsKeyID",
           "documentation":"<p>Specifies the ID (Key ARN or Alias ARN) of the customer managed Amazon Web Services KMS key stored in Amazon Web Services Key Management Service (KMS) for the destination bucket. Amazon S3 uses this key to encrypt replica objects. Amazon S3 only supports symmetric encryption KMS keys. For more information, see <a href=\"https://docs.aws.amazon.com/kms/latest/developerguide/symmetric-asymmetric.html\">Asymmetric keys in Amazon Web Services KMS</a> in the <i>Amazon Web Services Key Management Service Developer Guide</i>.</p>"
+        },
+        "UseSourceMultiRegionKey":{
+          "shape":"UseSourceMultiRegionKey",
+          "documentation":"<p>Specifies whether Amazon S3 uses the related multi-Region KMS key in the destination Amazon Web Services Region to encrypt the replica.</p>"
         }
       },
       "documentation":"<p>Specifies encryption-related information for an Amazon S3 bucket that is a destination for replicated objects.</p> <note> <p>If you're specifying a customer managed KMS key, we recommend using a fully qualified KMS key ARN. If you use a KMS key alias instead, then KMS resolves the key within the requester’s account. This behavior can result in data that's encrypted with a KMS key that belongs to the requester, and not the bucket owner.</p> </note>"
@@ -12500,6 +12504,13 @@
       },
       "documentation":"<p>A container for replication rules. You can add up to 1,000 rules. The maximum size of a replication configuration is 2 MB.</p>"
     },
+    "ReplicationPrefixList":{
+      "type":"list",
+      "member":{
+        "shape":"Prefix",
+        "locationName":"Prefix"
+      }
+    },
     "ReplicationRule":{
       "type":"structure",
       "required":[
@@ -12553,6 +12564,10 @@
           "documentation":"<p>An array of tags containing key and value pairs.</p>",
           "flattened":true,
           "locationName":"Tag"
+        },
+        "Not":{
+          "shape":"ReplicationRuleNotOperator",
+          "documentation":"<p>A container for specifying filters that exclude matching objects from the replication rule.</p>"
         }
       },
       "documentation":"<p>A container for specifying rule filters. The filters determine the subset of objects to which the rule applies. This element is required only if you specify more than one filter. </p> <p>For example:</p> <ul> <li> <p>If you specify both a <code>Prefix</code> and a <code>Tag</code> filter, wrap these filters in an <code>And</code> tag. </p> </li> <li> <p>If you specify a filter based on multiple tags, wrap the <code>Tag</code> elements in an <code>And</code> tag.</p> </li> </ul>"
@@ -12571,9 +12586,49 @@
         "And":{
           "shape":"ReplicationRuleAndOperator",
           "documentation":"<p>A container for specifying rule filters. The filters determine the subset of objects to which the rule applies. This element is required only if you specify more than one filter. For example: </p> <ul> <li> <p>If you specify both a <code>Prefix</code> and a <code>Tag</code> filter, wrap these filters in an <code>And</code> tag.</p> </li> <li> <p>If you specify a filter based on multiple tags, wrap the <code>Tag</code> elements in an <code>And</code> tag.</p> </li> </ul>"
+        },
+        "Not":{
+          "shape":"ReplicationRuleNotOperator",
+          "documentation":"<p>A container for specifying filters that exclude matching objects from the replication rule.</p>"
         }
       },
-      "documentation":"<p>A filter that identifies the subset of objects to which the replication rule applies. A <code>Filter</code> must specify exactly one <code>Prefix</code>, <code>Tag</code>, or an <code>And</code> child element.</p>"
+      "documentation":"<p>A filter that identifies the subset of objects to which the replication rule applies. A <code>Filter</code> must specify exactly one <code>Prefix</code>, <code>Tag</code>, <code>And</code>, or <code>Not</code> child element.</p>"
+    },
+    "ReplicationRuleNotOperator":{
+      "type":"structure",
+      "members":{
+        "Prefix":{
+          "shape":"Prefix",
+          "documentation":"<p>An object key name prefix that identifies objects to exclude from the replication rule.</p>"
+        },
+        "Tag":{
+          "shape":"Tag",
+          "documentation":"<p>A tag key and value that identify objects to exclude from the replication rule.</p>"
+        },
+        "Or":{
+          "shape":"ReplicationRuleOrOperator",
+          "documentation":"<p>A container for specifying prefixes and tags. An object is excluded from the replication rule if it matches any of the specified filters.</p>"
+        }
+      },
+      "documentation":"<p>A container for specifying a filter that excludes matching objects from the replication rule. Specify exactly one <code>Prefix</code>, <code>Tag</code>, or <code>Or</code> child element.</p>"
+    },
+    "ReplicationRuleOrOperator":{
+      "type":"structure",
+      "members":{
+        "Prefixes":{
+          "shape":"ReplicationPrefixList",
+          "documentation":"<p>An array of object key name prefixes.</p>",
+          "flattened":true,
+          "locationName":"Prefix"
+        },
+        "Tags":{
+          "shape":"TagSet",
+          "documentation":"<p>An array of tags containing key and value pairs.</p>",
+          "flattened":true,
+          "locationName":"Tag"
+        }
+      },
+      "documentation":"<p>A container for specifying one or more prefix or tag filters.</p>"
     },
     "ReplicationRuleStatus":{
       "type":"string",
@@ -14289,6 +14344,24 @@
         }
       },
       "payload":"Body"
+    },
+    "UseSourceMultiRegionKey":{
+      "type":"structure",
+      "required":["Status"],
+      "members":{
+        "Status":{
+          "shape":"UseSourceMultiRegionKeyStatus",
+          "documentation":"<p>Specifies whether Amazon S3 uses the related multi-Region KMS key in the destination Amazon Web Services Region to encrypt the replica.</p>"
+        }
+      },
+      "documentation":"<p>A container for configuring the use of the related multi-Region KMS key in the destination Amazon Web Services Region for replication.</p>"
+    },
+    "UseSourceMultiRegionKeyStatus":{
+      "type":"string",
+      "enum":[
+        "Enabled",
+        "Disabled"
+      ]
     },
     "UserMetadata":{
       "type":"list",

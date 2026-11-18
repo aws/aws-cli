@@ -4197,10 +4197,13 @@
           "shape": "LimitExceededException"
         },
         {
+          "shape": "InvalidInputException"
+        },
+        {
           "shape": "ServiceFailureException"
         }
       ],
-      "documentation": "<p>Changes the password for the specified IAM user. You can use the CLI, the Amazon Web Services API, or the <b>Users</b> page in the IAM console to change the password for any IAM user. Use <a href=\"https://docs.aws.amazon.com/IAM/latest/APIReference/API_ChangePassword.html\">ChangePassword</a> to change your own password in the <b>My Security Credentials</b> page in the Amazon Web Services Management Console.</p> <p>For more information about modifying passwords, see <a href=\"https://docs.aws.amazon.com/IAM/latest/UserGuide/Using_ManagingLogins.html\">Managing passwords</a> in the <i>IAM User Guide</i>.</p>"
+      "documentation": "<p>Changes the password or the maximum sign-in session duration for the specified IAM user. You can use the CLI, the Amazon Web Services API, or the <b>Users</b> page in the IAM console to change the password for any IAM user. Use <a href=\"https://docs.aws.amazon.com/IAM/latest/APIReference/API_ChangePassword.html\">ChangePassword</a> to change your own password in the <b>My Security Credentials</b> page in the Amazon Web Services Management Console.</p> <p>For more information about modifying passwords, see <a href=\"https://docs.aws.amazon.com/IAM/latest/UserGuide/Using_ManagingLogins.html\">Managing passwords</a> in the <i>IAM User Guide</i>.</p>"
     },
     "UpdateOpenIDConnectProviderThumbprint": {
       "name": "UpdateOpenIDConnectProviderThumbprint",
@@ -4248,10 +4251,13 @@
           "shape": "NoSuchEntityException"
         },
         {
+          "shape": "InvalidInputException"
+        },
+        {
           "shape": "ServiceFailureException"
         }
       ],
-      "documentation": "<p>Updates the description or maximum session duration setting of a role.</p>"
+      "documentation": "<p>Updates the description, maximum session duration, or maximum sign-in session duration of a role. You cannot change the maximum sign-in session duration of a service-linked role.</p>"
     },
     "UpdateRoleDescription": {
       "name": "UpdateRoleDescription",
@@ -5186,6 +5192,10 @@
         "PasswordResetRequired": {
           "shape": "booleanType",
           "documentation": "<p>Specifies whether the user is required to set a new password on next sign-in.</p>"
+        },
+        "MaxSigninSessionDuration": {
+          "shape": "maxSigninSessionDurationType",
+          "documentation": "<p>The maximum duration (in seconds) of an Amazon Web Services Sign-In session for this IAM user. This setting can have a value from 1 hour (3600 seconds) to 90 days (7776000 seconds), inclusive. If you do not specify a value, the setting remains unset and the existing sign-in session behavior applies.</p> <note> <p>This setting is not supported for the root user.</p> </note>"
         }
       }
     },
@@ -5336,6 +5346,10 @@
         "MaxSessionDuration": {
           "shape": "roleMaxSessionDurationType",
           "documentation": "<p>The maximum session duration (in seconds) that you want to set for the specified role. If you do not specify a value for this setting, the default value of one hour is applied. This setting can have a value from 1 hour to 12 hours.</p> <p>Anyone who assumes the role from the CLI or API can use the <code>DurationSeconds</code> API parameter or the <code>duration-seconds</code> CLI parameter to request a longer session. The <code>MaxSessionDuration</code> setting determines the maximum duration that can be requested using the <code>DurationSeconds</code> parameter. If users don't specify a value for the <code>DurationSeconds</code> parameter, their security credentials are valid for one hour by default. This applies when you use the <code>AssumeRole*</code> API operations or the <code>assume-role*</code> CLI operations but does not apply when you use those operations to create a console URL. For more information, see <a href=\"https://docs.aws.amazon.com/IAM/latest/UserGuide/id_roles_use.html\">Using IAM roles</a> in the <i>IAM User Guide</i>.</p>"
+        },
+        "MaxSigninSessionDuration": {
+          "shape": "maxSigninSessionDurationType",
+          "documentation": "<p>The maximum duration (in seconds) of an Amazon Web Services Sign-In session for users who sign in with this role. This setting can have a value from 1 hour (3600 seconds) to 90 days (7776000 seconds), inclusive. If you do not specify a value, the setting remains unset and the existing sign-in session behavior applies.</p> <p>This setting is independent of <code>MaxSessionDuration</code>.</p>"
         },
         "PermissionsBoundary": {
           "shape": "arnType",
@@ -9152,6 +9166,10 @@
         "PasswordResetRequired": {
           "shape": "booleanType",
           "documentation": "<p>Specifies whether the user is required to set a new password on next sign-in.</p>"
+        },
+        "MaxSigninSessionDuration": {
+          "shape": "maxSigninSessionDurationType",
+          "documentation": "<p>The maximum duration (in seconds) of an Amazon Web Services Sign-In session for the user.</p> <p>This member is omitted when the setting is unset. In that case, no default value is returned and the existing sign-in session behavior applies.</p>"
         }
       },
       "documentation": "<p>Contains the user name and password create date for a user.</p> <p> This data type is used as a response element in the <a href=\"https://docs.aws.amazon.com/IAM/latest/APIReference/API_CreateLoginProfile.html\">CreateLoginProfile</a> and <a href=\"https://docs.aws.amazon.com/IAM/latest/APIReference/API_GetLoginProfile.html\">GetLoginProfile</a> operations. </p>"
@@ -10197,6 +10215,10 @@
         "MaxSessionDuration": {
           "shape": "roleMaxSessionDurationType",
           "documentation": "<p>The maximum session duration (in seconds) for the specified role. Anyone who uses the CLI, or API to assume the role can specify the duration using the optional <code>DurationSeconds</code> API parameter or <code>duration-seconds</code> CLI parameter.</p>"
+        },
+        "MaxSigninSessionDuration": {
+          "shape": "maxSigninSessionDurationType",
+          "documentation": "<p>The maximum duration (in seconds) of an Amazon Web Services Sign-In session for users who sign in with this role. This value is independent of <code>MaxSessionDuration</code>.</p> <p>This member is omitted when the setting is unset. In that case, no default value is returned and the existing sign-in session behavior applies.</p>"
         },
         "PermissionsBoundary": {
           "shape": "AttachedPermissionsBoundary",
@@ -11555,6 +11577,14 @@
         "PasswordResetRequired": {
           "shape": "booleanObjectType",
           "documentation": "<p>Allows this new password to be used only once by requiring the specified IAM user to set a new password on next sign-in.</p>"
+        },
+        "MaxSigninSessionDuration": {
+          "shape": "maxSigninSessionDurationType",
+          "documentation": "<p>The maximum duration (in seconds) of an Amazon Web Services Sign-In session for the specified IAM user. This setting can have a value from 1 hour (3600 seconds) to 90 days (7776000 seconds), inclusive, and replaces any value currently configured for the user.</p> <p>If you omit both this parameter and <code>ResetMaxSigninSessionDuration</code>, the current setting is unchanged. You cannot specify this parameter and set <code>ResetMaxSigninSessionDuration</code> to <code>true</code> in the same request. If you update only the sign-in session duration, the user's password and <code>PasswordResetRequired</code> setting do not change.</p> <p>Changes to this setting apply to new sign-in sessions. Sessions that are already established are not affected.</p> <note> <p>This setting is not supported for the root user.</p> </note>"
+        },
+        "ResetMaxSigninSessionDuration": {
+          "shape": "booleanObjectType",
+          "documentation": "<p>Specifies whether to clear the maximum sign-in session duration for the specified IAM user. Set this value to <code>true</code> to return the setting to its unset state, so that the existing sign-in session behavior applies. When the setting is unset, the user's <code>MaxSigninSessionDuration</code> is omitted from responses.</p> <p>If you set this value to <code>false</code> or omit it, the current setting is not cleared. You cannot set this value to <code>true</code> and specify <code>MaxSigninSessionDuration</code> in the same request. Clearing a setting that is already unset has no effect.</p>"
         }
       }
     },
@@ -11618,6 +11648,14 @@
         "MaxSessionDuration": {
           "shape": "roleMaxSessionDurationType",
           "documentation": "<p>The maximum session duration (in seconds) that you want to set for the specified role. If you do not specify a value for this setting, the default value of one hour is applied. This setting can have a value from 1 hour to 12 hours.</p> <p>Anyone who assumes the role from the CLI or API can use the <code>DurationSeconds</code> API parameter or the <code>duration-seconds</code> CLI parameter to request a longer session. The <code>MaxSessionDuration</code> setting determines the maximum duration that can be requested using the <code>DurationSeconds</code> parameter. If users don't specify a value for the <code>DurationSeconds</code> parameter, their security credentials are valid for one hour by default. This applies when you use the <code>AssumeRole*</code> API operations or the <code>assume-role*</code> CLI operations but does not apply when you use those operations to create a console URL. For more information, see <a href=\"https://docs.aws.amazon.com/IAM/latest/UserGuide/id_roles_use.html\">Using IAM roles</a> in the <i>IAM User Guide</i>.</p> <note> <p>IAM role credentials provided by Amazon EC2 instances assigned to the role are not subject to the specified maximum session duration.</p> </note>"
+        },
+        "MaxSigninSessionDuration": {
+          "shape": "maxSigninSessionDurationType",
+          "documentation": "<p>The maximum duration (in seconds) of an Amazon Web Services Sign-In session for users who sign in with the specified role. This setting can have a value from 1 hour (3600 seconds) to 90 days (7776000 seconds), inclusive, and replaces any value currently configured for the role. This setting is independent of <code>MaxSessionDuration</code>.</p> <p>If you omit both this parameter and <code>ResetMaxSigninSessionDuration</code>, the current setting is unchanged. You cannot specify this parameter and set <code>ResetMaxSigninSessionDuration</code> to <code>true</code> in the same request.</p> <p>Changes to this setting apply to new sign-in sessions. Sessions that are already established are not affected.</p> <note> <p>You cannot set this value on a service-linked role.</p> </note>"
+        },
+        "ResetMaxSigninSessionDuration": {
+          "shape": "booleanObjectType",
+          "documentation": "<p>Specifies whether to clear the role's maximum sign-in session duration. Set this value to <code>true</code> to return the setting to its unset state, so that the existing sign-in session behavior applies. When the setting is unset, the role's <code>MaxSigninSessionDuration</code> is omitted from responses.</p> <p>If you set this value to <code>false</code> or omit it, the current setting is not cleared. You cannot set this value to <code>true</code> and specify <code>MaxSigninSessionDuration</code> in the same request. Clearing a setting that is already unset has no effect.</p> <note> <p>You cannot reset this value on a service-linked role.</p> </note>"
         }
       }
     },
@@ -12376,6 +12414,12 @@
       "box": true,
       "max": 1095,
       "min": 1
+    },
+    "maxSigninSessionDurationType": {
+      "type": "integer",
+      "documentation": "<p>A maximum sign-in session duration in seconds. Valid values range from 3600 through 7776000, inclusive. This type is distinct from roleMaxSessionDurationType.</p>",
+      "max": 7776000,
+      "min": 3600
     },
     "mfaDeviceListType": {
       "type": "list",

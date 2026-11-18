@@ -8721,7 +8721,11 @@
     "IntermediateTableComputeConfiguration":{
       "type":"structure",
       "members":{
-        "queryComputeConfiguration":{"shape":"WorkerComputeConfiguration"}
+        "queryComputeConfiguration":{"shape":"WorkerComputeConfiguration"},
+        "jobComputeConfiguration":{
+          "shape":"ProtectedJobComputeConfiguration",
+          "documentation":"<p>Specifies the compute configuration for the PySpark job that populates the intermediate table.</p>"
+        }
       },
       "documentation":"<p>Contains the compute configuration for an intermediate table population operation.</p>",
       "union":true
@@ -10741,7 +10745,10 @@
     },
     "PopulateIntermediateTableAnalysisType":{
       "type":"string",
-      "enum":["QUERY"]
+      "enum":[
+        "QUERY",
+        "JOB"
+      ]
     },
     "PopulateIntermediateTableInput":{
       "type":"structure",
@@ -10804,10 +10811,25 @@
         "sqlParameters":{
           "shape":"PopulationAnalysisSqlParameters",
           "documentation":"<p>The SQL parameters for the population analysis, including the query string or analysis template ARN.</p>"
+        },
+        "jobParameters":{
+          "shape":"PopulationAnalysisJobParameters",
+          "documentation":"<p>Specifies the PySpark job parameters for the population analysis. Use <code>jobParameters</code> instead of <code>sqlParameters</code> when you populate the intermediate table with results from a PySpark job.</p>"
         }
       },
       "documentation":"<p>Contains the configuration that defines the analysis used to populate an intermediate table.</p>",
       "union":true
+    },
+    "PopulationAnalysisJobParameters":{
+      "type":"structure",
+      "required":["analysisTemplateArn"],
+      "members":{
+        "analysisTemplateArn":{
+          "shape":"AnalysisTemplateArn",
+          "documentation":"<p>Specifies the ARN of the PySpark analysis template that populates the intermediate table. Provide this ARN in <code>jobParameters</code> when you populate the intermediate table with results from a PySpark job.</p>"
+        }
+      },
+      "documentation":"<p>Contains the PySpark job parameters used to populate an intermediate table, including the ARN of the analysis template that defines the job. Use these parameters instead of SQL parameters when the analysis you use to populate the intermediate table is a PySpark analysis template.</p>"
     },
     "PopulationAnalysisSqlParameters":{
       "type":"structure",
@@ -11340,6 +11362,10 @@
         "member":{
           "shape":"ProtectedJobMemberOutputConfigurationOutput",
           "documentation":"<p> The member output configuration for a protected job.</p>"
+        },
+        "intermediateTable":{
+          "shape":"IntermediateTableOutputConfiguration",
+          "documentation":"<p>Specifies the intermediate table that the protected job populated, identified by its ID, Amazon Resource Name (ARN), and name. This field is present when the protected job was triggered by a <code>PopulateIntermediateTable</code> operation.</p>"
         }
       },
       "documentation":"<p> The protected job output configuration output.</p>",
@@ -11547,6 +11573,10 @@
         "jobComputePayerAccountId":{
           "shape":"AccountId",
           "documentation":"<p>The account ID of the member that pays for the job compute costs.</p>"
+        },
+        "intermediateTableConfiguration":{
+          "shape":"IntermediateTableOutputConfiguration",
+          "documentation":"<p>The intermediate table that the protected job populated. This field is present when the protected job was triggered by a <code>PopulateIntermediateTable</code> operation.</p>"
         }
       },
       "documentation":"<p>The protected job summary for the objects listed by the request.</p>"

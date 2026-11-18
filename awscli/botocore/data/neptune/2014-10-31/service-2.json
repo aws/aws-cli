@@ -203,7 +203,7 @@
         {"shape":"DBParameterGroupQuotaExceededFault"},
         {"shape":"DBParameterGroupAlreadyExistsFault"}
       ],
-      "documentation":"<p>Creates a new DB cluster parameter group.</p> <p>Parameters in a DB cluster parameter group apply to all of the instances in a DB cluster.</p> <p> A DB cluster parameter group is initially created with the default parameters for the database engine used by instances in the DB cluster. To provide custom values for any of the parameters, you must modify the group after creating it using <a>ModifyDBClusterParameterGroup</a>. Once you've created a DB cluster parameter group, you need to associate it with your DB cluster using <a>ModifyDBCluster</a>. When you associate a new DB cluster parameter group with a running DB cluster, you need to reboot the DB instances in the DB cluster without failover for the new DB cluster parameter group and associated settings to take effect.</p> <important> <p>After you create a DB cluster parameter group, you should wait at least 5 minutes before creating your first DB cluster that uses that DB cluster parameter group as the default parameter group. This allows Amazon Neptune to fully complete the create action before the DB cluster parameter group is used as the default for a new DB cluster. This is especially important for parameters that are critical when creating the default database for a DB cluster, such as the character set for the default database defined by the <code>character_set_database</code> parameter. You can use the <i>Parameter Groups</i> option of the <a href=\"https://console.aws.amazon.com/rds/\">Amazon Neptune console</a> or the <a>DescribeDBClusterParameters</a> command to verify that your DB cluster parameter group has been created or modified.</p> </important>"
+      "documentation":"<p>Creates a new DB cluster parameter group.</p> <p>Parameters in a DB cluster parameter group apply to all of the instances in a DB cluster.</p> <p> A DB cluster parameter group is initially created with the default parameters for the database engine used by instances in the DB cluster. To provide custom values for any of the parameters, you must modify the group after creating it using <a>ModifyDBClusterParameterGroup</a>. Once you've created a DB cluster parameter group, you need to associate it with your DB cluster using <a>ModifyDBCluster</a>. When you associate a new DB cluster parameter group with a running DB cluster, you need to reboot the DB instances in the DB cluster without failover for the new DB cluster parameter group and associated settings to take effect.</p>"
     },
     "CreateDBClusterSnapshot":{
       "name":"CreateDBClusterSnapshot",
@@ -770,6 +770,19 @@
         {"shape":"ResourceNotFoundFault"}
       ],
       "documentation":"<p>Returns a list of resources (for example, DB instances) that have at least one pending maintenance action.</p>"
+    },
+    "DescribeServerlessV2PlatformVersions":{
+      "name":"DescribeServerlessV2PlatformVersions",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"DescribeServerlessV2PlatformVersionsMessage"},
+      "output":{
+        "shape":"ServerlessV2PlatformVersionsMessage",
+        "resultWrapper":"DescribeServerlessV2PlatformVersionsResult"
+      },
+      "documentation":"<p>Describes the properties of specific platform versions for Neptune Serverless.</p>"
     },
     "DescribeValidDBInstanceModifications":{
       "name":"DescribeValidDBInstanceModifications",
@@ -2395,6 +2408,10 @@
         "ServerlessV2ScalingConfiguration":{
           "shape":"ServerlessV2ScalingConfigurationInfo",
           "documentation":"<p>Shows the scaling configuration for a Neptune Serverless DB cluster.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/neptune/latest/userguide/neptune-serverless-using.html\">Using Amazon Neptune Serverless</a> in the <i>Amazon Neptune User Guide</i>.</p>"
+        },
+        "ServerlessV2PlatformVersion":{
+          "shape":"String",
+          "documentation":"<p>The serverless platform version used by the Neptune Serverless DB cluster.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/neptune/latest/userguide/neptune-serverless-using.html\">Using Amazon Neptune Serverless</a> in the <i>Amazon Neptune User Guide</i>.</p>"
         },
         "GlobalClusterIdentifier":{
           "shape":"GlobalClusterIdentifier",
@@ -4257,6 +4274,39 @@
         "MaxRecords":{
           "shape":"IntegerOptional",
           "documentation":"<p> The maximum number of records to include in the response. If more records exist than the specified <code>MaxRecords</code> value, a pagination token called a marker is included in the response so that the remaining results can be retrieved.</p> <p>Default: 100</p> <p>Constraints: Minimum 20, maximum 100.</p>"
+        }
+      }
+    },
+    "DescribeServerlessV2PlatformVersionsMessage":{
+      "type":"structure",
+      "members":{
+        "ServerlessV2PlatformVersion":{
+          "shape":"String",
+          "documentation":"<p>A specific platform version to return details for.</p> <p>Example: <code>3</code> </p>"
+        },
+        "Engine":{
+          "shape":"String",
+          "documentation":"<p>The database engine to return platform version details for.</p>"
+        },
+        "Filters":{
+          "shape":"FilterList",
+          "documentation":"<p>This parameter isn't currently supported.</p>"
+        },
+        "DefaultOnly":{
+          "shape":"BooleanOptional",
+          "documentation":"<p>Specifies whether to return only the default platform versions for each engine. The default platform version is the version used for new DB clusters.</p>"
+        },
+        "IncludeAll":{
+          "shape":"BooleanOptional",
+          "documentation":"<p>Specifies whether to also include platform versions which are no longer in use.</p>"
+        },
+        "MaxRecords":{
+          "shape":"IntegerOptional",
+          "documentation":"<p>The maximum number of records to include in the response. If more than the <code>MaxRecords</code> value is available, a pagination token called a marker is included in the response so you can retrieve the remaining results.</p> <p>Default: 20</p> <p>Constraints: Minimum 1, maximum 200.</p>"
+        },
+        "Marker":{
+          "shape":"String",
+          "documentation":"<p>An optional pagination token provided by a previous request. If this parameter is specified, the response includes only records beyond the marker, up to the value specified by <code>MaxRecords</code>.</p>"
         }
       }
     },
@@ -6314,6 +6364,68 @@
     "SensitiveString":{
       "type":"string",
       "sensitive":true
+    },
+    "ServerlessV2FeaturesSupport":{
+      "type":"structure",
+      "members":{
+        "MinCapacity":{
+          "shape":"DoubleOptional",
+          "documentation":"<p>Specifies the lower Neptune capacity unit (NCU) limit that a serverless platform version supports.</p>"
+        },
+        "MaxCapacity":{
+          "shape":"DoubleOptional",
+          "documentation":"<p>Specifies the upper Neptune capacity unit (NCU) limit that a serverless platform version supports.</p>"
+        }
+      },
+      "documentation":"<p>Specifies any Neptune Serverless properties or limits that differ between serverless platform versions.</p>"
+    },
+    "ServerlessV2PlatformVersionInfo":{
+      "type":"structure",
+      "members":{
+        "ServerlessV2PlatformVersion":{
+          "shape":"String",
+          "documentation":"<p>The version number of the serverless platform.</p>"
+        },
+        "ServerlessV2PlatformVersionDescription":{
+          "shape":"String",
+          "documentation":"<p>The description of the serverless platform.</p>"
+        },
+        "Engine":{
+          "shape":"String",
+          "documentation":"<p>The name of the database engine.</p>"
+        },
+        "ServerlessV2FeaturesSupport":{
+          "shape":"ServerlessV2FeaturesSupport",
+          "documentation":"<p>Specifies any Neptune Serverless properties or limits that differ between serverless platform versions. You can retrieve the platform version of an existing DB cluster and check whether that version supports certain serverless features before you attempt to use those features.</p>"
+        },
+        "Status":{
+          "shape":"String",
+          "documentation":"<p>The status of the serverless platform version. Valid statuses are the following:</p> <ul> <li> <p> <code>enabled</code> - The platform version is in use.</p> </li> <li> <p> <code>disabled</code> - The platform version is not in use.</p> </li> </ul>"
+        },
+        "IsDefault":{
+          "shape":"Boolean",
+          "documentation":"<p>Indicates whether this platform version is the default version for the engine. The default platform version is the version used for new DB clusters.</p>"
+        }
+      },
+      "documentation":"<p>This data type is used as a response element in the <code>DescribeServerlessV2PlatformVersions</code> action. It describes the properties of a specific Neptune Serverless platform version.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/neptune/latest/userguide/neptune-serverless-using.html\">Using Amazon Neptune Serverless</a> in the <i>Amazon Neptune User Guide</i>.</p>"
+    },
+    "ServerlessV2PlatformVersionList":{
+      "type":"list",
+      "member":{"shape":"ServerlessV2PlatformVersionInfo"}
+    },
+    "ServerlessV2PlatformVersionsMessage":{
+      "type":"structure",
+      "members":{
+        "Marker":{
+          "shape":"String",
+          "documentation":"<p>An optional pagination token provided by a previous request. If this parameter is specified, the response includes only records beyond the marker, up to the value specified by <code>MaxRecords</code>.</p>"
+        },
+        "ServerlessV2PlatformVersions":{
+          "shape":"ServerlessV2PlatformVersionList",
+          "documentation":"<p>A list of <a>ServerlessV2PlatformVersionInfo</a> elements.</p>"
+        }
+      },
+      "documentation":"<p>Contains the result of a successful invocation of the <code>DescribeServerlessV2PlatformVersions</code> action.</p>"
     },
     "ServerlessV2ScalingConfiguration":{
       "type":"structure",

@@ -638,7 +638,7 @@
         },
         "outputS3KeyPrefix":{
           "shape":"CreateQuantumTaskRequestOutputS3KeyPrefixString",
-          "documentation":"<p>The key prefix for the location in the S3 bucket to store quantum task results in.</p>"
+          "documentation":"<p>The key prefix for the location in the S3 bucket to store quantum task results in. For example, <code>results/</code>. Must not contain path traversal sequences such as <code>../</code> or <code>./</code>. The following characters are not valid in the key prefix:</p> <ul> <li> <p>Braces (<code>{</code> or <code>}</code>)</p> </li> <li> <p>Brackets (<code>[</code> or <code>]</code>)</p> </li> <li> <p>Less than or greater than sign (<code>&lt;</code> or <code>&gt;</code>)</p> </li> <li> <p>Backslash (<code>\\</code>)</p> </li> <li> <p>Vertical bar or pipe (<code>|</code>)</p> </li> <li> <p>Caret or circumflex (<code>^</code>)</p> </li> <li> <p>Tilde (<code>~</code>)</p> </li> <li> <p>Grave accent or backtick (<code>`</code>)</p> </li> <li> <p>Percent character (<code>%</code>)</p> </li> <li> <p>Pound sign (<code>#</code>)</p> </li> <li> <p>Quotation mark (<code>\"</code>)</p> </li> <li> <p>Non-printable ASCII characters (128–255 decimal characters)</p> </li> </ul>"
         },
         "action":{
           "shape":"JsonValue",
@@ -843,7 +843,42 @@
       "enum":[
         "ONLINE",
         "OFFLINE",
-        "RETIRED"
+        "RETIRED",
+        "PAUSED"
+      ]
+    },
+    "DeviceStatusReason":{
+      "type":"structure",
+      "required":[
+        "reason",
+        "updatedAt"
+      ],
+      "members":{
+        "reason":{
+          "shape":"DeviceStatusReasonCode",
+          "documentation":"<p>The reason code for the current status of the device.</p>"
+        },
+        "startedAt":{
+          "shape":"SyntheticTimestamp_date_time",
+          "documentation":"<p>The time at which the device status reason started.</p>"
+        },
+        "estimatedEndAt":{
+          "shape":"SyntheticTimestamp_date_time",
+          "documentation":"<p>The estimated time at which the current status reason will end.</p>"
+        },
+        "updatedAt":{
+          "shape":"SyntheticTimestamp_date_time",
+          "documentation":"<p>The time of the most recent update to the device status reason.</p>"
+        }
+      },
+      "documentation":"<p>Provides information about the reason for the current status of a device.</p>"
+    },
+    "DeviceStatusReasonCode":{
+      "type":"string",
+      "enum":[
+        "OUTSIDE_AVAILABILITY_WINDOW",
+        "MAINTENANCE",
+        "RESERVATION"
       ]
     },
     "DeviceSummary":{
@@ -950,6 +985,10 @@
         "deviceStatus":{
           "shape":"DeviceStatus",
           "documentation":"<p>The status of the device.</p>"
+        },
+        "deviceStatusReason":{
+          "shape":"DeviceStatusReason",
+          "documentation":"<p>The reason for the current status of the device, including status reason codes and timestamps.</p>"
         },
         "deviceCapabilities":{
           "shape":"JsonValue",
@@ -1325,13 +1364,6 @@
         "ml.c5n.4xlarge",
         "ml.c5n.9xlarge",
         "ml.c5n.18xlarge",
-        "ml.p2.xlarge",
-        "ml.p2.8xlarge",
-        "ml.p2.16xlarge",
-        "ml.p3.2xlarge",
-        "ml.p3.8xlarge",
-        "ml.p3.16xlarge",
-        "ml.p3dn.24xlarge",
         "ml.p4d.24xlarge",
         "ml.g4dn.xlarge",
         "ml.g4dn.2xlarge",
@@ -1842,18 +1874,18 @@
       "members":{
         "name":{
           "shape":"String64",
-          "documentation":"<p>The name of the hybrid job parameter to filter based on. Filter name can be either <code>jobArn</code> or <code>createdAt</code>. </p>"
+          "documentation":"<p>The name of the hybrid job parameter to filter based on. Supported filter names:</p> <p> <code>jobArn</code> — Filter by the job ARN. Supports the <code>EQUAL</code> operator only. Cannot be combined with other filters.</p> <p> <code>jobName</code> — Filter by the job name. Supports the <code>EQUAL</code> operator for exact match, or the <code>CONTAINS</code> operator for substring match. For example, use <code>CONTAINS</code> with a value of <code>my-experiment</code> to find all jobs whose name includes \"my-experiment\".</p> <p> <code>deviceArn</code> — Filter by the target device. Supports the <code>EQUAL</code> operator only. The value can be a device ARN (for example, <code>arn:aws:braket:us-east-1::device/qpu/ionq/Aria-1</code>) or a local simulator identifier (for example, <code>local:braket/default</code>).</p> <p> <code>createdAt</code> — Filter by the job creation time. Supports the <code>EQUAL</code>, <code>GT</code>, <code>GTE</code>, <code>LT</code>, <code>LTE</code>, and <code>BETWEEN</code> operators. Values must be in RFC 3339 date-time format.</p>"
         },
         "values":{
           "shape":"SearchJobsFilterValuesList",
-          "documentation":"<p>The values used to filter hybrid jobs based on the filter name and operator.</p>"
+          "documentation":"<p>The values used to filter hybrid jobs based on the filter name and operator. Each filter accepts an array of values. Most filters accept a single value, except <code>createdAt</code> with the <code>BETWEEN</code> operator, which requires exactly two values.</p>"
         },
         "operator":{
           "shape":"SearchJobsFilterOperator",
-          "documentation":"<p>An operator to use for the filter.</p>"
+          "documentation":"<p>An operator to use for the filter. The supported operators depend on the filter name. See the <code>name</code> parameter for details.</p>"
         }
       },
-      "documentation":"<p>A filter used to search for Amazon Braket hybrid jobs.</p>"
+      "documentation":"<p>A filter used to search for Amazon Braket hybrid jobs. You can combine multiple filters in a single request, except that <code>jobArn</code> cannot be combined with any other filter.</p>"
     },
     "SearchJobsFilterOperator":{
       "type":"string",
@@ -2011,7 +2043,7 @@
       "members":{
         "name":{
           "shape":"String64",
-          "documentation":"<p>The name of the field to filter on. Currently only supports <code>deviceArn</code>.</p>"
+          "documentation":"<p>The name of the field to filter on. Currently supports <code>deviceArn</code> and <code>spendingLimitArn</code>.</p>"
         },
         "values":{
           "shape":"SearchSpendingLimitsFilterValuesList",

@@ -13,6 +13,28 @@
     "uid":"signin-2023-01-01"
   },
   "operations":{
+    "BatchRevokeSessions":{
+      "name":"BatchRevokeSessions",
+      "http":{
+        "method":"POST",
+        "requestUri":"/batch-revoke-sessions",
+        "responseCode":200
+      },
+      "input":{"shape":"BatchRevokeSessionsInput"},
+      "output":{"shape":"BatchRevokeSessionsOutput"},
+      "errors":[
+        {"shape":"TooManyRequestsError"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"}
+      ],
+      "documentation":"<p>Revokes up to five sign-in sessions. A revoked session can no longer be refreshed. Revoking a session that is already revoked succeeds. Each session must belong to the identity specified by principalArn, or to the caller if principalArn is omitted. Failures for individual sessions are returned in the errors list and do not fail the whole request.</p>",
+      "idempotent":true,
+      "staticContextParams":{
+        "IsControlPlane":{"value":true}
+      }
+    },
     "CreateBearerToken":{
       "name":"CreateBearerToken",
       "http":{
@@ -185,6 +207,28 @@
         "IsControlPlane":{"value":true}
       }
     },
+    "GetSession":{
+      "name":"GetSession",
+      "http":{
+        "method":"POST",
+        "requestUri":"/get-session",
+        "responseCode":200
+      },
+      "input":{"shape":"GetSessionInput"},
+      "output":{"shape":"GetSessionOutput"},
+      "errors":[
+        {"shape":"TooManyRequestsError"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"}
+      ],
+      "documentation":"<p>Returns the details of a single sign-in session. The session must belong to the identity specified by principalArn, or to the caller if principalArn is omitted. A session that belongs to a different identity or account is reported as not found.</p>",
+      "readonly":true,
+      "staticContextParams":{
+        "IsControlPlane":{"value":true}
+      }
+    },
     "IntrospectOAuth2TokenWithIAM":{
       "name":"IntrospectOAuth2TokenWithIAM",
       "http":{
@@ -223,6 +267,27 @@
         {"shape":"AccessDeniedException"}
       ],
       "documentation":"<p>Retrieve all permission statements in the account's SignIn resource-based policy</p>",
+      "readonly":true,
+      "staticContextParams":{
+        "IsControlPlane":{"value":true}
+      }
+    },
+    "ListSessions":{
+      "name":"ListSessions",
+      "http":{
+        "method":"POST",
+        "requestUri":"/list-sessions",
+        "responseCode":200
+      },
+      "input":{"shape":"ListSessionsInput"},
+      "output":{"shape":"ListSessionsOutput"},
+      "errors":[
+        {"shape":"TooManyRequestsError"},
+        {"shape":"InternalServerException"},
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"}
+      ],
+      "documentation":"<p>Lists sign-in sessions for an IAM identity in your account. If you omit principalArn, the operation lists the caller's own sessions. Specify a user or role ARN to list that identity's sessions, or specify arn:aws:iam::{account-id}:* to list all sessions in the account. Filters are combined with a logical AND.</p>",
       "readonly":true,
       "staticContextParams":{
         "IsControlPlane":{"value":true}
@@ -350,11 +415,81 @@
       "min":12,
       "pattern":"[0-9]{12}"
     },
+    "Assertion":{
+      "type":"string",
+      "max":20000,
+      "min":4,
+      "sensitive":true
+    },
     "AuthorizationCode":{
       "type":"string",
       "documentation":"<p>Authorization code received from AWS Sign-In. Used only in the authorization code redemption flow.</p>",
       "max":512,
       "min":1
+    },
+    "BatchRevokeSessionError":{
+      "type":"structure",
+      "required":[
+        "sessionArn",
+        "code",
+        "message"
+      ],
+      "members":{
+        "sessionArn":{
+          "shape":"SessionArn",
+          "documentation":"<p>The session ARN</p>"
+        },
+        "code":{
+          "shape":"String",
+          "documentation":"<p>The error code</p>"
+        },
+        "message":{
+          "shape":"String",
+          "documentation":"<p>The error message</p>"
+        }
+      },
+      "documentation":"<p>A session that could not be revoked</p>"
+    },
+    "BatchRevokeSessionErrorList":{
+      "type":"list",
+      "member":{"shape":"BatchRevokeSessionError"}
+    },
+    "BatchRevokeSessionsInput":{
+      "type":"structure",
+      "required":["sessionArns"],
+      "members":{
+        "principalArn":{
+          "shape":"PrincipalArnFilter",
+          "documentation":"<p>The identity that owns the sessions. Omit to use the caller. Specify arn:aws:iam::{account-id}:* to revoke any session in the account.</p>"
+        },
+        "sessionArns":{
+          "shape":"SessionArnList",
+          "documentation":"<p>The ARNs of the sessions to revoke</p>"
+        },
+        "reason":{
+          "shape":"RevocationReason",
+          "documentation":"<p>The reason for revoking the sessions</p>"
+        }
+      },
+      "documentation":"<p>Input for BatchRevokeSessions operation</p>"
+    },
+    "BatchRevokeSessionsOutput":{
+      "type":"structure",
+      "required":[
+        "revokedSessions",
+        "errors"
+      ],
+      "members":{
+        "revokedSessions":{
+          "shape":"RevokedSessionList",
+          "documentation":"<p>Sessions that were revoked</p>"
+        },
+        "errors":{
+          "shape":"BatchRevokeSessionErrorList",
+          "documentation":"<p>Sessions that could not be revoked</p>"
+        }
+      },
+      "documentation":"<p>Output for BatchRevokeSessions operation</p>"
     },
     "BearerTokenExpiresIn":{
       "type":"integer",
@@ -387,6 +522,14 @@
       "max":64,
       "min":1,
       "pattern":"[!-~]+"
+    },
+    "ClientType":{
+      "type":"string",
+      "documentation":"<p>Type of OAuth client that created a session</p>",
+      "enum":[
+        "CLI",
+        "MCP"
+      ]
     },
     "CodeVerifier":{
       "type":"string",
@@ -625,7 +768,7 @@
       "members":{
         "accessToken":{
           "shape":"OAuthAccessToken",
-          "documentation":"<p>Access token containing principal identity, resource scope, and session metadata.</p>",
+          "documentation":"<p>The access token containing principal identity, resource scope, and session metadata.</p>",
           "locationName":"access_token"
         },
         "tokenType":{
@@ -635,7 +778,7 @@
         },
         "expiresIn":{
           "shape":"TokenExpiresIn",
-          "documentation":"<p>Token lifetime in seconds. Value is the minimum of the caller's session validity and 1 hour (3600 seconds).</p>",
+          "documentation":"<p>The token lifetime in seconds. Value is the minimum of the caller's session validity and 1 hour (3600 seconds).</p>",
           "locationName":"expires_in"
         }
       },
@@ -647,7 +790,7 @@
       "members":{
         "grantType":{
           "shape":"TokenExchangeGrantType",
-          "documentation":"<p>The OAuth 2.0 grant type. Currently only supports &quot;urn:ietf:params:oauth:grant-type:token-exchange&quot;.</p>",
+          "documentation":"<p>The OAuth 2.0 grant type. Currently supports &quot;urn:ietf:params:oauth:grant-type:token-exchange&quot; and &quot;urn:ietf:params:oauth:grant-type:jwt-bearer&quot;.</p>",
           "locationName":"grant_type"
         },
         "subjectToken":{
@@ -660,13 +803,22 @@
           "documentation":"<p>The token type of the subject token. Currently only supports &quot;urn:ietf:params:oauth:token-type:jwt&quot;. Required when &quot;grant_type=urn:ietf:params:oauth:grant-type:token-exchange&quot;.</p>",
           "locationName":"subject_token_type"
         },
+        "assertion":{
+          "shape":"Assertion",
+          "documentation":"<p>The JWT authorization grant, as defined in RFC 7523. Required when &quot;grant_type=urn:ietf:params:oauth:grant-type:jwt-bearer&quot;.</p>"
+        },
+        "clientId":{
+          "shape":"JwtBearerClientId",
+          "documentation":"<p>The OAuth 2.0 client identifier. If provided with &quot;grant_type=urn:ietf:params:oauth:grant-type:jwt-bearer&quot;, must match the assertion's &quot;client_id&quot; claim.</p>",
+          "locationName":"client_id"
+        },
         "resource":{
           "shape":"Resource",
-          "documentation":"<p>The OAuth resource for which the access token is requested. Required when &quot;grant_type=urn:ietf:params:oauth:grant-type:token-exchange&quot;. Example: &quot;glue.amazonaws.com&quot;.</p>"
+          "documentation":"<p>The OAuth resource for which the access token is requested:</p> <ul> <li>&quot;grant_type=urn:ietf:params:oauth:grant-type:token-exchange&quot;: Required. Must be a service principal. Example: &quot;glue.amazonaws.com&quot;.</li> <li>&quot;grant_type=urn:ietf:params:oauth:grant-type:jwt-bearer&quot;: Required when the assertion has no &quot;resource&quot; claim, otherwise must match it. Must be a URI. Example: &quot;https://aws-mcp.us-east-1.api.aws/mcp&quot;.</li> </ul>"
         },
         "scope":{
           "shape":"Scope",
-          "documentation":"<p>IAM managed policy Amazon Resource Names (ARNs) to apply as session policies that further scope down the permissions of the issued access token, provided as a space-delimited list. Example: &quot;arn:aws:iam::444455556666:policy/MyPolicy&quot;.</p>"
+          "documentation":"<p>The IAM managed policy Amazon Resource Names (ARNs) to apply as session policies that further scope down the permissions of the issued access token, provided as a space-delimited list. Example: &quot;arn:aws:iam::444455556666:policy/MyPolicy&quot;.</p> <p>If provided with &quot;grant_type=urn:ietf:params:oauth:grant-type:jwt-bearer&quot;, must match the assertion's &quot;scope&quot; claim.</p>"
         }
       },
       "documentation":"<p>Input structure for CreateOAuth2TokenWithTokenExchange operation</p>"
@@ -681,12 +833,12 @@
       "members":{
         "accessToken":{
           "shape":"OAuthAccessToken",
-          "documentation":"<p>Access token containing principal identity, resource scope, and session metadata.</p>",
+          "documentation":"<p>The access token containing principal identity, resource scope, and session metadata.</p>",
           "locationName":"access_token"
         },
         "issuedTokenType":{
           "shape":"IssuedOAuthAccessTokenType",
-          "documentation":"<p>The token type of the issued token. Always &quot;urn:ietf:params:oauth:token-type:access_token&quot; as defined in RFC 8693 §2.2.1.</p>",
+          "documentation":"<p>The token type of the issued token. Returned when &quot;grant_type=urn:ietf:params:oauth:grant-type:token-exchange&quot;. Value is &quot;urn:ietf:params:oauth:token-type:access_token&quot; as defined in RFC 8693 §2.2.1.</p>",
           "locationName":"issued_token_type"
         },
         "tokenType":{
@@ -696,11 +848,19 @@
         },
         "expiresIn":{
           "shape":"TokenExpiresIn",
-          "documentation":"<p>Token lifetime in seconds. Value is the minimum of the subject token's validity and 1 hour (3600 seconds).</p>",
+          "documentation":"<p>The token lifetime in seconds. Value is the minimum of the provided token's validity and 1 hour (3600 seconds).</p>",
           "locationName":"expires_in"
+        },
+        "resource":{
+          "shape":"Resource",
+          "documentation":"<p>The resource the access token is scoped to. Returned when &quot;grant_type=urn:ietf:params:oauth:grant-type:jwt-bearer&quot;.</p>"
+        },
+        "scope":{
+          "shape":"Scope",
+          "documentation":"<p>The IAM managed policy ARNs applied as session policies, as a space-delimited list. Returned when &quot;grant_type=urn:ietf:params:oauth:grant-type:jwt-bearer&quot; and the assertion has a scope.</p>"
         }
       },
-      "documentation":"<p>Output structure for CreateOAuth2TokenWithTokenExchange operation.</p> <p>Contains the access token, issued token type, token type, and expiration as defined in RFC 6749 §5.1 and RFC 8693 §2.2.1.</p>"
+      "documentation":"<p>Output structure for CreateOAuth2TokenWithTokenExchange operation.</p> <p>Contains the access token, token type, and expiration as defined in RFC 6749 §5.1, plus fields specific to the grant type.</p>"
     },
     "DeleteConsoleAuthorizationConfigurationInput":{
       "type":"structure",
@@ -761,7 +921,7 @@
       "documentation":"<p>Principal to exclude from permission statements</p>",
       "max":2048,
       "min":20,
-      "pattern":"arn:aws:((iam::[0-9]{12}:role/[a-zA-Z0-9_+=,.@-]{1,64})|(iam::[0-9]{12}:user/[a-zA-Z0-9_+=,.@-]{1,64})|(sts::[0-9]{12}:federated-user/[a-zA-Z0-9_+=,.@-]{2,193})|(iam::[0-9]{12}:root))"
+      "pattern":"arn:aws(-[a-z]+)*:((iam::[0-9]{12}:role/[a-zA-Z0-9_+=,.@-]{1,64})|(iam::[0-9]{12}:user/[a-zA-Z0-9_+=,.@-]{1,64})|(sts::[0-9]{12}:federated-user/[a-zA-Z0-9_+=,.@-]{2,193})|(iam::[0-9]{12}:root))"
     },
     "ExpiresIn":{
       "type":"integer",
@@ -818,6 +978,85 @@
         }
       },
       "documentation":"<p>Output for GetResourcePolicy operation</p>"
+    },
+    "GetSessionInput":{
+      "type":"structure",
+      "required":["sessionArn"],
+      "members":{
+        "sessionArn":{
+          "shape":"SessionArn",
+          "documentation":"<p>The ARN of the session to retrieve</p>"
+        },
+        "principalArn":{
+          "shape":"PrincipalArnFilter",
+          "documentation":"<p>The identity that owns the session. Omit to use the caller. Specify arn:aws:iam::{account-id}:* to retrieve any session in the account.</p>"
+        }
+      },
+      "documentation":"<p>Input for GetSession operation</p>"
+    },
+    "GetSessionOutput":{
+      "type":"structure",
+      "required":[
+        "sessionArn",
+        "principalArn",
+        "issuedAt",
+        "expiresAt"
+      ],
+      "members":{
+        "sessionArn":{
+          "shape":"SessionArn",
+          "documentation":"<p>The session ARN</p>"
+        },
+        "principalArn":{
+          "shape":"PrincipalArn",
+          "documentation":"<p>The IAM identity that owns the session</p>"
+        },
+        "role":{
+          "shape":"PrincipalArn",
+          "documentation":"<p>The IAM role for the session, when the owner is a role</p>"
+        },
+        "status":{
+          "shape":"SessionStatus",
+          "documentation":"<p>The session status</p>"
+        },
+        "clientId":{
+          "shape":"String",
+          "documentation":"<p>The OAuth client that created the session</p>"
+        },
+        "clientType":{
+          "shape":"ClientType",
+          "documentation":"<p>The type of OAuth client that created the session</p>"
+        },
+        "resource":{
+          "shape":"String",
+          "documentation":"<p>The resource that the session's tokens are bound to</p>"
+        },
+        "issuedAt":{
+          "shape":"Long",
+          "documentation":"<p>The time the session was created, in Unix epoch seconds</p>"
+        },
+        "expiresAt":{
+          "shape":"Long",
+          "documentation":"<p>The time the session expires, in Unix epoch seconds</p>"
+        },
+        "lastUsedAt":{
+          "shape":"Long",
+          "documentation":"<p>The time the session was last refreshed, in Unix epoch seconds</p>"
+        },
+        "issuedInRegion":{
+          "shape":"String",
+          "documentation":"<p>The AWS Region where the session was created</p>"
+        },
+        "originSessionArn":{
+          "shape":"SessionArn",
+          "documentation":"<p>The ARN of the session this session originated from</p>"
+        },
+        "userAgent":{
+          "shape":"String",
+          "documentation":"<p>The user agent captured when the session was created or last refreshed</p>"
+        }
+      },
+      "documentation":"<p>Output for GetSession operation</p>"
     },
     "GrantType":{
       "type":"string",
@@ -952,7 +1191,7 @@
     "IntrospectionToken":{
       "type":"string",
       "documentation":"<p>Token string submitted for introspection. May be an AWS Sign-In access token or refresh token.</p>",
-      "max":4096,
+      "max":12288,
       "min":1,
       "pattern":"ASO[AR][A-Za-z0-9+/=_\\-]+",
       "sensitive":true
@@ -1001,6 +1240,11 @@
       "type":"string",
       "pattern":"urn:ietf:params:oauth:token-type:access_token"
     },
+    "JwtBearerClientId":{
+      "type":"string",
+      "max":212,
+      "min":1
+    },
     "ListResourcePermissionStatementsInput":{
       "type":"structure",
       "members":{
@@ -1029,6 +1273,55 @@
         }
       },
       "documentation":"<p>Output for ListResourcePermissionStatements operation</p>"
+    },
+    "ListSessionsInput":{
+      "type":"structure",
+      "members":{
+        "principalArn":{
+          "shape":"PrincipalArnFilter",
+          "documentation":"<p>The identity whose sessions to list. Omit to list the caller's own sessions. Specify arn:aws:iam::{account-id}:* to list all sessions in the account.</p>"
+        },
+        "maxResults":{
+          "shape":"SessionsMaxResults",
+          "documentation":"<p>Maximum number of results to return</p>"
+        },
+        "nextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>Token for pagination</p>"
+        },
+        "status":{
+          "shape":"SessionStatus",
+          "documentation":"<p>Returns only sessions with this status</p>"
+        },
+        "clientId":{
+          "shape":"String",
+          "documentation":"<p>Returns only sessions created by this OAuth client</p>"
+        },
+        "issuedAfter":{
+          "shape":"Long",
+          "documentation":"<p>Returns only sessions created at or after this time, in Unix epoch seconds</p>"
+        },
+        "issuedBefore":{
+          "shape":"Long",
+          "documentation":"<p>Returns only sessions created before this time, in Unix epoch seconds</p>"
+        }
+      },
+      "documentation":"<p>Input for ListSessions operation</p>"
+    },
+    "ListSessionsOutput":{
+      "type":"structure",
+      "required":["items"],
+      "members":{
+        "items":{
+          "shape":"SessionSummaryList",
+          "documentation":"<p>List of session summaries</p>"
+        },
+        "nextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>Token for next page of results</p>"
+        }
+      },
+      "documentation":"<p>Output for ListSessions operation</p>"
     },
     "Long":{
       "type":"long",
@@ -1059,6 +1352,7 @@
         "invalid_grant",
         "invalid_scope",
         "invalid_target",
+        "invalid_client",
         "rate_exceeded",
         "service_unavailable"
       ]
@@ -1134,6 +1428,20 @@
       "key":{"shape":"String"},
       "value":{"shape":"String"},
       "documentation":"<p>IAM principal identifier</p>"
+    },
+    "PrincipalArn":{
+      "type":"string",
+      "documentation":"<p>IAM identity that owns a session</p>",
+      "max":2048,
+      "min":20,
+      "pattern":"arn:aws:((iam::[0-9]{12}:role/[a-zA-Z0-9_+=,.@-]{1,64})|(iam::[0-9]{12}:user/[a-zA-Z0-9_+=,.@-]{1,64})|(sts::[0-9]{12}:federated-user/[a-zA-Z0-9_+=,.@-]{2,193})|(iam::[0-9]{12}:root))"
+    },
+    "PrincipalArnFilter":{
+      "type":"string",
+      "documentation":"<p>IAM identity ARN, or arn:aws:iam::{account-id}:* for all identities in the account</p>",
+      "max":2048,
+      "min":20,
+      "pattern":"arn:aws:((iam::[0-9]{12}:role/[a-zA-Z0-9_+=,.@-]{1,64})|(iam::[0-9]{12}:user/[a-zA-Z0-9_+=,.@-]{1,64})|(sts::[0-9]{12}:federated-user/[a-zA-Z0-9_+=,.@-]{2,193})|(iam::[0-9]{12}:root)|(iam::[0-9]{12}:[*]))"
     },
     "PutConsoleAuthorizationConfigurationInput":{
       "type":"structure",
@@ -1227,7 +1535,7 @@
     "RefreshToken":{
       "type":"string",
       "documentation":"<p>The refresh token returned from authorization code redemption. Used in subsequent token refresh requests.</p>",
-      "max":2048,
+      "max":12288,
       "min":1,
       "sensitive":true
     },
@@ -1264,10 +1572,16 @@
       },
       "exception":true
     },
+    "RevocationReason":{
+      "type":"string",
+      "documentation":"<p>Reason for revoking a session</p>",
+      "max":256,
+      "min":1
+    },
     "RevocationToken":{
       "type":"string",
       "documentation":"<p>Refresh token string submitted for revocation.</p>",
-      "max":4096,
+      "max":12288,
       "min":1,
       "pattern":"ASOR[A-Za-z0-9+/=_\\-]+",
       "sensitive":true
@@ -1288,6 +1602,21 @@
       "type":"structure",
       "members":{},
       "documentation":"<p>Output structure for RevokeOAuth2TokenWithIAM operation</p> <p>RFC 7009 §2.2 revocation response. The endpoint returns 200 OK with an empty body on success; there are no response fields.</p>"
+    },
+    "RevokedSession":{
+      "type":"structure",
+      "required":["sessionArn"],
+      "members":{
+        "sessionArn":{
+          "shape":"SessionArn",
+          "documentation":"<p>The revoked session ARN</p>"
+        }
+      },
+      "documentation":"<p>A session that was revoked</p>"
+    },
+    "RevokedSessionList":{
+      "type":"list",
+      "member":{"shape":"RevokedSession"}
     },
     "Scope":{
       "type":"string",
@@ -1335,6 +1664,85 @@
       "exception":true,
       "fault":true,
       "retryable":{"throttling":false}
+    },
+    "Session":{
+      "type":"structure",
+      "required":[
+        "sessionArn",
+        "principalArn",
+        "issuedAt",
+        "expiresAt"
+      ],
+      "members":{
+        "sessionArn":{
+          "shape":"SessionArn",
+          "documentation":"<p>The session ARN</p>"
+        },
+        "principalArn":{
+          "shape":"PrincipalArn",
+          "documentation":"<p>The IAM identity that owns the session</p>"
+        },
+        "role":{
+          "shape":"PrincipalArn",
+          "documentation":"<p>The IAM role for the session, when the owner is a role</p>"
+        },
+        "status":{
+          "shape":"SessionStatus",
+          "documentation":"<p>The session status</p>"
+        },
+        "issuedAt":{
+          "shape":"Long",
+          "documentation":"<p>The time the session was created, in Unix epoch seconds</p>"
+        },
+        "expiresAt":{
+          "shape":"Long",
+          "documentation":"<p>The time the session expires, in Unix epoch seconds</p>"
+        },
+        "clientId":{
+          "shape":"String",
+          "documentation":"<p>The OAuth client that created the session</p>"
+        },
+        "clientType":{
+          "shape":"ClientType",
+          "documentation":"<p>The type of OAuth client that created the session</p>"
+        },
+        "resource":{
+          "shape":"String",
+          "documentation":"<p>The resource that the session's tokens are bound to</p>"
+        }
+      },
+      "documentation":"<p>Summary of a sign-in session</p>"
+    },
+    "SessionArn":{
+      "type":"string",
+      "documentation":"<p>Sign-in session ARN</p>",
+      "max":256,
+      "min":1
+    },
+    "SessionArnList":{
+      "type":"list",
+      "member":{"shape":"SessionArn"},
+      "max":5,
+      "min":1
+    },
+    "SessionStatus":{
+      "type":"string",
+      "documentation":"<p>Status of a sign-in session</p>",
+      "enum":[
+        "ACTIVE",
+        "REVOKED"
+      ]
+    },
+    "SessionSummaryList":{
+      "type":"list",
+      "member":{"shape":"Session"}
+    },
+    "SessionsMaxResults":{
+      "type":"integer",
+      "documentation":"<p>Maximum number of sessions to return</p>",
+      "box":true,
+      "max":100,
+      "min":1
     },
     "SigninResourceBasedPolicy":{
       "type":"structure",
@@ -1397,7 +1805,7 @@
     },
     "TokenExchangeGrantType":{
       "type":"string",
-      "pattern":"urn:ietf:params:oauth:grant-type:token-exchange"
+      "pattern":"urn:ietf:params:oauth:grant-type:(token-exchange|jwt-bearer)"
     },
     "TokenExpiresIn":{
       "type":"integer",

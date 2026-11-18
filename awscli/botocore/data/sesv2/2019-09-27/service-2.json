@@ -1206,6 +1206,20 @@
       ],
       "documentation":"<p>Enable or disable the automatic warm-up feature for dedicated IP addresses.</p>"
     },
+    "PutAccountDeliveryAttributes":{
+      "name":"PutAccountDeliveryAttributes",
+      "http":{
+        "method":"POST",
+        "requestUri":"/v2/email/account/delivery"
+      },
+      "input":{"shape":"PutAccountDeliveryAttributesRequest"},
+      "output":{"shape":"PutAccountDeliveryAttributesResponse"},
+      "errors":[
+        {"shape":"BadRequestException"},
+        {"shape":"TooManyRequestsException"}
+      ],
+      "documentation":"<p>Set the shared pool delivery mode for your Amazon SES account in the current Amazon Web Services Region. The mode controls whether Amazon SES can deliver your email from shared IP addresses in other Amazon Web Services Regions within the same Amazon Web Services partition.</p> <p>A change may take a few minutes to take effect. Messages that are already queued for delivery keep the mode that they were sent with.</p>"
+    },
     "PutAccountDetails":{
       "name":"PutAccountDetails",
       "http":{
@@ -1811,7 +1825,7 @@
         },
         "ContactLanguage":{
           "shape":"ContactLanguage",
-          "documentation":"<p>The language you would prefer for the case. The contact language can be one of <code>ENGLISH</code> or <code>JAPANESE</code>.</p>"
+          "documentation":"<p>The language you would prefer for the case. The contact language can be one of <code>EN</code> or <code>JA</code>.</p>"
         },
         "UseCaseDescription":{
           "shape":"UseCaseDescription",
@@ -1827,6 +1841,14 @@
         }
       },
       "documentation":"<p>An object that contains information about your account details.</p>"
+    },
+    "AccountSharedPoolDeliveryMode":{
+      "type":"string",
+      "documentation":"<p>The shared pool delivery mode for an Amazon SES account. See <code>PutAccountDeliveryAttributesRequest$SharedPoolDeliveryMode</code> for the list of supported values and their meanings.</p>",
+      "enum":[
+        "GLOBAL",
+        "REGIONAL"
+      ]
     },
     "AccountSuspendedException":{
       "type":"structure",
@@ -2057,7 +2079,7 @@
     },
     "BehaviorOnMxFailure":{
       "type":"string",
-      "documentation":"<p>The action to take if the required MX record can't be found when you send an email. When you set this value to <code>UseDefaultValue</code>, the mail is sent using <i>amazonses.com</i> as the MAIL FROM domain. When you set this value to <code>RejectMessage</code>, the Amazon SES API v2 returns a <code>MailFromDomainNotVerified</code> error, and doesn't attempt to deliver the email.</p> <p>These behaviors are taken when the custom MAIL FROM domain configuration is in the <code>Pending</code>, <code>Failed</code>, and <code>TemporaryFailure</code> states.</p>",
+      "documentation":"<p>The action to take if the required MX record can't be found when you send an email. When you set this value to <code>USE_DEFAULT_VALUE</code>, the mail is sent using <i>amazonses.com</i> as the MAIL FROM domain. When you set this value to <code>REJECT_MESSAGE</code>, the Amazon SES API v2 returns a <code>MailFromDomainNotVerifiedException</code> error, and doesn't attempt to deliver the email.</p> <p>These behaviors are taken when the custom MAIL FROM domain configuration is in the <code>PENDING</code>, <code>FAILED</code>, and <code>TEMPORARY_FAILURE</code> states.</p>",
       "enum":[
         "USE_DEFAULT_VALUE",
         "REJECT_MESSAGE"
@@ -2163,7 +2185,7 @@
         },
         "ReplacementTags":{
           "shape":"MessageTagList",
-          "documentation":"<p>A list of tags, in the form of name/value pairs, to apply to an email that you send using the <code>SendBulkTemplatedEmail</code> operation. Tags correspond to characteristics of the email that you define, so that you can publish email sending events.</p>"
+          "documentation":"<p>A list of tags, in the form of name/value pairs, to apply to an email that you send using the <code>SendBulkEmail</code> operation. Tags correspond to characteristics of the email that you define, so that you can publish email sending events.</p>"
         },
         "ReplacementEmailContent":{
           "shape":"ReplacementEmailContent",
@@ -2185,15 +2207,15 @@
       "members":{
         "Status":{
           "shape":"BulkEmailStatus",
-          "documentation":"<p>The status of a message sent using the <code>SendBulkTemplatedEmail</code> operation.</p> <p>Possible values for this parameter include:</p> <ul> <li> <p>SUCCESS: Amazon SES accepted the message, and will attempt to deliver it to the recipients.</p> </li> <li> <p>MESSAGE_REJECTED: The message was rejected because it contained a virus.</p> </li> <li> <p>MAIL_FROM_DOMAIN_NOT_VERIFIED: The sender's email address or domain was not verified.</p> </li> <li> <p>CONFIGURATION_SET_DOES_NOT_EXIST: The configuration set you specified does not exist.</p> </li> <li> <p>TEMPLATE_DOES_NOT_EXIST: The template you specified does not exist.</p> </li> <li> <p>ACCOUNT_SUSPENDED: Your account has been shut down because of issues related to your email sending practices.</p> </li> <li> <p>ACCOUNT_THROTTLED: The number of emails you can send has been reduced because your account has exceeded its allocated sending limit.</p> </li> <li> <p>ACCOUNT_DAILY_QUOTA_EXCEEDED: You have reached or exceeded the maximum number of emails you can send from your account in a 24-hour period.</p> </li> <li> <p>INVALID_SENDING_POOL_NAME: The configuration set you specified refers to an IP pool that does not exist.</p> </li> <li> <p>ACCOUNT_SENDING_PAUSED: Email sending for the Amazon SES account was disabled using the <a href=\"https://docs.aws.amazon.com/ses/latest/APIReference/API_UpdateAccountSendingEnabled.html\">UpdateAccountSendingEnabled</a> operation.</p> </li> <li> <p>CONFIGURATION_SET_SENDING_PAUSED: Email sending for this configuration set was disabled using the <a href=\"https://docs.aws.amazon.com/ses/latest/APIReference/API_UpdateConfigurationSetSendingEnabled.html\">UpdateConfigurationSetSendingEnabled</a> operation.</p> </li> <li> <p>INVALID_PARAMETER_VALUE: One or more of the parameters you specified when calling this operation was invalid. See the error message for additional information.</p> </li> <li> <p>TRANSIENT_FAILURE: Amazon SES was unable to process your request because of a temporary issue.</p> </li> <li> <p>FAILED: Amazon SES was unable to process your request. See the error message for additional information.</p> </li> </ul>"
+          "documentation":"<p>The status of a message sent using the <code>SendBulkEmail</code> operation.</p> <p>Possible values for this parameter include:</p> <ul> <li> <p> <code>SUCCESS</code> – Amazon SES accepted the message, and will attempt to deliver it to the recipients.</p> </li> <li> <p> <code>MESSAGE_REJECTED</code> – The message was rejected because it contained a virus.</p> </li> <li> <p> <code>MAIL_FROM_DOMAIN_NOT_VERIFIED</code> – The sender's email address or domain was not verified.</p> </li> <li> <p> <code>CONFIGURATION_SET_NOT_FOUND</code> – The configuration set you specified does not exist.</p> </li> <li> <p> <code>TEMPLATE_NOT_FOUND</code> – The template you specified does not exist.</p> </li> <li> <p> <code>ACCOUNT_SUSPENDED</code> – Your account has been shut down because of issues related to your email sending practices.</p> </li> <li> <p> <code>ACCOUNT_THROTTLED</code> – The number of emails you can send has been reduced because your account has exceeded its allocated sending limit.</p> </li> <li> <p> <code>ACCOUNT_DAILY_QUOTA_EXCEEDED</code> – You have reached or exceeded the maximum number of emails you can send from your account in a 24-hour period.</p> </li> <li> <p> <code>INVALID_SENDING_POOL_NAME</code> – The configuration set you specified refers to an IP pool that does not exist.</p> </li> <li> <p> <code>ACCOUNT_SENDING_PAUSED</code> – Email sending for the Amazon SES account was disabled using the <a href=\"https://docs.aws.amazon.com/ses/latest/APIReference-V2/API_PutAccountSendingAttributes.html\">PutAccountSendingAttributes</a> operation.</p> </li> <li> <p> <code>CONFIGURATION_SET_SENDING_PAUSED</code> – Email sending for this configuration set was disabled using the <a href=\"https://docs.aws.amazon.com/ses/latest/APIReference-V2/API_PutConfigurationSetSendingOptions.html\">PutConfigurationSetSendingOptions</a> operation.</p> </li> <li> <p> <code>INVALID_PARAMETER</code> – One or more of the parameters you specified when calling this operation was invalid. See the error message for additional information.</p> </li> <li> <p> <code>TRANSIENT_FAILURE</code> – Amazon SES was unable to process your request because of a temporary issue.</p> </li> <li> <p> <code>FAILED</code> – Amazon SES was unable to process your request. See the error message for additional information.</p> </li> </ul>"
         },
         "Error":{
           "shape":"ErrorMessage",
-          "documentation":"<p>A description of an error that prevented a message being sent using the <code>SendBulkTemplatedEmail</code> operation.</p>"
+          "documentation":"<p>A description of an error that prevented a message being sent using the <code>SendBulkEmail</code> operation.</p>"
         },
         "MessageId":{
           "shape":"OutboundMessageId",
-          "documentation":"<p>The unique message identifier returned from the <code>SendBulkTemplatedEmail</code> operation.</p>"
+          "documentation":"<p>The unique message identifier returned from the <code>SendBulkEmail</code> operation.</p>"
         }
       },
       "documentation":"<p>The result of the <code>SendBulkEmail</code> operation of each specified <code>BulkEmailEntry</code>.</p>"
@@ -2201,7 +2223,7 @@
     "BulkEmailEntryResultList":{
       "type":"list",
       "member":{"shape":"BulkEmailEntryResult"},
-      "documentation":"<p>A list of <code>BulkMailEntry</code> objects.</p>"
+      "documentation":"<p>A list of <code>BulkEmailEntryResult</code> objects.</p>"
     },
     "BulkEmailStatus":{
       "type":"string",
@@ -2274,7 +2296,7 @@
         },
         "DimensionValueSource":{
           "shape":"DimensionValueSource",
-          "documentation":"<p>The location where the Amazon SES API v2 finds the value of a dimension to publish to Amazon CloudWatch. To use the message tags that you specify using an <code>X-SES-MESSAGE-TAGS</code> header or a parameter to the <code>SendEmail</code> or <code>SendRawEmail</code> API, choose <code>messageTag</code>. To use your own email headers, choose <code>emailHeader</code>. To use link tags, choose <code>linkTags</code>.</p>"
+          "documentation":"<p>The location where the Amazon SES API v2 finds the value of a dimension to publish to Amazon CloudWatch. To use the message tags that you specify using an <code>X-SES-MESSAGE-TAGS</code> header or a parameter to the <code>SendEmail</code> or <code>SendBulkEmail</code> operation, choose <code>MESSAGE_TAG</code>. To use your own email headers, choose <code>EMAIL_HEADER</code>. To use link tags, choose <code>LINK_TAG</code>.</p>"
         },
         "DefaultDimensionValue":{
           "shape":"DefaultDimensionValue",
@@ -2693,7 +2715,7 @@
         },
         "DeliverabilityTestStatus":{
           "shape":"DeliverabilityTestStatus",
-          "documentation":"<p>The status of the predictive inbox placement test. If the status is <code>IN_PROGRESS</code>, then the predictive inbox placement test is currently running. Predictive inbox placement tests are usually complete within 24 hours of creating the test. If the status is <code>COMPLETE</code>, then the test is finished, and you can use the <code>GetDeliverabilityTestReport</code> to view the results of the test.</p>"
+          "documentation":"<p>The status of the predictive inbox placement test. If the status is <code>IN_PROGRESS</code>, then the predictive inbox placement test is currently running. Predictive inbox placement tests are usually complete within 24 hours of creating the test. If the status is <code>COMPLETED</code>, then the test is finished, and you can use the <code>GetDeliverabilityTestReport</code> operation to view the results of the test.</p>"
         }
       },
       "documentation":"<p>Information about the predictive inbox placement test that you created.</p>"
@@ -3412,7 +3434,7 @@
         },
         "DeliverabilityTestStatus":{
           "shape":"DeliverabilityTestStatus",
-          "documentation":"<p>The status of the predictive inbox placement test. If the status is <code>IN_PROGRESS</code>, then the predictive inbox placement test is currently running. Predictive inbox placement tests are usually complete within 24 hours of creating the test. If the status is <code>COMPLETE</code>, then the test is finished, and you can use the <code>GetDeliverabilityTestReport</code> to view the results of the test.</p>"
+          "documentation":"<p>The status of the predictive inbox placement test. If the status is <code>IN_PROGRESS</code>, then the predictive inbox placement test is currently running. Predictive inbox placement tests are usually complete within 24 hours of creating the test. If the status is <code>COMPLETED</code>, then the test is finished, and you can use the <code>GetDeliverabilityTestReport</code> operation to view the results of the test.</p>"
         }
       },
       "documentation":"<p>An object that contains metadata related to a predictive inbox placement test.</p>"
@@ -3423,7 +3445,7 @@
     },
     "DeliverabilityTestStatus":{
       "type":"string",
-      "documentation":"<p>The status of a predictive inbox placement test. If the status is <code>IN_PROGRESS</code>, then the predictive inbox placement test is currently running. Predictive inbox placement tests are usually complete within 24 hours of creating the test. If the status is <code>COMPLETE</code>, then the test is finished, and you can use the <code>GetDeliverabilityTestReport</code> operation to view the results of the test.</p>",
+      "documentation":"<p>The status of a predictive inbox placement test. If the status is <code>IN_PROGRESS</code>, then the predictive inbox placement test is currently running. Predictive inbox placement tests are usually complete within 24 hours of creating the test. If the status is <code>COMPLETED</code>, then the test is finished, and you can use the <code>GetDeliverabilityTestReport</code> operation to view the results of the test.</p>",
       "enum":[
         "IN_PROGRESS",
         "COMPLETED"
@@ -3432,6 +3454,16 @@
     "DeliverabilityTestSubject":{
       "type":"string",
       "documentation":"<p>The subject line for an email that you submitted in a predictive inbox placement test.</p>"
+    },
+    "DeliveryAttributes":{
+      "type":"structure",
+      "members":{
+        "SharedPoolDeliveryMode":{
+          "shape":"AccountSharedPoolDeliveryMode",
+          "documentation":"<p>The shared pool delivery mode for your Amazon SES account in the current Amazon Web Services Region. This mode applies to email that you send from shared IP addresses. Can be one of the following:</p> <ul> <li> <p> <code>GLOBAL</code> – Amazon SES delivers from your sending Region first and, when it improves your deliverability, also uses Amazon SES shared IP addresses with established sending history in other Amazon Web Services Regions within the same Amazon Web Services partition.</p> </li> <li> <p> <code>REGIONAL</code> – Amazon SES delivers your email only from shared IP addresses in your sending Region.</p> </li> </ul> <p>Accounts that start sending in a Region on or after the launch of Global Shared Delivery use <code>GLOBAL</code> in that Region.</p>"
+        }
+      },
+      "documentation":"<p>The delivery attributes that apply to your Amazon SES account in the current Amazon Web Services Region.</p>"
     },
     "DeliveryEventType":{
       "type":"string",
@@ -3450,7 +3482,7 @@
       "members":{
         "TlsPolicy":{
           "shape":"TlsPolicy",
-          "documentation":"<p>Specifies whether messages that use the configuration set are required to use Transport Layer Security (TLS). If the value is <code>Require</code>, messages are only delivered if a TLS connection can be established. If the value is <code>Optional</code>, messages can be delivered in plain text if a TLS connection can't be established.</p>"
+          "documentation":"<p>Specifies whether messages that use the configuration set are required to use Transport Layer Security (TLS). If the value is <code>REQUIRE</code>, messages are only delivered if a TLS connection can be established. If the value is <code>OPTIONAL</code>, messages can be delivered in plain text if a TLS connection can't be established.</p>"
         },
         "SendingPoolName":{
           "shape":"PoolName",
@@ -3459,6 +3491,10 @@
         "MaxDeliverySeconds":{
           "shape":"MaxDeliverySeconds",
           "documentation":"<p>The maximum amount of time, in seconds, that Amazon SES API v2 will attempt delivery of email. If specified, the value must greater than or equal to 300 seconds (5 minutes) and less than or equal to 50400 seconds (840 minutes). </p>"
+        },
+        "SharedPoolDeliveryMode":{
+          "shape":"SharedPoolDeliveryMode",
+          "documentation":"<p>The shared pool delivery mode for email that you send with the configuration set from shared IP addresses. This setting overrides the shared pool delivery mode of your account. Can be one of the following:</p> <ul> <li> <p> <code>GLOBAL</code> – Amazon SES delivers from your sending Region first and, when it improves your deliverability, also uses Amazon SES shared IP addresses with established sending history in other Amazon Web Services Regions within the same Amazon Web Services partition.</p> </li> <li> <p> <code>REGIONAL</code> – Amazon SES delivers your email only from shared IP addresses in your sending Region.</p> </li> <li> <p> <code>ACCOUNT</code> – The configuration set uses the shared pool delivery mode of your account.</p> </li> </ul> <p>If you don't specify a value, the configuration set uses the shared pool delivery mode of your account.</p>"
         }
       },
       "documentation":"<p>Used to associate a configuration set with a dedicated IP pool.</p>"
@@ -3500,7 +3536,7 @@
     },
     "DimensionValueSource":{
       "type":"string",
-      "documentation":"<p>The location where the Amazon SES API v2 finds the value of a dimension to publish to Amazon CloudWatch. To use the message tags that you specify using an <code>X-SES-MESSAGE-TAGS</code> header or a parameter to the <code>SendEmail</code> or <code>SendRawEmail</code> API, choose <code>messageTag</code>. To use your own email headers, choose <code>emailHeader</code>. To use link tags, choose <code>linkTags</code>.</p>",
+      "documentation":"<p>The location where the Amazon SES API v2 finds the value of a dimension to publish to Amazon CloudWatch. To use the message tags that you specify using an <code>X-SES-MESSAGE-TAGS</code> header or a parameter to the <code>SendEmail</code> or <code>SendBulkEmail</code> operation, choose <code>MESSAGE_TAG</code>. To use your own email headers, choose <code>EMAIL_HEADER</code>. To use link tags, choose <code>LINK_TAG</code>.</p>",
       "enum":[
         "MESSAGE_TAG",
         "EMAIL_HEADER",
@@ -4276,6 +4312,10 @@
         "PricingAttributes":{
           "shape":"PricingAttributes",
           "documentation":"<p>The pricing attributes that apply to your Amazon SES account, including the currently active pricing plan and any scheduled change.</p>"
+        },
+        "DeliveryAttributes":{
+          "shape":"DeliveryAttributes",
+          "documentation":"<p>The delivery attributes that apply to your Amazon SES account in the current Amazon Web Services Region.</p>"
         }
       },
       "documentation":"<p>A list of details about the email-sending capabilities of your Amazon SES account in the current Amazon Web Services Region.</p>"
@@ -5471,7 +5511,7 @@
     },
     "JobStatus":{
       "type":"string",
-      "documentation":"<p>The status of a job.</p> <ul> <li> <p> <code>CREATED</code> – Job has just been created.</p> </li> <li> <p> <code>PROCESSING</code> – Job is processing.</p> </li> <li> <p> <code>ERROR</code> – An error occurred during processing.</p> </li> <li> <p> <code>COMPLETED</code> – Job has completed processing successfully.</p> </li> </ul>",
+      "documentation":"<p>The status of a job.</p> <ul> <li> <p> <code>CREATED</code> – Job has just been created.</p> </li> <li> <p> <code>PROCESSING</code> – Job is processing.</p> </li> <li> <p> <code>COMPLETED</code> – Job has completed processing successfully.</p> </li> <li> <p> <code>FAILED</code> – An error occurred during processing.</p> </li> <li> <p> <code>CANCELLED</code> – Job has been canceled.</p> </li> </ul>",
       "enum":[
         "CREATED",
         "PROCESSING",
@@ -6330,7 +6370,7 @@
         },
         "BehaviorOnMxFailure":{
           "shape":"BehaviorOnMxFailure",
-          "documentation":"<p>The action to take if the required MX record can't be found when you send an email. When you set this value to <code>USE_DEFAULT_VALUE</code>, the mail is sent using <i>amazonses.com</i> as the MAIL FROM domain. When you set this value to <code>REJECT_MESSAGE</code>, the Amazon SES API v2 returns a <code>MailFromDomainNotVerified</code> error, and doesn't attempt to deliver the email.</p> <p>These behaviors are taken when the custom MAIL FROM domain configuration is in the <code>Pending</code>, <code>Failed</code>, and <code>TemporaryFailure</code> states.</p>"
+          "documentation":"<p>The action to take if the required MX record can't be found when you send an email. When you set this value to <code>USE_DEFAULT_VALUE</code>, the mail is sent using <i>amazonses.com</i> as the MAIL FROM domain. When you set this value to <code>REJECT_MESSAGE</code>, the Amazon SES API v2 returns a <code>MailFromDomainNotVerifiedException</code> error, and doesn't attempt to deliver the email.</p> <p>These behaviors are taken when the custom MAIL FROM domain configuration is in the <code>PENDING</code>, <code>FAILED</code>, and <code>TEMPORARY_FAILURE</code> states.</p>"
         }
       },
       "documentation":"<p>A list of attributes that are associated with a MAIL FROM domain.</p>"
@@ -6877,6 +6917,22 @@
       "members":{},
       "documentation":"<p>An HTTP 200 response if the request succeeds, or an error message if the request fails.</p>"
     },
+    "PutAccountDeliveryAttributesRequest":{
+      "type":"structure",
+      "required":["SharedPoolDeliveryMode"],
+      "members":{
+        "SharedPoolDeliveryMode":{
+          "shape":"AccountSharedPoolDeliveryMode",
+          "documentation":"<p>The shared pool delivery mode for your Amazon SES account in the current Amazon Web Services Region. This mode applies to email that you send from shared IP addresses. Can be one of the following:</p> <ul> <li> <p> <code>GLOBAL</code> – Amazon SES delivers from your sending Region first and, when it improves your deliverability, also uses Amazon SES shared IP addresses with established sending history in other Amazon Web Services Regions within the same Amazon Web Services partition.</p> </li> <li> <p> <code>REGIONAL</code> – Amazon SES delivers your email only from shared IP addresses in your sending Region.</p> </li> </ul>"
+        }
+      },
+      "documentation":"<p>A request to set the shared pool delivery mode for your Amazon SES account.</p>"
+    },
+    "PutAccountDeliveryAttributesResponse":{
+      "type":"structure",
+      "members":{},
+      "documentation":"<p>An HTTP 200 response if the request succeeds, or an error response if the request fails.</p>"
+    },
     "PutAccountDetailsRequest":{
       "type":"structure",
       "required":[
@@ -6894,7 +6950,7 @@
         },
         "ContactLanguage":{
           "shape":"ContactLanguage",
-          "documentation":"<p>The language you would prefer to be contacted with.</p>"
+          "documentation":"<p>The language you would prefer to be contacted with. The contact language can be one of <code>EN</code> or <code>JA</code>.</p>"
         },
         "UseCaseDescription":{
           "shape":"UseCaseDescription",
@@ -7015,7 +7071,7 @@
         },
         "TlsPolicy":{
           "shape":"TlsPolicy",
-          "documentation":"<p>Specifies whether messages that use the configuration set are required to use Transport Layer Security (TLS). If the value is <code>Require</code>, messages are only delivered if a TLS connection can be established. If the value is <code>Optional</code>, messages can be delivered in plain text if a TLS connection can't be established.</p>"
+          "documentation":"<p>Specifies whether messages that use the configuration set are required to use Transport Layer Security (TLS). If the value is <code>REQUIRE</code>, messages are only delivered if a TLS connection can be established. If the value is <code>OPTIONAL</code>, messages can be delivered in plain text if a TLS connection can't be established.</p>"
         },
         "SendingPoolName":{
           "shape":"SendingPoolName",
@@ -7024,6 +7080,10 @@
         "MaxDeliverySeconds":{
           "shape":"MaxDeliverySeconds",
           "documentation":"<p>The maximum amount of time, in seconds, that Amazon SES API v2 will attempt delivery of email. If specified, the value must greater than or equal to 300 seconds (5 minutes) and less than or equal to 50400 seconds (840 minutes). </p>"
+        },
+        "SharedPoolDeliveryMode":{
+          "shape":"SharedPoolDeliveryMode",
+          "documentation":"<p>The shared pool delivery mode for email that you send with the configuration set from shared IP addresses. This setting overrides the shared pool delivery mode of your account. Can be one of the following:</p> <ul> <li> <p> <code>GLOBAL</code> – Amazon SES delivers from your sending Region first and, when it improves your deliverability, also uses Amazon SES shared IP addresses with established sending history in other Amazon Web Services Regions within the same Amazon Web Services partition.</p> </li> <li> <p> <code>REGIONAL</code> – Amazon SES delivers your email only from shared IP addresses in your sending Region.</p> </li> <li> <p> <code>ACCOUNT</code> – The configuration set uses the shared pool delivery mode of your account.</p> </li> </ul> <p>If you don't specify a value, the current value doesn't change.</p>"
         }
       },
       "documentation":"<p>A request to associate a configuration set with a dedicated IP pool.</p>"
@@ -7371,7 +7431,7 @@
         },
         "BehaviorOnMxFailure":{
           "shape":"BehaviorOnMxFailure",
-          "documentation":"<p>The action to take if the required MX record isn't found when you send an email. When you set this value to <code>UseDefaultValue</code>, the mail is sent using <i>amazonses.com</i> as the MAIL FROM domain. When you set this value to <code>RejectMessage</code>, the Amazon SES API v2 returns a <code>MailFromDomainNotVerified</code> error, and doesn't attempt to deliver the email.</p> <p>These behaviors are taken when the custom MAIL FROM domain configuration is in the <code>Pending</code>, <code>Failed</code>, and <code>TemporaryFailure</code> states.</p>"
+          "documentation":"<p>The action to take if the required MX record isn't found when you send an email. When you set this value to <code>USE_DEFAULT_VALUE</code>, the mail is sent using <i>amazonses.com</i> as the MAIL FROM domain. When you set this value to <code>REJECT_MESSAGE</code>, the Amazon SES API v2 returns a <code>MailFromDomainNotVerifiedException</code> error, and doesn't attempt to deliver the email.</p> <p>These behaviors are taken when the custom MAIL FROM domain configuration is in the <code>PENDING</code>, <code>FAILED</code>, and <code>TEMPORARY_FAILURE</code> states.</p>"
         }
       },
       "documentation":"<p>A request to configure the custom MAIL FROM domain for a verified identity.</p>"
@@ -7551,7 +7611,7 @@
           "documentation":"<p>The <code>ReplacementTemplate</code> associated with <code>ReplacementEmailContent</code>.</p>"
         }
       },
-      "documentation":"<p>The <code>ReplaceEmailContent</code> object to be used for a specific <code>BulkEmailEntry</code>. The <code>ReplacementTemplate</code> can be specified within this object.</p>"
+      "documentation":"<p>The <code>ReplacementEmailContent</code> object to be used for a specific <code>BulkEmailEntry</code>. The <code>ReplacementTemplate</code> can be specified within this object.</p>"
     },
     "ReplacementTemplate":{
       "type":"structure",
@@ -7812,7 +7872,7 @@
         },
         "DefaultEmailTags":{
           "shape":"MessageTagList",
-          "documentation":"<p>A list of tags, in the form of name/value pairs, to apply to an email that you send using the <code>SendEmail</code> operation. Tags correspond to characteristics of the email that you define, so that you can publish email sending events.</p>"
+          "documentation":"<p>A list of tags, in the form of name/value pairs, to apply to an email that you send using the <code>SendBulkEmail</code> operation. Tags correspond to characteristics of the email that you define, so that you can publish email sending events.</p>"
         },
         "DefaultContent":{
           "shape":"BulkEmailContent",
@@ -8005,6 +8065,15 @@
     },
     "SentLast24Hours":{"type":"double"},
     "SerialNumber":{"type":"long"},
+    "SharedPoolDeliveryMode":{
+      "type":"string",
+      "documentation":"<p>The shared pool delivery mode for a configuration set. See <code>DeliveryOptions$SharedPoolDeliveryMode</code> for the list of supported values and their meanings.</p>",
+      "enum":[
+        "GLOBAL",
+        "REGIONAL",
+        "ACCOUNT"
+      ]
+    },
     "SignatureFormat":{
       "type":"string",
       "documentation":"<p>The format of the S/MIME signature that's applied to a message. The following value is supported:</p> <ul> <li> <p> <code>DETACHED</code> – The signature is carried in a separate MIME part alongside the signed content.</p> </li> </ul>",
@@ -8516,7 +8585,7 @@
     },
     "TlsPolicy":{
       "type":"string",
-      "documentation":"<p>Specifies whether messages that use the configuration set are required to use Transport Layer Security (TLS). If the value is <code>Require</code>, messages are only delivered if a TLS connection can be established. If the value is <code>Optional</code>, messages can be delivered in plain text if a TLS connection can't be established.</p>",
+      "documentation":"<p>Specifies whether messages that use the configuration set are required to use Transport Layer Security (TLS). If the value is <code>REQUIRE</code>, messages are only delivered if a TLS connection can be established. If the value is <code>OPTIONAL</code>, messages can be delivered in plain text if a TLS connection can't be established.</p>",
       "enum":[
         "REQUIRE",
         "OPTIONAL"

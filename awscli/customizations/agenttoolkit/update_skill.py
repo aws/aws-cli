@@ -24,7 +24,6 @@ from botocore.exceptions import ClientError, HTTPClientError
 from awscli.customizations.agenttoolkit.agents import (
     AGENT_CONFIGS,
     SKILL_METADATA_FILENAME,
-    Scope,
 )
 from awscli.customizations.agenttoolkit.filelock import file_lock
 from awscli.customizations.agenttoolkit.hooks import (
@@ -506,17 +505,12 @@ class UpdateSkillCommand(BasicCommand):
     def _install_new_core_skills(self, agents, client, results):
         """Install core skills missing from agents that have AWS skills.
 
-        Agents the customer never set up with the toolkit are left alone.
+        This covers both scopes, so a project the agent starts in gets new
+        core skills too.
         A core skill removed with ``remove-skill`` is installed again.
-        Only global skills are added to, so a project gets no new files it
-        may commit. Outcomes are added to ``results`` like
-        :meth:`_collect_updates`.
+        Outcomes are added to ``results`` like :meth:`_collect_updates`.
         """
-        targets = [
-            agent
-            for agent in agents
-            if agent.scope is Scope.GLOBAL and agent.get_installed_skills()
-        ]
+        targets = [agent for agent in agents if agent.get_installed_skills()]
         if not targets:
             return
         core_skills = list_core_skills(client)

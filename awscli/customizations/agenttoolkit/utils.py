@@ -73,8 +73,7 @@ SKILL_VERSION_ARG = {
 PROJECT_ARG = {
     'name': 'project',
     'help_text': (
-        'Act only on project-level skills in the current directory. '
-        'Cannot be used with ``--global``.'
+        'Act only on project-level skills in the current directory.'
     ),
     'action': 'store_true',
     'required': False,
@@ -82,10 +81,7 @@ PROJECT_ARG = {
 
 GLOBAL_ARG = {
     'name': 'global',
-    'help_text': (
-        'Act only on global skills in your home directory. '
-        'Cannot be used with ``--project``.'
-    ),
+    'help_text': ('Act only on global skills in your home directory.'),
     'action': 'store_true',
     'required': False,
 }

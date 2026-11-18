@@ -20,7 +20,9 @@ from awscli.customizations.sso.utils import (
     LOGIN_ARGS,
     BaseSSOCommand,
     PrintOnlyHandler,
+    create_sso_token_cache,
     do_sso_login,
+    get_cached_sso_token,
     validate_redirect_port,
 )
 from awscli.customizations.utils import uni_print
@@ -31,13 +33,24 @@ class LoginCommand(BaseSSOCommand):
     DESCRIPTION = (
         'Retrieves and caches an AWS IAM Identity Center access token to '
         'exchange for AWS credentials. To login, the requested profile must '
-        'have first been setup using ``aws configure sso``. Each time the '
-        '``login`` command is called, a new SSO access token will be '
-        'retrieved. Please note that only one login session can be active for '
+        'have first been setup using ``aws configure sso``. If a valid SSO '
+        'access token is already cached for the requested profile, it will '
+        'be reused and no new login is required. Use ``--force`` to retrieve '
+        'a new SSO access token even when a valid cached token exists. '
+        'Please note that only one login session can be active for '
         'a given SSO Session and creating multiple profiles does not allow for'
         ' multiple users to be authenticated against the same SSO Session.'
     )
     ARG_TABLE = LOGIN_ARGS + [
+        {
+            'name': 'force',
+            'action': 'store_true',
+            'default': False,
+            'help_text': (
+                'Forces a new SSO access token to be retrieved even if a '
+                'valid cached token already exists.'
+            ),
+        },
         {
             'name': 'sso-session',
             'help_text': (
@@ -69,6 +82,20 @@ class LoginCommand(BaseSSOCommand):
         if resolved_url != start_url:
             register_feature_id('SSO_LOGIN_VANITY_URL')
 
+        session_name = sso_config.get('session_name')
+        token_cache = create_sso_token_cache()
+        if not parsed_args.force:
+            cached_token = get_cached_sso_token(
+                token_cache, start_url, session_name=session_name
+            )
+            if cached_token is not None:
+                # Only rewrite sso_region after successful login.
+                if configured_region != region:
+                    self._write_sso_region(sso_config, region)
+                    uni_print(f'SSO region updated to {region}\n')
+                uni_print(f'Already logged into Start URL: {start_url}\n')
+                return 0
+
         on_pending_authorization = None
         if parsed_args.no_browser:
             on_pending_authorization = PrintOnlyHandler()
@@ -79,8 +106,9 @@ class LoginCommand(BaseSSOCommand):
             start_url=start_url,
             resolved_start_url=resolved_url,
             on_pending_authorization=on_pending_authorization,
-            force_refresh=True,
-            session_name=sso_config.get('session_name'),
+            token_cache=token_cache,
+            force_refresh=parsed_args.force,
+            session_name=session_name,
             registration_scopes=sso_config.get('registration_scopes'),
             use_device_code=parsed_args.use_device_code,
             redirect_port=parsed_args.redirect_port,

@@ -14,6 +14,8 @@ import hashlib
 import json
 import os
 import re
+import time
+from datetime import datetime, timezone
 
 from botocore.context import start_as_current_context
 
@@ -87,6 +89,24 @@ class TestLoginCommand(BaseSSOTest):
             cached_response = json.loads(f.read())
             return cached_response
 
+    def _seed_cached_token(self, access_token, expires_in, session_name=None):
+        os.makedirs(self.token_cache_dir, exist_ok=True)
+        expires_at = datetime.fromtimestamp(
+            time.time() + expires_in, timezone.utc
+        ).strftime('%Y-%m-%dT%H:%M:%SZ')
+        token = {
+            'startUrl': self.start_url,
+            'region': self.sso_region,
+            'accessToken': access_token,
+            'expiresAt': expires_at,
+        }
+        token_filename = self._get_cached_token_filename(
+            self.start_url, session_name
+        )
+        token_path = os.path.join(self.token_cache_dir, token_filename)
+        with open(token_path, 'w') as f:
+            json.dump(token, f)
+
     def assert_cache_token_expiration_time_format_is_correct(self):
         token_filename = self._get_cached_token_filename(self.start_url, None)
         token_path = os.path.join(self.token_cache_dir, token_filename)
@@ -156,7 +176,20 @@ class TestLoginCommand(BaseSSOTest):
             session_name='test-session',
         )
 
-    def test_login_device_forces_refresh(self):
+    def test_login_device_uses_cached_token(self):
+        self.add_oidc_device_responses(self.access_token)
+        self.run_cmd('sso login --use-device-code')
+        # No additional OIDC responses are queued: a second login must
+        # reuse the valid cached token instead of starting a new login
+        # flow, so the browser handler must not be invoked again.
+        stdout, _, _ = self.run_cmd('sso login --use-device-code')
+        self.assertIn('Already logged into Start URL', stdout)
+        self.open_browser_mock.assert_called_once()
+        self.assert_cache_contains_token(
+            start_url=self.start_url, expected_token=self.access_token
+        )
+
+    def test_login_device_force_refreshes(self):
         self.add_oidc_device_responses(self.access_token)
         self.run_cmd('sso login --use-device-code')
         # The register response from the first login should have been
@@ -164,13 +197,39 @@ class TestLoginCommand(BaseSSOTest):
         self.add_oidc_device_responses(
             'new.token', include_register_response=False
         )
-        self.run_cmd('sso login --use-device-code')
+        self.run_cmd('sso login --use-device-code --force')
         self.assert_cache_contains_token(
             start_url=self.start_url,
             expected_token='new.token',
         )
 
-    def test_login_auth_forces_refresh(self):
+    def test_login_device_expired_cached_token_refreshes(self):
+        self._seed_cached_token('expired.token', expires_in=-60)
+        self.add_oidc_device_responses(self.access_token)
+        stdout, _, _ = self.run_cmd('sso login --use-device-code')
+        self.assertIn('Successfully logged into Start URL', stdout)
+        self.assert_cache_contains_token(
+            start_url=self.start_url, expected_token=self.access_token
+        )
+
+    def test_login_auth_uses_cached_token(self):
+        content = self.get_sso_session_config('test-session')
+        self.set_config_file_content(content=content)
+        self.add_oidc_auth_code_responses(self.access_token)
+        self.run_cmd('sso login')
+        # No additional OIDC responses are queued: a second login must
+        # reuse the valid cached token instead of starting a new login
+        # flow, so the auth code fetcher must not be invoked again.
+        stdout, _, _ = self.run_cmd('sso login')
+        self.assertIn('Already logged into Start URL', stdout)
+        self.fetcher_mock.assert_called_once()
+        self.assert_cache_contains_token(
+            start_url=self.start_url,
+            expected_token=self.access_token,
+            session_name='test-session',
+        )
+
+    def test_login_auth_force_refreshes(self):
         content = self.get_sso_session_config('test-session')
         self.set_config_file_content(content=content)
         self.add_oidc_auth_code_responses(self.access_token)
@@ -180,10 +239,25 @@ class TestLoginCommand(BaseSSOTest):
         self.add_oidc_auth_code_responses(
             'new.token', include_register_response=False
         )
-        self.run_cmd('sso login')
+        self.run_cmd('sso login --force')
         self.assert_cache_contains_token(
             start_url=self.start_url,
             expected_token='new.token',
+            session_name='test-session',
+        )
+
+    def test_login_auth_expired_cached_token_refreshes(self):
+        content = self.get_sso_session_config('test-session')
+        self.set_config_file_content(content=content)
+        self._seed_cached_token(
+            'expired.token', expires_in=-60, session_name='test-session'
+        )
+        self.add_oidc_auth_code_responses(self.access_token)
+        stdout, _, _ = self.run_cmd('sso login')
+        self.assertIn('Successfully logged into Start URL', stdout)
+        self.assert_cache_contains_token(
+            start_url=self.start_url,
+            expected_token=self.access_token,
             session_name='test-session',
         )
 
@@ -196,7 +270,7 @@ class TestLoginCommand(BaseSSOTest):
         # The register response from the first login should have been
         # cached.
         self.add_oidc_auth_code_responses('new.token')
-        self.run_cmd('sso login')
+        self.run_cmd('sso login --force')
         self.assert_cache_contains_registration(
             start_url=self.start_url,
             session_name='test-session',

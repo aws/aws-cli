@@ -11,6 +11,7 @@
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
 import datetime
+import hashlib
 import hmac
 import json
 import logging
@@ -101,6 +102,62 @@ def _sso_json_dumps(obj):
     return json.dumps(obj, default=_serialize_utc_timestamp)
 
 
+# Tokens expiring within this window are treated as expired, matching the
+# window botocore's token fetchers use when deciding whether a cached
+# token is still usable.
+SSO_TOKEN_EXPIRY_WINDOW = datetime.timedelta(minutes=15)
+
+
+def _sso_token_cache_key(start_url, session_name=None):
+    # Mirrors the cache key botocore's SSO token fetchers use so the CLI
+    # can inspect the same cached token they would reuse.
+    input_str = session_name if session_name is not None else start_url
+    return hashlib.sha1(input_str.encode('utf-8')).hexdigest()
+
+
+def _parse_sso_token_expiry(token):
+    expires_at = token.get('expiresAt')
+    if isinstance(expires_at, datetime.datetime):
+        return expires_at
+    if isinstance(expires_at, str):
+        try:
+            return datetime.datetime.strptime(
+                expires_at, '%Y-%m-%dT%H:%M:%SZ'
+            ).replace(tzinfo=datetime.timezone.utc)
+        except ValueError:
+            return None
+    return None
+
+
+def create_sso_token_cache():
+    return JSONFileCache(SSO_TOKEN_DIR, dumps_func=_sso_json_dumps)
+
+
+def get_cached_sso_token(token_cache, start_url, session_name=None):
+    """Return the cached SSO access token if it is still valid.
+
+    Returns the cached token dict when a token exists for the given
+    start URL (or SSO session) and it is not expired, otherwise returns
+    ``None``. A token is considered expired when it expires within
+    ``SSO_TOKEN_EXPIRY_WINDOW``, matching botocore's behavior.
+    """
+    cache_key = _sso_token_cache_key(start_url, session_name)
+    if cache_key not in token_cache:
+        return None
+    token = token_cache[cache_key]
+    if not isinstance(token, dict) or 'accessToken' not in token:
+        return None
+    expires_at = _parse_sso_token_expiry(token)
+    if expires_at is None:
+        return None
+    if expires_at.tzinfo is None:
+        expires_at = expires_at.replace(tzinfo=datetime.timezone.utc)
+    now = datetime.datetime.now(datetime.timezone.utc)
+    if expires_at - now < SSO_TOKEN_EXPIRY_WINDOW:
+        return None
+    return token
+
+
 def do_sso_login(
     session,
     sso_region,
@@ -116,7 +173,7 @@ def do_sso_login(
     redirect_port=None,
 ):
     if token_cache is None:
-        token_cache = JSONFileCache(SSO_TOKEN_DIR, dumps_func=_sso_json_dumps)
+        token_cache = create_sso_token_cache()
     if on_pending_authorization is None:
         on_pending_authorization = OpenBrowserHandler(
             open_browser=open_browser_with_original_ld_path

@@ -18,6 +18,7 @@ from awscli.customizations.agenttoolkit.agents import (
     AGENT_CONFIGS,
     UNIVERSAL_ROW_ID,
     McpConfigureAction,
+    Scope,
     collapse_home,
     universal_first,
 )
@@ -48,6 +49,7 @@ from awscli.customizations.agenttoolkit.utils import (
     get_skill_download,
     install_skill,
     list_core_skills,
+    resolve_scopes,
 )
 from awscli.customizations.commands import BasicCommand
 from awscli.customizations.exceptions import ConfigurationError
@@ -55,13 +57,19 @@ from awscli.customizations.prompts import multiselect_choice, yes_no_choice
 from awscli.customizations.utils import uni_print
 
 AUTO_UPDATE_PROMPT = (
-    '\nKeep AWS skills up to date automatically? When your agent starts, '
-    'installed AWS skills are updated and new core AWS skills are '
-    'installed. [Y/n]: '
+    '\nKeep AWS skills up to date automatically? Each time your agent '
+    'starts, AWS skills installed globally and in the project it starts in '
+    'are updated, and new core AWS skills are added wherever AWS skills are '
+    'already installed. [Y/n]: '
 )
 
 AUTO_UPDATE_KEEP_PROMPT = (
     '\nAutomatic skill updates are on. Keep them on? [Y/n]: '
+)
+
+PROJECT_SCOPE_PROMPT = (
+    '\nSet up AWS skills and the AWS MCP server for the current directory '
+    '({}) only? Otherwise they are set up globally. [y/N]: '
 )
 
 
@@ -76,8 +84,15 @@ class ConfigureAgentToolkitCommand(BasicCommand):
     DESCRIPTION = (
         'Set up AI coding agents with AWS skills and the AWS MCP Server.\n\n'
         'Supported agents are determined by the presence of configuration '
-        'directories, such as ``~/.kiro``. Skills are installed globally in '
-        'those configuration directories, not per project.'
+        'directories, such as ``~/.kiro``. By default skills are installed '
+        'globally in those configuration directories. Use ``--project`` to '
+        'install skills and configure the AWS MCP server for the current '
+        'directory only, such as in ``.claude/skills`` and ``.mcp.json``. '
+        'Without ``--project`` or ``--global``, you are asked which one to '
+        'set up. Automatic update hooks are only added to the global '
+        'configuration of each agent, never to project files. They also '
+        'update the project-level skills of the directory the agent starts '
+        'in.'
     )
     SYNOPSIS = 'aws configure agent-toolkit'
     ARG_TABLE = [
@@ -100,6 +115,24 @@ class ConfigureAgentToolkitCommand(BasicCommand):
             'default': False,
             'action': 'store_true',
         },
+        {
+            'name': 'project',
+            'help_text': (
+                'Set up the agent toolkit for the current directory only: '
+                'install default skills into its project skills '
+                'directories and configure the AWS MCP server in its '
+                'project MCP config.'
+            ),
+            'action': 'store_true',
+        },
+        {
+            'name': 'global',
+            'help_text': (
+                'Set up the agent toolkit globally, in the configuration '
+                'directory of each agent, without asking.'
+            ),
+            'action': 'store_true',
+        },
     ]
 
     def __init__(self, session, stream=None, agent_configs=None, client=None):
@@ -113,17 +146,24 @@ class ConfigureAgentToolkitCommand(BasicCommand):
     def _run_main(self, parsed_args, parsed_globals):
         yes = getattr(parsed_args, 'yes', False)
         no_auto_update = getattr(parsed_args, 'no_auto_update', False)
+        scope, project_dir = self._resolve_scope(parsed_args, yes)
         if no_auto_update:
             # Apply the opt-out up front so a failure in a later step
             # cannot leave automatic updates enabled.
             self._save_auto_update(False)
+        if scope is Scope.PROJECT:
+            uni_print(
+                '\nSetting up the agent toolkit for '
+                f'{collapse_home(project_dir)}.\n',
+                self._stream,
+            )
         uni_print('\nDetecting installed AI coding agents...\n', self._stream)
         wizard_configs = [
             c for c in self._agent_configs if c.id != UNIVERSAL_ROW_ID
         ]
         universal_agent = next(
             (
-                c.detect()
+                c.detect(scope, project_dir)
                 for c in self._agent_configs
                 if c.id == UNIVERSAL_ROW_ID
             ),
@@ -132,7 +172,7 @@ class ConfigureAgentToolkitCommand(BasicCommand):
 
         detected = []
         for config in wizard_configs:
-            agent = config.detect()
+            agent = config.detect(scope, project_dir)
             if agent:
                 # Use the DetectedAgent's label so any env-overridden
                 # paths (e.g. CLAUDE_CONFIG_DIR) display the resolved
@@ -140,10 +180,14 @@ class ConfigureAgentToolkitCommand(BasicCommand):
                 uni_print(f'  \u2713 {agent.display_label}\n', self._stream)
                 detected.append(agent)
             else:
-                uni_print(
-                    f'  \u2717 {config.display_label} (not found)\n',
-                    self._stream,
+                # Agents are detected in the home directory in either
+                # scope, so a project path would be misleading here.
+                label = (
+                    config.display_name
+                    if scope is Scope.PROJECT
+                    else config.display_label
                 )
+                uni_print(f'  \u2717 {label} (not found)\n', self._stream)
 
         if not detected:
             raise ConfigurationError(
@@ -189,7 +233,33 @@ class ConfigureAgentToolkitCommand(BasicCommand):
             '\'aws agent-toolkit search-skills --search-query <text>\'\n',
             self._stream,
         )
+        if scope is Scope.PROJECT:
+            uni_print(
+                'Add them to this project with '
+                '\'aws agent-toolkit add-skill --skill-name <name> '
+                '--project\'\n',
+                self._stream,
+            )
         return 0
+
+    def _resolve_scope(self, parsed_args, yes):
+        """Return the ``(scope, project_dir)`` to set up.
+
+        Without a scope flag, the customer is asked, except with ``--yes``,
+        which keeps the global setup.
+        """
+        scopes = resolve_scopes(parsed_args, both_by_default=not yes)
+        scope, project_dir = scopes[-1]
+        if scope is Scope.PROJECT and _is_home_dir(project_dir):
+            # The project-level skills of the home directory are the global
+            # ones.
+            return Scope.GLOBAL, None
+        if len(scopes) == 2 and not yes_no_choice(
+            PROJECT_SCOPE_PROMPT.format(collapse_home(project_dir)),
+            default=False,
+        ):
+            return scopes[0]
+        return scope, project_dir
 
     def _install_default_skills(self, selected_agents, client, yes=False):
         uni_print('\nFetching default AWS skills...\n', self._stream)
@@ -457,20 +527,43 @@ class ConfigureAgentToolkitCommand(BasicCommand):
                     self._stream,
                 )
 
-        if skipped:
-            uni_print(
+        if not skipped:
+            return
+        if skipped[0][0].scope is Scope.PROJECT:
+            header = (
+                '\nMCP setup not available in the current directory for the '
+                'following agents.\n'
+            )
+        else:
+            header = (
                 '\nMCP setup not available for the following agents. '
                 'See https://docs.aws.amazon.com/agent-toolkit/latest/userguide/getting-started-aws-mcp-server.html '
-                'for manual setup instructions.\n',
+                'for manual setup instructions.\n'
+            )
+        uni_print(header, self._stream)
+        for agent, detail in skipped:
+            uni_print(
+                f'  \u2717 {agent.display_name} '
+                f'({_mcp_skip_reason(agent, detail)})\n',
                 self._stream,
             )
-            for agent, detail in skipped:
-                reason = (
-                    f'requires {detail!r} on PATH'
-                    if detail
-                    else 'no automated setup'
-                )
-                uni_print(
-                    f'  \u2717 {agent.display_name} ({reason})\n',
-                    self._stream,
-                )
+
+
+def _mcp_skip_reason(agent, detail):
+    if agent.scope is Scope.GLOBAL:
+        return (
+            f'requires {detail!r} on PATH' if detail else 'no automated setup'
+        )
+    if agent.config.mcp_config_path or agent.config.mcp_shell_command:
+        return (
+            "no project-level MCP config; run 'aws configure agent-toolkit "
+            "--global' to configure it globally"
+        )
+    return 'MCP not supported'
+
+
+def _is_home_dir(path):
+    def key(p):
+        return os.path.normcase(os.path.realpath(p))
+
+    return key(path) == key(os.path.expanduser('~'))

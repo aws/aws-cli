@@ -524,20 +524,25 @@ class UpdateSkillCommand(BasicCommand):
         missing = []
         seen_roots = set()
         for agent in agents:
-            root = os.path.realpath(agent.skills_path)
-            if root in seen_roots:
+            roots = [os.path.realpath(p) for p in agent.skills_paths]
+            if roots[0] in seen_roots:
                 continue
-            seen_roots.add(root)
-            skill_dir = os.path.join(root, skill_name)
-            if os.path.exists(
-                os.path.join(skill_dir, SKILL_METADATA_FILENAME)
+            seen_roots.add(roots[0])
+            existing = [
+                os.path.join(root, skill_name)
+                for root in roots
+                if os.path.lexists(os.path.join(root, skill_name))
+            ]
+            if any(
+                os.path.exists(os.path.join(d, SKILL_METADATA_FILENAME))
+                for d in existing
             ):
                 continue
-            if os.path.lexists(skill_dir):
+            if existing:
                 skipped.append(
                     (
                         skill_name,
-                        skill_dir,
+                        existing[0],
                         'a skill with this name exists that the AWS CLI '
                         'did not install',
                     )
@@ -574,9 +579,13 @@ class UpdateSkillCommand(BasicCommand):
         remote_version = resolve_latest_version(client, skill_name)
         outdated = []
         for agent in installed_agents:
-            skill_dir = os.path.join(agent.skills_path, skill_name)
-            local_version = read_installed_version(skill_dir)
-            if local_version != remote_version:
+            if any(
+                read_installed_version(skill_dir) != remote_version
+                for skill_dir in agent.skill_dirs(skill_name)
+                if os.path.exists(
+                    os.path.join(skill_dir, SKILL_METADATA_FILENAME)
+                )
+            ):
                 outdated.append(agent)
         return remote_version, outdated
 

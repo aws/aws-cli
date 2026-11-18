@@ -50,6 +50,7 @@ from awscli.customizations.agenttoolkit.update_skill import (
 from awscli.customizations.agenttoolkit.utils import AgentToolkitServiceError
 from awscli.customizations.exceptions import ParamValidationError
 from tests.unit.customizations.agenttoolkit.utils import (
+    home_relative,
     make_config,
     make_session,
     make_skill_zip,
@@ -1032,7 +1033,7 @@ def test_recovery_skips_directory_locked_by_another_change(tmp_path):
     _install_skill_at_version(tmp_path, '.test-agent', 'aws-s3', 'v1')
     skills = str(_skill_dir(tmp_path).parent)
     other_staging = atomic.make_staging_dir(str(_skill_dir(tmp_path)))
-    agents = [Mock(skills_path=skills)]
+    agents = [Mock(skills_paths=[skills])]
     with utils.skills_lock(skills):
         utils._recover_interrupted_changes(agents)
     assert os.path.isdir(other_staging)
@@ -1043,7 +1044,7 @@ def test_recovery_skips_directory_locked_by_another_change(tmp_path):
 def test_recovery_does_not_create_lock_without_leftovers(tmp_path):
     _install_skill_at_version(tmp_path, '.test-agent', 'aws-s3', 'v1')
     skills = _skill_dir(tmp_path).parent
-    utils._recover_interrupted_changes([Mock(skills_path=str(skills))])
+    utils._recover_interrupted_changes([Mock(skills_paths=[str(skills)])])
     assert not (skills / utils.SKILLS_LOCK_FILENAME).exists()
 
 
@@ -1077,7 +1078,7 @@ def test_recovery_of_symlinked_skill_locks_the_target_directory(tmp_path):
     (skills / 'aws-s3').symlink_to(shared, target_is_directory=True)
     staging = atomic.make_staging_dir(str(shared))
     with patch.object(utils, 'file_lock', wraps=utils.file_lock) as file_lock:
-        utils._recover_interrupted_changes([Mock(skills_path=str(skills))])
+        utils._recover_interrupted_changes([Mock(skills_paths=[str(skills)])])
     assert not os.path.exists(staging)
     paths = {c.args[0] for c in file_lock.call_args_list}
     lock = utils.SKILLS_LOCK_FILENAME
@@ -1088,7 +1089,7 @@ def test_recovery_ignores_skills_dir_that_cannot_be_listed(tmp_path):
     skills = tmp_path / 'skills'
     skills.mkdir()
     with patch.object(os, 'listdir', side_effect=PermissionError('denied')):
-        utils._recover_interrupted_changes([Mock(skills_path=str(skills))])
+        utils._recover_interrupted_changes([Mock(skills_paths=[str(skills)])])
 
 
 def test_update_skill_skips_without_locking_when_nothing_changes(tmp_path):
@@ -1101,7 +1102,7 @@ def test_update_skill_skips_without_locking_when_nothing_changes(tmp_path):
         'aws-s3',
         'v2',
         *make_skill_zip({'SKILL.md': 'new'}),
-        [Mock(skills_path=str(skill_dir.parent), display_label='Test')],
+        [make_config(tmp_path).detect()],
     )
     assert [reason for _, reason in skipped] == [
         'directory was not installed by the AWS CLI'
@@ -1348,7 +1349,6 @@ def test_hook_client_fails_fast(tmp_path, auto_update_on):
     assert create_client.call_args.kwargs == {'config': HOOK_CLIENT_CONFIG}
 
 
-
 def test_hook_installs_core_skills_with_hook_client(tmp_path, auto_update_on):
     _install_skill_at_version(tmp_path, '.test-agent', 'aws-s3', 'v2')
     client = _make_skill_client(core_skills=['aws-s3', 'aws-iam'])
@@ -1360,6 +1360,7 @@ def test_hook_installs_core_skills_with_hook_client(tmp_path, auto_update_on):
     client.get_paginator.assert_called_once_with('list_skills')
     create_client.assert_called_once()
     assert create_client.call_args.kwargs == {'config': HOOK_CLIENT_CONFIG}
+
 
 def test_update_all_uses_default_client_config(tmp_path):
     _install_skill_at_version(tmp_path, '.test-agent', 'aws-s3', 'v2')
@@ -1822,3 +1823,43 @@ def test_hook_runs_when_it_can_not_lock(tmp_path, auto_update_on):
     ):
         rc, output = _run_hook(tmp_path, 'kiro', _make_skill_client())
     assert (rc, output) == (0, 'AWS agent skills updated: aws-s3.\n')
+
+
+def _multi_path_config(tmp_path):
+    (tmp_path / '.test-agent').mkdir(exist_ok=True)
+    return make_config(
+        tmp_path,
+        skills_paths=[
+            home_relative(tmp_path, tmp_path / '.test-agent' / 'skills'),
+            home_relative(tmp_path, tmp_path / 'secondary'),
+        ],
+    )
+
+
+def test_update_skill_updates_skill_in_later_skills_path(tmp_path):
+    config = _multi_path_config(tmp_path)
+    installed = tmp_path / 'secondary' / 'aws-s3'
+    installed.mkdir(parents=True)
+    (installed / 'SKILL.md').write_text('old')
+    (installed / SKILL_METADATA_FILENAME).write_text(
+        json.dumps({'version': 'v1'})
+    )
+    rc, _ = _run_update([config], ['--skill-name', 'aws-s3'])
+    assert rc == 0
+    assert json.loads((installed / SKILL_METADATA_FILENAME).read_text()) == {
+        'version': 'v2'
+    }
+    assert not (tmp_path / '.test-agent' / 'skills' / 'aws-s3').exists()
+
+
+def test_missing_core_skill_checks_every_skills_path(tmp_path):
+    config = _multi_path_config(tmp_path)
+    installed = tmp_path / 'secondary' / 'aws-s3'
+    installed.mkdir(parents=True)
+    (installed / SKILL_METADATA_FILENAME).write_text('{}')
+    agent = config.detect()
+    cmd = UpdateSkillCommand(make_session())
+    skipped = []
+    assert cmd._agents_missing_skill([agent], 'aws-s3', skipped) == []
+    assert cmd._agents_missing_skill([agent], 'aws-iam', skipped) == [agent]
+    assert skipped == []

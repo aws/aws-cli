@@ -94,6 +94,7 @@ class RemoveCommand(BasicCommand):
                     atomic.remove_dir(entry)
             removed_paths.add(entry)
             self._stream.write(
-                f'Removed {skill.name} from {skill.agent.display_label}.\n'
+                f'Removed {skill.name} from '
+                f'{skill.agent.label_for(os.path.dirname(skill_dir))}.\n'
             )
         return 0

@@ -23,6 +23,7 @@ from awscli.customizations.agenttoolkit.list_installed_skills import (
 )
 from awscli.customizations.exceptions import ParamValidationError
 from tests.unit.customizations.agenttoolkit.utils import (
+    home_relative,
     make_config,
     make_parsed_globals,
     make_session,
@@ -130,7 +131,7 @@ def test_list_installed_universal_row_only_detected(tmp_path, monkeypatch):
             id='codex',
             display_name='Codex',
             detection_path=str(tmp_path / '.codex'),
-            skills_path_override=str(shared),
+            skills_paths=[home_relative(tmp_path, shared)],
         ),
         make_config(
             tmp_path,
@@ -163,7 +164,7 @@ def test_list_installed_universal_row_lists_alongside_override_agent(
             id='codex',
             display_name='Codex',
             detection_path=str(tmp_path / '.codex'),
-            skills_path_override=str(shared),
+            skills_paths=[home_relative(tmp_path, shared)],
         ),
         make_config(
             tmp_path,

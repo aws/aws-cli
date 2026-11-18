@@ -21,6 +21,7 @@ from awscli.customizations.agenttoolkit.agents import SKILL_METADATA_FILENAME
 from awscli.customizations.agenttoolkit.utils import AgentToolkitServiceError
 from awscli.customizations.exceptions import ParamValidationError
 from tests.unit.customizations.agenttoolkit.utils import (
+    home_relative,
     make_config,
     make_skill_zip,
     requires_symlinks,
@@ -128,14 +129,14 @@ def test_add_skill_dedupes_shared_skills_path(tmp_path):
             id='a',
             display_name='Agent A',
             detection_path=str(tmp_path / '.agent-a'),
-            skills_path_override=shared,
+            skills_paths=[home_relative(tmp_path, shared)],
         ),
         make_config(
             tmp_path,
             id='b',
             display_name='Agent B',
             detection_path=str(tmp_path / '.agent-b'),
-            skills_path_override=shared,
+            skills_paths=[home_relative(tmp_path, shared)],
         ),
     ]
     rc, output = _run_add(configs, ['--skill-name', 'aws-s3'])
@@ -214,7 +215,7 @@ def test_add_skill_universal_row_coexists_with_override_agent(tmp_path):
             id='codex',
             display_name='Codex',
             detection_path=str(tmp_path / '.codex'),
-            skills_path_override=str(shared),
+            skills_paths=[home_relative(tmp_path, shared)],
         ),
         make_config(
             tmp_path,
@@ -245,7 +246,7 @@ def test_add_skill_already_installed_message_not_duplicated(tmp_path):
             id='codex',
             display_name='Codex',
             detection_path=str(tmp_path / '.codex'),
-            skills_path_override=str(shared),
+            skills_paths=[home_relative(tmp_path, shared)],
         ),
         make_config(
             tmp_path,
@@ -370,3 +371,37 @@ def test_add_skill_does_not_need_writable_aws_cli_dir(tmp_path):
         )
     assert rc == 0
     assert 'Installed aws-s3 (v1) to Test Agent' in output
+
+
+def _multi_path_config(tmp_path):
+    (tmp_path / '.test-agent').mkdir(exist_ok=True)
+    return make_config(
+        tmp_path,
+        skills_paths=[
+            home_relative(tmp_path, tmp_path / '.test-agent' / 'skills'),
+            home_relative(tmp_path, tmp_path / 'secondary'),
+        ],
+    )
+
+
+def test_add_skill_installs_into_first_skills_path(tmp_path):
+    rc, output = _run_add(
+        [_multi_path_config(tmp_path)], ['--skill-name', 'aws-s3']
+    )
+    assert rc == 0
+    assert (
+        tmp_path / '.test-agent' / 'skills' / 'aws-s3' / 'SKILL.md'
+    ).exists()
+    assert not (tmp_path / 'secondary').exists()
+
+
+def test_add_skill_skips_skill_installed_in_later_skills_path(tmp_path):
+    config = _multi_path_config(tmp_path)
+    installed = tmp_path / 'secondary' / 'aws-s3'
+    installed.mkdir(parents=True)
+    (installed / 'SKILL.md').write_text('old')
+    (installed / SKILL_METADATA_FILENAME).write_text('{"version": "v0"}')
+    rc, output = _run_add([config], ['--skill-name', 'aws-s3'])
+    assert 'already installed (v0)' in output
+    assert not (tmp_path / '.test-agent' / 'skills' / 'aws-s3').exists()
+    assert (installed / 'SKILL.md').read_text() == 'old'

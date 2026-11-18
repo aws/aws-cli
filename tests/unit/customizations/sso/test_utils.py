@@ -10,6 +10,7 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
+import datetime
 import os
 import socket
 import threading
@@ -28,6 +29,7 @@ from awscli.customizations.sso.utils import (
     OpenBrowserHandler,
     PrintOnlyHandler,
     do_sso_login,
+    get_cached_sso_token,
     open_browser_with_original_ld_path,
     parse_sso_registration_scopes,
     validate_redirect_port,
@@ -61,6 +63,94 @@ def test_validate_redirect_port(redirect_port):
 def test_validate_redirect_port_invalid(redirect_port):
     with pytest.raises(ParamValidationError, match='--redirect-port'):
         validate_redirect_port(redirect_port)
+
+
+def _cached_token(expires_at):
+    return {
+        'startUrl': 'https://mystarturl.com',
+        'region': 'us-west-2',
+        'accessToken': 'access.token',
+        'expiresAt': expires_at,
+    }
+
+
+def _token_cache_with(token, start_url='https://mystarturl.com'):
+    import hashlib
+
+    cache_key = hashlib.sha1(start_url.encode('utf-8')).hexdigest()
+    return {cache_key: token}
+
+
+def _expiry_string(delta):
+    expiry = datetime.datetime.now(datetime.timezone.utc) + datetime.timedelta(
+        seconds=delta
+    )
+    return expiry.strftime('%Y-%m-%dT%H:%M:%SZ')
+
+
+@pytest.mark.parametrize(
+    'expires_at',
+    [
+        _expiry_string(28800),
+        datetime.datetime.now(datetime.timezone.utc)
+        + datetime.timedelta(hours=8),
+    ],
+)
+def test_get_cached_sso_token_returns_valid_token(expires_at):
+    token_cache = _token_cache_with(_cached_token(expires_at))
+    assert get_cached_sso_token(
+        token_cache, 'https://mystarturl.com'
+    ) == _cached_token(expires_at)
+
+
+@pytest.mark.parametrize(
+    'expires_at',
+    [
+        # Already expired
+        _expiry_string(-60),
+        # Expires within the 15 minute expiry window
+        _expiry_string(60),
+        _expiry_string(14 * 60),
+    ],
+)
+def test_get_cached_sso_token_returns_none_for_expired_token(expires_at):
+    token_cache = _token_cache_with(_cached_token(expires_at))
+    assert get_cached_sso_token(token_cache, 'https://mystarturl.com') is None
+
+
+def test_get_cached_sso_token_returns_none_when_no_token_cached():
+    assert get_cached_sso_token({}, 'https://mystarturl.com') is None
+
+
+@pytest.mark.parametrize(
+    'token',
+    [
+        {'startUrl': 'https://mystarturl.com'},
+        _cached_token(None),
+        _cached_token('not-a-timestamp'),
+        'not-a-dict',
+    ],
+)
+def test_get_cached_sso_token_returns_none_for_invalid_token(token):
+    token_cache = _token_cache_with(token)
+    assert get_cached_sso_token(token_cache, 'https://mystarturl.com') is None
+
+
+def test_get_cached_sso_token_uses_session_name_cache_key():
+    import hashlib
+
+    session_name = 'test-session'
+    cache_key = hashlib.sha1(session_name.encode('utf-8')).hexdigest()
+    token = _cached_token(_expiry_string(28800))
+    token_cache = {cache_key: token}
+    assert (
+        get_cached_sso_token(
+            token_cache,
+            'https://mystarturl.com',
+            session_name=session_name,
+        )
+        == token
+    )
 
 
 class TestDoSSOLogin(unittest.TestCase):

@@ -150,6 +150,30 @@ def is_hook_supported(agent_id):
     return agent_id in HOOK_AGENT_IDS
 
 
+# Environment variables naming the directory an agent session started in,
+# set by the agent for the hooks it runs.
+_PROJECT_DIR_ENV_VARS = {
+    'claude-code': 'CLAUDE_PROJECT_DIR',
+    'cursor': 'CURSOR_PROJECT_DIR',
+    'gemini-cli': 'GEMINI_PROJECT_DIR',
+}
+
+
+def hook_start_dir(agent_id, environ=None):
+    """Return the directory the agent session started in, from the agent's
+    environment variable, or ``None`` to use the hook's working directory.
+
+    Some agents, such as Cursor, run hooks from their configuration
+    directory rather than the session's directory.
+    """
+    if environ is None:
+        environ = os.environ
+    path = environ.get(_PROJECT_DIR_ENV_VARS.get(agent_id, ''))
+    if path and os.path.isabs(path) and os.path.isdir(path):
+        return path
+    return None
+
+
 def hook_command(agent_id):
     # Agents run hooks without a terminal, where auto-prompt turned on in
     # the user's config would fail before the command runs.

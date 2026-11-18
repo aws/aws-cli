@@ -16,6 +16,7 @@ import sys
 from awscli.customizations.agenttoolkit import atomic
 from awscli.customizations.agenttoolkit.agents import (
     AGENT_CONFIGS,
+    UNIVERSAL_ROW_ID,
     universal_first,
 )
 from awscli.customizations.agenttoolkit.utils import (
@@ -24,11 +25,13 @@ from awscli.customizations.agenttoolkit.utils import (
     SKILL_NAME_ARG,
     SYMLINK_ARGS,
     SYMLINK_SKIP_REASON,
+    format_project_note,
+    project_skill_names,
     resolve_agents_for_args,
+    skill_not_installed_error,
     skills_lock,
 )
 from awscli.customizations.commands import BasicCommand
-from awscli.customizations.exceptions import ParamValidationError
 
 
 class RemoveCommand(BasicCommand):
@@ -65,10 +68,17 @@ class RemoveCommand(BasicCommand):
                 if skill.name == skill_name:
                     matches.append(skill)
 
+        project_names = project_skill_names(
+            parsed_args, self._agent_configs, agents
+        )
         if not matches:
-            raise ParamValidationError(
-                f'Skill "{skill_name}" is not installed.'
+            raise skill_not_installed_error(
+                skill_name,
+                'remove-skill',
+                'remove',
+                skill_name in project_names,
             )
+        is_agent_filtered = bool(getattr(parsed_args, 'agent', None))
 
         removed_paths = set()
         ordered = universal_first(matches, get_id=lambda s: s.agent.config.id)
@@ -112,7 +122,41 @@ class RemoveCommand(BasicCommand):
                 f'Removed {skill.name} from '
                 f'{skill.agent.label_for(os.path.dirname(skill_dir))}.\n'
             )
+            if is_agent_filtered:
+                self._warn_if_shared(skill)
+        # Only without a scope flag: --global already says the project is
+        # left alone.
+        if skill_name in project_names and not getattr(
+            parsed_args, 'global', False
+        ):
+            self._stream.write(
+                format_project_note(
+                    'remove-skill', skill_name, 'removed', 'remove'
+                )
+            )
         return 0
+
+    def _warn_if_shared(self, skill):
+        """Warn that ``skill`` is also removed for the other agents that
+        read its skills directory."""
+        skills_root = os.path.realpath(
+            os.path.dirname(os.path.dirname(skill.path))
+        )
+        names = []
+        for config in self._agent_configs:
+            if config.id in (skill.agent.config.id, UNIVERSAL_ROW_ID):
+                continue
+            other = config.detect(skill.agent.scope, skill.agent.project_dir)
+            if other is not None and skills_root in {
+                os.path.realpath(path) for path in other.skills_paths
+            }:
+                names.append(other.display_name)
+        if names:
+            self._stream.write(
+                f'Warning: {skill.name} is also removed for '
+                f'{", ".join(names)}, which read the same skills '
+                'directory.\n'
+            )
 
 
 def _can_remove(skill):

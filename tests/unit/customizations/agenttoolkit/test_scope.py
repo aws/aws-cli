@@ -112,7 +112,9 @@ def _run_update(configs, args, version='v2'):
         patch(f'{module}.create_client'),
     ):
         cmd = UpdateSkillCommand(
-            make_session(), stream=stream, agent_configs=configs
+            make_session(),
+            stream=stream,
+            agent_configs=configs,
         )
         rc = cmd(args=args, parsed_globals=Mock())
     return rc, stream.getvalue()
@@ -843,3 +845,162 @@ def test_no_follow_symlinks_checks_override_dir_like_agent_dir(
     monkeypatch.setenv('TEST_DIR', str(plain_override))
     agent = config.detect(follow_symlinks=False)
     assert agent.can_write(str(plain_override / 'skills' / 'aws-s3'))
+
+
+# Notes about skills in the current directory
+
+
+def test_no_note_in_home_directory(tmp_path):
+    # Project skills of the home directory are the global ones.
+    (tmp_path / '.test-agent').mkdir()
+    _write_skill(tmp_path / '.test-agent' / 'skills', 'aws-s3')
+    _, output = _run_remove(
+        [make_config(tmp_path)], ['--skill-name', 'aws-s3']
+    )
+    assert 'Note:' not in output
+
+
+def test_remove_skill_global_notes_project_copy(tmp_path, repo):
+    _write_skill(tmp_path / '.test-agent' / 'skills', 'aws-s3')
+    project = _write_skill(repo / '.test-agent' / 'skills', 'aws-s3')
+    rc, output = _run_remove(
+        [make_config(tmp_path)], ['--skill-name', 'aws-s3']
+    )
+    assert rc == 0
+    assert project.is_dir()
+    assert (
+        'Note: aws-s3 is also installed in the current directory and was '
+        'not removed.\n'
+        '      Run "aws agent-toolkit remove-skill --skill-name aws-s3 '
+        '--project" to remove it.\n'
+    ) in output
+
+
+def test_remove_skill_only_in_project_points_to_project(tmp_path, repo):
+    _write_skill(repo / '.test-agent' / 'skills', 'aws-s3')
+    with pytest.raises(ParamValidationError) as e:
+        _run_remove([make_config(tmp_path)], ['--skill-name', 'aws-s3'])
+    assert str(e.value).endswith(
+        'Skill "aws-s3" is not installed globally. It is installed in the '
+        'current directory, run "aws agent-toolkit remove-skill '
+        '--skill-name aws-s3 --project" to remove it.'
+    )
+
+
+def test_remove_skill_not_installed_anywhere(tmp_path, repo):
+    with pytest.raises(ParamValidationError, match='is not installed\\.'):
+        _run_remove([make_config(tmp_path)], ['--skill-name', 'aws-s3'])
+
+
+def test_remove_skill_global_flag_has_no_note(tmp_path, repo):
+    _write_skill(tmp_path / '.test-agent' / 'skills', 'aws-s3')
+    project = _write_skill(repo / '.test-agent' / 'skills', 'aws-s3')
+    _, output = _run_remove(
+        [make_config(tmp_path)], ['--skill-name', 'aws-s3', '--global']
+    )
+    assert project.is_dir()
+    assert 'Note:' not in output
+
+
+def test_remove_skill_only_in_project_with_global_flag_points_to_project(
+    tmp_path, repo
+):
+    _write_skill(repo / '.test-agent' / 'skills', 'aws-s3')
+    with pytest.raises(ParamValidationError, match='--project" to remove'):
+        _run_remove(
+            [make_config(tmp_path)], ['--skill-name', 'aws-s3', '--global']
+        )
+
+
+@pytest.mark.parametrize(
+    'args', [['--skill-name', 'aws-s3'], ['--all']], ids=['one', 'all']
+)
+def test_update_skill_global_flag_has_no_note(tmp_path, repo, args):
+    _write_skill(tmp_path / '.test-agent' / 'skills', 'aws-s3')
+    project = _write_skill(repo / '.test-agent' / 'skills', 'aws-s3')
+    _, output = _run_update([make_config(tmp_path)], [*args, '--global'])
+    assert _version(project) == 'v1'
+    assert 'Note:' not in output
+
+
+def test_update_skill_only_in_project_points_to_project(tmp_path, repo):
+    _write_skill(repo / '.test-agent' / 'skills', 'aws-s3')
+    with pytest.raises(ParamValidationError, match='--project" to update'):
+        _run_update(
+            [make_config(tmp_path)], ['--skill-name', 'aws-s3', '--global']
+        )
+
+
+def test_update_skill_default_has_no_note(tmp_path, repo):
+    # Both scopes are updated, so nothing is left behind.
+    _write_skill(tmp_path / '.test-agent' / 'skills', 'aws-s3')
+    project = _write_skill(repo / '.test-agent' / 'skills', 'aws-s3')
+    _, output = _run_update(
+        [make_config(tmp_path)], ['--skill-name', 'aws-s3']
+    )
+    assert _version(project) == 'v2'
+    assert 'Note:' not in output
+
+
+# Shared skills directories
+
+
+def _sharing_configs(tmp_path):
+    for name in ('.agent-a', '.agent-b', '.agent-c'):
+        (tmp_path / name).mkdir(exist_ok=True)
+    return [
+        make_config(
+            tmp_path,
+            id='agent-a',
+            display_name='Agent A',
+            detection_path=str(tmp_path / '.agent-a'),
+            skills_paths=['.agents/skills'],
+        ),
+        make_config(
+            tmp_path,
+            id='agent-b',
+            display_name='Agent B',
+            detection_path=str(tmp_path / '.agent-b'),
+            skills_paths=['.agents/skills', '.agent-b/skills'],
+        ),
+        make_config(
+            tmp_path,
+            id='agent-c',
+            display_name='Agent C',
+            detection_path=str(tmp_path / '.agent-c'),
+            skills_paths=['.agent-c/skills'],
+        ),
+    ]
+
+
+@pytest.mark.parametrize('scope_args', [[], ['--project']])
+def test_remove_skill_for_one_agent_warns_shared_directory(
+    tmp_path, repo, scope_args
+):
+    root = repo if scope_args else tmp_path
+    _write_skill(root / '.agents' / 'skills', 'aws-s3')
+    _, output = _run_remove(
+        _sharing_configs(tmp_path),
+        ['--skill-name', 'aws-s3', '--agent', 'agent-a', *scope_args],
+    )
+    assert (
+        'Warning: aws-s3 is also removed for Agent B, which read the same '
+        'skills directory.\n'
+    ) in output
+
+
+def test_remove_skill_for_one_agent_unshared_has_no_warning(tmp_path, repo):
+    _write_skill(tmp_path / '.agent-c' / 'skills', 'aws-s3')
+    _, output = _run_remove(
+        _sharing_configs(tmp_path),
+        ['--skill-name', 'aws-s3', '--agent', 'agent-c'],
+    )
+    assert 'Warning:' not in output
+
+
+def test_remove_skill_for_all_agents_has_no_warning(tmp_path, repo):
+    _write_skill(tmp_path / '.agents' / 'skills', 'aws-s3')
+    _, output = _run_remove(
+        _sharing_configs(tmp_path), ['--skill-name', 'aws-s3']
+    )
+    assert 'Warning:' not in output

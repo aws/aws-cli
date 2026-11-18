@@ -26,6 +26,7 @@ from awscli.customizations.agenttoolkit.hooks import (
     hook_command,
     hook_config_path,
     hook_shell_command,
+    hook_start_dir,
     install_hook,
     install_kiro_agent_hook,
     kiro_default_agent_path,
@@ -1069,3 +1070,36 @@ def test_hook_output_formats():
     assert format_hook_output('kiro', msg, True) == f'{msg}\n'
     for agent_id in hooks.HOOK_AGENT_IDS:
         assert format_hook_output(agent_id, '', True) == ''
+
+
+# Directory the agent session started in
+
+
+@pytest.mark.parametrize(
+    'agent_id,env_var',
+    [
+        ('claude-code', 'CLAUDE_PROJECT_DIR'),
+        ('cursor', 'CURSOR_PROJECT_DIR'),
+        ('gemini-cli', 'GEMINI_PROJECT_DIR'),
+    ],
+)
+def test_hook_start_dir_from_agent_env_var(tmp_path, agent_id, env_var):
+    assert hook_start_dir(agent_id, {env_var: str(tmp_path)}) == str(tmp_path)
+
+
+def test_hook_start_dir_ignores_other_agents_env_var(tmp_path):
+    environ = {'CURSOR_PROJECT_DIR': str(tmp_path)}
+    assert hook_start_dir('claude-code', environ) is None
+
+
+@pytest.mark.parametrize('agent_id', ['codex', 'kiro'])
+def test_hook_start_dir_none_for_agent_without_env_var(tmp_path, agent_id):
+    environ = {'CLAUDE_PROJECT_DIR': str(tmp_path)}
+    assert hook_start_dir(agent_id, environ) is None
+
+
+@pytest.mark.parametrize('value', ['relative/dir', 'missing', ''])
+def test_hook_start_dir_skips_unusable_values(tmp_path, value):
+    if value == 'missing':
+        value = str(tmp_path / 'missing')
+    assert hook_start_dir('cursor', {'CURSOR_PROJECT_DIR': value}) is None

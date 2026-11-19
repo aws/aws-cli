@@ -148,7 +148,8 @@ class TestWindows(unittest.TestCase):
                     '-Name', 'codedeployagent'
                 ],
                 stdout=subprocess.PIPE,
-                stderr=subprocess.PIPE
+                stderr=subprocess.PIPE,
+                text=True
             ),
             mock.call().communicate(),
             mock.call(
@@ -158,7 +159,8 @@ class TestWindows(unittest.TestCase):
                     '-Name', 'codedeployagent'
                 ],
                 stdout=subprocess.PIPE,
-                stderr=subprocess.PIPE
+                stderr=subprocess.PIPE,
+                text=True
             ),
             mock.call().communicate()
         ])
@@ -194,7 +196,8 @@ class TestWindows(unittest.TestCase):
                     '-Name', 'codedeployagent'
                 ],
                 stdout=subprocess.PIPE,
-                stderr=subprocess.PIPE
+                stderr=subprocess.PIPE,
+                text=True
             ),
             mock.call().communicate(),
             mock.call(
@@ -204,10 +207,37 @@ class TestWindows(unittest.TestCase):
                     'call', 'uninstall', '/nointeractive'
                 ],
                 stdout=subprocess.PIPE,
-                stderr=subprocess.PIPE
+                stderr=subprocess.PIPE,
+                text=True
             ),
             mock.call().communicate()
         ])
+
+    def test_install_service_not_found(self):
+        not_found = (
+            "Cannot find any service with service name 'codedeployagent'"
+        )
+        stop_process = mock.MagicMock()
+        stop_process.communicate.return_value = ('', not_found)
+        stop_process.returncode = 1
+
+        get_process = mock.MagicMock()
+        get_process.communicate.return_value = ('Running', '')
+        get_process.returncode = 0
+
+        self.popen.side_effect = [stop_process, get_process]
+        self.windows.install(self.params)
+
+    def test_uninstall_service_not_found(self):
+        not_found = (
+            "Cannot find any service with service name 'codedeployagent'"
+        )
+        process = mock.MagicMock()
+        process.communicate.return_value = ('', not_found)
+        process.returncode = 1
+        self.popen.return_value = process
+        self.windows.uninstall(self.params)
+        self.assertEqual(self.popen.call_count, 1)
 
 
 class TestLinux(unittest.TestCase):
@@ -311,7 +341,8 @@ class TestUbuntu(TestLinux):
             mock.call(
                 ['service', 'codedeploy-agent', 'stop'],
                 stdout=subprocess.PIPE,
-                stderr=subprocess.PIPE
+                stderr=subprocess.PIPE,
+                text=True
             ),
             mock.call().communicate()
         ])
@@ -337,13 +368,34 @@ class TestUbuntu(TestLinux):
             mock.call(
                 ['service', 'codedeploy-agent', 'stop'],
                 stdout=subprocess.PIPE,
-                stderr=subprocess.PIPE
+                stderr=subprocess.PIPE,
+                text=True
             ),
             mock.call().communicate()
         ])
         self.check_call.assert_has_calls([
             mock.call(['dpkg', '-r', 'codedeploy-agent'])
         ])
+
+    def test_install_service_not_found(self):
+        process = mock.MagicMock()
+        process.communicate.return_value = (
+            '', 'codedeploy-agent: unrecognized service'
+        )
+        process.returncode = 1
+        self.popen.return_value = process
+        self.ubuntu.install(self.params)
+
+    def test_uninstall_service_not_found(self):
+        process = mock.MagicMock()
+        process.communicate.return_value = (
+            '', 'codedeploy-agent: unrecognized service'
+        )
+        process.returncode = 1
+        self.popen.return_value = process
+        self.ubuntu.uninstall(self.params)
+        self.assertEqual(self.popen.call_count, 1)
+
 
 class TestRHEL(TestLinux):
     def setUp(self):
@@ -379,7 +431,8 @@ class TestRHEL(TestLinux):
             mock.call(
                 ['service', 'codedeploy-agent', 'stop'],
                 stdout=subprocess.PIPE,
-                stderr=subprocess.PIPE
+                stderr=subprocess.PIPE,
+                text=True
             ),
             mock.call().communicate()
         ])
@@ -404,13 +457,34 @@ class TestRHEL(TestLinux):
             mock.call(
                 ['service', 'codedeploy-agent', 'stop'],
                 stdout=subprocess.PIPE,
-                stderr=subprocess.PIPE
+                stderr=subprocess.PIPE,
+                text=True
             ),
             mock.call().communicate()
         ])
         self.check_call.assert_has_calls([
             mock.call(['yum', '-y', 'erase', 'codedeploy-agent'])
         ])
+
+    def test_install_service_not_found(self):
+        process = mock.MagicMock()
+        process.communicate.return_value = (
+            '', 'Redirecting to /bin/systemctl stop  codedeploy-agent.service'
+        )
+        process.returncode = 1
+        self.popen.return_value = process
+        self.rhel.install(self.params)
+
+    def test_uninstall_service_not_found(self):
+        process = mock.MagicMock()
+        process.communicate.return_value = (
+            '', 'Redirecting to /bin/systemctl stop  codedeploy-agent.service'
+        )
+        process.returncode = 1
+        self.popen.return_value = process
+        self.rhel.uninstall(self.params)
+        self.assertEqual(self.popen.call_count, 1)
+
 
 if __name__ == "__main__":
     unittest.main()

@@ -436,8 +436,12 @@ class TestDatabaseHistoryHandler(unittest.TestCase):
         self._assert_expected_source('BOTOCORE', record)
 
     def test_can_emit_http_response_record(self):
-        # HTTP_RESPONSE also contains a binary response in its body, but it
-        # will not contain any non-unicode characters
+        # The raw HTTP_RESPONSE body is redacted before being persisted
+        # (see TestDatabaseHistoryHandler.
+        # test_emit_redacts_raw_body_of_http_response_record for why): it
+        # can carry the same credential material as the eventual
+        # PARSED_RESPONSE, but isn't structured yet, so it can't be safely
+        # redacted field-by-field the way PARSED_RESPONSE is.
         payload = {
             'status_code': 200,
             'headers': CaseInsensitiveDict({
@@ -450,7 +454,7 @@ class TestDatabaseHistoryHandler(unittest.TestCase):
         record = self._get_last_record()
         parsed_payload = payload.copy()
         parsed_payload['headers'] = dict(parsed_payload['headers'])
-        parsed_payload['body'] = 'body with no invalid utf-8 bytes in it'
+        parsed_payload['body'] = '***REDACTED***'
         self._assert_record_has_command_id(record)
         self._assert_expected_event_type('HTTP_RESPONSE', record)
         self._assert_expected_payload(parsed_payload, record)

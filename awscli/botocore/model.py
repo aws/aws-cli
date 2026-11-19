@@ -742,6 +742,12 @@ class OperationModel:
                 return payload_shape
         return None
 
+    def shape_for_error_code(self, error_code):
+        for shape in self.error_shapes:
+            if shape.error_code == error_code:
+                return shape
+        return None
+
     def __repr__(self):
         return f'{self.__class__.__name__}(name={self.name})'
 

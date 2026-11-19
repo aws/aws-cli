@@ -87,6 +87,24 @@ RETRYABLE_TRANSIENT_ERRORS = [
     (400, None, False),
 ]
 
+INVALID_CREDENTIAL_ERRORS = [
+    # From the spec's "Invalid Credential Errors" section.
+    # Status codes are included for completeness but aren't used here.
+    # StatusCode, Error, Retryable?
+    (400, 'ExpiredToken', True),
+    (401, 'ExpiredToken', True),
+    (403, 'ExpiredToken', True),
+    (400, 'ExpiredTokenException', True),
+    (401, 'ExpiredTokenException', True),
+    (403, 'ExpiredTokenException', True),
+    # Negative cases to verify error codes are matched exactly.
+    (400, 'InvalidToken', False),
+    (403, 'InvalidToken', False),
+    (400, 'InvalidTokenException', False),
+    (400, 'AccessDenied', False),
+    (403, 'AccessDenied', False),
+]
+
 
 # These tests are intended to be paired with the
 # SERVICE_DESCRIPTION_WITH_RETRIES definition.
@@ -217,6 +235,45 @@ def test_throttling_status_code_checker_ignores_missing_response():
     assert not status_code_checker.is_retryable(context)
 
 
+@pytest.mark.parametrize('case', INVALID_CREDENTIAL_ERRORS)
+def test_can_detect_invalid_credential_errors(case):
+    checker = standard.InvalidCredentialRetryableChecker()
+    _verify_retryable(checker, None, *case)
+
+
+@pytest.mark.parametrize(
+    'error_code', ['ExpiredToken', 'ExpiredTokenException']
+)
+@pytest.mark.parametrize(
+    'status_code, is_retryable', [(400, False), (500, True)]
+)
+def test_modeled_credential_errors_do_not_override_other_retries(
+    error_code, status_code, is_retryable
+):
+    service = model.ServiceModel(
+        {
+            'shapes': {
+                'ExpiredInputToken': {
+                    'type': 'structure',
+                    'exception': True,
+                    'error': {'code': error_code},
+                }
+            }
+        },
+        service_name='my-service',
+    )
+    operation_model = model.OperationModel(
+        {'errors': [{'shape': 'ExpiredInputToken'}]}, service
+    )
+    _verify_retryable(
+        standard.StandardRetryConditions(),
+        operation_model,
+        status_code,
+        error_code,
+        is_retryable,
+    )
+
+
 @pytest.mark.parametrize('case', RETRYABLE_MODELED_ERRORS)
 def test_can_detect_modeled_retryable_errors(case):
     modeled_retry_checker = standard.ModeledRetryableChecker()
@@ -232,6 +289,7 @@ def test_can_detect_modeled_retryable_errors(case):
         for case in RETRYABLE_TRANSIENT_ERRORS
         + RETRYABLE_THROTTLED_RESPONSES
         + RETRYABLE_THROTTLING_STATUS_CODES
+        + INVALID_CREDENTIAL_ERRORS
         + RETRYABLE_MODELED_ERRORS
         if case[2]
     ],

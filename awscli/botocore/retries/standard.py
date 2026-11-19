@@ -34,6 +34,7 @@ from botocore.exceptions import (
 )
 from botocore.retries import quota, special
 from botocore.retries.base import BaseRetryableChecker, BaseRetryBackoff
+from botocore.utils import INVALID_CREDENTIAL_ERROR_CODES
 
 DEFAULT_MAX_ATTEMPTS = 3
 _SERVICE_MAX_ATTEMPTS = {
@@ -568,6 +569,19 @@ class ThrottlingStatusCodeChecker(BaseRetryableChecker):
         return not self._modeled_error_detector.is_modeled_error(context)
 
 
+class InvalidCredentialRetryableChecker(BaseRetryableChecker):
+    def is_retryable(self, context):
+        error_code = context.get_error_code()
+        if error_code not in INVALID_CREDENTIAL_ERROR_CODES:
+            return False
+        operation_model = context.operation_model
+        if operation_model is None:
+            return True
+        # A modeled error may refer to a token in the request rather
+        # than signing credentials, so skip the credential retry rule.
+        return operation_model.shape_for_error_code(error_code) is None
+
+
 class ModeledRetryableChecker(BaseRetryableChecker):
     """Check if an error has been modeled as retryable."""
 
@@ -679,6 +693,7 @@ class StandardRetryConditions(BaseRetryableChecker):
                 TransientRetryableChecker(),
                 ThrottledRetryableChecker(),
                 ThrottlingStatusCodeChecker(),
+                InvalidCredentialRetryableChecker(),
                 ModeledRetryableChecker(),
                 OrRetryChecker(
                     [

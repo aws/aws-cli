@@ -11,8 +11,11 @@
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
 import argparse
+import io
 import logging
+import os
 import signal
+import sys
 
 from botocore.exceptions import (
     ClientError,
@@ -44,6 +47,10 @@ from awscli.utils import PagerInitializationException
 LOG = logging.getLogger(__name__)
 
 VALID_ERROR_FORMATS = ['legacy', 'json', 'yaml', 'text', 'table', 'enhanced']
+# Windows has no SIGPIPE, but writing to a closed pipe can still raise a
+# BrokenPipeError there.  Falling back to the POSIX signal number keeps the
+# return code the same on every platform.
+BROKEN_PIPE_RC = 128 + getattr(signal, 'SIGPIPE', 13)
 # Maximum number of items to display inline for collections
 MAX_INLINE_ITEMS = 5
 
@@ -108,6 +115,7 @@ def construct_entry_point_handlers_chain():
         ParamValidationErrorsHandler(),
         PrompterInterruptExceptionHandler(),
         InterruptExceptionHandler(),
+        BrokenPipeExceptionHandler(),
         GeneralExceptionHandler(),
     ]
     return ChainedExceptionHandler(exception_handlers=handlers)
@@ -124,6 +132,7 @@ def construct_cli_error_handlers_chain(session=None):
         NoCredentialsErrorHandler(session),
         PagerErrorHandler(session),
         InterruptExceptionHandler(),
+        BrokenPipeExceptionHandler(session),
         ClientErrorHandler(session),
         GeneralExceptionHandler(session),
     ]
@@ -385,6 +394,40 @@ class PrompterInterruptExceptionHandler(InterruptExceptionHandler):
     def _do_handle_exception(self, exception, stdout, stderr, **kwargs):
         stderr.write(f'{exception}')
         stderr.write("\n")
+        return self.RC
+
+
+def _redirect_stdout_to_devnull():
+    """Point the stdout file descriptor at devnull.
+
+    Without this, the interpreter's final flush of stdout during shutdown
+    fails on the closed pipe.  That prints an "Exception ignored ..."
+    traceback and makes Python exit with its own flush failure status
+    instead of the return code reported by the handler.
+    """
+    try:
+        fileno = sys.stdout.fileno()
+    except (AttributeError, ValueError, io.UnsupportedOperation):
+        # stdout has been replaced by an object with no underlying file
+        # descriptor, so there is nothing to redirect.
+        return
+    devnull = os.open(os.devnull, os.O_WRONLY)
+    try:
+        os.dup2(devnull, fileno)
+    finally:
+        os.close(devnull)
+
+
+class BrokenPipeExceptionHandler(FilteredExceptionHandler):
+    EXCEPTIONS_TO_HANDLE = BrokenPipeError
+    RC = BROKEN_PIPE_RC
+
+    def _do_handle_exception(self, exception, stdout, stderr, **kwargs):
+        # A reader that closes the pipe early is a normal way for a command
+        # to end, e.g. "aws s3 ls s3://bucket/ | head -1".  Unix utilities
+        # exit quietly with 128 + SIGPIPE in this situation, so nothing is
+        # written to stderr here.
+        _redirect_stdout_to_devnull()
         return self.RC
 
 

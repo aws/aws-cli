@@ -1081,6 +1081,21 @@ class TestNpmLogin(unittest.TestCase):
         with self.assertRaises(ValueError):
             self.test_subject.get_scope(f'.{self.namespace}')
 
+    def test_get_scope_invalid_trailing_characters(self):
+        # The namespace has to be valid in its entirety and not just at
+        # its start, otherwise invalid scope names are handed off to
+        # ``npm config set``.
+        invalid_namespaces = [
+            f'{self.namespace} with spaces',
+            f'{self.namespace}!!!',
+            f'{self.namespace}/../..',
+            f'{self.namespace}\nregistry=http://example.com',
+        ]
+        for namespace in invalid_namespaces:
+            with self.subTest(namespace=namespace):
+                with self.assertRaises(ValueError):
+                    self.test_subject.get_scope(namespace)
+
     def test_get_scope_without_prefix(self):
         expected_value = f'@{self.namespace}'
         scope = self.test_subject.get_scope(f'@{self.namespace}')

@@ -3,21 +3,23 @@
 The following ``get-run-task`` example gets details about a workflow task. ::
 
     aws omics get-run-task \
-        --id 1234567 \
-        --task-id 1234567
+        --id "6096280" \
+        --task-id "6657068"
 
 Output::
 
     {
-        "cpus": 1,
-        "creationTime": "2022-11-30T23:13:00.718651Z",
-        "logStream": "arn:aws:logs:us-west-2:123456789012:log-group:/aws/omics/WorkflowLog:log-stream:run/1234567/task/1234567",
-        "memory": 15,
-        "name": "CramToBamTask",
-        "startTime": "2022-11-30T23:17:47.016Z",
+        "taskId": "6657068",
         "status": "COMPLETED",
-        "stopTime": "2022-11-30T23:18:21.503Z",
-        "taskId": "1234567"
+        "name": "FileCopy",
+        "cpus": 1,
+        "memory": 1,
+        "creationTime": "2025-06-30T23:14:54.329480+00:00",
+        "startTime": "2025-06-30T23:17:43.437000+00:00",
+        "stopTime": "2025-06-30T23:17:57.662000+00:00",
+        "logStream": "arn:aws:logs:us-west-2:123456789012:log-group:/aws/omics/WorkflowLog:log-stream:run/6096280/task/6657068",
+        "gpus": 0,
+        "instanceType": "omics.c.large"
     }
 
 For more information, see `Task lifecycle in a HealthOmics run <https://docs.aws.amazon.com/omics/latest/dev/workflow-run-tasks.html>`__ in the *AWS HealthOmics User Guide*.

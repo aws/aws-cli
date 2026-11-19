@@ -18,11 +18,17 @@ from tests.functional.s3 import BaseS3TransferCommandTest
 class TestLSCommand(BaseS3TransferCommandTest):
 
     def test_operations_used_in_recursive_list(self):
+        self._test_operations_used_in_recursive_list(arg='--recursive')
+
+    def test_operations_used_in_recursive_list_short_option(self):
+        self._test_operations_used_in_recursive_list(arg='-r')
+
+    def _test_operations_used_in_recursive_list(self, arg):
         time_utc = "2014-01-09T20:45:49.000Z"
         self.parsed_responses = [{"CommonPrefixes": [], "Contents": [
             {"Key": "foo/bar.txt", "Size": 100,
              "LastModified": time_utc}]}]
-        stdout, _, _ = self.run_cmd('s3 ls s3://bucket/ --recursive', expected_rc=0)
+        stdout, _, _ = self.run_cmd(f's3 ls s3://bucket/ {arg}', expected_rc=0)
         call_args = self.operations_called[0][1]
         # We should not be calling the args with any delimiter because we
         # want a recursive listing.
@@ -123,6 +129,12 @@ class TestLSCommand(BaseS3TransferCommandTest):
         self.run_cmd('s3 ls s3://bucket/foo', expected_rc=1)
 
     def test_human_readable_file_size(self):
+        self._test_human_readable_file_size(arg='--human-readable')
+
+    def test_human_readable_file_size_short_option(self):
+        self._test_human_readable_file_size(arg='-H')
+
+    def _test_human_readable_file_size(self, arg):
         time_utc = "2014-01-09T20:45:49.000Z"
         self.parsed_responses = [{"CommonPrefixes": [], "Contents": [
             {"Key": "onebyte.txt", "Size": 1, "LastModified": time_utc},
@@ -131,7 +143,7 @@ class TestLSCommand(BaseS3TransferCommandTest):
             {"Key": "onegigabyte.txt", "Size": 1024 ** 3, "LastModified": time_utc},
             {"Key": "oneterabyte.txt", "Size": 1024 ** 4, "LastModified": time_utc},
             {"Key": "onepetabyte.txt", "Size": 1024 ** 5, "LastModified": time_utc} ]}]
-        stdout, _, _ = self.run_cmd('s3 ls s3://bucket/ --human-readable',
+        stdout, _, _ = self.run_cmd(f's3 ls s3://bucket/ {arg}',
                                     expected_rc=0)
         call_args = self.operations_called[0][1]
         # Time is stored in UTC timezone, but the actual time displayed
@@ -146,6 +158,12 @@ class TestLSCommand(BaseS3TransferCommandTest):
         self.assertIn('%s    1.0 PiB onepetabyte.txt\n' % time_fmt, stdout)
 
     def test_summarize(self):
+        self._test_summarize(arg='--summarize')
+
+    def test_summarize_short_option(self):
+        self._test_summarize(arg='-s')
+
+    def _test_summarize(self, arg):
         time_utc = "2014-01-09T20:45:49.000Z"
         self.parsed_responses = [{"CommonPrefixes": [], "Contents": [
             {"Key": "onebyte.txt", "Size": 1, "LastModified": time_utc},
@@ -154,7 +172,7 @@ class TestLSCommand(BaseS3TransferCommandTest):
             {"Key": "onegigabyte.txt", "Size": 1024 ** 3, "LastModified": time_utc},
             {"Key": "oneterabyte.txt", "Size": 1024 ** 4, "LastModified": time_utc},
             {"Key": "onepetabyte.txt", "Size": 1024 ** 5, "LastModified": time_utc} ]}]
-        stdout, _, _ = self.run_cmd('s3 ls s3://bucket/ --summarize', expected_rc=0)
+        stdout, _, _ = self.run_cmd(f's3 ls s3://bucket/ {arg}', expected_rc=0)
         call_args = self.operations_called[0][1]
         # Time is stored in UTC timezone, but the actual time displayed
         # is specific to your tzinfo, so shift the timezone to your local's.

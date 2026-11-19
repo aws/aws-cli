@@ -106,7 +106,9 @@ class Completer:
                     return command_name, cmd_obj.create_help_command()
         return None, None
 
-    def _get_documented_completions(self, table, startswith=None):
+    def _get_documented_completions(
+        self, table, startswith=None, include_aliases=False
+    ):
         names = []
         for key, command in table.items():
             if getattr(command, '_UNDOCUMENTED', False):
@@ -117,25 +119,33 @@ class Completer:
             if getattr(command, 'positional_arg', False):
                 continue
             names.append(key)
+            if include_aliases and getattr(command, 'aliases', None):
+                names.extend(command.aliases)
         return names
 
     def _find_possible_options(self, current_arg, opts, subcmd_help=None):
         all_options = copy.copy(self.main_options)
         if subcmd_help is not None:
             all_options += self._get_documented_completions(
-                subcmd_help.arg_table
+                subcmd_help.arg_table, include_aliases=True
             )
+
+        # Prefix with hyphens to match arg (assume single-letter options are
+        # short)
+        all_options_prefixed = {
+            ('-' if len(o) == 1 else '--') + o for o in all_options
+        }
 
         for option in opts:
             # Look through list of options on cmdline. If there are
             # options that have already been specified and they are
             # not the current word, remove them from list of possibles.
             if option != current_arg:
-                stripped_opt = option.lstrip('-')
-                if stripped_opt in all_options:
-                    all_options.remove(stripped_opt)
-        cw = current_arg.lstrip('-')
-        possibilities = ['--' + n for n in all_options if n.startswith(cw)]
+                if option in all_options_prefixed:
+                    all_options_prefixed.remove(option)
+        possibilities = [
+            n for n in all_options_prefixed if n.startswith(current_arg)
+        ]
         if len(possibilities) == 1 and possibilities[0] == current_arg:
             return self._complete_option(possibilities[0])
         return possibilities

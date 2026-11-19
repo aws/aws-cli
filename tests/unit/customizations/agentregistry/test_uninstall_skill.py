@@ -259,6 +259,23 @@ def test_on_disk_path_is_the_entry_that_is_the_same_file(tmp_path):
     entry.stat.assert_not_called()
 
 
+def test_on_disk_path_without_a_file_id_is_the_path(tmp_path):
+    # Without a file id, two folders that differ only in case can't be told
+    # apart, so none is taken for the other.
+    info = Mock(st_ino=0, st_dev=0)
+    entry = Mock(path=str(tmp_path / 'pdf-extract'))
+    entry.name = 'pdf-extract'
+    scandir = MagicMock()
+    scandir.return_value.__enter__.return_value = [entry]
+    typed = str(tmp_path / 'PDF-Extract')
+    with (
+        patch.object(uninstall_skill.os, 'scandir', scandir),
+        patch.object(uninstall_skill.os, 'lstat', return_value=info),
+    ):
+        assert uninstall_skill._on_disk_path(typed) == typed
+    scandir.assert_not_called()
+
+
 def test_on_disk_path_prefers_the_exact_name(tmp_path):
     (tmp_path / 'pdf-extract').mkdir()
     path = str(tmp_path / 'pdf-extract')

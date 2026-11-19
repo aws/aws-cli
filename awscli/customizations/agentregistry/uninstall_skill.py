@@ -77,6 +77,10 @@ def _on_disk_path(path):
     parent, name = os.path.split(path)
     try:
         info = os.lstat(path)
+        if not info.st_ino:
+            # No file id to tell two folders apart by, as on some network
+            # shares: keep the name as typed.
+            return path
         with os.scandir(parent) as entries:
             match = None
             for count, entry in enumerate(entries):

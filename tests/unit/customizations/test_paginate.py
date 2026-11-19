@@ -309,6 +309,38 @@ class TestShouldEnablePagination(TestPaginateBase):
         self.assertFalse(self.parsed_globals.paginate)
         self.assertEqual(arg_table['foo'], mock.sentinel.ORIGINAL_ARG)
 
+    def test_page_size_does_not_disable_pagination_when_api_limit_key_is_page_size(self):
+        # Regression test for #10442: when an API's native limit_key is named
+        # "PageSize", the CLI token becomes "page-size" which clashes with our
+        # unified --page-size arg.  Using --page-size must NOT disable
+        # auto-pagination.
+        input_tokens = ['page-size']
+        self.parsed_globals.paginate = True
+        self.parsed_args.page_size = 10
+        paginate.check_should_enable_pagination(
+            input_tokens, {}, {}, self.parsed_args, self.parsed_globals)
+        self.assertTrue(
+            self.parsed_globals.paginate,
+            "--page-size incorrectly disabled auto-pagination when API "
+            "limit_key is named 'PageSize'",
+        )
+
+    def test_starting_token_does_not_disable_pagination_when_api_input_token_is_starting_token(self):
+        # Regression test for #10442: when an API's native input_token is
+        # named "StartingToken", the CLI token becomes "starting-token" which
+        # clashes with our unified --starting-token arg.  Using
+        # --starting-token must NOT disable auto-pagination.
+        input_tokens = ['starting-token']
+        self.parsed_globals.paginate = True
+        self.parsed_args.starting_token = 'abc123'
+        paginate.check_should_enable_pagination(
+            input_tokens, {}, {}, self.parsed_args, self.parsed_globals)
+        self.assertTrue(
+            self.parsed_globals.paginate,
+            "--starting-token incorrectly disabled auto-pagination when API "
+            "input_token is named 'StartingToken'",
+        )
+
 
 class TestPaginateV2Debug(TestPaginateBase):
     def setUp(self):

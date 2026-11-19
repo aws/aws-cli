@@ -283,20 +283,69 @@ in the AWS CLI config file:
   The value can range from 900 seconds (15 minutes) up to  the  maximum 
   session  duration setting  for  the role.  This is an optional parameter
   and by default, the value is set to 3600 seconds.
+* ``credential_cache`` - Where the AWS CLI caches the temporary credentials
+  from the ``AssumeRole`` call for this profile. Valid values are ``file``
+  (the default) and ``memory``. With ``file``, the credentials are stored on
+  disk, in ``~/.aws/cli/cache``, and reused by later commands until they
+  expire. With ``memory``, they are kept only for the duration of a single
+  AWS CLI command and are not written to the credential cache. Values are
+  case-sensitive. This is an optional parameter.
 
 If you do not have MFA authentication required, then you only need to specify a
 ``role_arn`` and either a ``source_profile`` or a ``credential_source``.
 
 When you specify a profile that has IAM role configuration, the AWS CLI
 will make an ``AssumeRole`` call to retrieve temporary credentials.  These
-credentials are then stored (in ``~/.aws/cli/cache``).  Subsequent AWS CLI
-commands will use the cached temporary credentials until they expire, in which
-case the AWS CLI will automatically refresh credentials.
+credentials are then stored (in ``~/.aws/cli/cache``, unless the profile sets
+``credential_cache = memory``).  Subsequent AWS CLI commands will use the
+cached temporary credentials until they expire, in which case the AWS CLI will
+automatically refresh credentials.
 
 If you specify an ``mfa_serial``, then the first time an ``AssumeRole`` call is
 made, you will be prompted to enter the MFA code.  Subsequent commands will use
 the cached temporary credentials.  However, when the temporary credentials
-expire, you will be re-prompted for another MFA code.
+expire, you will be re-prompted for another MFA code.  With
+``credential_cache = memory``, nothing is cached between commands, so you are
+prompted on every command.
+
+Switching a profile to ``credential_cache = memory`` does not delete the
+credentials it has already cached. To remove them, delete the files in
+``~/.aws/cli/cache``; the AWS CLI recreates the ones it needs.
+
+Only the AWS CLI reads ``credential_cache``, and only for assume role and
+assume role with web identity profiles. It has no effect on IAM Identity
+Center (SSO) or ``credential_process`` profiles. The AWS SDKs and other tools
+that read the shared config file ignore it, so a tool that keeps its own file
+cache may still write credentials to disk for a profile set to ``memory``.
+
+In a chain of roles, where a ``source_profile`` is itself a profile that
+assumes a role, each profile's ``credential_cache`` applies only to that
+profile's ``AssumeRole`` call. Credentials cached on disk for a lower hop
+can be used to assume the roles above it, so to keep a whole chain off disk,
+set ``credential_cache = memory`` in every role profile of the chain.
+
+When the ``source_profile`` is an assume role with web identity profile, its
+credentials are cached only in memory, as in earlier versions of the AWS CLI,
+whatever its ``credential_cache`` says.
+
+.. warning::
+
+    With ``credential_cache = memory``, every AWS CLI command makes its own
+    ``AssumeRole`` (or ``AssumeRoleWithWebIdentity``) call for each profile
+    in the chain that sets ``credential_cache = memory``. These calls count
+    against the AWS STS request quota for the account, which is shared with
+    every other workload in the account, so running many commands in
+    parallel can lead to throttling. If the profile sets ``mfa_serial``, you
+    are prompted for an MFA code on every command, and commands that cannot
+    prompt (for example, those run without a terminal) fail.
+
+.. note::
+
+    ``credential_cache = memory`` only keeps credentials out of the
+    credential cache. Features that record API calls still see the STS
+    response, which includes the credentials: with ``cli_history`` set to
+    ``enabled``, it is saved in the AWS CLI history database
+    (``~/.aws/cli/history``), and ``--debug`` prints it.
 
 
 Example configuration using ``source_profile``::
@@ -319,6 +368,15 @@ the source credentials for the assume role call::
   role_arn=arn:aws:iam:...
   credential_source=Ec2InstanceMetadata
 
+Example configuration that keeps the role's temporary credentials only in
+memory::
+
+  # In ~/.aws/config
+  [profile crossaccount]
+  role_arn=arn:aws:iam:...
+  source_profile=development
+  credential_cache=memory
+
 Assume Role With Web Identity
 --------------------------------------
 
@@ -329,9 +387,10 @@ STS on your behalf.
 
 When you specify a profile that has IAM role configuration, the AWS CLI will
 make an ``AssumeRoleWithWebIdentity`` call to retrieve temporary credentials.
-These credentials are then stored (in ``~/.aws/cli/cache``).  Subsequent AWS
-CLI commands will use the cached temporary credentials until they expire, in
-which case the AWS CLI will automatically refresh credentials.
+These credentials are then stored (in ``~/.aws/cli/cache``, unless the profile
+sets ``credential_cache = memory``).  Subsequent AWS CLI commands will use the
+cached temporary credentials until they expire, in which case the AWS CLI will
+automatically refresh credentials.
 
 You can specify the following configuration values for configuring an
 assume role with web identity profile in the shared config:
@@ -349,6 +408,11 @@ assume role with web identity profile in the shared config:
   ``AssumeRoleWithWebIdentity`` operation.  This is an optional parameter. If
   you do not provide this value, a session name will be automatically
   generated.
+* ``credential_cache`` - Where the AWS CLI caches the temporary credentials
+  from the ``AssumeRoleWithWebIdentity`` call. Valid values are ``file`` (the
+  default) and ``memory``. This is an optional parameter. See
+  ``credential_cache`` under `Using AWS IAM Roles`_, including the notes on
+  other tools and the warning about AWS STS quotas.
 
 Below is an example configuration for the minimal amount of configuration
 needed to configure an assume role with web identity profile::
@@ -373,7 +437,12 @@ This provider can also be configured via the environment:
 
     These environment variables currently only apply to the assume role with
     web identity provider and do not apply to the general assume role provider
-    configuration.
+    configuration. When the provider is configured through these environment
+    variables, the ``credential_cache`` setting of the profile in use (from
+    ``AWS_PROFILE``, or ``default``) still applies, even if that profile has
+    no other web identity settings. If the profile does not set it,
+    credentials are cached in ``~/.aws/cli/cache``. With ``--profile``, the
+    AWS CLI ignores these environment variables.
 
 
 Sourcing Credentials From External Processes

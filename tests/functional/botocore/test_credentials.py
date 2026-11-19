@@ -885,6 +885,231 @@ class TestAssumeRoleWithWebIdentity(BaseAssumeRoleTest):
         self.assert_session_credentials(expected_params, profile='A')
 
 
+class TestCredentialCacheSetting(BaseAssumeRoleTest):
+    # Each run_command() call is one CLI command: a new session whose role
+    # providers get a JSONFileCache in self.cache_dir, as the CLI injects
+    # ~/.aws/cli/cache.
+    def setUp(self):
+        super().setUp()
+        # Keep ~ inside the temporary folder on every OS.
+        self.environ['HOME'] = self.tempdir
+        self.environ['USERPROFILE'] = self.tempdir
+        self.cache_dir = os.path.join(self.tempdir, 'cli-cache')
+        self.token_file = os.path.join(self.tempdir, 'token.jwt')
+        with open(self.token_file, 'w') as f:
+            f.write('totally.a.token')
+
+    def some_future_time(self):
+        # UTC, not local time: JSONFileCache writes the time zone name, and
+        # Windows local names such as "Coordinated Universal Time" can't be
+        # parsed back.
+        return datetime.now(timezone.utc) + timedelta(hours=24)
+
+    def run_command(self, profile, operation, responses):
+        return self.run_command_with_calls(profile, [operation] * responses)
+
+    def run_command_with_calls(self, profile, operations):
+        # profile=None resolves the profile from AWS_PROFILE (or default),
+        # so environment variables stay enabled.
+        session = StubbedSession(profile=profile)
+        resolver = session.get_component('credential_provider')
+        for method in ('assume-role', 'assume-role-with-web-identity'):
+            resolver.get_provider(method).cache = JSONFileCache(self.cache_dir)
+        stubber = session.stub('sts')
+        for operation in operations:
+            expected_creds = self.create_random_credentials()
+            stubber.add_response(
+                operation, self.create_assume_role_response(expected_creds)
+            )
+        stubber.activate()
+        creds = session.get_credentials().get_frozen_credentials()
+        stubber.assert_no_pending_responses()
+        return creds
+
+    def cache_files(self):
+        if not os.path.isdir(self.cache_dir):
+            return []
+        return os.listdir(self.cache_dir)
+
+    def write_role_config(self, extra=''):
+        self.write_config(
+            '[profile A]\n'
+            'role_arn = arn:aws:iam::123456789:role/RoleA\n'
+            'source_profile = B\n'
+            f'{extra}\n'
+            '[profile B]\n'
+            'aws_access_key_id = abc123\n'
+            'aws_secret_access_key = def456\n'
+        )
+
+    def test_memory_calls_assume_role_on_every_command(self):
+        self.write_role_config('credential_cache = memory\n')
+        first = self.run_command('A', 'assume_role', responses=1)
+        second = self.run_command('A', 'assume_role', responses=1)
+        self.assertNotEqual(first.access_key, second.access_key)
+        self.assertEqual(self.cache_files(), [])
+
+    def test_default_reuses_cached_credentials(self):
+        self.write_role_config()
+        first = self.run_command('A', 'assume_role', responses=1)
+        # No stubbed response: a second AssumeRole call would fail.
+        second = self.run_command('A', 'assume_role', responses=0)
+        self.assertEqual(first, second)
+        self.assertEqual(len(self.cache_files()), 1)
+
+    def test_invalid_value_raises(self):
+        self.write_role_config('credential_cache = off\n')
+        session = StubbedSession(profile='A')
+        with self.assertRaisesRegex(InvalidConfigError, 'credential_cache'):
+            session.get_credentials()
+
+    def test_empty_value_raises(self):
+        # Like retry_mode and the other settings with a fixed set of values,
+        # an empty value is invalid, not unset.
+        self.write_role_config('credential_cache =\n')
+        session = StubbedSession(profile='A')
+        with self.assertRaisesRegex(InvalidConfigError, 'credential_cache ""'):
+            session.get_credentials()
+
+    def test_web_identity_empty_value_raises(self):
+        self.write_web_identity_config('credential_cache =\n')
+        session = StubbedSession(profile='W')
+        with self.assertRaisesRegex(InvalidConfigError, 'credential_cache ""'):
+            session.get_credentials()
+
+    def test_web_identity_memory_calls_sts_on_every_command(self):
+        self.write_config(
+            '[profile W]\n'
+            'role_arn = arn:aws:iam::123456789:role/RoleW\n'
+            f'web_identity_token_file = {self.token_file}\n'
+            'credential_cache = memory\n'
+        )
+        operation = 'assume_role_with_web_identity'
+        self.run_command('W', operation, responses=1)
+        self.run_command('W', operation, responses=1)
+        self.assertEqual(self.cache_files(), [])
+
+    def test_web_identity_default_reuses_cached_credentials(self):
+        self.write_config(
+            '[profile W]\n'
+            'role_arn = arn:aws:iam::123456789:role/RoleW\n'
+            f'web_identity_token_file = {self.token_file}\n'
+        )
+        operation = 'assume_role_with_web_identity'
+        self.run_command('W', operation, responses=1)
+        self.run_command('W', operation, responses=0)
+        self.assertEqual(len(self.cache_files()), 1)
+
+    def write_web_identity_config(self, extra=''):
+        self.write_config(
+            '[profile W]\n'
+            'role_arn = arn:aws:iam::123456789:role/RoleW\n'
+            f'web_identity_token_file = {self.token_file}\n'
+            f'{extra}\n'
+        )
+
+    def test_aws_profile_with_env_token_file_honors_memory(self):
+        # No --profile, so env vars stay enabled (EKS/IRSA, CI runners). The
+        # profile holds only credential_cache; the rest is from the env.
+        self.write_config('[profile W]\ncredential_cache = memory\n')
+        self.environ['AWS_PROFILE'] = 'W'
+        self.environ['AWS_ROLE_ARN'] = 'arn:aws:iam::123456789:role/RoleW'
+        self.environ['AWS_WEB_IDENTITY_TOKEN_FILE'] = self.token_file
+        operation = 'assume_role_with_web_identity'
+        self.run_command(None, operation, responses=1)
+        self.run_command(None, operation, responses=1)
+        self.assertEqual(self.cache_files(), [])
+
+    def test_aws_profile_with_env_token_file_invalid_value_raises(self):
+        self.write_web_identity_config('credential_cache = Memory\n')
+        self.environ['AWS_PROFILE'] = 'W'
+        self.environ['AWS_WEB_IDENTITY_TOKEN_FILE'] = self.token_file
+        session = StubbedSession()
+        with self.assertRaisesRegex(InvalidConfigError, 'credential_cache'):
+            session.get_credentials()
+
+    def write_static_keys_config(self, extra=''):
+        self.write_config(
+            '[profile S]\n'
+            'aws_access_key_id = abc123\n'
+            'aws_secret_access_key = def456\n'
+            f'{extra}\n'
+        )
+
+    def test_invalid_value_on_static_keys_profile_is_ignored(self):
+        # Only the role providers read the key, so a profile they don't
+        # handle resolves as before.
+        self.write_static_keys_config('credential_cache = disk\n')
+        self.environ['AWS_PROFILE'] = 'S'
+        creds = self.run_command_with_calls(None, [])
+        self.assertEqual(creds.access_key, 'abc123')
+
+    def test_invalid_value_on_profile_in_use_raises_with_env_web_identity(
+        self,
+    ):
+        # With web identity from the environment, the provider reads the
+        # key from the profile in use, whatever else the profile holds.
+        self.write_static_keys_config('credential_cache = disk\n')
+        self.environ['AWS_PROFILE'] = 'S'
+        self.environ['AWS_ROLE_ARN'] = 'arn:aws:iam::123456789:role/RoleE'
+        self.environ['AWS_WEB_IDENTITY_TOKEN_FILE'] = self.token_file
+        session = StubbedSession()
+        with self.assertRaisesRegex(InvalidConfigError, '"S"'):
+            session.get_credentials()
+
+    def test_env_only_web_identity_uses_default_cache(self):
+        self.write_config('')
+        self.environ['AWS_ROLE_ARN'] = 'arn:aws:iam::123456789:role/RoleE'
+        self.environ['AWS_WEB_IDENTITY_TOKEN_FILE'] = self.token_file
+        operation = 'assume_role_with_web_identity'
+        self.run_command(None, operation, responses=1)
+        self.run_command(None, operation, responses=0)
+        self.assertEqual(len(self.cache_files()), 1)
+
+    def write_web_identity_source_hop_config(self, extra=''):
+        self.write_config(
+            '[profile A]\n'
+            'role_arn = arn:aws:iam::123456789:role/RoleA\n'
+            'source_profile = W\n'
+            '[profile W]\n'
+            'role_arn = arn:aws:iam::123456789:role/RoleW\n'
+            f'web_identity_token_file = {self.token_file}\n'
+            f'{extra}\n'
+        )
+
+    def source_hop_calls(self):
+        # The source hop (W) is resolved first.
+        return ['assume_role_with_web_identity', 'assume_role']
+
+    def assert_source_hop_stays_in_memory(self):
+        # Only A is cached: the web identity source hop W gets no injected
+        # cache, and nothing is written to ~/.aws/cli/cache.
+        self.run_command_with_calls('A', self.source_hop_calls())
+        self.assertEqual(len(self.cache_files()), 1)
+        default_dir = os.path.join(self.tempdir, '.aws', 'cli', 'cache')
+        self.assertFalse(os.path.exists(default_dir))
+
+    def test_web_identity_source_hop_unset_stays_in_memory(self):
+        # Pre-existing behavior.
+        self.write_web_identity_source_hop_config()
+        self.assert_source_hop_stays_in_memory()
+
+    def test_web_identity_source_hop_explicit_file_stays_in_memory(self):
+        # An explicit file behaves as unset: the hop keeps its existing
+        # memory-only behavior.
+        self.write_web_identity_source_hop_config('credential_cache = file\n')
+        self.assert_source_hop_stays_in_memory()
+
+    def test_explicit_file_reuses_injected_cache(self):
+        # An explicit file behaves as unset: the injected
+        # ~/.aws/cli/cache is used.
+        self.write_role_config('credential_cache = file\n')
+        first = self.run_command('A', 'assume_role', responses=1)
+        second = self.run_command('A', 'assume_role', responses=0)
+        self.assertEqual(first, second)
+        self.assertEqual(len(self.cache_files()), 1)
+
+
 class TestProcessProvider(unittest.TestCase):
     def setUp(self):
         current_dir = os.path.dirname(os.path.abspath(__file__))

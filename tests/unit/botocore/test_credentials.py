@@ -46,6 +46,7 @@ from botocore.credentials import (
 )
 from botocore.exceptions import (
     ClientError,
+    InvalidConfigError,
     LoginError,
 )
 from botocore.session import Session
@@ -1203,6 +1204,167 @@ class TestAssumeRoleWithWebIdentityCredentialProvider(unittest.TestCase):
         # If the role arn isn't set but the token path is raise an error
         with self.assertRaises(botocore.exceptions.InvalidConfigError):
             provider.load()
+
+    def _web_identity_response(self):
+        return {
+            'Credentials': {
+                'AccessKeyId': 'foo',
+                'SecretAccessKey': 'bar',
+                'SessionToken': 'baz',
+                'Expiration': self.some_future_time().isoformat(),
+            },
+        }
+
+    def _load_with_cache(self, cache, env=None):
+        response = self._web_identity_response()
+        provider = credentials.AssumeRoleWithWebIdentityProvider(
+            load_config=self._load_config,
+            client_creator=self.create_client_creator(with_response=response),
+            cache=cache,
+            profile_name=self.profile_name,
+            token_loader_cls=self._mock_loader_cls('totally.a.token'),
+        )
+        with mock.patch.dict(os.environ, env or {}, clear=True):
+            creds = provider.load().get_frozen_credentials()
+        self.assertEqual(creds.access_key, 'foo')
+
+    def test_credential_cache_unset_writes_to_injected_cache(self):
+        cache = {}
+        self._load_with_cache(cache)
+        self.assertEqual(len(cache), 1)
+
+    def test_credential_cache_memory_skips_injected_cache(self):
+        self.config['credential_cache'] = 'memory'
+        cache = {}
+        self._load_with_cache(cache)
+        self.assertEqual(cache, {})
+
+    def test_credential_cache_file_uses_injected_cache(self):
+        self.config['credential_cache'] = 'file'
+        cache = InjectedCache()
+        self._load_with_cache(cache)
+        self.assertEqual(len(cache.entries), 1)
+
+    def test_credential_cache_invalid_value_raises(self):
+        self.config['credential_cache'] = 'none'
+        provider = credentials.AssumeRoleWithWebIdentityProvider(
+            load_config=self._load_config,
+            client_creator=self.create_client_creator(with_response={}),
+            cache={},
+            profile_name=self.profile_name,
+            token_loader_cls=self._mock_loader_cls('totally.a.token'),
+        )
+        with self.assertRaisesRegex(InvalidConfigError, 'credential_cache'):
+            provider.load()
+
+    def test_env_token_file_honors_profile_memory(self):
+        # AWS_PROFILE (or default) with the token file from the environment,
+        # as on EKS or CI runners: the profile's setting still applies.
+        self.config = {
+            'role_arn': 'arn:aws:iam::123:role/role-name',
+            'credential_cache': 'memory',
+        }
+        cache = {}
+        self._load_with_cache(
+            cache, env={'AWS_WEB_IDENTITY_TOKEN_FILE': '/env/token.jwt'}
+        )
+        self.assertEqual(cache, {})
+
+    def test_env_token_file_and_role_honor_profile_memory(self):
+        # The profile holds only credential_cache; everything else comes
+        # from the environment.
+        self.config = {'credential_cache': 'memory'}
+        cache = {}
+        self._load_with_cache(
+            cache,
+            env={
+                'AWS_WEB_IDENTITY_TOKEN_FILE': '/env/token.jwt',
+                'AWS_ROLE_ARN': 'arn:aws:iam::123:role/env-role',
+            },
+        )
+        self.assertEqual(cache, {})
+
+    def test_env_token_file_without_profile_keys_uses_injected_cache(self):
+        cache = {}
+        self._load_with_cache(
+            cache, env={'AWS_WEB_IDENTITY_TOKEN_FILE': '/env/token.jwt'}
+        )
+        self.assertEqual(len(cache), 1)
+
+    def test_env_only_without_profile_uses_injected_cache(self):
+        # Pure environment configuration: the profile in use doesn't exist.
+        self.profile_name = 'default'
+        self.config = {}
+        cache = {}
+        self._load_with_cache(
+            cache,
+            env={
+                'AWS_WEB_IDENTITY_TOKEN_FILE': '/env/token.jwt',
+                'AWS_ROLE_ARN': 'arn:aws:iam::123:role/env-role',
+            },
+        )
+        self.assertEqual(len(cache), 1)
+
+    def test_env_token_file_invalid_profile_value_raises(self):
+        # Applies to any profile in use, even one that isn't a web identity
+        # profile, once web identity comes from the environment.
+        self.config = {
+            'credential_process': 'some-command',
+            'credential_cache': 'Memory',
+        }
+        provider = credentials.AssumeRoleWithWebIdentityProvider(
+            load_config=self._load_config,
+            client_creator=self.create_client_creator(with_response={}),
+            cache={},
+            profile_name=self.profile_name,
+            token_loader_cls=self._mock_loader_cls('totally.a.token'),
+        )
+        env = {
+            'AWS_WEB_IDENTITY_TOKEN_FILE': '/env/token.jwt',
+            'AWS_ROLE_ARN': 'arn:aws:iam::123:role/env-role',
+        }
+        with mock.patch.dict(os.environ, env, clear=True):
+            with self.assertRaisesRegex(
+                InvalidConfigError, 'credential_cache'
+            ):
+                provider.load()
+
+    def test_credential_cache_memory_reused_in_process(self):
+        # A second load from the same provider (one CLI command) hits the
+        # provider's memory cache, so STS is called once.
+        self.config['credential_cache'] = 'memory'
+        response = self._web_identity_response()
+        client_creator = self.create_client_creator(with_response=response)
+        cache = {}
+        provider = credentials.AssumeRoleWithWebIdentityProvider(
+            load_config=self._load_config,
+            client_creator=client_creator,
+            cache=cache,
+            profile_name=self.profile_name,
+            token_loader_cls=self._mock_loader_cls('totally.a.token'),
+        )
+        with mock.patch.dict(os.environ, {}, clear=True):
+            provider.load().get_frozen_credentials()
+            provider.load().get_frozen_credentials()
+        client = client_creator.return_value
+        self.assertEqual(client.assume_role_with_web_identity.call_count, 1)
+        self.assertEqual(cache, {})
+        self.assertEqual(len(provider._memory_cache), 1)
+
+
+class InjectedCache:
+    # Stands in for the CLI's JSONFileCache: not a plain dict.
+    def __init__(self):
+        self.entries = {}
+
+    def __contains__(self, key):
+        return key in self.entries
+
+    def __getitem__(self, key):
+        return self.entries[key]
+
+    def __setitem__(self, key, value):
+        self.entries[key] = value
 
 
 class TestEnvVar(BaseEnvVar):
@@ -3067,6 +3229,233 @@ class TestAssumeRoleCredentialProvider(unittest.TestCase):
         self.assertEqual(creds.access_key, 'foo')
         self.assertEqual(creds.secret_key, 'bar')
         self.assertEqual(creds.token, 'baz')
+
+    def _assume_role_response(self, access_key='foo'):
+        return {
+            'Credentials': {
+                'AccessKeyId': access_key,
+                'SecretAccessKey': 'bar',
+                'SessionToken': 'baz',
+                'Expiration': self.some_future_time().isoformat(),
+            },
+        }
+
+    def _load_with_cache_config(self, **settings):
+        self.fake_config['profiles']['development'].update(settings)
+        cache = {}
+        client_creator = self.create_client_creator(
+            with_response=self._assume_role_response()
+        )
+        provider = credentials.AssumeRoleProvider(
+            self.create_config_loader(),
+            client_creator,
+            cache=cache,
+            profile_name='development',
+        )
+        creds = provider.load().get_frozen_credentials()
+        self.assertEqual(creds.access_key, 'foo')
+        return cache
+
+    def test_credential_cache_unset_writes_to_injected_cache(self):
+        cache = self._load_with_cache_config()
+        self.assertEqual(len(cache), 1)
+
+    def test_credential_cache_file_uses_injected_cache(self):
+        # An explicit file behaves as unset: the injected cache (the CLI's
+        # ~/.aws/cli/cache) is used.
+        self.fake_config['profiles']['development']['credential_cache'] = (
+            'file'
+        )
+        cache = InjectedCache()
+        provider = credentials.AssumeRoleProvider(
+            self.create_config_loader(),
+            self.create_client_creator(
+                with_response=self._assume_role_response()
+            ),
+            cache=cache,
+            profile_name='development',
+        )
+        creds = provider.load().get_frozen_credentials()
+        self.assertEqual(creds.access_key, 'foo')
+        self.assertEqual(len(cache.entries), 1)
+
+    def test_credential_cache_file_uses_plain_dict_cache(self):
+        # A plain dict cache (botocore's default) is used as given, the
+        # same as unset.
+        cache = self._load_with_cache_config(credential_cache='file')
+        self.assertEqual(len(cache), 1)
+
+    def test_credential_cache_memory_skips_injected_cache(self):
+        cache = self._load_with_cache_config(credential_cache='memory')
+        self.assertEqual(cache, {})
+
+    def test_credential_cache_invalid_value_raises(self):
+        self.fake_config['profiles']['development']['credential_cache'] = (
+            'disk'
+        )
+        provider = credentials.AssumeRoleProvider(
+            self.create_config_loader(),
+            self.create_client_creator(with_response={}),
+            cache={},
+            profile_name='development',
+        )
+        with self.assertRaisesRegex(InvalidConfigError, 'credential_cache'):
+            provider.load()
+
+    def test_credential_cache_memory_reused_in_process(self):
+        # A second fetch in the same CLI command (a refresh) reads the
+        # provider's memory cache, so AssumeRole is called once.
+        self.fake_config['profiles']['development']['credential_cache'] = (
+            'memory'
+        )
+        client_creator = self.create_client_creator(
+            with_response=self._assume_role_response()
+        )
+        cache = {}
+        provider = credentials.AssumeRoleProvider(
+            self.create_config_loader(),
+            client_creator,
+            cache=cache,
+            profile_name='development',
+        )
+        creds = provider.load()
+        creds.get_frozen_credentials()
+        refreshed = creds._refresh_using()
+        self.assertEqual(refreshed['access_key'], 'foo')
+        self.assertEqual(client_creator.return_value.assume_role.call_count, 1)
+        self.assertEqual(cache, {})
+        self.assertEqual(len(provider._memory_cache), 1)
+
+    def _load_chain(self):
+        cache = {}
+        # The source hop ("development") calls AssumeRole first.
+        client_creator = self.create_client_creator(
+            with_response=[
+                self._assume_role_response('source-hop'),
+                self._assume_role_response('chained-hop'),
+            ]
+        )
+        provider = credentials.AssumeRoleProvider(
+            self.create_config_loader(),
+            client_creator,
+            cache=cache,
+            profile_name='chained',
+        )
+        creds = provider.load().get_frozen_credentials()
+        self.assertEqual(creds.access_key, 'chained-hop')
+        self.assertEqual(client_creator.return_value.assume_role.call_count, 2)
+        return sorted(
+            value['Credentials']['AccessKeyId'] for value in cache.values()
+        )
+
+    def test_credential_cache_memory_on_source_hop_only(self):
+        profiles = self.fake_config['profiles']
+        profiles['development']['credential_cache'] = 'memory'
+        self.assertEqual(self._load_chain(), ['chained-hop'])
+
+    def test_credential_cache_memory_on_top_hop_only(self):
+        profiles = self.fake_config['profiles']
+        profiles['chained']['credential_cache'] = 'memory'
+        self.assertEqual(self._load_chain(), ['source-hop'])
+
+    def test_credential_cache_unset_on_both_hops(self):
+        self.assertEqual(self._load_chain(), ['chained-hop', 'source-hop'])
+
+    def test_credential_cache_invalid_on_source_hop_raises(self):
+        profiles = self.fake_config['profiles']
+        profiles['development']['credential_cache'] = 'Memory'
+        provider = credentials.AssumeRoleProvider(
+            self.create_config_loader(),
+            self.create_client_creator(with_response={}),
+            cache={},
+            profile_name='chained',
+        )
+        with self.assertRaisesRegex(InvalidConfigError, '"development"'):
+            provider.load()
+
+    def test_credential_cache_values_are_case_sensitive(self):
+        self.fake_config['profiles']['development']['credential_cache'] = (
+            'Memory'
+        )
+        provider = credentials.AssumeRoleProvider(
+            self.create_config_loader(),
+            self.create_client_creator(with_response={}),
+            cache={},
+            profile_name='development',
+        )
+        with self.assertRaisesRegex(
+            InvalidConfigError,
+            r'The credential_cache "Memory" in profile "development" is not '
+            r'valid\. Valid values are: file, memory\.',
+        ):
+            provider.load()
+
+    def test_credential_cache_empty_value_raises(self):
+        # An empty value is an error, not the default.
+        self.fake_config['profiles']['development']['credential_cache'] = ''
+        provider = credentials.AssumeRoleProvider(
+            self.create_config_loader(),
+            self.create_client_creator(with_response={}),
+            cache={},
+            profile_name='development',
+        )
+        with self.assertRaisesRegex(
+            InvalidConfigError, 'The credential_cache "" in profile'
+        ):
+            provider.load()
+
+    def test_credential_cache_memory_with_credential_source(self):
+        config = {
+            'profiles': {
+                'sourced': {
+                    'role_arn': 'myrole',
+                    'credential_source': 'CustomMockProvider',
+                    'credential_cache': 'memory',
+                }
+            }
+        }
+        fake_provider = mock.Mock()
+        fake_provider.CANONICAL_NAME = 'CustomMockProvider'
+        fake_provider.load.return_value = credentials.Credentials(
+            'akid', 'skid', 'token'
+        )
+        cache = {}
+        provider = credentials.AssumeRoleProvider(
+            self.create_config_loader(with_config=config),
+            self.create_client_creator(
+                with_response=self._assume_role_response()
+            ),
+            cache=cache,
+            profile_name='sourced',
+            credential_sourcer=credentials.CanonicalNameCredentialSourcer(
+                [fake_provider]
+            ),
+        )
+        creds = provider.load().get_frozen_credentials()
+        self.assertEqual(creds.access_key, 'foo')
+        self.assertEqual(cache, {})
+
+    def test_credential_cache_memory_with_mfa_prompts_each_command(self):
+        # Each command builds new providers, so with nothing cached the MFA
+        # code is asked for every time.
+        profile = self.fake_config['profiles']['development']
+        profile['mfa_serial'] = 'mfa'
+        profile['credential_cache'] = 'memory'
+        prompter = mock.Mock(return_value='token-code')
+        cache = {}
+        for _ in range(2):
+            provider = credentials.AssumeRoleProvider(
+                self.create_config_loader(),
+                self.create_client_creator(
+                    with_response=self._assume_role_response()
+                ),
+                cache=cache,
+                profile_name='development',
+                prompter=prompter,
+            )
+            provider.load().get_frozen_credentials()
+        self.assertEqual(prompter.call_count, 2)
+        self.assertEqual(cache, {})
 
 
 class ProfileProvider:

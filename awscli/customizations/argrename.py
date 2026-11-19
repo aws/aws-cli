@@ -110,6 +110,7 @@ ARGUMENT_RENAMES = {
     'agent-toolkit.search-skills.query': 'search-query',
     'opensearchmemory.search-memories.query': 'search-query',
     'opensearchmemory.search-events.query': 'search-query',
+    'rtbfabric.get-available-module-version.version': 'module-version',
 }
 
 # Same format as ARGUMENT_RENAMES, but instead of renaming the arguments,

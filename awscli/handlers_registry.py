@@ -480,6 +480,9 @@ PLUGIN_REGISTRY = {
     'building-argument-table.route53domains.view-billing': [
         ('awscli.customizations.argrename', 'register_arg_renames')
     ],
+    'building-argument-table.rtbfabric.get-available-module-version': [
+        ('awscli.customizations.argrename', 'register_arg_renames')
+    ],
     'building-argument-table.s3api.select-object-content': [
         ('awscli.customizations.s3events', 'register_event_stream_arg')
     ],

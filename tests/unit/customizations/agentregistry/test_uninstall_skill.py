@@ -177,8 +177,10 @@ def test_unsafe_names_are_refused(monkeypatch, tmp_path, name):
     ],
 )
 def test_names_outside_the_spec_are_refused_before_touching_anything(
-    tmp_path, name
+    tmp_path, monkeypatch, name
 ):
+    # The Windows-only rules add a clause to the message
+    monkeypatch.setattr(install_skill, '_ON_WINDOWS', False)
     # Even a folder of that name with install-skill's marker stays.
     skills = tmp_path / 'skills'
     skill = _installed(skills, name=name)
@@ -239,21 +241,22 @@ def test_on_disk_path_is_the_entry_that_is_the_same_file(tmp_path):
     info = os.lstat(tmp_path)
     other = Mock(path=str(tmp_path / 'other'))
     other.name = 'other'
-    other.stat.return_value = os.lstat(os.path.dirname(tmp_path))
     entry = Mock(path=str(tmp_path / 'pdf-extract'))
     entry.name = 'pdf-extract'
-    entry.stat.return_value = info
     scandir = MagicMock()
     scandir.return_value.__enter__.return_value = [other, entry]
     typed = str(tmp_path / 'PDF-Extract')
     with (
         patch.object(uninstall_skill.os, 'scandir', scandir),
-        patch.object(uninstall_skill.os, 'lstat', return_value=info),
+        patch.object(uninstall_skill.os, 'lstat', return_value=info) as lstat,
     ):
         on_disk = uninstall_skill._on_disk_path(typed)
     assert on_disk == str(tmp_path / 'pdf-extract')
+    # Only an entry whose name matches but for case is examined, with
+    # os.lstat: on Windows a directory entry's own stat has no file id.
+    assert [c.args[0] for c in lstat.call_args_list] == [typed, entry.path]
     other.stat.assert_not_called()
-    entry.stat.assert_called_once_with(follow_symlinks=False)
+    entry.stat.assert_not_called()
 
 
 def test_on_disk_path_prefers_the_exact_name(tmp_path):

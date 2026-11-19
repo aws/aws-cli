@@ -751,7 +751,8 @@ class TestDeadlineOAuthCallbackHandler:
         request = MockSocket(b'GET /oauth/callback?state=123&code=456')
         self.handle(request, deadline=time.time() + 0.2)
         [timeout] = request.settimeout.call_args.args
-        assert 0 < timeout <= 0.2
+        # Allow for float rounding of the deadline arithmetic
+        assert 0 < timeout <= 0.2 + 1e-6
 
     def test_request_timeout_past_the_deadline_still_blocks(self):
         # A timeout of 0 would make the socket non-blocking

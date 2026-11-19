@@ -87,9 +87,9 @@ def _on_disk_path(path):
                 if (
                     match is None
                     and entry.name.casefold() == name.casefold()
-                    and os.path.samestat(
-                        entry.stat(follow_symlinks=False), info
-                    )
+                    # os.lstat, not entry.stat: on Windows a directory
+                    # entry's stat has no file id, so it never matches
+                    and os.path.samestat(os.lstat(entry.path), info)
                 ):
                     match = entry.path
     except OSError:

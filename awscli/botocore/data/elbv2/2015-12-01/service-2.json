@@ -204,7 +204,7 @@
         {"shape":"TooManyTagsException"},
         {"shape":"DuplicateTagKeysException"}
       ],
-      "documentation":"<p>Creates a trust store.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/elasticloadbalancing/latest/application/mutual-authentication.html\">Mutual TLS for Application Load Balancers</a>.</p>"
+      "documentation":"<p>Creates a trust store.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/elasticloadbalancing/latest/application/mutual-authentication.html\">Mutual TLS for Application Load Balancers</a> or <a href=\"https://docs.aws.amazon.com/elasticloadbalancing/latest/network/mutual-authentication.html\">Mutual TLS for Network Load Balancers</a>.</p>"
     },
     "DeleteListener":{
       "name":"DeleteListener",
@@ -1495,6 +1495,64 @@
       "type":"list",
       "member":{"shape":"Cipher"}
     },
+    "ClientCertificateIdentityFilter":{
+      "type":"structure",
+      "required":[
+        "Field",
+        "Action",
+        "MatchType",
+        "Value"
+      ],
+      "members":{
+        "Field":{
+          "shape":"ClientCertificateIdentityFilterField",
+          "documentation":"<p>The client certificate field to match. The possible values are:</p> <ul> <li> <p> <code>subject-cn</code> – The common name in the certificate subject.</p> </li> <li> <p> <code>subject-ou</code> – The organizational unit in the certificate subject.</p> </li> <li> <p> <code>san-dns</code> – A DNS name in the subject alternative name (SAN).</p> </li> <li> <p> <code>san-uri</code> – A URI in the subject alternative name (SAN).</p> </li> </ul> <p>If the client certificate doesn't contain the field, the filter doesn't match. If the field has multiple values, the filter matches if it matches any one of the values.</p>"
+        },
+        "Action":{
+          "shape":"ClientCertificateIdentityFilterAction",
+          "documentation":"<p>The action to take when the client certificate matches the filter. The only supported action is <code>accept</code>.</p>"
+        },
+        "MatchType":{
+          "shape":"ClientCertificateIdentityFilterMatchType",
+          "documentation":"<p>The match type. The possible values are <code>exact</code> and <code>prefix</code>.</p> <p>For the <code>subject-cn</code>, <code>subject-ou</code>, and <code>san-dns</code> fields, matching is case-insensitive. For the <code>san-uri</code> field, the scheme and host are matched case-insensitively, and the rest of the URI is matched case-sensitively.</p>"
+        },
+        "Value":{
+          "shape":"ClientCertificateIdentityFilterValue",
+          "documentation":"<p>The value to match. The value must be 1–256 printable ASCII characters.</p> <p>If the field is <code>san-uri</code>, the value must begin with a letter. Before the first colon, the value can contain only letters, digits, plus signs (+), hyphens (-), or periods (.). If the match type is <code>exact</code>, the value must contain a colon. For example, <code>spiffe://example.com/workload</code> is a valid value.</p>"
+        }
+      },
+      "documentation":"<p>Describes a client certificate identity filter.</p>"
+    },
+    "ClientCertificateIdentityFilterAction":{
+      "type":"string",
+      "enum":["accept"]
+    },
+    "ClientCertificateIdentityFilterField":{
+      "type":"string",
+      "enum":[
+        "subject-cn",
+        "subject-ou",
+        "san-dns",
+        "san-uri"
+      ]
+    },
+    "ClientCertificateIdentityFilterMatchType":{
+      "type":"string",
+      "enum":[
+        "exact",
+        "prefix"
+      ]
+    },
+    "ClientCertificateIdentityFilterValue":{
+      "type":"string",
+      "max":256,
+      "min":1
+    },
+    "ClientCertificateIdentityFilters":{
+      "type":"list",
+      "member":{"shape":"ClientCertificateIdentityFilter"},
+      "max":100
+    },
     "ConditionFieldName":{
       "type":"string",
       "max":64
@@ -1540,7 +1598,7 @@
         },
         "MutualAuthentication":{
           "shape":"MutualAuthenticationAttributes",
-          "documentation":"<p>[HTTPS listeners] The mutual authentication configuration information.</p>"
+          "documentation":"<p>[HTTPS and TLS listeners] The mutual authentication configuration information.</p>"
         }
       }
     },
@@ -3338,7 +3396,7 @@
         },
         "MutualAuthentication":{
           "shape":"MutualAuthenticationAttributes",
-          "documentation":"<p>[HTTPS listeners] The mutual authentication configuration information.</p>"
+          "documentation":"<p>[HTTPS and TLS listeners] The mutual authentication configuration information.</p>"
         }
       }
     },
@@ -3533,7 +3591,7 @@
       "members":{
         "Mode":{
           "shape":"Mode",
-          "documentation":"<p>The client certificate handling method. Options are <code>off</code>, <code>passthrough</code> or <code>verify</code>. The default value is <code>off</code>.</p>"
+          "documentation":"<p>The client certificate handling method. The default value is <code>off</code>.</p> <p>[Application Load Balancers] The possible values are <code>off</code>, <code>passthrough</code>, and <code>verify</code>.</p> <p>[Network Load Balancers] The possible values are <code>off</code> and <code>verify</code>.</p>"
         },
         "TrustStoreArn":{
           "shape":"TrustStoreArn",
@@ -3550,6 +3608,10 @@
         "AdvertiseTrustStoreCaNames":{
           "shape":"AdvertiseTrustStoreCaNamesEnum",
           "documentation":"<p>Indicates whether trust store CA certificate names are advertised.</p>"
+        },
+        "ClientCertificateIdentityFilters":{
+          "shape":"ClientCertificateIdentityFilters",
+          "documentation":"<p>[Network Load Balancers] The client certificate identity filters. The load balancer admits a connection only if the client certificate matches at least one filter. If you don't specify any filters, the load balancer admits every client certificate that passes trust store validation and revocation checks.</p> <p>You can specify filters only when the mode is <code>verify</code>. You can specify up to 100 filters per listener.</p>"
         }
       },
       "documentation":"<p>Information about the mutual authentication attributes of a listener.</p>"

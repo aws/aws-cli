@@ -502,7 +502,7 @@
         {"shape":"InvalidArgsException"},
         {"shape":"ValidationException"}
       ],
-      "documentation":"<p>Retrieves a list of certificate ARNs and domain names. You can request that only certificates that match a specific status be listed. You can also filter by specific attributes of the certificate. Default filtering returns only <code>RSA_2048</code> certificates. For more information, see <a>Filters</a>.</p> <note> <p>By default, this action does not return certificates with a <code>CertificateKeyPairOrigin</code> of <code>ACME</code>. To include ACME certificates, specify <code>ACME</code> in the <code>CertificateKeyPairOrigins</code> filter.</p> </note>",
+      "documentation":"<p>Retrieves a list of certificate ARNs and domain names. You can request that only certificates that match a specific status be listed. You can also filter by specific attributes of the certificate. Default filtering returns only <code>RSA_2048</code> certificates. For more information, see <a>Filters</a>.</p> <note> <p>By default, this action does not return certificates with a <code>CertificateKeyPairOrigin</code> of <code>ACME</code>. To include ACME certificates, specify <code>ACME</code> in the <code>CertificateKeyPairOrigins</code> filter.</p> </note> <note> <p>By default, this action does not return certificates with a <code>RootHierarchyType</code> of <code>N2_AMAZON_MANAGED</code> or <code>N2_SFG2_AMAZON_MANAGED</code>. To list only Amazon N2 certificates, specify one or both of these values in the <code>RootHierarchyTypes</code> filter.</p> </note>",
       "staticContextParams":{
         "ServiceType":{"value":"ACM"}
       }
@@ -894,6 +894,14 @@
         "AcmeAccountId":{
           "shape":"AcmeAccountId",
           "documentation":"<p>The ACME account identifier associated with the certificate.</p>"
+        },
+        "CertificateUsage":{
+          "shape":"CertificateUsage",
+          "documentation":"<p>The Extended Key Usage profile of the certificate. This value exists only for Amazon N2 certificates. If <code>CertificateUsage</code> was omitted from the request, this value is <code>CLIENT_AND_SERVER_AUTH</code>.</p>"
+        },
+        "RootHierarchyType":{
+          "shape":"RootHierarchyType",
+          "documentation":"<p>The root hierarchy from which the certificate was issued. This value exists only for Amazon N2 certificates, which have a <code>Type</code> of <code>AMAZON_ISSUED</code>.</p>"
         }
       },
       "documentation":"<p>Contains ACM-specific metadata about a certificate.</p>"
@@ -944,6 +952,10 @@
         "AcmeAccountId":{
           "shape":"AcmeAccountId",
           "documentation":"<p>Filter by ACME account identifier.</p>"
+        },
+        "RootHierarchyType":{
+          "shape":"RootHierarchyType",
+          "documentation":"<p>Filter by root hierarchy type. Specify <code>N2_AMAZON_MANAGED</code> or <code>N2_SFG2_AMAZON_MANAGED</code> to return Amazon N2 certificates.</p>"
         }
       },
       "documentation":"<p>Filters certificates by ACM metadata.</p>",
@@ -1523,7 +1535,7 @@
         },
         "Options":{
           "shape":"CertificateOptions",
-          "documentation":"<p>Contains the certificate options. Certificate transparency logging opt-out is no longer available. All public certificates are recorded in a certificate transparency log.</p>"
+          "documentation":"<p>Contains the certificate options. Certificate transparency logging opt-out is no longer available. ACM records all public certificates other than Amazon N2 certificates in a certificate transparency log.</p>"
         },
         "UpdateSummary":{
           "shape":"UpdateSummary",
@@ -1540,6 +1552,14 @@
         "AcmeAccountId":{
           "shape":"AcmeAccountId",
           "documentation":"<p>The ACME account identifier associated with the certificate.</p>"
+        },
+        "CertificateUsage":{
+          "shape":"CertificateUsage",
+          "documentation":"<p>The Extended Key Usage profile of the certificate. This value exists only for Amazon N2 certificates. If <code>CertificateUsage</code> was omitted from the request, this value is <code>CLIENT_AND_SERVER_AUTH</code>.</p>"
+        },
+        "RootHierarchyType":{
+          "shape":"RootHierarchyType",
+          "documentation":"<p>The root hierarchy from which the certificate was issued. This value exists only for Amazon N2 certificates, which have a <code>Type</code> of <code>AMAZON_ISSUED</code>.</p>"
         }
       },
       "documentation":"<p>Contains metadata about an ACM certificate. This structure is returned in the response to a <a>DescribeCertificate</a> request. </p>"
@@ -1636,7 +1656,7 @@
       "members":{
         "CertificateTransparencyLoggingPreference":{
           "shape":"CertificateTransparencyLoggingPreference",
-          "documentation":"<p>This parameter has been deprecated. Certificate transparency logging opt-out is no longer available. All public certificates are recorded in a certificate transparency log.</p>",
+          "documentation":"<p>This parameter has been deprecated. Certificate transparency logging opt-out is no longer available. ACM records all public certificates other than Amazon N2 certificates in a certificate transparency log.</p>",
           "deprecated":true,
           "deprecatedMessage":"Certificate transparency logging opt-out is no longer available.",
           "deprecatedSince":"12th June 2026"
@@ -1650,7 +1670,7 @@
           "documentation":"<p>The domain validation method for the certificate. To migrate from email to DNS validation, specify <code>DNS</code>.</p>"
         }
       },
-      "documentation":"<p>Structure that contains options for your certificate. You can use this structure to change the domain validation method or specify whether to export your certificate.</p> <p>All public certificates are recorded in a certificate transparency log. For general information, see <a href=\"https://docs.aws.amazon.com/acm/latest/userguide/acm-concepts.html#concept-transparency\">Certificate Transparency Logging</a>.</p> <p>You can export public ACM certificates to use with Amazon Web Services services as well as outside Amazon Web Services Cloud. For more information, see <a href=\"https://docs.aws.amazon.com/acm/latest/userguide/acm-exportable-certificates.html\">Certificate Manager exportable public certificate</a>.</p>"
+      "documentation":"<p>Structure that contains options for your certificate. You can use this structure to change the domain validation method or specify whether to export your certificate.</p> <p>ACM records all public certificates other than Amazon N2 certificates in a certificate transparency log. For general information, see <a href=\"https://docs.aws.amazon.com/acm/latest/userguide/acm-concepts.html#concept-transparency\">Certificate Transparency Logging</a>.</p> <p>You can export public ACM certificates to use with Amazon Web Services services as well as outside Amazon Web Services Cloud. For more information, see <a href=\"https://docs.aws.amazon.com/acm/latest/userguide/acm-exportable-certificates.html\">Certificate Manager exportable public certificate</a>.</p>"
     },
     "CertificateSearchResult":{
       "type":"structure",
@@ -1777,6 +1797,14 @@
         "CertificateKeyPairOrigin":{
           "shape":"CertificateKeyPairOrigin",
           "documentation":"<p>The origin of the certificate's key pair.</p>"
+        },
+        "CertificateUsage":{
+          "shape":"CertificateUsage",
+          "documentation":"<p>The Extended Key Usage profile of the certificate. This value exists only for Amazon N2 certificates. If <code>CertificateUsage</code> was omitted from the request, this value is <code>CLIENT_AND_SERVER_AUTH</code>.</p>"
+        },
+        "RootHierarchyType":{
+          "shape":"RootHierarchyType",
+          "documentation":"<p>The root hierarchy from which the certificate was issued. This value exists only for Amazon N2 certificates, which have a <code>Type</code> of <code>AMAZON_ISSUED</code>.</p>"
         }
       },
       "documentation":"<p>This structure is returned in the response object of <a>ListCertificates</a> action. </p>"
@@ -1801,6 +1829,14 @@
         "IMPORTED",
         "AMAZON_ISSUED",
         "PRIVATE"
+      ]
+    },
+    "CertificateUsage":{
+      "type":"string",
+      "documentation":"<p>The Extended Key Usage profile of an Amazon N2 certificate. Valid values:</p> <ul> <li> <p> <code>CLIENT_AND_SERVER_AUTH</code> – Authenticates both the client and the server.</p> </li> <li> <p> <code>CLIENT_AUTH_ONLY</code> – Authenticates only the client.</p> </li> </ul>",
+      "enum":[
+        "CLIENT_AND_SERVER_AUTH",
+        "CLIENT_AUTH_ONLY"
       ]
     },
     "CommonNameFilter":{
@@ -3075,6 +3111,10 @@
           "shape":"CertificateKeyPairOrigins",
           "documentation":"<p>Filter the certificate list by certificate key pair origin. Specify one or more <code>CertificateKeyPairOrigin</code> values. Default filtering returns only certificates with key pair origin of <code>AWS_MANAGED</code> and <code>CUSTOMER_PROVIDED</code>.</p>"
         },
+        "RootHierarchyTypes":{
+          "shape":"RootHierarchyTypes",
+          "documentation":"<p>Filter the certificate list by root hierarchy type. Specify one or more <code>RootHierarchyType</code> values. By default, this action does not return certificates with a <code>RootHierarchyType</code> of <code>N2_AMAZON_MANAGED</code> or <code>N2_SFG2_AMAZON_MANAGED</code>. To list only Amazon N2 certificates, specify one or both of these values in the <code>RootHierarchyTypes</code> filter.</p>"
+        },
         "Includes":{
           "shape":"Filters",
           "documentation":"<p>Filter the certificate list. For more information, see the <a>Filters</a> structure.</p>"
@@ -3374,7 +3414,7 @@
         },
         "Options":{
           "shape":"CertificateOptions",
-          "documentation":"<p>You can use this parameter to specify whether to export your certificate.</p> <p>Certificate transparency logging opt-out is no longer available. All public certificates are recorded in a certificate transparency log. For more information, see <a href=\"https://docs.aws.amazon.com/acm/latest/userguide/acm-concepts.html#concept-transparency\">Certificate Transparency Logging</a>.</p> <p>You can export public ACM certificates to use with Amazon Web Services services as well as outside the Amazon Web Services Cloud. For more information, see <a href=\"https://docs.aws.amazon.com/acm/latest/userguide/acm-exportable-certificates.html\">Certificate Manager exportable public certificate</a>.</p>"
+          "documentation":"<p>You can use this parameter to specify whether to export your certificate.</p> <p>Certificate transparency logging opt-out is no longer available. ACM records all public certificates other than Amazon N2 certificates in a certificate transparency log. For more information, see <a href=\"https://docs.aws.amazon.com/acm/latest/userguide/acm-concepts.html#concept-transparency\">Certificate Transparency Logging</a>.</p> <p>You can export public ACM certificates to use with Amazon Web Services services as well as outside the Amazon Web Services Cloud. For more information, see <a href=\"https://docs.aws.amazon.com/acm/latest/userguide/acm-exportable-certificates.html\">Certificate Manager exportable public certificate</a>.</p>"
         },
         "CertificateAuthorityArn":{
           "shape":"PcaArn",
@@ -3391,6 +3431,14 @@
         "ManagedBy":{
           "shape":"CertificateManagedBy",
           "documentation":"<p>Identifies the Amazon Web Services service that manages the certificate issued by ACM.</p>"
+        },
+        "CertificateUsage":{
+          "shape":"CertificateUsage",
+          "documentation":"<p>The Extended Key Usage profile of the certificate. You can specify this parameter only when <code>RootHierarchyType</code> is <code>N2_AMAZON_MANAGED</code> or <code>N2_SFG2_AMAZON_MANAGED</code>. If you specify <code>CertificateUsage</code> with any other root hierarchy type, or without <code>RootHierarchyType</code>, the request fails with a <code>ValidationException</code>.</p> <ul> <li> <p> <code>CLIENT_AND_SERVER_AUTH</code> authenticates both the client and the server. Valid for both N2 root hierarchy types.</p> </li> <li> <p> <code>CLIENT_AUTH_ONLY</code> authenticates only the client. Valid only for <code>N2_AMAZON_MANAGED</code>.</p> </li> </ul> <p>Default: CLIENT_AND_SERVER_AUTH</p>"
+        },
+        "RootHierarchyType":{
+          "shape":"RootHierarchyType",
+          "documentation":"<p>The root hierarchy from which ACM issues the certificate. Specify one of the following values to request an Amazon N2 certificate:</p> <ul> <li> <p> <code>N2_AMAZON_MANAGED</code> – An Amazon N2 certificate that chains to an Amazon N2 root. The maximum validity period, which is also the default, is 395 days.</p> </li> <li> <p> <code>N2_SFG2_AMAZON_MANAGED</code> – An Amazon N2 certificate that chains to an Amazon N2 root cross-signed by Starfield G2. The maximum validity period, which is also the default, is 98 days.</p> </li> </ul> <p>You cannot specify <code>RootHierarchyType</code> together with <code>CertificateAuthorityArn</code>.</p> <p>If you omit this parameter, ACM issues a standard public certificate. A request that specifies any value other than <code>N2_AMAZON_MANAGED</code> or <code>N2_SFG2_AMAZON_MANAGED</code> fails with a <code>ValidationException</code>.</p> <p>An Amazon N2 certificate request must specify a <code>ValidationMethod</code> of <code>DNS</code>. Amazon N2 certificates are not recorded in a certificate transparency log.</p> <p>A request for a validity period longer than the maximum fails with a <code>ValidationException</code>.</p> <note> <p>Algorithms supported for an N2 certificate request include: </p> <ul> <li> <p> <code>RSA_2048</code> </p> </li> <li> <p> <code>EC_prime256v1</code> </p> </li> <li> <p> <code>EC_secp384r1</code> </p> </li> </ul> </note>"
         }
       }
     },
@@ -3546,6 +3594,21 @@
       "max":2048,
       "min":1,
       "pattern":"arn:aws[a-z-]*:iam::[0-9]{12}:role/.+"
+    },
+    "RootHierarchyType":{
+      "type":"string",
+      "documentation":"<p>The root hierarchy from which a certificate is issued. Valid values:</p> <ul> <li> <p> <code>N2_AMAZON_MANAGED</code> – An Amazon N2 certificate that chains to an Amazon N2 root.</p> </li> <li> <p> <code>N2_SFG2_AMAZON_MANAGED</code> – An Amazon N2 certificate that chains to an Amazon N2 root cross-signed by Starfield G2.</p> </li> </ul>",
+      "enum":[
+        "N2_AMAZON_MANAGED",
+        "N2_SFG2_AMAZON_MANAGED"
+      ]
+    },
+    "RootHierarchyTypes":{
+      "type":"list",
+      "member":{"shape":"RootHierarchyType"},
+      "documentation":"<p>A list of <code>RootHierarchyType</code> values used to filter certificates.</p>",
+      "max":5,
+      "min":1
     },
     "SearchCertificatesRequest":{
       "type":"structure",

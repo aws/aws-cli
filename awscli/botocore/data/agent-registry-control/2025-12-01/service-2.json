@@ -51,7 +51,7 @@
         {"shape":"ServiceQuotaExceededException"},
         {"shape":"ConflictException"}
       ],
-      "documentation":"<p>Creates a registry record within a registry. A registry record describes a discoverable resource, such as an MCP server, an agent, an agent skill, or a custom resource. Creation is asynchronous: the record is returned with the CREATING status while it is processed.</p>",
+      "documentation":"<p>Creates a registry record within a registry. A registry record describes a discoverable resource, such as an MCP server, an agent, an agent skill, or a custom resource. For an agent skill, you can upload a skill package in <code>artifact</code>, or synchronize the skill from an Amazon S3 or GitHub source. Creation is asynchronous: the operation returns the record with the <code>CREATING</code> status while the registry processes it. If a GitHub user must first authorize access to the source, the operation returns the record with the <code>CREATE_PENDING_AUTH</code> status instead.</p>",
       "idempotent":true
     },
     "DeleteRegistry":{
@@ -130,7 +130,7 @@
         {"shape":"ValidationException"},
         {"shape":"ConflictException"}
       ],
-      "documentation":"<p>Retrieves the details of a registry record</p>",
+      "documentation":"<p>Retrieves the details of a registry record. The response describes the record's latest revision, including a revision that isn't approved yet. For a skill record, the operation also returns the skill package in <code>artifact</code> and the source that the registry last synchronized the skill from in <code>synchronizedSource</code>.</p>",
       "readonly":true
     },
     "ListRegistries":{
@@ -285,7 +285,7 @@
         {"shape":"ValidationException"},
         {"shape":"ConflictException"}
       ],
-      "documentation":"<p>Updates a registry record. The update is asynchronous: the record is returned with the UPDATING status while it is processed. Fields that use update wrappers follow PATCH semantics: omit the field to leave it unchanged.</p>"
+      "documentation":"<p>Updates a registry record. The update is asynchronous: the operation returns the record with the <code>UPDATING</code> status while the registry processes it. If a GitHub user must first authorize access to the record's skill source, the operation returns the record with the <code>UPDATE_PENDING_AUTH</code> status instead. Fields that use update wrappers follow PATCH semantics: omit the field to leave it unchanged.</p>"
     },
     "UpdateRegistryRecordStatus":{
       "name":"UpdateRegistryRecordStatus",
@@ -408,9 +408,21 @@
         "skillMd":{
           "shape":"AgentSkillsMdDescriptor",
           "documentation":"<p>The markdown skill content associated with an agent skills definition.</p>"
+        },
+        "skillPackage":{
+          "shape":"AgentSkillsPackageDescriptor",
+          "documentation":"<p>The source that the registry synchronizes the full skill package from. The registry validates and stores the package, sets <code>skillMd.data</code> from its SKILL.md, and returns the package in the <code>artifact</code> member of <code>GetRegistryRecord</code>. You can't set both this source and <code>skillMd.source</code>.</p>"
+        },
+        "repositoryProvider":{
+          "shape":"AgentSkillsRepositoryProvider",
+          "documentation":"<p>The repository provider of the record's skill source. Set it to <code>GITHUB</code> when <code>skillMd.source</code> or <code>skillPackage.source</code> is a GitHub folder URL. The registry treats an <code>https://</code> source as a GitHub source only when this member is set. Don't set it for an Amazon S3 source.</p>"
+        },
+        "sourceConfiguration":{
+          "shape":"AgentSkillsSourceConfiguration",
+          "documentation":"<p>The provider-specific settings of the record's skill source. For an Amazon S3 source, <code>s3.bucketOwnerAccountId</code> specifies the account that owns the source bucket.</p>"
         }
       },
-      "documentation":"<p>Additional data associated with an agent skills definition descriptor.</p>"
+      "documentation":"<p>Additional data associated with an agent skills definition descriptor: the skill's SKILL.md and the source that the registry synchronizes the skill from. A record synchronizes from one source at most, either <code>skillMd.source</code> for SKILL.md only or <code>skillPackage.source</code> for the full skill package. When the record has a skill package or a synchronized source, the registry sets <code>skillMd.data</code> from the SKILL.md in that package or source.</p>"
     },
     "AgentSkillsDefinitionDescriptor":{
       "type":"structure",
@@ -443,10 +455,36 @@
         },
         "source":{
           "shape":"DescriptorSource",
-          "documentation":"<p>The optional source configuration used to synchronize the agent skills markdown content.</p>"
+          "documentation":"<p>The optional source of the skill's SKILL.md only. The registry synchronizes the SKILL.md from this source into <code>data</code>. Specify an <code>s3://</code> URL of a SKILL.md object, or a GitHub folder URL together with <code>repositoryProvider</code> set to <code>GITHUB</code>. The registry rejects a new <code>https://</code> URL without <code>repositoryProvider</code>, and you can't set both this source and <code>skillPackage.source</code>.</p>"
         }
       },
       "documentation":"<p>Markdown-format descriptor containing an agent skills document.</p>"
+    },
+    "AgentSkillsPackageDescriptor":{
+      "type":"structure",
+      "members":{
+        "source":{
+          "shape":"DescriptorSource",
+          "documentation":"<p>The source of the skill package. Specify an <code>s3://</code> URL of a ZIP object, or a GitHub folder URL together with <code>repositoryProvider</code> set to <code>GITHUB</code>. For a GitHub folder, the registry builds the package from every file in the folder.</p>"
+        }
+      },
+      "documentation":"<p>Descriptor that names the source that the registry synchronizes a full skill package from. It holds only the source. The record's <code>artifact</code> member returns the package that the registry reads from this source.</p>"
+    },
+    "AgentSkillsRepositoryProvider":{
+      "type":"string",
+      "documentation":"<p>The repository provider of a skill source. <code>GITHUB</code> covers GitHub.com, GitHub Enterprise Cloud with data residency (<code>*.ghe.com</code>), and GitHub Enterprise Server hosts that are reachable from the internet.</p>",
+      "enum":["GITHUB"]
+    },
+    "AgentSkillsSourceConfiguration":{
+      "type":"structure",
+      "members":{
+        "s3":{
+          "shape":"S3SourceConfiguration",
+          "documentation":"<p>The settings of an Amazon S3 source.</p>"
+        }
+      },
+      "documentation":"<p>The provider-specific settings of a skill source. Specify the member that matches the source's provider, such as <code>s3</code> for an Amazon S3 source.</p>",
+      "union":true
     },
     "AllowedAudience":{
       "type":"string",
@@ -494,6 +532,29 @@
         }
       },
       "documentation":"<p>Configuration for the registry's record approval workflow. Controls whether records submitted for approval require manual review before they become approved and discoverable, or are auto-approved. When no auto-approval rules are configured, submitted records require manual review.</p>"
+    },
+    "ArtifactContent":{
+      "type":"blob",
+      "documentation":"<p>The bytes of a skill package ZIP archive, up to 5 MiB (5,242,880 bytes) before base64 encoding.</p>",
+      "sensitive":true
+    },
+    "AuthorizationAttemptId":{
+      "type":"string",
+      "documentation":"<p>The identifier of an OAuth 2.0 authorization attempt.</p>",
+      "max":64,
+      "min":1,
+      "pattern":"[A-Za-z0-9_-]+"
+    },
+    "AuthorizationData":{
+      "type":"structure",
+      "members":{
+        "oauth2":{
+          "shape":"OAuth2AuthorizationData",
+          "documentation":"<p>The OAuth 2.0 authorization that a GitHub user must approve.</p>"
+        }
+      },
+      "documentation":"<p>The authorization that a user must complete before a registry record can synchronize from its source. Only <code>CreateRegistryRecord</code> and <code>UpdateRegistryRecord</code> return it. <code>GetRegistryRecord</code> and <code>ListRegistryRecords</code> never do.</p>",
+      "union":true
     },
     "AuthorizerConfiguration":{
       "type":"structure",
@@ -667,6 +728,10 @@
           "shape":"Descriptors",
           "documentation":"<p>The typed descriptor content for the registry record</p>"
         },
+        "artifact":{
+          "shape":"RegistryRecordArtifactUpload",
+          "documentation":"<p>The skill package to store with the record, for a record of type <code>SKILL</code> with an <code>agentSkillsDefinition</code> descriptor. The registry validates the package after the operation returns and sets <code>skillMd.data</code> from the package's SKILL.md. A request that uploads a package can't also set a skill source or send new <code>skillMd.data</code>.</p>"
+        },
         "recordVersion":{
           "shape":"RegistryRecordVersion",
           "documentation":"<p>The version of the registry record</p>"
@@ -703,7 +768,11 @@
         },
         "status":{
           "shape":"RegistryRecordStatus",
-          "documentation":"<p>The status of the registry record, set to CREATING while the asynchronous workflow is in progress</p>"
+          "documentation":"<p>The status of the registry record. <code>CREATING</code> means that the asynchronous workflow is in progress. <code>CREATE_PENDING_AUTH</code> means that the record waits for a GitHub user to authorize access before it synchronizes from its GitHub source. For the authorization link, see <code>authorizationData</code>.</p>"
+        },
+        "authorizationData":{
+          "shape":"AuthorizationData",
+          "documentation":"<p>The authorization that a GitHub user must complete before the record's synchronization starts. Present only in this response, and only while the status is <code>CREATE_PENDING_AUTH</code>. If the status is <code>CREATE_PENDING_AUTH</code> but this member is absent, call <code>UpdateRegistryRecord</code> with <code>triggerSynchronization</code> to get a new authorization link.</p>"
         }
       },
       "documentation":"<p>Response structure for creating a registry record</p>"
@@ -888,7 +957,8 @@
     "CustomParameterMap":{
       "type":"map",
       "key":{"shape":"String"},
-      "value":{"shape":"String"}
+      "value":{"shape":"String"},
+      "sensitive":true
     },
     "DataSchemaVersion":{
       "type":"string",
@@ -981,7 +1051,7 @@
       "members":{
         "url":{
           "shape":"DescriptorSourceUrl",
-          "documentation":"<p>The URL from which the descriptor content is retrieved.</p>"
+          "documentation":"<p>The URL from which the descriptor content is retrieved. For an agent skill source, specify an <code>s3://</code> URL of an object in a bucket in the same Amazon Web Services Region as the registry. For a GitHub skill source, specify a GitHub folder URL in the form <code>https://host/owner/repo/tree/branch-or-tag/path</code>. Other descriptor sources use <code>https://</code> URLs.</p>"
         },
         "credentialProviderConfigurations":{
           "shape":"RegistryRecordCredentialProviderConfigurationList",
@@ -992,10 +1062,10 @@
     },
     "DescriptorSourceUrl":{
       "type":"string",
-      "documentation":"<p>URL source for descriptor content</p>",
+      "documentation":"<p>The URL of a descriptor source, up to 2,048 characters, that starts with <code>https://</code> or <code>s3://</code>. The registry accepts <code>s3://</code> URLs only for agent skill sources, and its discovery operations never return them.</p>",
       "max":2048,
       "min":1,
-      "pattern":"https://.*"
+      "pattern":"(https|s3)://.*"
     },
     "Descriptors":{
       "type":"structure",
@@ -1144,7 +1214,7 @@
         },
         "descriptors":{
           "shape":"Descriptors",
-          "documentation":"<p>The typed descriptors that define the content of the registry record.</p>"
+          "documentation":"<p>The typed descriptors that define the content of the registry record. For a skill record with a skill package or a synchronized source, <code>skillMd.data</code> contains the SKILL.md that the registry took from the package or the source.</p>"
         },
         "recordVersion":{
           "shape":"RegistryRecordVersion",
@@ -1185,6 +1255,14 @@
         "customMetadataSchemaComplianceStatus":{
           "shape":"CustomMetadataSchemaComplianceStatus",
           "documentation":"<p>Indicates whether this record's custom metadata conforms to the registry's current schema. This status is computed at read time against the latest schema.</p>"
+        },
+        "artifact":{
+          "shape":"RegistryRecordArtifactDownload",
+          "documentation":"<p>The skill package of the record's latest revision, including a revision in <code>DRAFT</code> or <code>PENDING_APPROVAL</code> status, as a download URL and a SHA-256 checksum. While an update of the record is in progress or after it fails, this is the last package that passed validation, unless the update switches between an uploaded package and a synchronized one: then it is absent until the update succeeds. Absent while the record is being created or after its creation fails, and when the record has no package, for example when its content is inline or it synchronizes only SKILL.md.</p>"
+        },
+        "synchronizedSource":{
+          "shape":"RegistryRecordSynchronizedSource",
+          "documentation":"<p>The source that the registry last synchronized the record's skill content from, including when the registry read the source and which version it read. Absent until the first successful synchronization, and after an update replaces the synchronized content, for example with an uploaded package. A failed synchronization leaves this member unchanged. After you change the source, this member shows the previous source until the registry successfully synchronizes from the new source.</p>"
         }
       },
       "documentation":"<p>Response structure for retrieving a registry record</p>"
@@ -1267,6 +1345,36 @@
         }
       },
       "documentation":"<p>Response structure for getting a registry</p>"
+    },
+    "GitCommitId":{
+      "type":"string",
+      "documentation":"<p>The full hash of a Git commit, as 40 lowercase hexadecimal characters, or 64 in a repository that uses SHA-256.</p>",
+      "max":64,
+      "min":40,
+      "pattern":"([0-9a-f]{40}|[0-9a-f]{64})"
+    },
+    "GitHubSynchronizedSource":{
+      "type":"structure",
+      "required":[
+        "url",
+        "synchronizedAt",
+        "commitId"
+      ],
+      "members":{
+        "url":{
+          "shape":"SynchronizedSourceUrl",
+          "documentation":"<p>The source URL that the registry read.</p>"
+        },
+        "synchronizedAt":{
+          "shape":"DateTimestamp",
+          "documentation":"<p>The timestamp when the registry read the source.</p>"
+        },
+        "commitId":{
+          "shape":"GitCommitId",
+          "documentation":"<p>The commit that the source's branch or tag pointed to when the registry read it.</p>"
+        }
+      },
+      "documentation":"<p>A GitHub source that a skill record's content was synchronized from, and the commit that the registry read.</p>"
     },
     "HttpDescriptor":{
       "type":"structure",
@@ -1532,6 +1640,55 @@
       "min":1,
       "pattern":"[\\s\\S]+"
     },
+    "OAuth2AuthorizationData":{
+      "type":"structure",
+      "required":["authorizationUrl"],
+      "members":{
+        "authorizationUrl":{
+          "shape":"OAuthAuthorizationUrl",
+          "documentation":"<p>The URL that the user opens to approve access. The link is valid for up to 10 minutes. Treat it as sensitive and give it only to the user who approves access.</p>"
+        },
+        "userId":{
+          "shape":"OAuthUserId",
+          "documentation":"<p>The AgentCore Identity user ID that the authorization is for. Store it with your signed-in user and pass it as <code>userIdentifier.userId</code> when your application calls <code>CompleteResourceTokenAuth</code>.</p>"
+        },
+        "authorizationAttemptId":{
+          "shape":"AuthorizationAttemptId",
+          "documentation":"<p>The identifier of this authorization attempt.</p>"
+        },
+        "expiresAt":{
+          "shape":"DateTimestamp",
+          "documentation":"<p>The timestamp when the authorization link expires, 10 minutes after the authorization started. A request that joins an authorization in progress gets less time, and the link might stop working shortly before this time.</p>"
+        }
+      },
+      "documentation":"<p>An OAuth 2.0 authorization that waits for a user's approval. The user opens <code>authorizationUrl</code> and approves access on GitHub. Amazon Bedrock AgentCore Identity then redirects the browser to the source's <code>returnUrl</code>. There, your application completes the authorization by calling the AgentCore Identity <code>CompleteResourceTokenAuth</code> operation with <code>userId</code>. If the source has no <code>returnUrl</code>, the user returns to the Amazon Web Services Agent Registry console, which completes the authorization. After the authorization completes, the registry synchronizes the record without another request. If the user doesn't approve access before <code>expiresAt</code>, the record moves to <code>CREATE_FAILED</code> or <code>UPDATE_FAILED</code>. To start again, call <code>UpdateRegistryRecord</code> with <code>triggerSynchronization</code>.</p>"
+    },
+    "OAuthAuthorizationUrl":{
+      "type":"string",
+      "documentation":"<p>A URL that a user opens to approve an OAuth 2.0 authorization. It carries the authorization session, so treat it as sensitive.</p>",
+      "sensitive":true
+    },
+    "OAuthReturnUrl":{
+      "type":"string",
+      "documentation":"<p>A URL of up to 2,048 characters that uses the <code>https</code> scheme, in lowercase, and a public domain name rather than an IP address. The URL can include a query string, but not a user name, password, or fragment. Only <code>localhost</code>, <code>127.0.0.1</code>, and <code>[::1]</code> can also use <code>http</code>.</p>",
+      "max":2048,
+      "min":1,
+      "pattern":"\\w+:(\\/?\\/?)[^\\s]+"
+    },
+    "OAuthUserId":{
+      "type":"string",
+      "documentation":"<p>The AgentCore Identity user ID that an OAuth 2.0 authorization, and the tokens that it yields, are bound to.</p>",
+      "max":128,
+      "min":1,
+      "sensitive":true
+    },
+    "PresignedDownloadUrl":{
+      "type":"string",
+      "documentation":"<p>A presigned URL that downloads a stored file until the URL expires. It's a bearer credential. Anyone who has the URL can download the file, so don't log, store, or share it.</p>",
+      "max":4096,
+      "min":1,
+      "sensitive":true
+    },
     "PrivateEndpoint":{
       "type":"structure",
       "members":{
@@ -1757,6 +1914,35 @@
       "min":1,
       "pattern":"arn:aws(-[^:]+)?:agent-registry:[a-z0-9-]+:[0-9]{12}:registry/[a-zA-Z0-9]{12,16}/record/[a-zA-Z0-9]{12}"
     },
+    "RegistryRecordArtifactDownload":{
+      "type":"structure",
+      "members":{
+        "sha256":{
+          "shape":"Sha256Hash",
+          "documentation":"<p>The SHA-256 checksum of the package, as 64 lowercase hexadecimal characters. The download response carries no signature that you can check, so compare the checksum of the file that you download with this value before you use the package.</p>"
+        },
+        "downloadUrl":{
+          "shape":"PresignedDownloadUrl",
+          "documentation":"<p>A presigned Amazon S3 URL that downloads the package. The URL is valid for up to 5 minutes, and the response doesn't include its expiry time. To get a new URL, call the operation again. Anyone who has the URL can download the package until it expires, so don't log, store, or share it.</p>"
+        }
+      },
+      "documentation":"<p>The skill package of a registry record, as a short-lived download URL and the package's SHA-256 checksum. Responses never include the package bytes.</p>"
+    },
+    "RegistryRecordArtifactUpload":{
+      "type":"structure",
+      "required":["content"],
+      "members":{
+        "content":{
+          "shape":"ArtifactContent",
+          "documentation":"<p>The ZIP archive of the skill package, up to 5 MiB (5,242,880 bytes). In a JSON request, the content is base64-encoded. The Amazon Web Services SDKs encode it for you.</p>"
+        },
+        "sha256":{
+          "shape":"Sha256Hash",
+          "documentation":"<p>The optional SHA-256 checksum of the ZIP archive, as 64 lowercase hexadecimal characters, computed over the archive's bytes rather than its base64 text. If it doesn't match the content, the request fails with a <code>ValidationException</code>.</p>"
+        }
+      },
+      "documentation":"<p>A skill package to upload with a registry record: a ZIP archive of a skill that follows the Agent Skills specification. The registry validates the package asynchronously, stores it, and sets <code>skillMd.data</code> from the package's SKILL.md.</p>"
+    },
     "RegistryRecordCredentialProviderConfiguration":{
       "type":"structure",
       "required":[
@@ -1850,14 +2036,14 @@
         },
         "service":{
           "shape":"IamSigningServiceName",
-          "documentation":"<p>The service name to use for request signing, such as execute-api.</p>"
+          "documentation":"<p>The service name to use for request signing, such as execute-api. For an Amazon S3 skill source, omit it or set it to <code>s3</code>.</p>"
         },
         "region":{
           "shape":"IamSigningRegion",
-          "documentation":"<p>The Amazon Web Services Region to use for request signing. If not specified, the Region is derived from the source URL hostname, falling back to the Region of the registry.</p>"
+          "documentation":"<p>The Amazon Web Services Region to use for request signing. If not specified, the Region is derived from the source URL hostname, falling back to the Region of the registry. For an Amazon S3 skill source, omit it or set it to the Region of the registry.</p>"
         }
       },
-      "documentation":"<p>The configuration for an IAM role credential provider that signs requests to a registry record's source with Amazon Web Services Signature Version 4 (SigV4).</p>"
+      "documentation":"<p>The configuration for an IAM role credential provider that signs requests to a registry record's source with Amazon Web Services Signature Version 4 (SigV4). For an Amazon S3 skill source (an <code>s3://</code> URL), Amazon Web Services Agent Registry assumes the role to read the object. The role must be in your Amazon Web Services account.</p>"
     },
     "RegistryRecordId":{
       "type":"string",
@@ -1883,7 +2069,7 @@
         },
         "grantType":{
           "shape":"RegistryRecordOAuthGrantType",
-          "documentation":"<p>The OAuth 2.0 grant type used to obtain access tokens.</p>"
+          "documentation":"<p>The OAuth 2.0 grant type used to obtain access tokens. A GitHub skill source requires <code>AUTHORIZATION_CODE</code>. Other sources, such as MCP server and A2A agent card sources, use <code>CLIENT_CREDENTIALS</code>. A GitHub source takes exactly one OAuth credential provider, in the registry's Amazon Web Services account and Region. Only an IAM role or IAM user in the account that owns the registry can set, synchronize, or reauthorize it, and the caller needs <code>bedrock-agentcore:GetWorkloadAccessTokenForUserId</code> and <code>bedrock-agentcore:GetResourceOauth2Token</code> on the registry's workload identity, <code>registry-</code> followed by the registry ID.</p>"
         },
         "scopes":{
           "shape":"ScopeList",
@@ -1892,17 +2078,25 @@
         "customParameters":{
           "shape":"CustomParameterMap",
           "documentation":"<p>Additional parameters to include in the OAuth 2.0 token request.</p>"
+        },
+        "returnUrl":{
+          "shape":"OAuthReturnUrl",
+          "documentation":"<p>The URL that the user's browser returns to after the user approves access on GitHub, for the <code>AUTHORIZATION_CODE</code> grant. There, your application completes the authorization by calling the Amazon Bedrock AgentCore Identity <code>CompleteResourceTokenAuth</code> operation with the <code>userId</code> from <code>authorizationData</code>. If you omit it, the user returns to the Amazon Web Services Agent Registry console, which completes the authorization when the user is signed in as the IAM principal that made the request. A request that joins an authorization already in progress uses the return URL of the request that started it.</p>"
         }
       },
       "documentation":"<p>The configuration for an OAuth 2.0 credential provider that authenticates requests to a registry record's source.</p>"
     },
     "RegistryRecordOAuthGrantType":{
       "type":"string",
-      "enum":["CLIENT_CREDENTIALS"]
+      "documentation":"<p>The OAuth 2.0 grant type that a credential provider uses to obtain access tokens. <code>CLIENT_CREDENTIALS</code> obtains tokens for the client application itself and is the grant for sources such as MCP server and A2A agent card sources. <code>AUTHORIZATION_CODE</code> obtains tokens with a user's approval and is required for GitHub skill sources. A GitHub user approves access once. Later requests from the same IAM principal for the same registry, host, credential provider, scopes, and custom parameters reuse that approval.</p>",
+      "enum":[
+        "CLIENT_CREDENTIALS",
+        "AUTHORIZATION_CODE"
+      ]
     },
     "RegistryRecordStatus":{
       "type":"string",
-      "documentation":"<p>Registry record status</p>",
+      "documentation":"<p>The lifecycle status of a registry record. A record is <code>DRAFT</code> before it is submitted, <code>PENDING_APPROVAL</code> while it awaits curator review, and <code>APPROVED</code> after it is approved and discoverable. Rejecting a newer revision keeps the last approved revision discoverable. A <code>DEPRECATED</code> record isn't discoverable. <code>CREATING</code>, <code>UPDATING</code>, <code>CREATE_FAILED</code>, and <code>UPDATE_FAILED</code> reflect an asynchronous change that is in progress or has failed. <code>CREATE_PENDING_AUTH</code> and <code>UPDATE_PENDING_AUTH</code> mean that the record waits for a GitHub user to authorize access before it synchronizes from its GitHub source.</p>",
       "enum":[
         "DRAFT",
         "PENDING_APPROVAL",
@@ -1912,7 +2106,9 @@
         "CREATING",
         "UPDATING",
         "CREATE_FAILED",
-        "UPDATE_FAILED"
+        "UPDATE_FAILED",
+        "CREATE_PENDING_AUTH",
+        "UPDATE_PENDING_AUTH"
       ]
     },
     "RegistryRecordSummary":{
@@ -1995,6 +2191,21 @@
     "RegistryRecordSummaryList":{
       "type":"list",
       "member":{"shape":"RegistryRecordSummary"}
+    },
+    "RegistryRecordSynchronizedSource":{
+      "type":"structure",
+      "members":{
+        "s3":{
+          "shape":"S3SynchronizedSource",
+          "documentation":"<p>The Amazon S3 source that the registry read.</p>"
+        },
+        "gitHub":{
+          "shape":"GitHubSynchronizedSource",
+          "documentation":"<p>The GitHub source that the registry read.</p>"
+        }
+      },
+      "documentation":"<p>The source that a skill record's content was last synchronized from. Exactly one member is set, for the source's provider.</p>",
+      "union":true
     },
     "RegistryRecordVersion":{
       "type":"string",
@@ -2112,6 +2323,61 @@
       "max":255,
       "min":3
     },
+    "S3BucketOwnerAccountId":{
+      "type":"string",
+      "documentation":"<p>A 12-digit Amazon Web Services account ID.</p>",
+      "max":12,
+      "min":12,
+      "pattern":"[0-9]{12}"
+    },
+    "S3ObjectETag":{
+      "type":"string",
+      "documentation":"<p>The entity tag (ETag) of an Amazon S3 object, without quotes.</p>",
+      "max":1024,
+      "min":1
+    },
+    "S3ObjectVersionId":{
+      "type":"string",
+      "documentation":"<p>The version ID of an Amazon S3 object in a versioned bucket.</p>",
+      "max":1024,
+      "min":1
+    },
+    "S3SourceConfiguration":{
+      "type":"structure",
+      "members":{
+        "bucketOwnerAccountId":{
+          "shape":"S3BucketOwnerAccountId",
+          "documentation":"<p>The ID of the Amazon Web Services account that owns the source bucket. The registry checks that the bucket belongs to this account each time it reads the source. If you omit it for a source that uses an IAM role, the registry expects the bucket to be in the role's account. If you omit it for a source that has no credential provider, which the registry reads as a public object, the request fails with a <code>ValidationException</code>.</p>"
+        }
+      },
+      "documentation":"<p>The settings of a source that the registry reads from Amazon S3.</p>"
+    },
+    "S3SynchronizedSource":{
+      "type":"structure",
+      "required":[
+        "url",
+        "synchronizedAt"
+      ],
+      "members":{
+        "url":{
+          "shape":"SynchronizedSourceUrl",
+          "documentation":"<p>The source URL that the registry read.</p>"
+        },
+        "synchronizedAt":{
+          "shape":"DateTimestamp",
+          "documentation":"<p>The timestamp when the registry read the source.</p>"
+        },
+        "versionId":{
+          "shape":"S3ObjectVersionId",
+          "documentation":"<p>The version ID of the object that the registry read. Absent when the bucket isn't versioned.</p>"
+        },
+        "eTag":{
+          "shape":"S3ObjectETag",
+          "documentation":"<p>The entity tag (ETag) of the object that the registry read, without quotes, when the object has no version ID. Not recorded for a SKILL.md source on a registry that is encrypted with a customer managed key.</p>"
+        }
+      },
+      "documentation":"<p>An Amazon S3 source that a skill record's content was synchronized from, and the object version that the registry read. At most one of <code>versionId</code> and <code>eTag</code> is set.</p>"
+    },
     "ScopeList":{
       "type":"list",
       "member":{"shape":"String"}
@@ -2152,6 +2418,13 @@
         "senderFault":true
       },
       "exception":true
+    },
+    "Sha256Hash":{
+      "type":"string",
+      "documentation":"<p>A SHA-256 checksum, as 64 lowercase hexadecimal characters.</p>",
+      "max":64,
+      "min":64,
+      "pattern":"[0-9a-f]{64}"
     },
     "SourceDetails":{
       "type":"structure",
@@ -2247,6 +2520,13 @@
       "type":"list",
       "member":{"shape":"SubnetId"},
       "documentation":"<p>The list of subnet identifiers in which the private endpoint network interfaces are placed.</p>"
+    },
+    "SynchronizedSourceUrl":{
+      "type":"string",
+      "documentation":"<p>The URL of a source that a registry record's content was synchronized from.</p>",
+      "max":2048,
+      "min":1,
+      "sensitive":true
     },
     "TagKey":{
       "type":"string",
@@ -2376,6 +2656,10 @@
           "shape":"UpdatedDescriptors",
           "documentation":"<p>The updated typed descriptor content for the registry record. Omit to leave the descriptors unchanged.</p>"
         },
+        "artifact":{
+          "shape":"UpdatedRegistryRecordArtifact",
+          "documentation":"<p>The change to the record's uploaded skill package. Omit it to keep the current package, specify an empty object to remove an uploaded package, or specify <code>optionalValue</code> to upload a new package. An empty object doesn't remove a package that the record synchronizes from a source. To stop that synchronization, remove <code>skillPackage</code>. A request that changes <code>skillMd.data</code> replaces the record's package with that text, even if you omit this member.</p>"
+        },
         "recordVersion":{
           "shape":"RegistryRecordVersion",
           "documentation":"<p>The updated version of the registry record. Omit to leave the version unchanged.</p>"
@@ -2386,7 +2670,11 @@
         },
         "triggerSynchronization":{
           "shape":"Boolean",
-          "documentation":"<p>Whether to trigger synchronization of the record's descriptor content from its source</p>"
+          "documentation":"<p>Specifies whether to synchronize the record's descriptor content from its source. For a skill record, the registry reads the stored <code>skillMd.source</code> or <code>skillPackage.source</code> again, because it doesn't watch the source for changes. For a GitHub source, the operation also returns a new authorization link when one is needed. An update that sets a different skill source starts a synchronization even if you omit this member.</p>"
+        },
+        "forceAuthentication":{
+          "shape":"Boolean",
+          "documentation":"<p>Specifies whether to ask a GitHub user to authorize access again, even when the current authorization still works, for example to use a different GitHub account. You can use it only together with <code>triggerSynchronization</code>, for a GitHub source whose credential provider uses the <code>AUTHORIZATION_CODE</code> grant. The new authorization also replaces the one that the same IAM principal's other records in the registry use for the same host, credential provider, scopes, and custom parameters.</p>"
         },
         "provenance":{
           "shape":"ProvenanceList",
@@ -2445,7 +2733,7 @@
         },
         "status":{
           "shape":"RegistryRecordStatus",
-          "documentation":"<p>The lifecycle status of the registry record.</p>"
+          "documentation":"<p>The lifecycle status of the registry record. <code>UPDATE_PENDING_AUTH</code> means that the update waits for a GitHub user to authorize access before the record synchronizes from its GitHub source. For the authorization link, see <code>authorizationData</code>.</p>"
         },
         "createdAt":{
           "shape":"DateTimestamp",
@@ -2478,6 +2766,10 @@
         "customMetadataSchemaComplianceStatus":{
           "shape":"CustomMetadataSchemaComplianceStatus",
           "documentation":"<p>Indicates whether this record's custom metadata conforms to the registry's current schema. This status is computed at read time against the latest schema.</p>"
+        },
+        "authorizationData":{
+          "shape":"AuthorizationData",
+          "documentation":"<p>The authorization that a GitHub user must complete before the record's synchronization starts. Present only in this response, and only while the status is <code>UPDATE_PENDING_AUTH</code>. If the status is <code>UPDATE_PENDING_AUTH</code> but this member is absent, call <code>UpdateRegistryRecord</code> again with <code>triggerSynchronization</code> to get a new authorization link.</p>"
         }
       },
       "documentation":"<p>Response structure for updating a registry record</p>"
@@ -2723,6 +3015,18 @@
         "skillMd":{
           "shape":"UpdatedAgentSkillsMdDescriptor",
           "documentation":"<p>The patch for the agent skills markdown descriptor field.</p>"
+        },
+        "skillPackage":{
+          "shape":"UpdatedAgentSkillsPackageDescriptor",
+          "documentation":"<p>The patch for the skill package source field.</p>"
+        },
+        "repositoryProvider":{
+          "shape":"UpdatedAgentSkillsRepositoryProvider",
+          "documentation":"<p>The patch for the repository provider field.</p>"
+        },
+        "sourceConfiguration":{
+          "shape":"UpdatedAgentSkillsSourceConfiguration",
+          "documentation":"<p>The patch for the source configuration field.</p>"
         }
       },
       "documentation":"<p>The set of agent skills additional-data fields that can be individually updated.</p>"
@@ -2782,6 +3086,36 @@
         }
       },
       "documentation":"<p>The set of agent skills markdown descriptor fields that can be individually updated.</p>"
+    },
+    "UpdatedAgentSkillsPackageDescriptor":{
+      "type":"structure",
+      "members":{
+        "optionalValue":{
+          "shape":"AgentSkillsPackageDescriptor",
+          "documentation":"<p>The value to set for this field. Omit the wrapper to leave the field unchanged.</p>"
+        }
+      },
+      "documentation":"<p>The skill package source patch wrapper. Omit to leave the source unchanged; supply an empty object to remove it and stop synchronizing the package; supply optionalValue to replace it.</p>"
+    },
+    "UpdatedAgentSkillsRepositoryProvider":{
+      "type":"structure",
+      "members":{
+        "optionalValue":{
+          "shape":"AgentSkillsRepositoryProvider",
+          "documentation":"<p>The value to set for this field. Omit the wrapper to leave the field unchanged.</p>"
+        }
+      },
+      "documentation":"<p>The repository provider patch wrapper. Omit to leave the repository provider unchanged; supply an empty object to remove it; supply optionalValue to set it. When you remove it, also remove or replace the GitHub source in the same request.</p>"
+    },
+    "UpdatedAgentSkillsSourceConfiguration":{
+      "type":"structure",
+      "members":{
+        "optionalValue":{
+          "shape":"AgentSkillsSourceConfiguration",
+          "documentation":"<p>The value to set for this field. Omit the wrapper to leave the field unchanged.</p>"
+        }
+      },
+      "documentation":"<p>The source configuration patch wrapper. Omit to leave the configuration unchanged; supply an empty object to remove it; supply optionalValue to replace it. When you move an Amazon S3 source to another bucket, the record keeps its configuration. In the same request, specify the new bucket's owner, or specify an empty object so that the registry expects the bucket in the role's account.</p>"
     },
     "UpdatedApprovalConfiguration":{
       "type":"structure",
@@ -3049,6 +3383,16 @@
       },
       "documentation":"<p>The set of MCP tools descriptor fields that can be individually updated.</p>"
     },
+    "UpdatedRegistryRecordArtifact":{
+      "type":"structure",
+      "members":{
+        "optionalValue":{
+          "shape":"RegistryRecordArtifactUpload",
+          "documentation":"<p>The skill package to upload. It replaces the record's current package or its synchronized content.</p>"
+        }
+      },
+      "documentation":"<p>The skill package patch wrapper. Omit to leave the package unchanged; supply an empty object to remove an uploaded package; supply optionalValue to upload a new package.</p>"
+    },
     "ValidationException":{
       "type":"structure",
       "required":[
@@ -3102,7 +3446,8 @@
         "FieldValidationFailed",
         "IdempotentParameterMismatchException",
         "EventInOtherSession",
-        "ResourceConflict"
+        "ResourceConflict",
+        "UnsupportedInRegion"
       ]
     },
     "VpcIdentifier":{

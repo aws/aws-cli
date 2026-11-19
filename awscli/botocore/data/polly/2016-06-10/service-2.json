@@ -13,6 +13,26 @@
     "auth":["aws.auth#sigv4"]
   },
   "operations":{
+    "CreateVoice":{
+      "name":"CreateVoice",
+      "http":{
+        "method":"POST",
+        "requestUri":"/v1/voices",
+        "responseCode":200
+      },
+      "input":{"shape":"CreateVoiceInput"},
+      "output":{"shape":"CreateVoiceOutput"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"ServiceFailureException"},
+        {"shape":"ServiceQuotaExceededException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"TooManyTagsException"},
+        {"shape":"InvalidTagParameterException"},
+        {"shape":"ThrottlingException"}
+      ],
+      "documentation":"<p>Creates a custom voice from recordings of a speaker and returns it in <code>pending</code> status. Use <code>GetVoice</code> to check the status. When the status is <code>active</code>, you can use the voice ID in <code>SynthesizeSpeech</code>, <code>StartSpeechSynthesisTask</code>, and <code>StartSpeechSynthesisStream</code>.</p> <p>The <code>custom-voice-max-count</code> service quota limits the number of custom voices in your account in each Region. If you reach the quota, the request fails with <code>ServiceQuotaExceededException</code>.</p> <p>This operation requires permissions to perform the <code>polly:CreateVoice</code> action. You also need <code>s3:GetObject</code> permission on each recording that you specify by <code>S3Url</code>. If you specify a customer managed key, you also need <code>kms:DescribeKey</code>, <code>kms:GenerateDataKey</code>, and <code>kms:Decrypt</code> permissions on the key. If you specify <code>Tags</code>, you also need the <code>polly:TagResource</code> permission.</p>"
+    },
     "DeleteLexicon":{
       "name":"DeleteLexicon",
       "http":{
@@ -28,6 +48,25 @@
       ],
       "documentation":"<p>Deletes the specified pronunciation lexicon stored in an Amazon Web Services Region. A lexicon which has been deleted is not available for speech synthesis, nor is it possible to retrieve it using either the <code>GetLexicon</code> or <code>ListLexicon</code> APIs.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/polly/latest/dg/managing-lexicons.html\">Managing Lexicons</a>.</p>"
     },
+    "DeleteVoice":{
+      "name":"DeleteVoice",
+      "http":{
+        "method":"DELETE",
+        "requestUri":"/v1/voices/{VoiceId}",
+        "responseCode":200
+      },
+      "input":{"shape":"DeleteVoiceInput"},
+      "output":{"shape":"DeleteVoiceOutput"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ConflictException"},
+        {"shape":"ValidationException"},
+        {"shape":"ServiceFailureException"},
+        {"shape":"ThrottlingException"}
+      ],
+      "documentation":"<p>Deletes a custom voice. <code>DescribeVoices</code> and <code>GetVoice</code> stop returning the voice immediately. You can't restore a deleted voice.</p> <p>You can delete a voice in <code>active</code> or <code>failed</code> status. If the voice is in <code>pending</code> status, the request fails with <code>ConflictException</code>. If no custom voice with the specified ID exists in your account and Region, the request fails with <code>ResourceNotFoundException</code>. You can delete the voice even if you disabled its Amazon Web Services KMS key or scheduled it for deletion.</p> <p>This operation requires permissions to perform the <code>polly:DeleteVoice</code> action.</p>",
+      "idempotent":true
+    },
     "DescribeVoices":{
       "name":"DescribeVoices",
       "http":{
@@ -41,7 +80,7 @@
         {"shape":"InvalidNextTokenException"},
         {"shape":"ServiceFailureException"}
       ],
-      "documentation":"<p>Returns the list of voices that are available for use when requesting speech synthesis. Each voice speaks a specified language, is either male or female, and is identified by an ID, which is the ASCII version of the voice name. </p> <p>When synthesizing speech ( <code>SynthesizeSpeech</code> ), you provide the voice ID for the voice you want from the list of voices returned by <code>DescribeVoices</code>.</p> <p>For example, you want your news reader application to read news in a specific language, but giving a user the option to choose the voice. Using the <code>DescribeVoices</code> operation you can provide the user with a list of available voices to select from.</p> <p> You can optionally specify a language code to filter the available voices. For example, if you specify <code>en-US</code>, the operation returns a list of all available US English voices. </p> <p>This operation requires permissions to perform the <code>polly:DescribeVoices</code> action.</p>"
+      "documentation":"<p>Returns the list of voices: the voices that Amazon Polly provides and the custom voices in your account. Each voice speaks a specified language and is identified by an ID. A voice that Amazon Polly provides is either male or female, and its ID is the ASCII version of the voice name.</p> <p>When synthesizing speech (<code>SynthesizeSpeech</code>), you provide the voice ID for the voice you want from the list of voices returned by <code>DescribeVoices</code>.</p> <p>For example, your news reader application reads news in a specific language, and you want to give users the option to choose the voice. With the <code>DescribeVoices</code> operation, you can provide a list of available voices for users to choose from.</p> <p> You can optionally specify a language code to filter the available voices. For example, if you specify <code>en-US</code>, the operation returns a list of all available US English voices. </p> <p>The list includes custom voices in every status. For each voice, <code>Origin</code> indicates whether Amazon Polly provides the voice or you created it. You can use a custom voice for synthesis only when its status is <code>active</code>. A voice in <code>failed</code> status stays in the list until you delete it.</p> <p>For a custom voice, <code>DescribeVoices</code> returns <code>Origin</code>, <code>Id</code>, <code>Name</code>, <code>Status</code>, <code>LanguageCode</code>, <code>LanguageName</code>, <code>SupportedEngines</code>, and <code>CreationTime</code>. To get <code>Arn</code>, <code>StatusReason</code>, <code>VoiceCreationData</code>, and <code>CustomerManagedEncryption</code>, use <code>GetVoice</code>.</p> <p>The <code>LanguageCode</code> and <code>Engine</code> filters apply to custom voices in the same way as to voices that Amazon Polly provides.</p> <p>This operation requires permissions to perform the <code>polly:DescribeVoices</code> action.</p>"
     },
     "GetLexicon":{
       "name":"GetLexicon",
@@ -73,6 +112,24 @@
         {"shape":"SynthesisTaskNotFoundException"}
       ],
       "documentation":"<p>Retrieves a specific SpeechSynthesisTask object based on its TaskID. This object contains information about the given speech synthesis task, including the status of the task, and a link to the S3 bucket containing the output of the task.</p>"
+    },
+    "GetVoice":{
+      "name":"GetVoice",
+      "http":{
+        "method":"GET",
+        "requestUri":"/v1/voices/{VoiceId}",
+        "responseCode":200
+      },
+      "input":{"shape":"GetVoiceInput"},
+      "output":{"shape":"GetVoiceOutput"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ValidationException"},
+        {"shape":"ServiceFailureException"},
+        {"shape":"ThrottlingException"}
+      ],
+      "documentation":"<p>Returns the status and properties of a custom voice. Use this operation after <code>CreateVoice</code> to check whether the status of the voice is <code>active</code> or <code>failed</code>. Unlike <code>DescribeVoices</code>, <code>GetVoice</code> also returns <code>Arn</code>, <code>VoiceCreationData</code>, <code>CustomerManagedEncryption</code>, and <code>StatusReason</code>. If no custom voice with the specified ID exists in your account and Region, the request fails with <code>ResourceNotFoundException</code>.</p> <p>This operation requires permissions to perform the <code>polly:GetVoice</code> action.</p>",
+      "readonly":true
     },
     "ListLexicons":{
       "name":"ListLexicons",
@@ -120,7 +177,8 @@
         {"shape":"ServiceFailureException"},
         {"shape":"ThrottlingException"}
       ],
-      "documentation":"<p>Lists the tags for an Amazon Polly resource.</p>"
+      "documentation":"<p>Lists the tags for an Amazon Polly resource.</p>",
+      "readonly":true
     },
     "PutLexicon":{
       "name":"PutLexicon",
@@ -157,9 +215,11 @@
         {"shape":"ValidationException"},
         {"shape":"ServiceQuotaExceededException"},
         {"shape":"ServiceFailureException"},
-        {"shape":"ThrottlingException"}
+        {"shape":"ThrottlingException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ConflictException"}
       ],
-      "documentation":"<p>Synthesizes UTF-8 input, plain text, or SSML over a bidirectional streaming connection. Specify synthesis parameters in HTTP/2 headers, send text incrementally as events on the input stream, and receive synthesized audio as it becomes available.</p> <p>This operation serves as a bidirectional counterpart to <code>SynthesizeSpeech</code>:</p> <ul> <li> <p> <a href=\"https://docs.aws.amazon.com/polly/latest/dg/API_SynthesizeSpeech.html\">SynthesizeSpeech</a> </p> </li> </ul>"
+      "documentation":"<p>Synthesizes UTF-8 input, plain text, or SSML over a bidirectional streaming connection. Specify synthesis parameters in HTTP/2 headers, send text incrementally as events on the input stream, and receive synthesized audio as it becomes available.</p> <p>This operation serves as a bidirectional counterpart to <code>SynthesizeSpeech</code>:</p> <ul> <li> <p> <a href=\"https://docs.aws.amazon.com/polly/latest/dg/API_SynthesizeSpeech.html\">SynthesizeSpeech</a> </p> </li> </ul> <p>To use a custom voice, specify its ID in <code>VoiceId</code>. The voice must be in <code>active</code> status. If the voice is in <code>pending</code> or <code>failed</code> status, the request fails with <code>ConflictException</code>. If no custom voice with the specified ID exists in your account and Region, the request fails with <code>ResourceNotFoundException</code>. If the custom voice uses a customer managed key, you need <code>kms:Decrypt</code> permission on the key. If you disabled the key or scheduled it for deletion, the request fails with <code>ValidationException</code>. If you don't have permission to use the key, the request fails with <code>AccessDeniedException</code>. If Amazon Web Services KMS throttles Amazon Polly's request to use the key, the request fails with <code>ThrottlingException</code>.</p>"
     },
     "StartSpeechSynthesisTask":{
       "name":"StartSpeechSynthesisTask",
@@ -182,9 +242,11 @@
         {"shape":"ServiceFailureException"},
         {"shape":"MarksNotSupportedForFormatException"},
         {"shape":"SsmlMarksNotSupportedForTextTypeException"},
-        {"shape":"LanguageNotSupportedException"}
+        {"shape":"LanguageNotSupportedException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ConflictException"}
       ],
-      "documentation":"<p>Allows the creation of an asynchronous synthesis task, by starting a new <code>SpeechSynthesisTask</code>. This operation requires all the standard information needed for speech synthesis, plus the name of an Amazon S3 bucket for the service to store the output of the synthesis task and two optional parameters (<code>OutputS3KeyPrefix</code> and <code>SnsTopicArn</code>). Once the synthesis task is created, this operation will return a <code>SpeechSynthesisTask</code> object, which will include an identifier of this task as well as the current status. The <code>SpeechSynthesisTask</code> object is available for 72 hours after starting the asynchronous synthesis task.</p>"
+      "documentation":"<p>Starts an asynchronous synthesis task by creating a new <code>SpeechSynthesisTask</code>. This operation requires all the standard information needed for speech synthesis, plus the name of an Amazon S3 bucket for the service to store the output of the synthesis task and two optional parameters (<code>OutputS3KeyPrefix</code> and <code>SnsTopicArn</code>). After Amazon Polly creates the synthesis task, the operation returns a <code>SpeechSynthesisTask</code> object that includes an identifier for the task and its current status. The <code>SpeechSynthesisTask</code> object is available for 72 hours after you start the asynchronous synthesis task.</p> <p>To use a custom voice, specify its ID in <code>VoiceId</code>. The voice must be in <code>active</code> status. If the voice is in <code>pending</code> or <code>failed</code> status, the request fails with <code>ConflictException</code>. If no custom voice with the specified ID exists in your account and Region, the request fails with <code>ResourceNotFoundException</code>. If the custom voice uses a customer managed key, you need <code>kms:Decrypt</code> permission on the key. If you disable the key or schedule it for deletion before the task runs, the task fails and <code>TaskStatusReason</code> describes the cause.</p>"
     },
     "SynthesizeSpeech":{
       "name":"SynthesizeSpeech",
@@ -204,9 +266,11 @@
         {"shape":"MarksNotSupportedForFormatException"},
         {"shape":"SsmlMarksNotSupportedForTextTypeException"},
         {"shape":"LanguageNotSupportedException"},
-        {"shape":"EngineNotSupportedException"}
+        {"shape":"EngineNotSupportedException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ConflictException"}
       ],
-      "documentation":"<p>Synthesizes UTF-8 input, plain text or SSML, to a stream of bytes. SSML input must be valid, well-formed SSML. Some alphabets might not be available with all the voices (for example, Cyrillic might not be read at all by English voices) unless phoneme mapping is used. For more information, see <a href=\"https://docs.aws.amazon.com/polly/latest/dg/how-text-to-speech-works.html\">How it Works</a>.</p>"
+      "documentation":"<p>Synthesizes UTF-8 input, plain text or SSML, to a stream of bytes. SSML input must be valid, well-formed SSML. Some alphabets might not be available with all the voices (for example, Cyrillic might not be read at all by English voices) unless phoneme mapping is used. For more information, see <a href=\"https://docs.aws.amazon.com/polly/latest/dg/how-text-to-speech-works.html\">How it Works</a>.</p> <p>To use a custom voice, specify its ID in <code>VoiceId</code>. The voice must be in <code>active</code> status. If the voice is in <code>pending</code> or <code>failed</code> status, the request fails with <code>ConflictException</code>. If no custom voice with the specified ID exists in your account and Region, the request fails with <code>ResourceNotFoundException</code>.</p> <p>If the custom voice uses a customer managed key, you need <code>kms:Decrypt</code> permission on the key. If you disabled the key or scheduled it for deletion, the request fails with <code>ValidationException</code>. If you don't have permission to use the key, the request fails with <code>AccessDeniedException</code>. If Amazon Web Services KMS throttles Amazon Polly's request to use the key, the request fails with <code>ThrottlingException</code>.</p>"
     },
     "TagResource":{
       "name":"TagResource",
@@ -247,6 +311,16 @@
     }
   },
   "shapes":{
+    "AccessDeniedException":{
+      "type":"structure",
+      "members":{
+        "Message":{"shape":"ServiceErrorMessage"}
+      },
+      "documentation":"<p>You don't have sufficient permissions to perform this action. For a custom voice that uses a customer managed key, Amazon Polly also returns this exception if you don't have the required Amazon Web Services KMS permissions on the key.</p>",
+      "error":{"httpStatusCode":403},
+      "exception":true,
+      "synthetic":true
+    },
     "Alphabet":{"type":"string"},
     "AmazonResourceName":{
       "type":"string",
@@ -266,20 +340,144 @@
       "documentation":"<p>Contains a chunk of synthesized audio data.</p>",
       "event":true
     },
+    "AudioFormat":{
+      "type":"string",
+      "enum":[
+        "wav",
+        "flac",
+        "ogg_vorbis",
+        "mp3"
+      ]
+    },
     "AudioStream":{
       "type":"blob",
       "streaming":true
     },
     "AvailabilityErrorMessage":{"type":"string"},
+    "ClientToken":{
+      "type":"string",
+      "max":64,
+      "min":1,
+      "pattern":"^[!-~]+$"
+    },
     "CloseStreamEvent":{
       "type":"structure",
       "members":{},
       "documentation":"<p>Indicates the end of the input stream. After sending this event, the input stream will be closed and all audio will be returned.</p>",
       "event":true
     },
+    "ConflictException":{
+      "type":"structure",
+      "required":[
+        "message",
+        "resourceId",
+        "resourceType"
+      ],
+      "members":{
+        "message":{"shape":"ErrorMessage"},
+        "resourceId":{
+          "shape":"ResourceId",
+          "documentation":"<p>The ID of the resource that the request conflicts with.</p>"
+        },
+        "resourceType":{
+          "shape":"ResourceType",
+          "documentation":"<p>The type of the resource that the request conflicts with.</p>"
+        }
+      },
+      "documentation":"<p>The request conflicts with the current state of the resource. For a custom voice, the voice isn't in the status that the operation requires. Check the status with <code>GetVoice</code>, and then try again.</p>",
+      "error":{"httpStatusCode":409},
+      "exception":true
+    },
     "ContentType":{"type":"string"},
     "CoralAvailabilityThrottledResource":{"type":"string"},
     "CoralAvailabilityThrottlingReason":{"type":"string"},
+    "CreateVoiceInput":{
+      "type":"structure",
+      "required":[
+        "Name",
+        "LanguageCode",
+        "TermsAccepted",
+        "VoiceCreationData"
+      ],
+      "members":{
+        "Name":{
+          "shape":"CustomVoiceName",
+          "documentation":"<p>The name of the voice. Use the name to identify the voice in your application. The name can contain letters, digits, hyphens, and underscores, and can be up to 64 characters long. The name doesn't have to be unique. The name isn't the voice ID, which Amazon Polly assigns.</p>"
+        },
+        "LanguageCode":{
+          "shape":"CustomVoiceLanguageCode",
+          "documentation":"<p>The language of the recordings, for example, <code>en-US</code>. Amazon Polly doesn't detect the language from the recordings.</p>"
+        },
+        "TermsAccepted":{
+          "shape":"TermsAccepted",
+          "documentation":"<p>Confirms the following two statements:</p> <ul> <li> <p>\"I confirm that I have obtained all necessary consents required under any applicable laws and regulations, including biometric privacy laws, from the owner of this voice to clone these voice samples.\"</p> </li> <li> <p>\"I confirm that I will not use the generated content for any illegal, fraudulent, or harmful purpose and reaffirm my obligation to abide by the AWS Service Terms, Biometric Notice and Consent Terms, AWS Responsible AI Policy, and AWS Acceptable Use Policy.\"</p> </li> </ul> <p>You can read the <a href=\"https://aws.amazon.com/service-terms/\">AWS Service Terms</a>, the <a href=\"https://aws.amazon.com/legal/biometric-notice-and-consent-terms/\">Biometric Notice and Consent Terms</a>, the <a href=\"https://aws.amazon.com/ai/responsible-ai/policy/\">AWS Responsible AI Policy</a>, and the <a href=\"https://aws.amazon.com/aup/\">AWS Acceptable Use Policy</a> on the Amazon Web Services website.</p> <p>You must set this parameter to <code>true</code> to create a voice. Otherwise, the request fails with <code>ValidationException</code>.</p>"
+        },
+        "VoiceCreationData":{
+          "shape":"VoiceCreationData",
+          "documentation":"<p>The recordings that Amazon Polly uses to create the voice.</p>"
+        },
+        "CustomerManagedEncryption":{
+          "shape":"CustomerManagedEncryption",
+          "documentation":"<p>The customer managed key that you want Amazon Polly to encrypt the voice with. If you omit this parameter, Amazon Polly encrypts the voice with an Amazon Web Services owned key.</p>"
+        },
+        "Tags":{
+          "shape":"TagMap",
+          "documentation":"<p>The tags that you apply to the voice to help you categorize and organize it. Each tag consists of a key and an optional value, both of which you define.</p>"
+        },
+        "ClientToken":{
+          "shape":"ClientToken",
+          "documentation":"<p>A unique, case-sensitive identifier that you provide to ensure the idempotency of the request. If you don't specify a client token, the Amazon Web Services SDKs generate one for you. If you retry a request that succeeded with the same client token and the same parameters, Amazon Polly returns the voice that the first request created and doesn't create a second voice.</p>",
+          "idempotencyToken":true
+        }
+      }
+    },
+    "CreateVoiceOutput":{
+      "type":"structure",
+      "members":{
+        "Voice":{
+          "shape":"Voice",
+          "documentation":"<p>The new voice, in <code>pending</code> status.</p>"
+        }
+      }
+    },
+    "CustomVoiceId":{
+      "type":"string",
+      "max":32,
+      "pattern":"^vc-[0-9a-f]+$"
+    },
+    "CustomVoiceLanguageCode":{
+      "type":"string",
+      "enum":[
+        "de-DE",
+        "en-US",
+        "es-US",
+        "fr-FR",
+        "hi-IN",
+        "it-IT",
+        "pt-BR"
+      ]
+    },
+    "CustomVoiceName":{
+      "type":"string",
+      "max":64,
+      "min":1,
+      "pattern":"^[a-zA-Z0-9_-]+$"
+    },
+    "CustomerManagedEncryption":{
+      "type":"structure",
+      "required":["KmsKeyArn"],
+      "members":{
+        "KmsKeyArn":{
+          "shape":"KmsKeyArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the key. The key must be a symmetric encryption key in the same Amazon Web Services Region as the voice. To create the voice, you need <code>kms:DescribeKey</code>, <code>kms:GenerateDataKey</code>, and <code>kms:Decrypt</code> permissions on the key. To synthesize speech with the voice, you need <code>kms:Decrypt</code> permission on the key.</p>"
+        },
+        "EncryptionContext":{
+          "shape":"EncryptionContext",
+          "documentation":"<p>The key-value pairs that Amazon Polly includes as the encryption context when it encrypts or decrypts the voice with the key. You can use these pairs in key policy conditions. Don't use keys that start with <code>aws:</code>, which are reserved.</p>"
+        }
+      },
+      "documentation":"<p>The customer managed key that encrypts your custom voice. If you don't specify a key, Amazon Polly encrypts the voice with an Amazon Web Services owned key.</p>"
+    },
     "DateTime":{"type":"timestamp"},
     "DeleteLexiconInput":{
       "type":"structure",
@@ -294,6 +492,22 @@
       }
     },
     "DeleteLexiconOutput":{
+      "type":"structure",
+      "members":{}
+    },
+    "DeleteVoiceInput":{
+      "type":"structure",
+      "required":["VoiceId"],
+      "members":{
+        "VoiceId":{
+          "shape":"CustomVoiceId",
+          "documentation":"<p>The ID of the custom voice to delete, for example, <code>vc-9a8fa85dd3</code>. You can't specify the ARN of the voice.</p>",
+          "location":"uri",
+          "locationName":"VoiceId"
+        }
+      }
+    },
+    "DeleteVoiceOutput":{
       "type":"structure",
       "members":{}
     },
@@ -338,6 +552,22 @@
           "documentation":"<p>The pagination token to use in the next request to continue the listing of voices. <code>NextToken</code> is returned only if the response is truncated.</p>"
         }
       }
+    },
+    "EncryptionContext":{
+      "type":"map",
+      "key":{"shape":"EncryptionContextKey"},
+      "value":{"shape":"EncryptionContextValue"},
+      "max":10
+    },
+    "EncryptionContextKey":{
+      "type":"string",
+      "max":128,
+      "min":1
+    },
+    "EncryptionContextValue":{
+      "type":"string",
+      "max":256,
+      "min":1
     },
     "Engine":{
       "type":"string",
@@ -427,6 +657,27 @@
         }
       }
     },
+    "GetVoiceInput":{
+      "type":"structure",
+      "required":["VoiceId"],
+      "members":{
+        "VoiceId":{
+          "shape":"CustomVoiceId",
+          "documentation":"<p>The ID of the custom voice that <code>CreateVoice</code> returned, for example, <code>vc-9a8fa85dd3</code>. You can't specify the ARN of the voice.</p>",
+          "location":"uri",
+          "locationName":"VoiceId"
+        }
+      }
+    },
+    "GetVoiceOutput":{
+      "type":"structure",
+      "members":{
+        "Voice":{
+          "shape":"Voice",
+          "documentation":"<p>The custom voice.</p>"
+        }
+      }
+    },
     "IncludeAdditionalLanguageCodes":{"type":"boolean"},
     "InvalidLexiconException":{
       "type":"structure",
@@ -508,6 +759,12 @@
       "documentation":"<p>The provided Task ID is not valid. Please provide a valid Task ID and try again.</p>",
       "error":{"httpStatusCode":400},
       "exception":true
+    },
+    "KmsKeyArn":{
+      "type":"string",
+      "max":2048,
+      "min":20,
+      "pattern":"^arn:aws(-(cn|iso(-b)?|us-gov|eusc))?:kms:[a-z0-9_-]{1,50}:\\d{12}:key/[a-zA-Z0-9-]+$"
     },
     "LanguageCode":{
       "type":"string",
@@ -732,7 +989,7 @@
       "members":{
         "ResourceArn":{
           "shape":"AmazonResourceName",
-          "documentation":"<p>The Amazon Resource Name (ARN) that identifies the resource for which to list the tags. Currently, the only supported resource is an Amazon Polly lexicon.</p>",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the resource to list the tags for. You can tag Amazon Polly lexicons and custom voices.</p>",
           "location":"querystring",
           "locationName":"arn"
         }
@@ -836,8 +1093,52 @@
       "type":"string",
       "enum":[
         "input-stream-inbound-event-timeout",
-        "input-stream-timeout"
+        "input-stream-timeout",
+        "custom-voice-max-count"
       ]
+    },
+    "Recording":{
+      "type":"structure",
+      "required":[
+        "Format",
+        "Data"
+      ],
+      "members":{
+        "Format":{
+          "shape":"AudioFormat",
+          "documentation":"<p>The audio format of the recording: <code>wav</code>, <code>flac</code>, <code>ogg_vorbis</code>, or <code>mp3</code>. The format must match the audio data.</p>"
+        },
+        "Data":{
+          "shape":"RecordingData",
+          "documentation":"<p>The audio source of the recording. Specify either an Amazon S3 object or the audio data.</p>"
+        }
+      },
+      "documentation":"<p>A recording of the speaker whose voice you want to create. The recording specifies its audio format and its audio source.</p>"
+    },
+    "RecordingBytes":{
+      "type":"blob",
+      "max":5242880,
+      "sensitive":true
+    },
+    "RecordingData":{
+      "type":"structure",
+      "members":{
+        "S3Url":{
+          "shape":"S3Url",
+          "documentation":"<p>The Amazon S3 URL of the audio object, in the form <code>s3://bucket/key</code>. You need <code>s3:GetObject</code> permission on the object.</p>"
+        },
+        "Bytes":{
+          "shape":"RecordingBytes",
+          "documentation":"<p>The audio data, passed directly in the request. The data must be in the format that <code>Format</code> specifies and can be up to 5 MB. Amazon Polly doesn't store the audio after it creates the voice, and doesn't return this field in responses.</p>"
+        }
+      },
+      "documentation":"<p>The audio source of a recording. In a <code>CreateVoice</code> request, specify exactly one of <code>S3Url</code> and <code>Bytes</code>. In a response, a recording that Amazon Polly read from Amazon S3 includes its <code>S3Url</code>. A recording that you passed as <code>Bytes</code> includes neither field, because Amazon Polly doesn't return the audio.</p>"
+    },
+    "RecordingList":{
+      "type":"list",
+      "member":{"shape":"Recording"},
+      "max":10,
+      "min":1
     },
     "RequestCharacters":{"type":"integer"},
     "ResourceId":{"type":"string"},
@@ -859,19 +1160,28 @@
           "documentation":"<p>The type of the resource that wasn't found.</p>"
         }
       },
-      "documentation":"<p>Amazon Polly can't find the specified resource. Verify that the resource exists in the Amazon Web Services account and Region of the request and that its ARN is spelled correctly, and then try again.</p>",
+      "documentation":"<p>Amazon Polly can't find the specified resource. Verify that the resource exists in the Amazon Web Services account and Region of the request and that its ARN or ID is spelled correctly, and then try again.</p>",
       "error":{"httpStatusCode":404},
       "exception":true
     },
     "ResourceType":{
       "type":"string",
-      "enum":["lexicon"]
+      "enum":[
+        "lexicon",
+        "voice"
+      ]
+    },
+    "S3Url":{
+      "type":"string",
+      "max":1024,
+      "pattern":"^s3://[a-z0-9][\\.\\-a-z0-9]{1,61}[a-z0-9]/.+$"
     },
     "SampleRate":{"type":"string"},
     "ServiceCode":{
       "type":"string",
       "enum":["polly"]
     },
+    "ServiceErrorMessage":{"type":"string"},
     "ServiceFailureException":{
       "type":"structure",
       "members":{
@@ -1015,7 +1325,7 @@
         },
         "VoiceId":{
           "shape":"VoiceId",
-          "documentation":"<p>The voice to use in synthesis. To get a list of available voice IDs, use the <a href=\"https://docs.aws.amazon.com/polly/latest/dg/API_DescribeVoices.html\">DescribeVoices</a> operation.</p>",
+          "documentation":"<p>The voice ID to use for the synthesis. To get a list of available voice IDs, use the <a href=\"https://docs.aws.amazon.com/polly/latest/dg/API_DescribeVoices.html\">DescribeVoices</a> operation. To use a custom voice, specify the voice ID that <code>CreateVoice</code> returned, for example, <code>vc-9a8fa85dd3</code>. You can't specify the ARN of a voice.</p>",
           "location":"header",
           "locationName":"x-amzn-VoiceId"
         },
@@ -1091,7 +1401,7 @@
         },
         "VoiceId":{
           "shape":"VoiceId",
-          "documentation":"<p>Voice ID to use for the synthesis. </p>"
+          "documentation":"<p>The voice ID to use for the synthesis. To use a custom voice, specify the voice ID that <code>CreateVoice</code> returned, for example, <code>vc-9a8fa85dd3</code>. You can't specify the ARN of a voice.</p>"
         }
       }
     },
@@ -1104,6 +1414,7 @@
         }
       }
     },
+    "StatusReason":{"type":"string"},
     "StreamClosedEvent":{
       "type":"structure",
       "members":{
@@ -1236,7 +1547,7 @@
         },
         "VoiceId":{
           "shape":"VoiceId",
-          "documentation":"<p> Voice ID to use for the synthesis. You can get a list of available voice IDs by calling the <a href=\"https://docs.aws.amazon.com/polly/latest/dg/API_DescribeVoices.html\">DescribeVoices</a> operation. </p>"
+          "documentation":"<p>The voice ID to use for the synthesis. You can get a list of available voice IDs by calling the <a href=\"https://docs.aws.amazon.com/polly/latest/dg/API_DescribeVoices.html\">DescribeVoices</a> operation. To use a custom voice, specify the voice ID that <code>CreateVoice</code> returned, for example, <code>vc-9a8fa85dd3</code>. You can't specify the ARN of a voice.</p>"
         }
       }
     },
@@ -1289,7 +1600,7 @@
       "members":{
         "ResourceArn":{
           "shape":"AmazonResourceName",
-          "documentation":"<p>The Amazon Resource Name (ARN) of the resource to which to add tags. Currently, the only supported resource is an Amazon Polly lexicon.</p>"
+          "documentation":"<p>The Amazon Resource Name (ARN) of the resource to add tags to. You can tag Amazon Polly lexicons and custom voices.</p>"
         },
         "Tags":{
           "shape":"TagMap",
@@ -1320,6 +1631,7 @@
       ]
     },
     "TaskStatusReason":{"type":"string"},
+    "TermsAccepted":{"type":"boolean"},
     "Text":{"type":"string"},
     "TextEvent":{
       "type":"structure",
@@ -1425,7 +1737,7 @@
       "members":{
         "ResourceArn":{
           "shape":"AmazonResourceName",
-          "documentation":"<p>The Amazon Resource Name (ARN) of the resource from which to remove tags. Currently, the only supported resource is an Amazon Polly lexicon.</p>"
+          "documentation":"<p>The Amazon Resource Name (ARN) of the resource to remove tags from. You can tag Amazon Polly lexicons and custom voices.</p>"
         },
         "TagKeys":{
           "shape":"TagKeyList",
@@ -1447,7 +1759,7 @@
         "message":{"shape":"ErrorMessage"},
         "reason":{
           "shape":"ValidationExceptionReason",
-          "documentation":"<p>The reason the request failed validation.</p>"
+          "documentation":"<p>The reason the request failed validation. If Amazon Polly can't use the Amazon Web Services KMS key that you specified in <code>CreateVoice</code>, <code>fields</code> names <code>CustomerManagedEncryption.KmsKeyArn</code> and the reason is one of the following:</p> <dl> <dt>kmsKeyNotFound</dt> <dd> <p>No key with the specified ARN exists.</p> </dd> <dt>kmsKeyUnusable</dt> <dd> <p>The key is disabled, scheduled for deletion, or missing its key material, or it isn't a symmetric encryption key.</p> </dd> </dl>"
         },
         "fields":{
           "shape":"ValidationExceptionFieldList",
@@ -1488,19 +1800,25 @@
         "unsupportedOperation",
         "fieldValidationFailed",
         "other",
-        "invalidInboundEvent"
+        "invalidInboundEvent",
+        "kmsKeyNotFound",
+        "kmsKeyUnusable"
       ]
     },
     "Voice":{
       "type":"structure",
       "members":{
+        "Arn":{
+          "shape":"VoiceArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of a custom voice, in the form <code>arn:partition:polly:region:account-id:voice/voice-id</code>. <code>CreateVoice</code> and <code>GetVoice</code> return this field. Voices that Amazon Polly provides don't have an ARN.</p>"
+        },
         "Gender":{
           "shape":"Gender",
-          "documentation":"<p>Gender of the voice.</p>"
+          "documentation":"<p>The gender of the voice. Custom voices don't include this field.</p>"
         },
         "Id":{
           "shape":"VoiceId",
-          "documentation":"<p>Amazon Polly assigned voice ID. This is the ID that you specify when calling the <code>SynthesizeSpeech</code> operation.</p>"
+          "documentation":"<p>The voice ID that Amazon Polly assigns. You specify this ID when you call the <code>SynthesizeSpeech</code> operation. For a custom voice, Amazon Polly assigns an ID that consists of <code>vc-</code> followed by hexadecimal characters, for example, <code>vc-9a8fa85dd3</code>.</p>"
         },
         "LanguageCode":{
           "shape":"LanguageCode",
@@ -1512,7 +1830,19 @@
         },
         "Name":{
           "shape":"VoiceName",
-          "documentation":"<p>Name of the voice (for example, Salli, Kendra, etc.). This provides a human readable voice name that you might display in your application.</p>"
+          "documentation":"<p>The name of the voice, for example, Salli or Kendra. The name is human-readable, and you might display it in your application. For a custom voice, this is the <code>Name</code> that you specified in <code>CreateVoice</code>.</p>"
+        },
+        "Origin":{
+          "shape":"VoiceOrigin",
+          "documentation":"<p>Indicates who provides the voice. The origin is one of the following:</p> <dl> <dt>aws</dt> <dd> <p>A voice that Amazon Polly provides.</p> </dd> <dt>customer</dt> <dd> <p>A custom voice that you created with <code>CreateVoice</code>.</p> </dd> </dl>"
+        },
+        "Status":{
+          "shape":"VoiceStatus",
+          "documentation":"<p>The status of a custom voice. Voices that Amazon Polly provides don't include this field. The status is one of the following:</p> <dl> <dt>pending</dt> <dd> <p>Amazon Polly is creating the voice.</p> </dd> <dt>active</dt> <dd> <p>The voice is ready for speech synthesis.</p> </dd> <dt>failed</dt> <dd> <p>Amazon Polly couldn't create the voice. <code>StatusReason</code> describes why.</p> </dd> </dl>"
+        },
+        "StatusReason":{
+          "shape":"StatusReason",
+          "documentation":"<p>Additional information about the status of a custom voice. When the status is <code>failed</code>, this field describes why Amazon Polly couldn't create the voice.</p>"
         },
         "AdditionalLanguageCodes":{
           "shape":"LanguageCodeList",
@@ -1521,9 +1851,36 @@
         "SupportedEngines":{
           "shape":"EngineList",
           "documentation":"<p>Specifies which engines (<code>standard</code>, <code>neural</code>, <code>long-form</code> or <code>generative</code>) are supported by a given voice.</p>"
+        },
+        "VoiceCreationData":{
+          "shape":"VoiceCreationData",
+          "documentation":"<p>The data from which you created the custom voice. <code>CreateVoice</code> and <code>GetVoice</code> return this field. The response doesn't include the audio: a recording that Amazon Polly read from Amazon S3 includes its <code>S3Url</code>, and a recording that you passed as <code>Bytes</code> has no fields in <code>Data</code>.</p>"
+        },
+        "CustomerManagedEncryption":{
+          "shape":"CustomerManagedEncryption",
+          "documentation":"<p>The customer managed key that encrypts your custom voice. <code>CreateVoice</code> and <code>GetVoice</code> return this field if you specified a key in <code>CreateVoice</code>.</p>"
+        },
+        "CreationTime":{
+          "shape":"DateTime",
+          "documentation":"<p>The date and time when you created the custom voice. Voices that Amazon Polly provides don't include this field.</p>"
         }
       },
-      "documentation":"<p>Description of the voice.</p>"
+      "documentation":"<p>Describes a voice. Amazon Polly provides voices, and you can create custom voices with <code>CreateVoice</code>. <code>Origin</code> indicates whether Amazon Polly provides the voice or you created it. <code>DescribeVoices</code> returns a subset of the fields for each voice. <code>GetVoice</code> returns all fields of a custom voice.</p>"
+    },
+    "VoiceArn":{
+      "type":"string",
+      "pattern":"^arn:aws(-(cn|iso(-b)?|us-gov|eusc))?:polly:[a-z0-9_-]{1,50}:\\d{12}:voice/[a-zA-Z0-9_-]+$"
+    },
+    "VoiceCreationData":{
+      "type":"structure",
+      "required":["Recordings"],
+      "members":{
+        "Recordings":{
+          "shape":"RecordingList",
+          "documentation":"<p>The recordings of the speaker. Each recording specifies its audio format and its audio source.</p>"
+        }
+      },
+      "documentation":"<p>The audio that you provide to create a custom voice.</p>"
     },
     "VoiceId":{
       "type":"string",
@@ -1650,7 +2007,22 @@
       "type":"list",
       "member":{"shape":"Voice"}
     },
-    "VoiceName":{"type":"string"}
+    "VoiceName":{"type":"string"},
+    "VoiceOrigin":{
+      "type":"string",
+      "enum":[
+        "aws",
+        "customer"
+      ]
+    },
+    "VoiceStatus":{
+      "type":"string",
+      "enum":[
+        "pending",
+        "active",
+        "failed"
+      ]
+    }
   },
   "documentation":"<p>Amazon Polly is a web service that makes it easy to synthesize speech from text.</p> <p>The Amazon Polly service provides API operations for synthesizing high-quality speech from plain text and Speech Synthesis Markup Language (SSML), along with managing pronunciations lexicons that enable you to get the best results for your application domain.</p> <p>Authenticated API calls must be signed using the Signature Version 4 Signing Process. For more information, see <a href=\"https://docs.aws.amazon.com/IAM/latest/UserGuide/reference_sigv.html\">Signing Amazon Web Services API Requests</a> in the <i>IAM User Guide</i>.</p>"
 }

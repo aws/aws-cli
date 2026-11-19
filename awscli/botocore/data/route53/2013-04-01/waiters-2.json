@@ -13,6 +13,54 @@
           "state": "success"
         }
       ]
+    },
+    "HealthCheckSourceCreated": {
+      "delay": 15,
+      "maxAttempts": 40,
+      "operation": "GetHealthCheckSource",
+      "acceptors": [
+        {
+          "matcher": "path",
+          "expected": "CREATE_COMPLETED",
+          "argument": "HealthCheckSource.HealthCheckSourceStatus",
+          "state": "success"
+        },
+        {
+          "matcher": "path",
+          "expected": "CREATE_FAILED",
+          "argument": "HealthCheckSource.HealthCheckSourceStatus",
+          "state": "failure"
+        },
+        {
+          "matcher": "error",
+          "expected": "NoSuchHealthCheckSource",
+          "state": "retry"
+        }
+      ]
+    },
+    "HealthCheckSourceDeleted": {
+      "delay": 15,
+      "maxAttempts": 40,
+      "operation": "GetHealthCheckSource",
+      "acceptors": [
+        {
+          "matcher": "error",
+          "expected": "NoSuchHealthCheckSource",
+          "state": "success"
+        },
+        {
+          "matcher": "path",
+          "expected": "DELETE_COMPLETED",
+          "argument": "HealthCheckSource.HealthCheckSourceStatus",
+          "state": "success"
+        },
+        {
+          "matcher": "path",
+          "expected": "DELETE_FAILED",
+          "argument": "HealthCheckSource.HealthCheckSourceStatus",
+          "state": "failure"
+        }
+      ]
     }
   }
 }

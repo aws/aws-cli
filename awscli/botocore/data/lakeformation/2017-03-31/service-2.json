@@ -4145,6 +4145,14 @@
         "FilterExpression":{
           "shape":"PredicateString",
           "documentation":"<p>The filter predicate, written in a SQL-like syntax, that determines which rows are returned to the principal.</p>"
+        },
+        "Status":{
+          "shape":"RLSPolicyStatus",
+          "documentation":"<p>Whether the row-level security policy can be evaluated. <code>VALID</code> means that every lookup table and user-defined function the filter expression references exists. <code>INVALID</code> means that a lookup table or user-defined function the filter expression references was deleted.</p>"
+        },
+        "StatusReason":{
+          "shape":"RLSPolicyStatusReason",
+          "documentation":"<p>The reason the row-level security policy is <code>INVALID</code>. <code>REFERENCED_LOOKUP_TABLE_DELETED</code> means that a lookup table the filter expression references was deleted. <code>REFERENCED_UDF_DELETED</code> means that a user-defined function the filter expression references was deleted. Not returned when the status is <code>VALID</code>.</p>"
         }
       },
       "documentation":"<p>A structure that describes a row-level security policy, including the columns its filter expression references and the filter expression itself.</p>"
@@ -4203,6 +4211,20 @@
         }
       },
       "documentation":"<p>A structure that identifies a row-level security policy as a resource, used when granting permissions on the policy.</p>"
+    },
+    "RLSPolicyStatus":{
+      "type":"string",
+      "enum":[
+        "VALID",
+        "INVALID"
+      ]
+    },
+    "RLSPolicyStatusReason":{
+      "type":"string",
+      "enum":[
+        "REFERENCED_UDF_DELETED",
+        "REFERENCED_LOOKUP_TABLE_DELETED"
+      ]
     },
     "RedshiftConnect":{
       "type":"structure",

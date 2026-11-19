@@ -10889,6 +10889,10 @@
         "ContactLens":{
           "shape":"ContactLens",
           "documentation":"<p>Information about the conversational analytics configuration applied to the contact. This field is present only for contacts where conversational analytics is enabled in the contact flow.</p>"
+        },
+        "VoicemailInfo":{
+          "shape":"VoicemailInfo",
+          "documentation":"<p>If one or more voicemails were recorded for the contact, this contains information about the voicemails.</p>"
         }
       },
       "documentation":"<p>Contains information about a contact.</p>"
@@ -22068,7 +22072,11 @@
         "EMAIL_MESSAGE_REDACTED",
         "EMAIL_MESSAGE_PLAIN_TEXT_REDACTED",
         "ATTACHMENT",
-        "VOICE_RECORDING"
+        "VOICE_RECORDING",
+        "VOICEMAIL_RECORDING",
+        "VOICEMAIL_RECORDING_REDACTED",
+        "VOICEMAIL_ANALYSIS",
+        "VOICEMAIL_ANALYSIS_REDACTED"
       ]
     },
     "FilterId":{
@@ -29371,6 +29379,11 @@
       },
       "documentation":"<p>A leaf node condition which can be used to specify a numeric condition.</p> <note> <p>The currently supported value for <code>FieldName</code> is <code>limit</code>.</p> </note>"
     },
+    "NumberOfVoicemails":{
+      "type":"integer",
+      "max":3,
+      "min":1
+    },
     "NumberReference":{
       "type":"structure",
       "members":{
@@ -32516,7 +32529,23 @@
           "shape":"EmailReference",
           "documentation":"<p>Information about a reference when the <code>referenceType</code> is <code>EMAIL</code>. Otherwise, null.</p>"
         },
-        "ContactAnalysis":{"shape":"ContactAnalysisReference"}
+        "ContactAnalysis":{"shape":"ContactAnalysisReference"},
+        "VoicemailRecording":{
+          "shape":"VoicemailRecordingReference",
+          "documentation":"<p>Information about the reference when the <code>referenceType</code> is <code>VOICEMAIL_RECORDING</code>. Otherwise, null.</p>"
+        },
+        "VoicemailRecordingRedacted":{
+          "shape":"VoicemailRecordingReference",
+          "documentation":"<p>Information about the reference when the <code>referenceType</code> is <code>VOICEMAIL_RECORDING_REDACTED</code>. Otherwise, null.</p>"
+        },
+        "VoicemailAnalysis":{
+          "shape":"VoicemailAnalysisReference",
+          "documentation":"<p>Information about the reference when the <code>referenceType</code> is <code>VOICEMAIL_ANALYSIS</code>. Otherwise, null.</p>"
+        },
+        "VoicemailAnalysisRedacted":{
+          "shape":"VoicemailAnalysisReference",
+          "documentation":"<p>Information about the reference when the <code>referenceType</code> is <code>VOICEMAIL_ANALYSIS_REDACTED</code>. Otherwise, null.</p>"
+        }
       },
       "documentation":"<p>Contains summary information about a reference. <code>ReferenceSummary</code> contains only one non null field between the URL and attachment based on the reference type.</p>",
       "union":true
@@ -32538,7 +32567,11 @@
         "EMAIL_MESSAGE",
         "EMAIL_MESSAGE_PLAIN_TEXT",
         "EMAIL_MESSAGE_PLAIN_TEXT_REDACTED",
-        "EMAIL_MESSAGE_REDACTED"
+        "EMAIL_MESSAGE_REDACTED",
+        "VOICEMAIL_RECORDING",
+        "VOICEMAIL_RECORDING_REDACTED",
+        "VOICEMAIL_ANALYSIS",
+        "VOICEMAIL_ANALYSIS_REDACTED"
       ]
     },
     "ReferenceTypes":{
@@ -42563,6 +42596,60 @@
         "TO_AGENT",
         "ALL"
       ]
+    },
+    "VoicemailAnalysisReference":{
+      "type":"structure",
+      "members":{
+        "Name":{
+          "shape":"ReferenceKey",
+          "documentation":"<p>Identifier of the voicemail analysis reference.</p>"
+        },
+        "Value":{
+          "shape":"ReferenceValue",
+          "documentation":"<p>The location path of the voicemail analysis reference.</p>"
+        },
+        "Status":{
+          "shape":"ReferenceStatus",
+          "documentation":"<p>Status of the voicemail analysis reference type.</p>"
+        },
+        "Arn":{
+          "shape":"ARN",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the voicemail analysis reference.</p>"
+        }
+      },
+      "documentation":"<p>Information about a reference when the <code>referenceType</code> is <code>VOICEMAIL_ANALYSIS</code> or <code>VOICEMAIL_ANALYSIS_REDACTED</code>. Otherwise, null.</p>"
+    },
+    "VoicemailInfo":{
+      "type":"structure",
+      "members":{
+        "NumberOfVoicemails":{
+          "shape":"NumberOfVoicemails",
+          "documentation":"<p>The number of voicemails recorded for the contact. Valid range is 1-3.</p>"
+        }
+      },
+      "documentation":"<p>Information about the voicemails recorded for a voice contact.</p>"
+    },
+    "VoicemailRecordingReference":{
+      "type":"structure",
+      "members":{
+        "Name":{
+          "shape":"ReferenceKey",
+          "documentation":"<p>Identifier of the voicemail recording reference.</p>"
+        },
+        "Value":{
+          "shape":"ReferenceValue",
+          "documentation":"<p>The location path of the voicemail recording reference.</p>"
+        },
+        "Status":{
+          "shape":"ReferenceStatus",
+          "documentation":"<p>Status of the voicemail recording reference type.</p>"
+        },
+        "Arn":{
+          "shape":"ARN",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the voicemail recording reference.</p>"
+        }
+      },
+      "documentation":"<p>Information about a reference when the <code>referenceType</code> is <code>VOICEMAIL_RECORDING</code> or <code>VOICEMAIL_RECORDING_REDACTED</code>. Otherwise, null.</p>"
     },
     "WebBrowserId":{
       "type":"string",

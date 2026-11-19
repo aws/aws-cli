@@ -233,7 +233,7 @@
         {"shape":"ConflictException"},
         {"shape":"ServiceQuotaExceededException"}
       ],
-      "documentation":"<p>Creates a related item (comments, tasks, and contacts) and associates it with a case.</p> <p>There's a quota for the number of fields allowed in a Custom type related item. See <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/amazon-connect-service-limits.html#cases-quotas\">Connect Customer Cases quotas</a>.</p> <p> <b>Use cases</b> </p> <p>Following are examples of related items that you may want to associate with a case:</p> <ul> <li> <p>Related contacts, such as calls, chats, emails tasks</p> </li> <li> <p>Comments, for agent notes</p> </li> <li> <p>SLAs, to capture target resolution goals</p> </li> <li> <p>Cases, to capture related Connect Customer Cases</p> </li> <li> <p>Files, such as policy documentation or customer-provided attachments</p> </li> <li> <p>Custom related items, which provide flexibility for you to define related items that such as bookings, orders, products, notices, and more</p> </li> </ul> <p> <b>Important things to know</b> </p> <ul> <li> <p>If you are associating a contact to a case by passing in <code>Contact</code> for a <code>type</code>, you must have <a href=\"https://docs.aws.amazon.com/connect/latest/APIReference/API_DescribeContact.html\">DescribeContact</a> permission on the ARN of the contact that you provide in <code>content.contact.contactArn</code>.</p> </li> <li> <p>A Related Item is a resource that is associated with a case. It may or may not have an external identifier linking it to an external resource (for example, a <code>contactArn</code>). All Related Items have their own internal identifier, the <code>relatedItemArn</code>. Examples of related items include <code>comments</code> and <code>contacts</code>.</p> </li> <li> <p>If you provide a value for <code>performedBy.userArn</code>, you must also have <a href=\"https://docs.aws.amazon.com/connect/latest/APIReference/API_DescribeUser.html\">DescribeUser</a> permission on the ARN of the user that you provide.</p> </li> <li> <p>If the case is the secondary case of a merge that is running, the request fails with a <code>ConflictException</code>. For more information, see <a href=\"https://docs.aws.amazon.com/connect/latest/APIReference/API_connect-cases_StartMergeCases.html\">StartMergeCases</a>.</p> </li> </ul> <p> <b>Endpoints</b>: See <a href=\"https://docs.aws.amazon.com/general/latest/gr/connect_region.html\">Connect Customer endpoints and quotas</a>.</p>",
+      "documentation":"<p>Creates a related item (comments, tasks, and contacts) and associates it with a case.</p> <p>There's a quota for the number of fields allowed in a Custom type related item. See <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/amazon-connect-service-limits.html#cases-quotas\">Connect Customer Cases quotas</a>.</p> <p>There's a quota for the number of SLAs that can be attached to a case. See <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/amazon-connect-service-limits.html#cases-quotas\">Connect Customer Cases quotas</a>.</p> <p> <b>Use cases</b> </p> <p>Following are examples of related items that you may want to associate with a case:</p> <ul> <li> <p>Related contacts, such as calls, chats, emails tasks</p> </li> <li> <p>Comments, for agent notes</p> </li> <li> <p>SLAs, to capture target resolution goals</p> </li> <li> <p>Cases, to capture related Connect Customer Cases</p> </li> <li> <p>Files, such as policy documentation or customer-provided attachments</p> </li> <li> <p>Custom related items, which provide flexibility for you to define related items that such as bookings, orders, products, notices, and more</p> </li> </ul> <p> <b>Important things to know</b> </p> <ul> <li> <p>If you are associating a contact to a case by passing in <code>Contact</code> for a <code>type</code>, you must have <a href=\"https://docs.aws.amazon.com/connect/latest/APIReference/API_DescribeContact.html\">DescribeContact</a> permission on the ARN of the contact that you provide in <code>content.contact.contactArn</code>.</p> </li> <li> <p>A Related Item is a resource that is associated with a case. It may or may not have an external identifier linking it to an external resource (for example, a <code>contactArn</code>). All Related Items have their own internal identifier, the <code>relatedItemArn</code>. Examples of related items include <code>comments</code> and <code>contacts</code>.</p> </li> <li> <p>If you provide a value for <code>performedBy.userArn</code>, you must also have <a href=\"https://docs.aws.amazon.com/connect/latest/APIReference/API_DescribeUser.html\">DescribeUser</a> permission on the ARN of the user that you provide.</p> </li> <li> <p>If the case is the secondary case of a merge that is running, the request fails with a <code>ConflictException</code>. For more information, see <a href=\"https://docs.aws.amazon.com/connect/latest/APIReference/API_connect-cases_StartMergeCases.html\">StartMergeCases</a>.</p> </li> </ul> <p> <b>Endpoints</b>: See <a href=\"https://docs.aws.amazon.com/general/latest/gr/connect_region.html\">Connect Customer endpoints and quotas</a>.</p>",
       "idempotent":true
     },
     "CreateTemplate":{
@@ -912,7 +912,7 @@
         {"shape":"ConflictException"},
         {"shape":"ServiceQuotaExceededException"}
       ],
-      "documentation":"<p>Updates the content of a related item associated with a case. The following related item types are supported:</p> <ul> <li> <p> <b>Comment</b> - Update the text content of an existing comment</p> </li> <li> <p> <b>Custom</b> - Update the fields of a custom related item. You can add, modify, and remove fields from a custom related item. There's a quota for the number of fields allowed in a Custom type related item. See <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/amazon-connect-service-limits.html#cases-quotas\">Connect Customer Cases quotas</a>.</p> </li> </ul> <p> <b>Important things to know</b> </p> <ul> <li> <p>When updating a Custom related item, all existing and new fields, and their associated values should be included in the request. Fields not included as part of this request will be removed.</p> </li> <li> <p>If you provide a value for <code>performedBy.userArn</code>, you must also have <a href=\"https://docs.aws.amazon.com/connect/latest/APIReference/API_DescribeUser.html\">DescribeUser</a> permission on the ARN of the user that you provide.</p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/case-fields.html#system-case-fields\">System case fields</a> cannot be used in a custom related item.</p> </li> <li> <p>If the case is the secondary case of a merge that is running, the request fails with a <code>ConflictException</code>. For more information, see <a href=\"https://docs.aws.amazon.com/connect/latest/APIReference/API_connect-cases_StartMergeCases.html\">StartMergeCases</a>.</p> </li> </ul> <p> <b>Endpoints</b>: See <a href=\"https://docs.aws.amazon.com/general/latest/gr/connect_region.html\">Connect Customer endpoints and quotas</a>.</p>",
+      "documentation":"<p>Updates the content of a related item associated with a case. The following related item types are supported:</p> <ul> <li> <p> <b>Comment</b> - Update the text content of an existing comment</p> </li> <li> <p> <b>Custom</b> - Update the fields of a custom related item. You can add, modify, and remove fields from a custom related item. There's a quota for the number of fields allowed in a Custom type related item. See <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/amazon-connect-service-limits.html#cases-quotas\">Connect Customer Cases quotas</a>.</p> </li> <li> <p> <b>Sla</b> - Update the target duration (<code>targetSlaMinutes</code>) of an SLA. The new deadline is counted from when the SLA was created. The SLA status is recalculated against the new deadline: an open SLA becomes Active or Overdue, and a completed SLA becomes Met or NotMet.</p> </li> </ul> <p> <b>Important things to know</b> </p> <ul> <li> <p>When updating a Custom related item, all existing and new fields, and their associated values should be included in the request. Fields not included as part of this request will be removed.</p> </li> <li> <p>If you provide a value for <code>performedBy.userArn</code>, you must also have <a href=\"https://docs.aws.amazon.com/connect/latest/APIReference/API_DescribeUser.html\">DescribeUser</a> permission on the ARN of the user that you provide.</p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/connect/latest/adminguide/case-fields.html#system-case-fields\">System case fields</a> cannot be used in a custom related item.</p> </li> <li> <p>If the case is the secondary case of a merge that is running, the request fails with a <code>ConflictException</code>. For more information, see <a href=\"https://docs.aws.amazon.com/connect/latest/APIReference/API_connect-cases_StartMergeCases.html\">StartMergeCases</a>.</p> </li> </ul> <p> <b>Endpoints</b>: See <a href=\"https://docs.aws.amazon.com/general/latest/gr/connect_region.html\">Connect Customer endpoints and quotas</a>.</p>",
       "idempotent":true
     },
     "UpdateTemplate":{
@@ -4378,9 +4378,13 @@
       "type":"structure",
       "members":{
         "comment":{"shape":"CommentUpdateContent"},
-        "custom":{"shape":"CustomUpdateContent"}
+        "custom":{"shape":"CustomUpdateContent"},
+        "sla":{
+          "shape":"SlaUpdateContent",
+          "documentation":"<p>Represents the content of an SLA to be updated.</p>"
+        }
       },
-      "documentation":"<p>Represents the content of a related item to be updated. This is a union type that can contain either comment content or custom content.</p>",
+      "documentation":"<p>Represents the content of a related item to be updated. This is a union type that can contain comment content, custom content, or SLA content.</p>",
       "union":true
     },
     "RelatedItemsConfiguration":{
@@ -4949,7 +4953,7 @@
         },
         "fieldId":{
           "shape":"FieldId",
-          "documentation":"<p>Unique identifier of a field.</p>"
+          "documentation":"<p>Unique identifier of the case field that the SLA tracks. The field must be a single-select field, such as the system <code>status</code> field or a custom single-select field.</p>"
         },
         "targetFieldValues":{
           "shape":"SlaFieldValueUnionList",
@@ -4996,6 +5000,28 @@
     "SlaType":{
       "type":"string",
       "enum":["CaseField"]
+    },
+    "SlaUpdateConfiguration":{
+      "type":"structure",
+      "required":["targetSlaMinutes"],
+      "members":{
+        "targetSlaMinutes":{
+          "shape":"TargetSlaMinutes",
+          "documentation":"<p>New target duration in minutes within which an SLA should be completed. The new deadline is counted from when the SLA was created.</p>"
+        }
+      },
+      "documentation":"<p>Represents the SLA configuration to update.</p>"
+    },
+    "SlaUpdateContent":{
+      "type":"structure",
+      "members":{
+        "slaUpdateConfiguration":{
+          "shape":"SlaUpdateConfiguration",
+          "documentation":"<p>Represents the SLA configuration to update.</p>"
+        }
+      },
+      "documentation":"<p>Represents the updated content of an SLA related item.</p>",
+      "union":true
     },
     "Sort":{
       "type":"structure",

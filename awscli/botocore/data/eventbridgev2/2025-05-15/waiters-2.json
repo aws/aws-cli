@@ -43,6 +43,23 @@
         "state" : "success",
         "expected" : "ResourceNotFoundException"
       } ]
+    },
+    "MskSubscriberActive" : {
+      "description" : "Waits until an Amazon MSK subscriber's connectivity reports ACTIVE. Use after CreateSubscriber or UpdateSubscriber on a subscriber that targets an MSK cluster. Fails fast on PROVISION_FAILED, surfacing MskDetails.StateReason. PROVISIONING falls through to the implicit retry. Applies only to MSK subscribers; other subscribers return no MskDetails, so the waiter times out.",
+      "delay" : 2,
+      "maxAttempts" : 150,
+      "operation" : "DescribeSubscriber",
+      "acceptors" : [ {
+        "matcher" : "path",
+        "argument" : "SubscriberDetails.MskDetails.ConnectivityState",
+        "state" : "failure",
+        "expected" : "PROVISION_FAILED"
+      }, {
+        "matcher" : "path",
+        "argument" : "SubscriberDetails.MskDetails.ConnectivityState",
+        "state" : "success",
+        "expected" : "ACTIVE"
+      } ]
     }
   }
 }

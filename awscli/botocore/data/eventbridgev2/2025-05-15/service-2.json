@@ -55,7 +55,7 @@
         {"shape":"ConcurrentModificationException"},
         {"shape":"InvalidStateException"}
       ],
-      "documentation":"<p>Creates an EventSource, which forwards events from an origin (an AWS service or another account) onto an event bus. The bus must be ACTIVE. Retries carrying the same ClientToken are idempotent.</p>"
+      "documentation":"<p>Creates an EventSource, which forwards events from an origin (an AWS service, a partner, or a third-party webhook provider) to an event bus. The event bus must be in the ACTIVE state. This operation is idempotent: retries that use the same ClientToken return the same result.</p>"
     },
     "CreateSubscriber":{
       "name":"CreateSubscriber",
@@ -77,7 +77,7 @@
         {"shape":"ConcurrentModificationException"},
         {"shape":"InvalidStateException"}
       ],
-      "documentation":"<p>Creates a subscriber on an event bus, which delivers matching events to the configured target. The bus must be ACTIVE. Retries carrying the same ClientToken are idempotent.</p>"
+      "documentation":"<p>Creates a subscriber on an event bus, which delivers matching events to the configured target. The bus must be ACTIVE. Retries carrying the same ClientToken are idempotent. A subscriber that targets an Amazon MSK cluster provisions its connectivity asynchronously after this call returns and begins delivering when its ConnectivityState reaches ACTIVE (see the MskSubscriberActive waiter).</p>"
     },
     "DeleteEventBus":{
       "name":"DeleteEventBus",
@@ -336,7 +336,7 @@
         {"shape":"InternalException"},
         {"shape":"InvalidStateException"}
       ],
-      "documentation":"<p>Publishes events to an event bus.</p>"
+      "documentation":"<p>Publishes events to an event bus.</p> <p>The total size of all event entries in a request must not exceed 1 MB (1,048,576 bytes). The limit applies to the request as a whole, not to individual entries. If you exceed the limit, the request fails with <code>InvalidInputException</code> and the service publishes none of the entries in the request.</p>"
     },
     "PutRawEvents":{
       "name":"PutRawEvents",
@@ -355,7 +355,7 @@
         {"shape":"InternalException"},
         {"shape":"InvalidStateException"}
       ],
-      "documentation":"<p>Publishes pre-shaped events to an event bus.</p>"
+      "documentation":"<p>Publishes pre-shaped events to an event bus.</p> <p>The total size of all event entries in a request must not exceed 1 MB (1,048,576 bytes), including the <code>Data</code> payload and the keys and values of <code>Metadata</code> for each entry. The limit applies to the request as a whole, not to individual entries.</p> <p>If you exceed the limit, the request fails with <code>InvalidInputException</code>, and the service doesn't publish any of the entries in the request.</p>"
     },
     "PutResourcePolicy":{
       "name":"PutResourcePolicy",
@@ -376,7 +376,7 @@
         {"shape":"ConcurrentModificationException"},
         {"shape":"PublicPolicyException"}
       ],
-      "documentation":"<p>Attaches a named resource policy to an event bus — the only resource type that supports policies; other resource ARNs are rejected. Each bus holds two named policies: &quot;default&quot; (customer-managed, full IAM policy language including Deny) and &quot;AWS_RAM&quot; (written exclusively by AWS Resource Access Manager to reflect resource shares). Both policies are evaluated on cross-account authorization; an explicit Deny in either overrides an Allow in the other. Operations that omit PolicyName target &quot;default&quot;. A &quot;default&quot; policy that would grant public access is rejected with PublicPolicyException and is not attached; this check is always on and cannot be disabled.</p>",
+      "documentation":"<p>Attaches a named resource policy to an event bus — the only resource type that supports policies; other resource ARNs are rejected. Each bus holds two named policies: \"default\" (customer-managed, full IAM policy language including Deny) and \"AWS_RAM\" (written exclusively by AWS Resource Access Manager to reflect resource shares). Both policies are evaluated on cross-account authorization; an explicit Deny in either overrides an Allow in the other. Operations that omit PolicyName target \"default\". A \"default\" policy that would grant public access is rejected with PublicPolicyException and is not attached; this check is always on and cannot be disabled.</p>",
       "idempotent":true
     },
     "RevokeResource":{
@@ -398,6 +398,27 @@
       ],
       "documentation":"<p>Revokes a subscriber or an EventSource. The bus owner calls this to withdraw a misbehaving resource attached to their bus. Revocation is terminal: there is no operation that clears it. A revoked resource refuses mutating operations with InvalidStateException; delete stays available for cleanup.</p>",
       "idempotent":true
+    },
+    "RotateWebhookCredentials":{
+      "name":"RotateWebhookCredentials",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"RotateWebhookCredentialsRequest"},
+      "output":{"shape":"RotateWebhookCredentialsResponse"},
+      "errors":[
+        {"shape":"LimitExceededException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"IdempotentParameterMismatchException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"InvalidInputException"},
+        {"shape":"InternalException"},
+        {"shape":"ConcurrentModificationException"},
+        {"shape":"InvalidStateException"}
+      ],
+      "documentation":"<p>Sets a new credential on a webhook EventSource. If you supply Credential, EventBridge uses that value. Otherwise, EventBridge generates one. For HTTP Basic authentication, only the password changes. The username does not change. EventBridge never returns the credential. To read a generated value, call secretsmanager:GetSecretValue on the secret that SecretArn identifies.</p> <p>You can rotate the credential of an EventSource in the ACTIVE, UPDATING, or UPDATE_FAILED state. For a revoked EventSource or an EventSource in any other state, EventBridge returns InvalidStateException. EventBridge also returns InvalidStateException if the secret of the EventSource is scheduled for deletion or has been deleted.</p> <p>If you rotate the credential of one EventSource too many times in 24 hours, EventBridge returns LimitExceededException. Retry later. The limit becomes available again automatically.</p> <p>If AWS Secrets Manager throttles the call, EventBridge returns ThrottlingException. Retry later.</p> <p>To use this operation, you must have the following permissions in your IAM policy:</p> <ul> <li> <p>secretsmanager:PutSecretValue on the secret of the EventSource</p> </li> <li> <p>secretsmanager:GetSecretValue on the secret of the EventSource, for HTTP Basic authentication only</p> </li> <li> <p>kms:GenerateDataKey and kms:Decrypt on the AWS KMS key that encrypts the secret</p> </li> </ul> <p>The resource policy of the secret must not deny the secretsmanager actions.</p> <p>EventBridge accepts the new credential when this call returns. In rare cases, the new credential takes up to 2 minutes to reach every EventBridge endpoint.</p> <p>EventBridge also accepts the previous credential for 15 minutes after the rotation. The window ends at the CreatedDate of the AWSCURRENT secret version plus 15 minutes. Only the credential that the most recent rotation replaced stays valid. If you rotate again within 15 minutes, the older credential stops working immediately.</p> <p>A retry with the same ClientToken within 8 hours returns the same result and does not rotate again. A retry of a rotation that supplied a value can arrive after a later rotation completed. In that case, the retried value becomes the current credential, and the credential it replaces does not stay valid.</p>"
     },
     "TagResource":{
       "name":"TagResource",
@@ -469,6 +490,7 @@
       "input":{"shape":"UpdateEventSourceRequest"},
       "output":{"shape":"UpdateEventSourceResponse"},
       "errors":[
+        {"shape":"LimitExceededException"},
         {"shape":"AccessDeniedException"},
         {"shape":"ResourceNotFoundException"},
         {"shape":"ThrottlingException"},
@@ -498,7 +520,7 @@
         {"shape":"ConcurrentModificationException"},
         {"shape":"InvalidStateException"}
       ],
-      "documentation":"<p>Updates a subscriber. Fields omitted from the request are left unchanged.</p>",
+      "documentation":"<p>Updates a subscriber. Fields omitted from the request are left unchanged. Changing an Amazon MSK subscriber's connectivity can re-provision it; when it does, the subscriber resumes delivering once its ConnectivityState returns to ACTIVE (see the MskSubscriberActive waiter).</p>",
       "idempotent":true
     }
   },
@@ -526,7 +548,10 @@
       "type":"structure",
       "required":["AwsService"],
       "members":{
-        "AwsService":{"shape":"AwsServiceSource"},
+        "AwsService":{
+          "shape":"AwsServiceSource",
+          "documentation":"<p>A single AWS service source identifier, e.g. \"aws.s3\". Wildcards and lists are rejected.</p>"
+        },
         "Pattern":{
           "shape":"AwsServiceEventsSourceConfigurationPatternString",
           "documentation":"<p>A filter pattern, as a JSON string, that defines which of the service's events are forwarded to the event bus. Do not include source, account, or region as top-level fields. If no pattern is specified, all events from the service are forwarded.</p>"
@@ -547,7 +572,7 @@
     },
     "AwsServiceSource":{
       "type":"string",
-      "documentation":"<p>A single AWS service source identifier, e.g. &quot;aws.s3&quot;. Wildcards and lists are rejected.</p>",
+      "documentation":"<p>A single AWS service source identifier, e.g. \"aws.s3\". Wildcards and lists are rejected.</p>",
       "max":256,
       "min":1,
       "pattern":"aws\\.[a-z0-9\\-]+"
@@ -568,14 +593,14 @@
     },
     "BatchConfigurationMaxBatchSizeInteger":{
       "type":"integer",
-      "documentation":"<p>Nullable integer — no default, absence means &quot;not set&quot;.</p>",
+      "documentation":"<p>Nullable integer — no default, absence means \"not set\".</p>",
       "box":true,
       "max":500,
       "min":1
     },
     "BatchConfigurationMaxBatchWindowInSecondsInteger":{
       "type":"integer",
-      "documentation":"<p>Nullable integer — no default, absence means &quot;not set&quot;.</p>",
+      "documentation":"<p>Nullable integer — no default, absence means \"not set\".</p>",
       "box":true,
       "max":300,
       "min":0
@@ -586,7 +611,7 @@
     },
     "BusState":{
       "type":"string",
-      "documentation":"<p>Lifecycle state of an event bus.</p> <ul> <li>CREATING: Bus creation is in progress.</li> <li>CREATE_FAILED: Bus creation failed; see StateReason. The bus cannot be recovered or recreated in place: delete it with DeleteEventBus, then create a new bus.</li> <li>ACTIVE: Bus is fully operational and can accept events.</li> <li>UPDATING: Bus update is in progress.</li> <li>UPDATE_FAILED: Bus update failed; the bus remains operational with its previous configuration.</li> <li>DELETING: Bus deletion is actively in progress.</li> <li>DELETE_FAILED: Bus deletion failed; see StateReason. Retry DeleteEventBus after removing subscribers and event sources.</li> </ul>",
+      "documentation":"<p>Lifecycle state of an event bus.</p> <ul> <li> <p>CREATING: Bus creation is in progress.</p> </li> <li> <p>CREATE_FAILED: Bus creation failed; see StateReason. The bus cannot be recovered or recreated in place: delete it with DeleteEventBus, then create a new bus.</p> </li> <li> <p>ACTIVE: Bus is fully operational and can accept events.</p> </li> <li> <p>UPDATING: Bus update is in progress.</p> </li> <li> <p>UPDATE_FAILED: Bus update failed; the bus remains operational with its previous configuration.</p> </li> <li> <p>DELETING: Bus deletion is actively in progress.</p> </li> <li> <p>DELETE_FAILED: Bus deletion failed; see StateReason. Retry DeleteEventBus after removing subscribers and event sources.</p> </li> </ul>",
       "enum":[
         "CREATING",
         "CREATE_FAILED",
@@ -647,6 +672,15 @@
       "min":1,
       "pattern":"arn:aws(-[a-z0-9]+)*:events:[a-z0-9-]+:\\d{12}:connection/.+"
     },
+    "ConnectivityState":{
+      "type":"string",
+      "documentation":"<p>Provisioning state of the connectivity EventBridge sets up between a subscriber and its target cluster. Covers all of that setup (for PRIVATE connectivity: the VPC connection, DNS records, and related resources), so it can lag the state the target service reports for the VPC connection. Distinct from the customer-controlled subscriber State (RUNNING/STOPPED). PROVISIONING: provisioning is in progress. PROVISION_FAILED: provisioning failed; see StateReason. ACTIVE: provisioning is complete and the subscriber is ready for delivery.</p>",
+      "enum":[
+        "PROVISIONING",
+        "PROVISION_FAILED",
+        "ACTIVE"
+      ]
+    },
     "ContentType":{
       "type":"string",
       "documentation":"<p>Content type of the event data.</p>",
@@ -658,13 +692,29 @@
       "type":"structure",
       "required":["Name"],
       "members":{
-        "Name":{"shape":"EventBusName"},
-        "Description":{"shape":"Description"},
-        "EncryptionConfiguration":{"shape":"EncryptionConfiguration"},
-        "StorageConfiguration":{"shape":"StorageConfiguration"},
-        "Tags":{"shape":"TagMap"},
+        "Name":{
+          "shape":"EventBusName",
+          "documentation":"<p>Name of an event bus. The first character must be alphanumeric; the remaining characters may also include '.', '-', and '_'. The grammar matches the name segment of EventBusArn (event-busv2/&lt;name&gt;/&lt;id&gt;), so every valid name can be represented in the bus's ARN. The same type is used everywhere a bus name appears.</p>"
+        },
+        "Description":{
+          "shape":"Description",
+          "documentation":"<p>Free-text description. Used by every resource type that has one: event buses, subscribers, and event sources.</p>"
+        },
+        "EncryptionConfiguration":{
+          "shape":"EncryptionConfiguration",
+          "documentation":"<p>Encryption configuration for an event bus.</p>"
+        },
+        "StorageConfiguration":{
+          "shape":"StorageConfiguration",
+          "documentation":"<p>Event storage configuration for an event bus.</p>"
+        },
+        "Tags":{
+          "shape":"TagMap",
+          "documentation":"<p>Tags attached to a resource, as key-value pairs.</p>"
+        },
         "ClientToken":{
           "shape":"ClientToken",
+          "documentation":"<p>Unique, case-sensitive identifier that ensures the idempotency of the request. The SDK generates one automatically when the field is omitted.</p>",
           "idempotencyToken":true
         }
       }
@@ -672,13 +722,34 @@
     "CreateEventBusResponse":{
       "type":"structure",
       "members":{
-        "EventBusArn":{"shape":"EventBusArn"},
-        "Name":{"shape":"EventBusName"},
-        "Description":{"shape":"Description"},
-        "EncryptionConfiguration":{"shape":"EncryptionConfiguration"},
-        "StorageConfiguration":{"shape":"StorageConfigurationOutput"},
-        "State":{"shape":"BusState"},
-        "StateReason":{"shape":"StateReason"},
+        "EventBusArn":{
+          "shape":"EventBusArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) that uniquely identifies an event bus.</p>"
+        },
+        "Name":{
+          "shape":"EventBusName",
+          "documentation":"<p>Name of an event bus. The first character must be alphanumeric; the remaining characters may also include '.', '-', and '_'. The grammar matches the name segment of EventBusArn (event-busv2/&lt;name&gt;/&lt;id&gt;), so every valid name can be represented in the bus's ARN. The same type is used everywhere a bus name appears.</p>"
+        },
+        "Description":{
+          "shape":"Description",
+          "documentation":"<p>Free-text description. Used by every resource type that has one: event buses, subscribers, and event sources.</p>"
+        },
+        "EncryptionConfiguration":{
+          "shape":"EncryptionConfiguration",
+          "documentation":"<p>Encryption configuration for an event bus.</p>"
+        },
+        "StorageConfiguration":{
+          "shape":"StorageConfigurationOutput",
+          "documentation":"<p>Event storage configuration of an event bus, as returned on reads.</p>"
+        },
+        "State":{
+          "shape":"BusState",
+          "documentation":"<p>Lifecycle state of an event bus.</p> <ul> <li> <p>CREATING: Bus creation is in progress.</p> </li> <li> <p>CREATE_FAILED: Bus creation failed; see StateReason. The bus cannot be recovered or recreated in place: delete it with DeleteEventBus, then create a new bus.</p> </li> <li> <p>ACTIVE: Bus is fully operational and can accept events.</p> </li> <li> <p>UPDATING: Bus update is in progress.</p> </li> <li> <p>UPDATE_FAILED: Bus update failed; the bus remains operational with its previous configuration.</p> </li> <li> <p>DELETING: Bus deletion is actively in progress.</p> </li> <li> <p>DELETE_FAILED: Bus deletion failed; see StateReason. Retry DeleteEventBus after removing subscribers and event sources.</p> </li> </ul>"
+        },
+        "StateReason":{
+          "shape":"StateReason",
+          "documentation":"<p>Human-readable explanation of why an event bus is in its current State. Omitted when the bus is in a normal operational state (ACTIVE). It stands in for the error response an asynchronous failure cannot return, so it applies only to resources with an asynchronous lifecycle: event buses. EventSources and subscribers are provisioned synchronously and report failures directly on the request.</p>"
+        },
         "CreationTime":{
           "shape":"Timestamp",
           "documentation":"<p>The time the event bus was created.</p>"
@@ -693,16 +764,30 @@
         "Configuration"
       ],
       "members":{
-        "Name":{"shape":"EventSourceName"},
+        "Name":{
+          "shape":"EventSourceName",
+          "documentation":"<p>EventSource name. First character alphanumeric; the rest may add '.', '-', '_'. Names may not begin with the reserved \"aws.\" prefix. The grammar matches the ARN local-name segment in EventSourceArn (event-sourcev2/&lt;type&gt;/&lt;name&gt;/&lt;id&gt;), mirroring EventBusName, so a name the ARN cannot represent cannot be created.</p>"
+        },
         "EventBusArn":{
           "shape":"EventBusArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) that uniquely identifies an event bus.</p>",
           "contextParam":{"name":"EventBusArn"}
         },
-        "Configuration":{"shape":"EventSourceConfiguration"},
-        "Description":{"shape":"Description"},
-        "Tags":{"shape":"TagMap"},
+        "Configuration":{
+          "shape":"EventSourceConfiguration",
+          "documentation":"<p>Discriminated EventSource configuration. Exactly one variant must be set.</p>"
+        },
+        "Description":{
+          "shape":"Description",
+          "documentation":"<p>Free-text description. Used by every resource type that has one: event buses, subscribers, and event sources.</p>"
+        },
+        "Tags":{
+          "shape":"TagMap",
+          "documentation":"<p>Tags attached to a resource, as key-value pairs.</p>"
+        },
         "ClientToken":{
           "shape":"ClientToken",
+          "documentation":"<p>Unique, case-sensitive identifier that ensures the idempotency of the request. The SDK generates one automatically when the field is omitted.</p>",
           "idempotencyToken":true
         }
       }
@@ -710,10 +795,26 @@
     "CreateEventSourceResponse":{
       "type":"structure",
       "members":{
-        "EventSourceArn":{"shape":"EventSourceArn"},
-        "Name":{"shape":"EventSourceName"},
-        "EventBusArn":{"shape":"EventBusArn"},
-        "State":{"shape":"EventSourceState"},
+        "EventSourceArn":{
+          "shape":"EventSourceArn",
+          "documentation":"<p>EventSource ARN: event-sourcev2/&lt;type&gt;/&lt;name&gt;/&lt;id&gt;. The type segment is set by the service (aws.service for AWS service events, aws.partner for partner events, webhook for webhook events) and is not part of the resource's name. The id segment is a 25-character identifier generated by the service.</p>"
+        },
+        "Name":{
+          "shape":"EventSourceName",
+          "documentation":"<p>EventSource name. First character alphanumeric; the rest may add '.', '-', '_'. Names may not begin with the reserved \"aws.\" prefix. The grammar matches the ARN local-name segment in EventSourceArn (event-sourcev2/&lt;type&gt;/&lt;name&gt;/&lt;id&gt;), mirroring EventBusName, so a name the ARN cannot represent cannot be created.</p>"
+        },
+        "EventBusArn":{
+          "shape":"EventBusArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) that uniquely identifies an event bus.</p>"
+        },
+        "State":{
+          "shape":"EventSourceState",
+          "documentation":"<p>Lifecycle state of an EventSource. Revocation is reported by the Revoked flag.</p>"
+        },
+        "EventSourceDetails":{
+          "shape":"EventSourceDetails",
+          "documentation":"<p>Values EventBridge generated for this EventSource type, such as a webhook's URL and the ARN of its secret. Absent for EventSource types that have no generated values.</p>"
+        },
         "CreationTime":{
           "shape":"Timestamp",
           "documentation":"<p>The time the EventSource was created.</p>"
@@ -728,29 +829,70 @@
         "InvokeConfiguration"
       ],
       "members":{
-        "Name":{"shape":"SubscriberName"},
+        "Name":{
+          "shape":"SubscriberName",
+          "documentation":"<p>Name of a subscriber. The first character must be alphanumeric; the remaining characters may also include '.', '-', and '_'.</p>"
+        },
         "EventBusArn":{
           "shape":"EventBusArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) that uniquely identifies an event bus.</p>",
           "contextParam":{"name":"EventBusArn"}
         },
-        "InvokeConfiguration":{"shape":"InvokeConfiguration"},
-        "Description":{"shape":"Description"},
-        "FilterConfiguration":{"shape":"FilterConfiguration"},
-        "Type":{"shape":"OrderingType"},
-        "StartingPosition":{"shape":"StartingPosition"},
-        "PointInTimeConfiguration":{"shape":"PointInTimeConfiguration"},
-        "BatchConfiguration":{"shape":"BatchConfiguration"},
+        "InvokeConfiguration":{
+          "shape":"InvokeConfiguration",
+          "documentation":"<p>Configuration for how the subscriber invokes its target.</p>"
+        },
+        "Description":{
+          "shape":"Description",
+          "documentation":"<p>Free-text description. Used by every resource type that has one: event buses, subscribers, and event sources.</p>"
+        },
+        "FilterConfiguration":{
+          "shape":"FilterConfiguration",
+          "documentation":"<p>Configuration for filtering events delivered to a subscriber. On CreateSubscriber, Filters is required and must contain at least one Filter with a non-empty Pattern. On UpdateSubscriber, an empty <code>FilterConfiguration:{}</code> clears the existing filter. Any non-empty shape (including <code>{Language:X}</code> without Filters) must contain a valid Filters list — same contract as CreateSubscriber. A non-empty Filters list overwrites; an omitted FilterConfiguration preserves existing state. All Filters are implicitly ANDed — an event must match every Filter to be delivered.</p>"
+        },
+        "Type":{
+          "shape":"OrderingType",
+          "documentation":"<p>Delivery ordering mode of a subscriber: FIFO delivers events in order within an event group; UNORDERED delivers without an ordering guarantee.</p>"
+        },
+        "StartingPosition":{
+          "shape":"StartingPosition",
+          "documentation":"<p>Starting position for a subscriber.</p>"
+        },
+        "PointInTimeConfiguration":{
+          "shape":"PointInTimeConfiguration",
+          "documentation":"<p>Point-in-time configuration for a subscriber. Only applicable when StartingPosition is POINT_IN_TIME.</p>"
+        },
+        "BatchConfiguration":{
+          "shape":"BatchConfiguration",
+          "documentation":"<p>Batching configuration for a subscriber.</p>"
+        },
         "Transformer":{
           "shape":"Transformer",
-          "documentation":"<p>Not applicable to universal (aws-sdk) targets, whose input transformation is UniversalTargetParameters.Input; a Transformer on such a target is rejected.</p>"
+          "documentation":"<p>Transformer configuration for a subscriber.</p>"
         },
-        "RetryPolicy":{"shape":"RetryPolicy"},
-        "OnFailureConfiguration":{"shape":"OnFailureConfiguration"},
-        "LogConfiguration":{"shape":"LogConfiguration"},
-        "State":{"shape":"SubscriberState"},
-        "Tags":{"shape":"TagMap"},
+        "RetryPolicy":{
+          "shape":"RetryPolicy",
+          "documentation":"<p>Retry policy for a subscriber.</p>"
+        },
+        "OnFailureConfiguration":{
+          "shape":"OnFailureConfiguration",
+          "documentation":"<p>On-failure configuration: where a failed delivery is sent. Shared by the subscriber and the EventSource.</p>"
+        },
+        "LogConfiguration":{
+          "shape":"LogConfiguration",
+          "documentation":"<p>Log configuration for a subscriber.</p>"
+        },
+        "State":{
+          "shape":"SubscriberState",
+          "documentation":"<p>Customer-controlled run state of a subscriber, set on create or update. Distinct from the bus lifecycle vocabulary, where ACTIVE means \"provisioned and healthy\". Delivery requires State RUNNING on a subscriber that is not revoked.</p>"
+        },
+        "Tags":{
+          "shape":"TagMap",
+          "documentation":"<p>Tags attached to a resource, as key-value pairs.</p>"
+        },
         "ClientToken":{
           "shape":"ClientToken",
+          "documentation":"<p>Unique, case-sensitive identifier that ensures the idempotency of the request. The SDK generates one automatically when the field is omitted.</p>",
           "idempotencyToken":true
         }
       }
@@ -758,22 +900,44 @@
     "CreateSubscriberResponse":{
       "type":"structure",
       "members":{
-        "SubscriberArn":{"shape":"SubscriberArn"},
-        "Name":{"shape":"SubscriberName"},
-        "EventBusArn":{"shape":"EventBusArn"},
-        "Type":{"shape":"OrderingType"},
-        "StartingPosition":{"shape":"StartingPosition"},
-        "PointInTimeConfiguration":{"shape":"PointInTimeConfiguration"},
-        "State":{"shape":"SubscriberState"},
+        "SubscriberArn":{
+          "shape":"SubscriberArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) that uniquely identifies a subscriber.</p>"
+        },
+        "Name":{
+          "shape":"SubscriberName",
+          "documentation":"<p>Name of a subscriber. The first character must be alphanumeric; the remaining characters may also include '.', '-', and '_'.</p>"
+        },
+        "EventBusArn":{
+          "shape":"EventBusArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) that uniquely identifies an event bus.</p>"
+        },
+        "Type":{
+          "shape":"OrderingType",
+          "documentation":"<p>Delivery ordering mode of a subscriber: FIFO delivers events in order within an event group; UNORDERED delivers without an ordering guarantee.</p>"
+        },
+        "StartingPosition":{
+          "shape":"StartingPosition",
+          "documentation":"<p>Starting position for a subscriber.</p>"
+        },
+        "PointInTimeConfiguration":{
+          "shape":"PointInTimeConfiguration",
+          "documentation":"<p>Point-in-time configuration for a subscriber. Only applicable when StartingPosition is POINT_IN_TIME.</p>"
+        },
+        "State":{
+          "shape":"SubscriberState",
+          "documentation":"<p>Customer-controlled run state of a subscriber, set on create or update. Distinct from the bus lifecycle vocabulary, where ACTIVE means \"provisioned and healthy\". Delivery requires State RUNNING on a subscriber that is not revoked.</p>"
+        },
         "CreationTime":{
           "shape":"Timestamp",
           "documentation":"<p>The time the subscriber was created.</p>"
-        }
+        },
+        "SubscriberDetails":{"shape":"SubscriberDetails"}
       }
     },
     "DeadLetterQueueArn":{
       "type":"string",
-      "documentation":"<p>The ARN of the destination that receives events that could not be delivered. An Amazon SQS queue is the supported destination. The queue-name grammar mirrors SQS's own rule: 1-80 chars of [A-Za-z0-9_-], where a FIFO name's &quot;.fifo&quot; suffix counts toward the 80 (so a FIFO base name is at most 75 chars). Shared: both the subscriber's and the EventSource's OnFailureConfiguration point at it.</p>",
+      "documentation":"<p>The ARN of the destination that receives events that could not be delivered. An Amazon SQS queue is the supported destination. The queue-name grammar mirrors SQS's own rule: 1-80 chars of [A-Za-z0-9_-], where a FIFO name's \".fifo\" suffix counts toward the 80 (so a FIFO base name is at most 75 chars). Shared: both the subscriber's and the EventSource's OnFailureConfiguration point at it.</p>",
       "max":1600,
       "min":1,
       "pattern":"arn:aws(-[a-z0-9]+)*:sqs:[a-z][a-z0-9]*(-[a-z0-9]+)*:[0-9]{12}:([A-Za-z0-9_-]{1,80}|[A-Za-z0-9_-]{1,75}\\.fifo)(?![\\s\\S]).*"
@@ -782,7 +946,10 @@
       "type":"structure",
       "required":["DeduplicationType"],
       "members":{
-        "DeduplicationType":{"shape":"DeduplicationType"}
+        "DeduplicationType":{
+          "shape":"DeduplicationType",
+          "documentation":"<p>How duplicate events are detected: by a hash of the event content (CONTENT_BASED). To deduplicate by a caller-supplied token instead, omit DeduplicationConfiguration and set DeduplicationId on each entry.</p>"
+        }
       },
       "documentation":"<p>Deduplication settings for a publish request.</p>"
     },
@@ -797,6 +964,7 @@
       "members":{
         "EventBusArn":{
           "shape":"EventBusArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) that uniquely identifies an event bus.</p>",
           "contextParam":{"name":"EventBusArn"}
         }
       }
@@ -809,7 +977,10 @@
       "type":"structure",
       "required":["EventSourceArn"],
       "members":{
-        "EventSourceArn":{"shape":"EventSourceArn"}
+        "EventSourceArn":{
+          "shape":"EventSourceArn",
+          "documentation":"<p>EventSource ARN: event-sourcev2/&lt;type&gt;/&lt;name&gt;/&lt;id&gt;. The type segment is set by the service (aws.service for AWS service events, aws.partner for partner events, webhook for webhook events) and is not part of the resource's name. The id segment is a 25-character identifier generated by the service.</p>"
+        }
       }
     },
     "DeleteEventSourceResponse":{
@@ -822,15 +993,16 @@
       "members":{
         "ResourceArn":{
           "shape":"EventBusArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) that uniquely identifies an event bus.</p>",
           "contextParam":{"name":"EventBusArn"}
         },
         "PolicyName":{
           "shape":"PolicyName",
-          "documentation":"<p>Which named policy to delete. Defaults to &quot;default&quot; when omitted (a delete AWS Resource Access Manager makes on the owner's behalf resolves to &quot;AWS_RAM&quot; instead). The two writers are exclusive in both directions — only Resource Access Manager can delete &quot;AWS_RAM&quot;, and only the bus owner can delete &quot;default&quot; — so naming the other party's policy fails with AccessDeniedException. A well-formed name that is neither of the two fails with InvalidInputException.</p>"
+          "documentation":"<p>Which named policy to delete. Defaults to \"default\" when omitted (a delete AWS Resource Access Manager makes on the owner's behalf resolves to \"AWS_RAM\" instead). The two writers are exclusive in both directions — only Resource Access Manager can delete \"AWS_RAM\", and only the bus owner can delete \"default\" — so naming the other party's policy fails with AccessDeniedException. A well-formed name that is neither of the two fails with InvalidInputException.</p>"
         },
         "ExpectedRevisionId":{
           "shape":"PolicyRevisionId",
-          "documentation":"<p>The delete succeeds only if the named policy's current revision ID matches this value; if it differs or the policy does not exist, the operation fails with ConflictException. The &quot;NO_POLICY&quot; sentinel is not valid here. When omitted, deleting an absent policy is an idempotent success. Supplying this value makes the delete non-idempotent: once it succeeds the expected revision no longer exists, so retrying an unanswered request fails with ConflictException even though the policy was deleted. To establish the outcome, read the policy back: ResourceNotFoundException means the delete took effect.</p>"
+          "documentation":"<p>The delete succeeds only if the named policy's current revision ID matches this value; if it differs or the policy does not exist, the operation fails with ConflictException. The \"NO_POLICY\" sentinel is not valid here. When omitted, deleting an absent policy is an idempotent success. Supplying this value makes the delete non-idempotent: once it succeeds the expected revision no longer exists, so retrying an unanswered request fails with ConflictException even though the policy was deleted. To establish the outcome, read the policy back: ResourceNotFoundException means the delete took effect.</p>"
         }
       }
     },
@@ -847,7 +1019,10 @@
       "type":"structure",
       "required":["SubscriberArn"],
       "members":{
-        "SubscriberArn":{"shape":"SubscriberArn"}
+        "SubscriberArn":{
+          "shape":"SubscriberArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) that uniquely identifies a subscriber.</p>"
+        }
       }
     },
     "DeleteSubscriberResponse":{
@@ -860,6 +1035,7 @@
       "members":{
         "EventBusArn":{
           "shape":"EventBusArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) that uniquely identifies an event bus.</p>",
           "contextParam":{"name":"EventBusArn"}
         }
       }
@@ -867,11 +1043,26 @@
     "DescribeEventBusResponse":{
       "type":"structure",
       "members":{
-        "EventBusArn":{"shape":"EventBusArn"},
-        "Name":{"shape":"EventBusName"},
-        "Description":{"shape":"Description"},
-        "EncryptionConfiguration":{"shape":"EncryptionConfiguration"},
-        "StorageConfiguration":{"shape":"StorageConfigurationOutput"},
+        "EventBusArn":{
+          "shape":"EventBusArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) that uniquely identifies an event bus.</p>"
+        },
+        "Name":{
+          "shape":"EventBusName",
+          "documentation":"<p>Name of an event bus. The first character must be alphanumeric; the remaining characters may also include '.', '-', and '_'. The grammar matches the name segment of EventBusArn (event-busv2/&lt;name&gt;/&lt;id&gt;), so every valid name can be represented in the bus's ARN. The same type is used everywhere a bus name appears.</p>"
+        },
+        "Description":{
+          "shape":"Description",
+          "documentation":"<p>Free-text description. Used by every resource type that has one: event buses, subscribers, and event sources.</p>"
+        },
+        "EncryptionConfiguration":{
+          "shape":"EncryptionConfiguration",
+          "documentation":"<p>Encryption configuration for an event bus.</p>"
+        },
+        "StorageConfiguration":{
+          "shape":"StorageConfigurationOutput",
+          "documentation":"<p>Event storage configuration of an event bus, as returned on reads.</p>"
+        },
         "CreationTime":{
           "shape":"Timestamp",
           "documentation":"<p>The time the event bus was created.</p>"
@@ -880,29 +1071,60 @@
           "shape":"Timestamp",
           "documentation":"<p>The time the event bus was last modified.</p>"
         },
-        "State":{"shape":"BusState"},
-        "StateReason":{"shape":"StateReason"}
+        "State":{
+          "shape":"BusState",
+          "documentation":"<p>Lifecycle state of an event bus.</p> <ul> <li> <p>CREATING: Bus creation is in progress.</p> </li> <li> <p>CREATE_FAILED: Bus creation failed; see StateReason. The bus cannot be recovered or recreated in place: delete it with DeleteEventBus, then create a new bus.</p> </li> <li> <p>ACTIVE: Bus is fully operational and can accept events.</p> </li> <li> <p>UPDATING: Bus update is in progress.</p> </li> <li> <p>UPDATE_FAILED: Bus update failed; the bus remains operational with its previous configuration.</p> </li> <li> <p>DELETING: Bus deletion is actively in progress.</p> </li> <li> <p>DELETE_FAILED: Bus deletion failed; see StateReason. Retry DeleteEventBus after removing subscribers and event sources.</p> </li> </ul>"
+        },
+        "StateReason":{
+          "shape":"StateReason",
+          "documentation":"<p>Human-readable explanation of why an event bus is in its current State. Omitted when the bus is in a normal operational state (ACTIVE). It stands in for the error response an asynchronous failure cannot return, so it applies only to resources with an asynchronous lifecycle: event buses. EventSources and subscribers are provisioned synchronously and report failures directly on the request.</p>"
+        }
       }
     },
     "DescribeEventSourceRequest":{
       "type":"structure",
       "required":["EventSourceArn"],
       "members":{
-        "EventSourceArn":{"shape":"EventSourceArn"}
+        "EventSourceArn":{
+          "shape":"EventSourceArn",
+          "documentation":"<p>EventSource ARN: event-sourcev2/&lt;type&gt;/&lt;name&gt;/&lt;id&gt;. The type segment is set by the service (aws.service for AWS service events, aws.partner for partner events, webhook for webhook events) and is not part of the resource's name. The id segment is a 25-character identifier generated by the service.</p>"
+        }
       }
     },
     "DescribeEventSourceResponse":{
       "type":"structure",
       "members":{
-        "EventSourceArn":{"shape":"EventSourceArn"},
-        "Name":{"shape":"EventSourceName"},
-        "EventBusArn":{"shape":"EventBusArn"},
-        "Configuration":{"shape":"EventSourceConfiguration"},
-        "Description":{"shape":"Description"},
-        "State":{"shape":"EventSourceState"},
+        "EventSourceArn":{
+          "shape":"EventSourceArn",
+          "documentation":"<p>EventSource ARN: event-sourcev2/&lt;type&gt;/&lt;name&gt;/&lt;id&gt;. The type segment is set by the service (aws.service for AWS service events, aws.partner for partner events, webhook for webhook events) and is not part of the resource's name. The id segment is a 25-character identifier generated by the service.</p>"
+        },
+        "Name":{
+          "shape":"EventSourceName",
+          "documentation":"<p>EventSource name. First character alphanumeric; the rest may add '.', '-', '_'. Names may not begin with the reserved \"aws.\" prefix. The grammar matches the ARN local-name segment in EventSourceArn (event-sourcev2/&lt;type&gt;/&lt;name&gt;/&lt;id&gt;), mirroring EventBusName, so a name the ARN cannot represent cannot be created.</p>"
+        },
+        "EventBusArn":{
+          "shape":"EventBusArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) that uniquely identifies an event bus.</p>"
+        },
+        "Configuration":{
+          "shape":"EventSourceConfiguration",
+          "documentation":"<p>Discriminated EventSource configuration. Exactly one variant must be set.</p>"
+        },
+        "Description":{
+          "shape":"Description",
+          "documentation":"<p>Free-text description. Used by every resource type that has one: event buses, subscribers, and event sources.</p>"
+        },
+        "State":{
+          "shape":"EventSourceState",
+          "documentation":"<p>Lifecycle state of an EventSource. Revocation is reported by the Revoked flag.</p>"
+        },
         "Revoked":{
           "shape":"Boolean",
           "documentation":"<p>True when the bus owner has withdrawn this EventSource. Present only when true, so an absent member means the EventSource is not revoked. Revocation is terminal: it never returns to false. Mutating operations on a revoked EventSource fail with InvalidStateException, except DeleteEventSource, which stays available so a revoked EventSource can still be cleaned up.</p>"
+        },
+        "EventSourceDetails":{
+          "shape":"EventSourceDetails",
+          "documentation":"<p>Values EventBridge generated for this EventSource type, such as a webhook's URL and the ARN of its secret. Absent for EventSource types that have no generated values.</p>"
         },
         "CreationTime":{
           "shape":"Timestamp",
@@ -918,30 +1140,75 @@
       "type":"structure",
       "required":["SubscriberArn"],
       "members":{
-        "SubscriberArn":{"shape":"SubscriberArn"}
+        "SubscriberArn":{
+          "shape":"SubscriberArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) that uniquely identifies a subscriber.</p>"
+        }
       }
     },
     "DescribeSubscriberResponse":{
       "type":"structure",
       "members":{
-        "SubscriberArn":{"shape":"SubscriberArn"},
-        "Name":{"shape":"SubscriberName"},
-        "EventBusArn":{"shape":"EventBusArn"},
-        "InvokeConfiguration":{"shape":"InvokeConfiguration"},
-        "Description":{"shape":"Description"},
-        "FilterConfiguration":{"shape":"FilterConfiguration"},
-        "Type":{"shape":"OrderingType"},
-        "StartingPosition":{"shape":"StartingPosition"},
-        "PointInTimeConfiguration":{"shape":"PointInTimeConfiguration"},
-        "BatchConfiguration":{"shape":"BatchConfiguration"},
+        "SubscriberArn":{
+          "shape":"SubscriberArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) that uniquely identifies a subscriber.</p>"
+        },
+        "Name":{
+          "shape":"SubscriberName",
+          "documentation":"<p>Name of a subscriber. The first character must be alphanumeric; the remaining characters may also include '.', '-', and '_'.</p>"
+        },
+        "EventBusArn":{
+          "shape":"EventBusArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) that uniquely identifies an event bus.</p>"
+        },
+        "InvokeConfiguration":{
+          "shape":"InvokeConfiguration",
+          "documentation":"<p>Configuration for how the subscriber invokes its target.</p>"
+        },
+        "Description":{
+          "shape":"Description",
+          "documentation":"<p>Free-text description. Used by every resource type that has one: event buses, subscribers, and event sources.</p>"
+        },
+        "FilterConfiguration":{
+          "shape":"FilterConfiguration",
+          "documentation":"<p>Configuration for filtering events delivered to a subscriber. On CreateSubscriber, Filters is required and must contain at least one Filter with a non-empty Pattern. On UpdateSubscriber, an empty <code>FilterConfiguration:{}</code> clears the existing filter. Any non-empty shape (including <code>{Language:X}</code> without Filters) must contain a valid Filters list — same contract as CreateSubscriber. A non-empty Filters list overwrites; an omitted FilterConfiguration preserves existing state. All Filters are implicitly ANDed — an event must match every Filter to be delivered.</p>"
+        },
+        "Type":{
+          "shape":"OrderingType",
+          "documentation":"<p>Delivery ordering mode of a subscriber: FIFO delivers events in order within an event group; UNORDERED delivers without an ordering guarantee.</p>"
+        },
+        "StartingPosition":{
+          "shape":"StartingPosition",
+          "documentation":"<p>Starting position for a subscriber.</p>"
+        },
+        "PointInTimeConfiguration":{
+          "shape":"PointInTimeConfiguration",
+          "documentation":"<p>Point-in-time configuration for a subscriber. Only applicable when StartingPosition is POINT_IN_TIME.</p>"
+        },
+        "BatchConfiguration":{
+          "shape":"BatchConfiguration",
+          "documentation":"<p>Batching configuration for a subscriber.</p>"
+        },
         "Transformer":{
           "shape":"Transformer",
-          "documentation":"<p>Absent for universal (aws-sdk) targets, whose input transformation is UniversalTargetParameters.Input.</p>"
+          "documentation":"<p>Transformer configuration for a subscriber.</p>"
         },
-        "RetryPolicy":{"shape":"RetryPolicy"},
-        "OnFailureConfiguration":{"shape":"OnFailureConfiguration"},
-        "LogConfiguration":{"shape":"LogConfiguration"},
-        "State":{"shape":"SubscriberState"},
+        "RetryPolicy":{
+          "shape":"RetryPolicy",
+          "documentation":"<p>Retry policy for a subscriber.</p>"
+        },
+        "OnFailureConfiguration":{
+          "shape":"OnFailureConfiguration",
+          "documentation":"<p>On-failure configuration: where a failed delivery is sent. Shared by the subscriber and the EventSource.</p>"
+        },
+        "LogConfiguration":{
+          "shape":"LogConfiguration",
+          "documentation":"<p>Log configuration for a subscriber.</p>"
+        },
+        "State":{
+          "shape":"SubscriberState",
+          "documentation":"<p>Customer-controlled run state of a subscriber, set on create or update. Distinct from the bus lifecycle vocabulary, where ACTIVE means \"provisioned and healthy\". Delivery requires State RUNNING on a subscriber that is not revoked.</p>"
+        },
         "Revoked":{
           "shape":"Boolean",
           "documentation":"<p>True when the bus owner has revoked this subscriber. Present only when true, so an absent member means the subscriber is not revoked. Revocation is terminal: it never returns to false. Mutating operations on a revoked subscriber fail with InvalidStateException, except DeleteSubscriber, which stays available so a revoked subscriber can still be cleaned up.</p>"
@@ -953,7 +1220,8 @@
         "LastModifiedTime":{
           "shape":"Timestamp",
           "documentation":"<p>The time the subscriber was last modified.</p>"
-        }
+        },
+        "SubscriberDetails":{"shape":"SubscriberDetails"}
       }
     },
     "Description":{
@@ -972,7 +1240,10 @@
     "EncryptionConfiguration":{
       "type":"structure",
       "members":{
-        "KmsKeyIdentifier":{"shape":"KmsKeyIdentifier"}
+        "KmsKeyIdentifier":{
+          "shape":"KmsKeyIdentifier",
+          "documentation":"<p>Identifier of the AWS KMS customer managed key used to encrypt events: a key ID, key ARN, alias name, or alias ARN. When absent, events are encrypted with an AWS owned key.</p>"
+        }
       },
       "documentation":"<p>Encryption configuration for an event bus.</p>"
     },
@@ -997,7 +1268,7 @@
     },
     "EventBusName":{
       "type":"string",
-      "documentation":"<p>Name of an event bus. The first character must be alphanumeric; the remaining characters may also include '.', '-', and '_'. The grammar matches the name segment of EventBusArn (event-busv2/<name>/<id>), so every valid name can be represented in the bus's ARN. The same type is used everywhere a bus name appears.</p>",
+      "documentation":"<p>Name of an event bus. The first character must be alphanumeric; the remaining characters may also include '.', '-', and '_'. The grammar matches the name segment of EventBusArn (event-busv2/&lt;name&gt;/&lt;id&gt;), so every valid name can be represented in the bus's ARN. The same type is used everywhere a bus name appears.</p>",
       "max":256,
       "min":1,
       "pattern":"[A-Za-z0-9][\\.\\-_A-Za-z0-9]*"
@@ -1005,9 +1276,18 @@
     "EventBusSummary":{
       "type":"structure",
       "members":{
-        "Name":{"shape":"EventBusName"},
-        "EventBusArn":{"shape":"EventBusArn"},
-        "Description":{"shape":"Description"},
+        "Name":{
+          "shape":"EventBusName",
+          "documentation":"<p>Name of an event bus. The first character must be alphanumeric; the remaining characters may also include '.', '-', and '_'. The grammar matches the name segment of EventBusArn (event-busv2/&lt;name&gt;/&lt;id&gt;), so every valid name can be represented in the bus's ARN. The same type is used everywhere a bus name appears.</p>"
+        },
+        "EventBusArn":{
+          "shape":"EventBusArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) that uniquely identifies an event bus.</p>"
+        },
+        "Description":{
+          "shape":"Description",
+          "documentation":"<p>Free-text description. Used by every resource type that has one: event buses, subscribers, and event sources.</p>"
+        },
         "CreationTime":{
           "shape":"Timestamp",
           "documentation":"<p>The time the event bus was created.</p>"
@@ -1016,9 +1296,18 @@
           "shape":"Timestamp",
           "documentation":"<p>The time the event bus was last modified.</p>"
         },
-        "State":{"shape":"BusState"},
-        "StateReason":{"shape":"StateReason"},
-        "EventBusAccountId":{"shape":"AccountId"}
+        "State":{
+          "shape":"BusState",
+          "documentation":"<p>Lifecycle state of an event bus.</p> <ul> <li> <p>CREATING: Bus creation is in progress.</p> </li> <li> <p>CREATE_FAILED: Bus creation failed; see StateReason. The bus cannot be recovered or recreated in place: delete it with DeleteEventBus, then create a new bus.</p> </li> <li> <p>ACTIVE: Bus is fully operational and can accept events.</p> </li> <li> <p>UPDATING: Bus update is in progress.</p> </li> <li> <p>UPDATE_FAILED: Bus update failed; the bus remains operational with its previous configuration.</p> </li> <li> <p>DELETING: Bus deletion is actively in progress.</p> </li> <li> <p>DELETE_FAILED: Bus deletion failed; see StateReason. Retry DeleteEventBus after removing subscribers and event sources.</p> </li> </ul>"
+        },
+        "StateReason":{
+          "shape":"StateReason",
+          "documentation":"<p>Human-readable explanation of why an event bus is in its current State. Omitted when the bus is in a normal operational state (ACTIVE). It stands in for the error response an asynchronous failure cannot return, so it applies only to resources with an asynchronous lifecycle: event buses. EventSources and subscribers are provisioned synchronously and report failures directly on the request.</p>"
+        },
+        "EventBusAccountId":{
+          "shape":"AccountId",
+          "documentation":"<p>AWS Account Id.</p>"
+        }
       },
       "documentation":"<p>Summary of an event bus, as returned by ListEventBuses.</p>"
     },
@@ -1099,7 +1388,7 @@
     },
     "EventMetadataKey":{
       "type":"string",
-      "documentation":"<p>Customer-defined metadata field name. Must be 1-128 characters and must not contain &quot;/&quot;.</p>",
+      "documentation":"<p>Customer-defined metadata field name. Must be 1-128 characters and must not contain \"/\".</p>",
       "max":128,
       "min":1,
       "pattern":"[^/]+"
@@ -1132,23 +1421,43 @@
     },
     "EventSourceArn":{
       "type":"string",
-      "documentation":"<p>EventSource ARN: event-sourcev2/<type>/<name>/<id>. The type segment is set by the service (aws.service for AWS service events, aws.partner for partner events) and is not part of the resource's name. The id segment is a 25-character identifier generated by the service.</p>",
+      "documentation":"<p>EventSource ARN: event-sourcev2/&lt;type&gt;/&lt;name&gt;/&lt;id&gt;. The type segment is set by the service (aws.service for AWS service events, aws.partner for partner events, webhook for webhook events) and is not part of the resource's name. The id segment is a 25-character identifier generated by the service.</p>",
       "max":1011,
       "min":1,
-      "pattern":"arn:aws(-[a-z0-9]+)*:events:[a-z][a-z0-9]*(-[a-z0-9]+)*:([0-9]{12}):event-sourcev2\\/(aws\\.service|aws\\.partner)\\/[A-Za-z0-9][\\.\\-_A-Za-z0-9]{0,255}\\/[a-z0-9]{25}"
+      "pattern":"arn:aws(-[a-z0-9]+)*:events:[a-z][a-z0-9]*(-[a-z0-9]+)*:([0-9]{12}):event-sourcev2\\/(aws\\.service|aws\\.partner|webhook)\\/[A-Za-z0-9][\\.\\-_A-Za-z0-9]{0,255}\\/[a-z0-9]{25}"
     },
     "EventSourceConfiguration":{
       "type":"structure",
       "members":{
-        "AwsServiceEventsConfiguration":{"shape":"AwsServiceEventsSourceConfiguration"},
-        "PartnerEventsConfiguration":{"shape":"PartnerEventsSourceConfiguration"}
+        "AwsServiceEventsConfiguration":{
+          "shape":"AwsServiceEventsSourceConfiguration",
+          "documentation":"<p>Configuration for forwarding a single AWS service's events from the account's default event bus.</p>"
+        },
+        "PartnerEventsConfiguration":{
+          "shape":"PartnerEventsSourceConfiguration",
+          "documentation":"<p>Configuration for forwarding a partner event source's events through a managed partner event bus.</p>"
+        },
+        "WebhookEventsConfiguration":{
+          "shape":"WebhookEventsSourceConfiguration",
+          "documentation":"<p>Configuration for receiving events that a third-party provider sends to an HTTPS webhook URL.</p>"
+        }
       },
       "documentation":"<p>Discriminated EventSource configuration. Exactly one variant must be set.</p>",
       "union":true
     },
+    "EventSourceDetails":{
+      "type":"structure",
+      "members":{
+        "WebhookDetails":{
+          "shape":"WebhookDetails",
+          "documentation":"<p>Values generated for a webhook EventSource.</p>"
+        }
+      },
+      "documentation":"<p>Values EventBridge generated for an EventSource that depend on its type. Only the member for the EventSource's type is set. Returned in responses only. You never supply these values.</p>"
+    },
     "EventSourceName":{
       "type":"string",
-      "documentation":"<p>EventSource name. First character alphanumeric; the rest may add '.', '-', '_'. Names may not begin with the reserved &quot;aws.&quot; prefix. The grammar matches the ARN local-name segment in EventSourceArn (event-sourcev2/<type>/<name>/<id>), mirroring EventBusName, so a name the ARN cannot represent cannot be created.</p>",
+      "documentation":"<p>EventSource name. First character alphanumeric; the rest may add '.', '-', '_'. Names may not begin with the reserved \"aws.\" prefix. The grammar matches the ARN local-name segment in EventSourceArn (event-sourcev2/&lt;type&gt;/&lt;name&gt;/&lt;id&gt;), mirroring EventBusName, so a name the ARN cannot represent cannot be created.</p>",
       "max":256,
       "min":1,
       "pattern":"(?!aws\\.)[A-Za-z0-9][\\.\\-_A-Za-z0-9]*"
@@ -1169,11 +1478,26 @@
     "EventSourceSummary":{
       "type":"structure",
       "members":{
-        "EventSourceArn":{"shape":"EventSourceArn"},
-        "Name":{"shape":"EventSourceName"},
-        "EventBusArn":{"shape":"EventBusArn"},
-        "Type":{"shape":"EventSourceType"},
-        "State":{"shape":"EventSourceState"},
+        "EventSourceArn":{
+          "shape":"EventSourceArn",
+          "documentation":"<p>EventSource ARN: event-sourcev2/&lt;type&gt;/&lt;name&gt;/&lt;id&gt;. The type segment is set by the service (aws.service for AWS service events, aws.partner for partner events, webhook for webhook events) and is not part of the resource's name. The id segment is a 25-character identifier generated by the service.</p>"
+        },
+        "Name":{
+          "shape":"EventSourceName",
+          "documentation":"<p>EventSource name. First character alphanumeric; the rest may add '.', '-', '_'. Names may not begin with the reserved \"aws.\" prefix. The grammar matches the ARN local-name segment in EventSourceArn (event-sourcev2/&lt;type&gt;/&lt;name&gt;/&lt;id&gt;), mirroring EventBusName, so a name the ARN cannot represent cannot be created.</p>"
+        },
+        "EventBusArn":{
+          "shape":"EventBusArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) that uniquely identifies an event bus.</p>"
+        },
+        "Type":{
+          "shape":"EventSourceType",
+          "documentation":"<p>Origin type of an EventSource.</p> <ul> <li> <p>AWS_SERVICE_EVENTS - Events from an AWS service.</p> </li> <li> <p>PARTNER_EVENTS - Events from a partner event source.</p> </li> <li> <p>WEBHOOK_EVENTS - Events that a third-party provider sends to a webhook URL.</p> </li> </ul>"
+        },
+        "State":{
+          "shape":"EventSourceState",
+          "documentation":"<p>Lifecycle state of an EventSource. Revocation is reported by the Revoked flag.</p>"
+        },
         "Revoked":{
           "shape":"Boolean",
           "documentation":"<p>True when the bus owner has withdrawn this EventSource. Present only when true, so a bus owner listing EventSources sees at a glance which ones they revoked. See DescribeEventSourceResponse$Revoked.</p>"
@@ -1186,7 +1510,10 @@
           "shape":"Timestamp",
           "documentation":"<p>The time the EventSource was last modified.</p>"
         },
-        "EventSourceAccountId":{"shape":"AccountId"}
+        "EventSourceAccountId":{
+          "shape":"AccountId",
+          "documentation":"<p>AWS Account Id.</p>"
+        }
       },
       "documentation":"<p>Summary of an EventSource, as returned by ListEventSources.</p>"
     },
@@ -1197,10 +1524,11 @@
     },
     "EventSourceType":{
       "type":"string",
-      "documentation":"<p>Origin type of an EventSource: an AWS service's events (AWS_SERVICE_EVENTS) or a partner event source's events (PARTNER_EVENTS).</p>",
+      "documentation":"<p>Origin type of an EventSource.</p> <ul> <li> <p>AWS_SERVICE_EVENTS - Events from an AWS service.</p> </li> <li> <p>PARTNER_EVENTS - Events from a partner event source.</p> </li> <li> <p>WEBHOOK_EVENTS - Events that a third-party provider sends to a webhook URL.</p> </li> </ul>",
       "enum":[
         "AWS_SERVICE_EVENTS",
-        "PARTNER_EVENTS"
+        "PARTNER_EVENTS",
+        "WEBHOOK_EVENTS"
       ]
     },
     "Filter":{
@@ -1210,8 +1538,14 @@
         "Scope"
       ],
       "members":{
-        "Pattern":{"shape":"EventPattern"},
-        "Scope":{"shape":"FilterScope"}
+        "Pattern":{
+          "shape":"EventPattern",
+          "documentation":"<p>An event pattern, as a JSON string, that selects which events match.</p>"
+        },
+        "Scope":{
+          "shape":"FilterScope",
+          "documentation":"<p>Scope of a filter pattern within a FilterConfiguration.</p>"
+        }
       },
       "documentation":"<p>A single filter entry within a FilterConfiguration.</p>"
     },
@@ -1222,7 +1556,10 @@
           "shape":"FilterLanguage",
           "documentation":"<p>Defaults to EVENT_BRIDGE_PATTERN when not specified.</p>"
         },
-        "Filters":{"shape":"FilterList"}
+        "Filters":{
+          "shape":"FilterList",
+          "documentation":"<p>List of filters. An event must match every filter to be delivered.</p>"
+        }
       },
       "documentation":"<p>Configuration for filtering events delivered to a subscriber. On CreateSubscriber, Filters is required and must contain at least one Filter with a non-empty Pattern. On UpdateSubscriber, an empty <code>FilterConfiguration:{}</code> clears the existing filter. Any non-empty shape (including <code>{Language:X}</code> without Filters) must contain a valid Filters list — same contract as CreateSubscriber. A non-empty Filters list overwrites; an omitted FilterConfiguration preserves existing state. All Filters are implicitly ANDed — an event must match every Filter to be delivered.</p>"
     },
@@ -1253,11 +1590,12 @@
       "members":{
         "ResourceArn":{
           "shape":"EventBusArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) that uniquely identifies an event bus.</p>",
           "contextParam":{"name":"EventBusArn"}
         },
         "PolicyName":{
           "shape":"PolicyName",
-          "documentation":"<p>Which named policy to read. Defaults to &quot;default&quot; when omitted (a read AWS Resource Access Manager makes on the owner's behalf resolves to &quot;AWS_RAM&quot; instead). Unlike writing, neither name is reserved on a read: the bus owner can read both. There is no fallback between the two, so a bus shared only through Resource Access Manager fails with ResourceNotFoundException until &quot;AWS_RAM&quot; is named explicitly. A well-formed name that is neither of the two fails with InvalidInputException.</p>"
+          "documentation":"<p>Which named policy to read. Defaults to \"default\" when omitted (a read AWS Resource Access Manager makes on the owner's behalf resolves to \"AWS_RAM\" instead). Unlike writing, neither name is reserved on a read: the bus owner can read both. There is no fallback between the two, so a bus shared only through Resource Access Manager fails with ResourceNotFoundException until \"AWS_RAM\" is named explicitly. A well-formed name that is neither of the two fails with InvalidInputException.</p>"
         }
       }
     },
@@ -1270,10 +1608,22 @@
         "RevisionId"
       ],
       "members":{
-        "ResourceArn":{"shape":"EventBusArn"},
-        "PolicyDocument":{"shape":"PolicyDocument"},
-        "PolicyName":{"shape":"PolicyName"},
-        "RevisionId":{"shape":"PolicyRevisionId"}
+        "ResourceArn":{
+          "shape":"EventBusArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) that uniquely identifies an event bus.</p>"
+        },
+        "PolicyDocument":{
+          "shape":"PolicyDocument",
+          "documentation":"<p>A resource policy document, as a JSON string. The maximum size is 389,120 bytes of UTF-8; the byte limit is enforced by the service.</p>"
+        },
+        "PolicyName":{
+          "shape":"PolicyName",
+          "documentation":"<p>Name of a policy attached to a resource. Valid values: \"default\" (the customer-managed policy) and \"AWS_RAM\" (managed exclusively by AWS Resource Access Manager). Any other value is rejected.</p>"
+        },
+        "RevisionId":{
+          "shape":"PolicyRevisionId",
+          "documentation":"<p>Revision ID of a resource policy. A new revision ID is generated on every successful write.</p>"
+        }
       },
       "documentation":"<p>Returned only when the named policy exists. A missing event bus or a missing named policy fails with ResourceNotFoundException rather than returning an empty or null policy document. Every member is therefore always present on a successful response.</p>"
     },
@@ -1300,9 +1650,18 @@
     "HttpParameters":{
       "type":"structure",
       "members":{
-        "PathParameterValues":{"shape":"PathParameterList"},
-        "HeaderParameters":{"shape":"HeaderParametersMap"},
-        "QueryStringParameters":{"shape":"QueryStringParametersMap"},
+        "PathParameterValues":{
+          "shape":"PathParameterList",
+          "documentation":"<p>Values substituted, in order, for the path-parameter placeholders in an HTTP target's endpoint path.</p>"
+        },
+        "HeaderParameters":{
+          "shape":"HeaderParametersMap",
+          "documentation":"<p>Map of HTTP header names to values, sent with the request to an HTTP target.</p>"
+        },
+        "QueryStringParameters":{
+          "shape":"QueryStringParametersMap",
+          "documentation":"<p>Map of query-string parameter names to values, appended to the request to an HTTP target.</p>"
+        },
         "InvocationTimeoutSeconds":{
           "shape":"String",
           "documentation":"<p>Timeout in seconds for each invocation of the target (1-30). String-typed (not integer) so the value may be a JSONata expression.</p>"
@@ -1385,15 +1744,46 @@
           "shape":"RoleArn",
           "documentation":"<p>IAM role the service assumes to invoke the target. Must belong to the calling account.</p>"
         },
-        "LambdaParameters":{"shape":"LambdaParameters"},
-        "SqsParameters":{"shape":"SqsParameters"},
-        "SnsParameters":{"shape":"SnsParameters"},
-        "KinesisParameters":{"shape":"KinesisParameters"},
-        "StepFunctionsParameters":{"shape":"StepFunctionsParameters"},
-        "HttpParameters":{"shape":"HttpParameters"},
-        "UniversalTargetParameters":{"shape":"UniversalTargetParameters"},
-        "EventBusV2Parameters":{"shape":"EventBusV2Parameters"},
-        "TargetArn":{"shape":"TargetResourceArn"}
+        "LambdaParameters":{
+          "shape":"LambdaParameters",
+          "documentation":"<p>Lambda invocation parameters for subscribers. Values are forwarded to the Lambda Invoke API. Every string member accepts a literal or a JSONata expression (e.g. \"{% $events.Data.qualifier %}\").</p>"
+        },
+        "SqsParameters":{
+          "shape":"SqsParameters",
+          "documentation":"<p>SQS invocation parameters for subscribers. Values are forwarded to the SQS SendMessageBatch API. All scalar values accept a literal or a JSONata expression (e.g. \"{% $events.Data.groupId %}\").</p>"
+        },
+        "SnsParameters":{
+          "shape":"SnsParameters",
+          "documentation":"<p>SNS invocation parameters for subscribers. Values are forwarded to the SNS PublishBatch API. All scalar values accept a literal or a JSONata expression (e.g. \"{% $events.Data.groupId %}\").</p>"
+        },
+        "KinesisParameters":{
+          "shape":"KinesisParameters",
+          "documentation":"<p>Kinesis Data Streams invocation parameters for subscribers. Values are forwarded to the Kinesis PutRecords API. All scalar values accept a literal or a JSONata expression (e.g. \"{% $events.Data.partitionKey %}\").</p>"
+        },
+        "StepFunctionsParameters":{
+          "shape":"StepFunctionsParameters",
+          "documentation":"<p>Step Functions invocation parameters for subscribers. Values are forwarded to the Step Functions StartExecution or StartSyncExecution API. Every string member accepts a literal or a JSONata expression (e.g. \"{% $events.Data.executionName %}\").</p>"
+        },
+        "HttpParameters":{
+          "shape":"HttpParameters",
+          "documentation":"<p>HTTP invocation parameters for subscribers (API Gateway / API Destination). Values are forwarded to the HTTP endpoint.</p>"
+        },
+        "UniversalTargetParameters":{
+          "shape":"UniversalTargetParameters",
+          "documentation":"<p>Parameters for USI (Universal Service Integration) targets. Used when TargetArn is in the format arn:aws:events:::aws-sdk:{service}:{apiAction}</p>"
+        },
+        "EventBusV2Parameters":{
+          "shape":"EventBusV2Parameters",
+          "documentation":"<p>Parameters for forwarding events to another EventBridge event bus.</p>"
+        },
+        "MskParameters":{
+          "shape":"MskParameters",
+          "documentation":"<p>MSK (Apache Kafka) invocation parameters for subscribers targeting an Amazon MSK cluster.</p>"
+        },
+        "TargetArn":{
+          "shape":"TargetResourceArn",
+          "documentation":"<p>ARN of the target a subscriber invokes. The resource grammar is service-neutral because target services use different separators and the USI form omits region and account.</p>"
+        }
       },
       "documentation":"<p>Configuration for how the subscriber invokes its target.</p>"
     },
@@ -1427,7 +1817,7 @@
           "documentation":"<p>Explicit hash key forwarded to PutRecords unchanged. Accepts JSONata expression.</p>"
         }
       },
-      "documentation":"<p>Kinesis Data Streams invocation parameters for subscribers. Values are forwarded to the Kinesis PutRecords API. All scalar values accept a literal or a JSONata expression (e.g. &quot;{% $events.Data.partitionKey %}&quot;).</p>",
+      "documentation":"<p>Kinesis Data Streams invocation parameters for subscribers. Values are forwarded to the Kinesis PutRecords API. All scalar values accept a literal or a JSONata expression (e.g. \"{% $events.Data.partitionKey %}\").</p>",
       "sensitive":true
     },
     "KinesisParametersExplicitHashKeyString":{
@@ -1471,7 +1861,7 @@
           "documentation":"<p>Timeout in seconds for each invocation of the target. String-typed so the value may be a JSONata expression.</p>"
         }
       },
-      "documentation":"<p>Lambda invocation parameters for subscribers. Values are forwarded to the Lambda Invoke API. Every string member accepts a literal or a JSONata expression (e.g. &quot;{% $events.Data.qualifier %}&quot;).</p>",
+      "documentation":"<p>Lambda invocation parameters for subscribers. Values are forwarded to the Lambda Invoke API. Every string member accepts a literal or a JSONata expression (e.g. \"{% $events.Data.qualifier %}\").</p>",
       "sensitive":true
     },
     "LambdaParametersDurableExecutionNameString":{
@@ -1509,17 +1899,35 @@
     "ListEventBusesRequest":{
       "type":"structure",
       "members":{
-        "NamePrefix":{"shape":"EventBusName"},
-        "EventBusAccountId":{"shape":"AccountId"},
-        "NextToken":{"shape":"NextToken"},
-        "MaxResults":{"shape":"MaxResults"}
+        "NamePrefix":{
+          "shape":"EventBusName",
+          "documentation":"<p>Name of an event bus. The first character must be alphanumeric; the remaining characters may also include '.', '-', and '_'. The grammar matches the name segment of EventBusArn (event-busv2/&lt;name&gt;/&lt;id&gt;), so every valid name can be represented in the bus's ARN. The same type is used everywhere a bus name appears.</p>"
+        },
+        "EventBusAccountId":{
+          "shape":"AccountId",
+          "documentation":"<p>AWS Account Id.</p>"
+        },
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>Opaque pagination token returned by a List operation. Pass it back in the next request to retrieve the next page of results.</p>"
+        },
+        "MaxResults":{
+          "shape":"MaxResults",
+          "documentation":"<p>Maximum number of results to return in one page of a List operation.</p>"
+        }
       }
     },
     "ListEventBusesResponse":{
       "type":"structure",
       "members":{
-        "EventBuses":{"shape":"EventBusSummaryList"},
-        "NextToken":{"shape":"NextToken"}
+        "EventBuses":{
+          "shape":"EventBusSummaryList",
+          "documentation":"<p>List of event bus summaries.</p>"
+        },
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>Opaque pagination token returned by a List operation. Pass it back in the next request to retrieve the next page of results.</p>"
+        }
       }
     },
     "ListEventSourcesRequest":{
@@ -1527,18 +1935,34 @@
       "members":{
         "EventBusArn":{
           "shape":"EventBusArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) that uniquely identifies an event bus.</p>",
           "contextParam":{"name":"EventBusArn"}
         },
-        "NamePrefix":{"shape":"EventSourceName"},
-        "NextToken":{"shape":"NextToken"},
-        "MaxResults":{"shape":"MaxResults"}
+        "NamePrefix":{
+          "shape":"EventSourceName",
+          "documentation":"<p>EventSource name. First character alphanumeric; the rest may add '.', '-', '_'. Names may not begin with the reserved \"aws.\" prefix. The grammar matches the ARN local-name segment in EventSourceArn (event-sourcev2/&lt;type&gt;/&lt;name&gt;/&lt;id&gt;), mirroring EventBusName, so a name the ARN cannot represent cannot be created.</p>"
+        },
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>Opaque pagination token returned by a List operation. Pass it back in the next request to retrieve the next page of results.</p>"
+        },
+        "MaxResults":{
+          "shape":"MaxResults",
+          "documentation":"<p>Maximum number of results to return in one page of a List operation.</p>"
+        }
       }
     },
     "ListEventSourcesResponse":{
       "type":"structure",
       "members":{
-        "EventSources":{"shape":"EventSourceSummaryList"},
-        "NextToken":{"shape":"NextToken"}
+        "EventSources":{
+          "shape":"EventSourceSummaryList",
+          "documentation":"<p>List of EventSource summaries.</p>"
+        },
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>Opaque pagination token returned by a List operation. Pass it back in the next request to retrieve the next page of results.</p>"
+        }
       }
     },
     "ListResourcePoliciesRequest":{
@@ -1547,17 +1971,30 @@
       "members":{
         "ResourceArn":{
           "shape":"EventBusArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) that uniquely identifies an event bus.</p>",
           "contextParam":{"name":"EventBusArn"}
         },
-        "NextToken":{"shape":"NextToken"},
-        "MaxResults":{"shape":"MaxResults"}
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>Opaque pagination token returned by a List operation. Pass it back in the next request to retrieve the next page of results.</p>"
+        },
+        "MaxResults":{
+          "shape":"MaxResults",
+          "documentation":"<p>Maximum number of results to return in one page of a List operation.</p>"
+        }
       }
     },
     "ListResourcePoliciesResponse":{
       "type":"structure",
       "members":{
-        "PolicySummaries":{"shape":"ResourcePolicySummaryList"},
-        "NextToken":{"shape":"NextToken"}
+        "PolicySummaries":{
+          "shape":"ResourcePolicySummaryList",
+          "documentation":"<p>List of resource policy summaries.</p>"
+        },
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>Opaque pagination token returned by a List operation. Pass it back in the next request to retrieve the next page of results.</p>"
+        }
       },
       "documentation":"<p>Summaries only (policy name and revision ID). Use GetResourcePolicy to retrieve a policy document.</p>"
     },
@@ -1566,31 +2003,53 @@
       "members":{
         "EventBusArn":{
           "shape":"EventBusArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) that uniquely identifies an event bus.</p>",
           "contextParam":{"name":"EventBusArn"}
         },
-        "NamePrefix":{"shape":"SubscriberName"},
-        "NextToken":{"shape":"NextToken"},
-        "MaxResults":{"shape":"MaxResults"}
+        "NamePrefix":{
+          "shape":"SubscriberName",
+          "documentation":"<p>Name of a subscriber. The first character must be alphanumeric; the remaining characters may also include '.', '-', and '_'.</p>"
+        },
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>Opaque pagination token returned by a List operation. Pass it back in the next request to retrieve the next page of results.</p>"
+        },
+        "MaxResults":{
+          "shape":"MaxResults",
+          "documentation":"<p>Maximum number of results to return in one page of a List operation.</p>"
+        }
       }
     },
     "ListSubscribersResponse":{
       "type":"structure",
       "members":{
-        "Subscribers":{"shape":"SubscriberSummaryList"},
-        "NextToken":{"shape":"NextToken"}
+        "Subscribers":{
+          "shape":"SubscriberSummaryList",
+          "documentation":"<p>List of subscriber summaries.</p>"
+        },
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>Opaque pagination token returned by a List operation. Pass it back in the next request to retrieve the next page of results.</p>"
+        }
       }
     },
     "ListTagsForResourceRequest":{
       "type":"structure",
       "required":["ResourceArn"],
       "members":{
-        "ResourceArn":{"shape":"TaggableResourceArn"}
+        "ResourceArn":{
+          "shape":"TaggableResourceArn",
+          "documentation":"<p>ARN for an EventBridge resource that supports tagging: event buses, subscribers, and event sources.</p>"
+        }
       }
     },
     "ListTagsForResourceResponse":{
       "type":"structure",
       "members":{
-        "Tags":{"shape":"TagMap"}
+        "Tags":{
+          "shape":"TagMap",
+          "documentation":"<p>Tags attached to a resource, as key-value pairs.</p>"
+        }
       }
     },
     "LogConfiguration":{
@@ -1605,7 +2064,7 @@
           "documentation":"<p>Whether the customer event payload is embedded in log records. Defaults to ON_ERROR_ONLY.</p>"
         }
       },
-      "documentation":"<p>Log configuration for a subscriber.</p>"
+      "documentation":"<p>Log configuration for a resource that delivers vended logs: a subscriber or a webhook EventSource.</p>"
     },
     "LogLevel":{
       "type":"string",
@@ -1627,6 +2086,139 @@
       "documentation":"<p>Message attribute name. The ceiling is wide enough to hold a JSONata expression, because a name may be a literal or an expression resolved once per delivered event.</p>",
       "max":8192,
       "min":0
+    },
+    "MskAcks":{
+      "type":"string",
+      "documentation":"<p>Producer acknowledgement mode. ALL waits for all in-sync replicas; LEADER waits for the partition leader only.</p>",
+      "enum":[
+        "ALL",
+        "LEADER"
+      ]
+    },
+    "MskClientId":{
+      "type":"string",
+      "documentation":"<p>Kafka producer client.id. A literal only; not a JSONata expression. Bounded to a reasonable identifier length; the broker rejects malformed values on connect.</p>",
+      "max":255,
+      "min":1
+    },
+    "MskCompression":{
+      "type":"string",
+      "documentation":"<p>Producer compression codec.</p>",
+      "enum":[
+        "NONE",
+        "GZIP",
+        "SNAPPY",
+        "LZ4",
+        "ZSTD"
+      ]
+    },
+    "MskConnectivity":{
+      "type":"string",
+      "documentation":"<p>How the service connects to an Amazon MSK cluster. PUBLIC connects through the cluster's public access; PRIVATE connects through the cluster's multi-VPC private connectivity.</p>",
+      "enum":[
+        "PUBLIC",
+        "PRIVATE"
+      ]
+    },
+    "MskDetails":{
+      "type":"structure",
+      "members":{
+        "ConnectivityState":{
+          "shape":"ConnectivityState",
+          "documentation":"<p>Provisioning state of the connectivity EventBridge sets up to the cluster. Distinct from the subscriber's State, which the customer controls.</p>"
+        },
+        "StateReason":{
+          "shape":"StateReason",
+          "documentation":"<p>Why provisioning failed. Present only when ConnectivityState is PROVISION_FAILED.</p>"
+        },
+        "VpcConnectionArn":{
+          "shape":"VpcConnectionArn",
+          "documentation":"<p>ARN of the VPC connection EventBridge uses to reach the cluster. Present only for PRIVATE connectivity, once the connection exists. It is the connection the cluster owner sees through the MSK ListClientVpcConnections API.</p>"
+        }
+      },
+      "documentation":"<p>Values EventBridge manages for a subscriber that targets an Amazon MSK cluster.</p>"
+    },
+    "MskHeader":{
+      "type":"structure",
+      "required":["Key"],
+      "members":{
+        "Key":{
+          "shape":"MskHeaderKeyString",
+          "documentation":"<p>The header key. Accepts a literal or a JSONata expression.</p>"
+        },
+        "Value":{
+          "shape":"MskHeaderValueString",
+          "documentation":"<p>The header value. Accepts a literal or a JSONata expression.</p>"
+        }
+      },
+      "documentation":"<p>A single Kafka record header. Both Key and Value accept a literal or a JSONata expression (e.g. \"{% $events.metadata.source %}\") resolved once per delivered event.</p>"
+    },
+    "MskHeaderKeyString":{
+      "type":"string",
+      "max":8192,
+      "min":0
+    },
+    "MskHeaderList":{
+      "type":"list",
+      "member":{"shape":"MskHeader"},
+      "documentation":"<p>Kafka record headers attached to each produced record.</p>",
+      "max":100,
+      "min":0
+    },
+    "MskHeaderValueString":{
+      "type":"string",
+      "max":8192,
+      "min":0
+    },
+    "MskParameters":{
+      "type":"structure",
+      "required":[
+        "TopicName",
+        "Connectivity"
+      ],
+      "members":{
+        "TopicName":{
+          "shape":"MskTopicName",
+          "documentation":"<p>Name of the Kafka topic events are produced to. Accepts a literal or a JSONata expression resolved once per delivered event.</p>"
+        },
+        "Compression":{
+          "shape":"MskCompression",
+          "documentation":"<p>Producer compression codec applied to the record batch. Defaults to NONE.</p>"
+        },
+        "Acks":{
+          "shape":"MskAcks",
+          "documentation":"<p>Producer acknowledgement mode. Defaults to ALL.</p>"
+        },
+        "PartitionKey":{
+          "shape":"MskParametersPartitionKeyString",
+          "documentation":"<p>Kafka record key. Accepts a literal or a JSONata expression (e.g. \"{% $events.data.customerId %}\") resolved once per delivered event; the resolved value selects the destination partition. If you omit it, the producer selects the partition; on an ordered (FIFO) subscriber, EventBridge instead uses the event group ID as the record key to preserve ordering.</p>"
+        },
+        "Headers":{
+          "shape":"MskHeaderList",
+          "documentation":"<p>Kafka record headers attached to each produced record.</p>"
+        },
+        "ClientId":{
+          "shape":"MskClientId",
+          "documentation":"<p>Producer client.id passed to the Kafka broker. Identifies the producer in broker-side logs, metrics, and quota enforcement. A literal, not a JSONata expression: it is a connection-level setting resolved once when the producer is created, not per event. If you do not set it, EventBridge uses the subscriber ARN.</p>"
+        },
+        "Connectivity":{
+          "shape":"MskConnectivity",
+          "documentation":"<p>How the service connects to the cluster. A cluster can have public access and multi-VPC private connectivity turned on at the same time, so the subscriber names the one to use. That path must be turned on, with IAM access control, on the cluster.</p>"
+        }
+      },
+      "documentation":"<p>MSK (Apache Kafka) invocation parameters for subscribers targeting an Amazon MSK cluster.</p>",
+      "sensitive":true
+    },
+    "MskParametersPartitionKeyString":{
+      "type":"string",
+      "max":8192,
+      "min":0
+    },
+    "MskTopicName":{
+      "type":"string",
+      "documentation":"<p>Name of a Kafka topic. Accepts a literal or a JSONata expression (e.g. \"{% $events.data.region %}\") resolved once per delivered event. A literal, and every resolved value, must be a valid Kafka topic name: 1-249 characters of [A-Za-z0-9._-], other than \".\" and \"..\".</p>",
+      "max":8192,
+      "min":1
     },
     "NextToken":{
       "type":"string",
@@ -1654,7 +2246,7 @@
     },
     "PartnerEventSourceArn":{
       "type":"string",
-      "documentation":"<p>ARN of the partner event source to forward. It is a partner-owned resource, so the account segment is empty: arn:aws:events:<region>::event-source/aws.partner/<name>.</p>",
+      "documentation":"<p>ARN of the partner event source to forward. It is a partner-owned resource, so the account segment is empty: arn:aws:events:&lt;region&gt;::event-source/aws.partner/&lt;name&gt;.</p>",
       "max":1600,
       "min":1,
       "pattern":"arn:aws(-[a-z0-9]+)*:events:[a-z][a-z0-9]*(-[a-z0-9]+)*:([0-9]{12})?:event-source\\/aws\\.partner(\\/[\\.\\-_A-Za-z0-9]+){2,}"
@@ -1663,12 +2255,18 @@
       "type":"structure",
       "required":["PartnerEventSourceArn"],
       "members":{
-        "PartnerEventSourceArn":{"shape":"PartnerEventSourceArn"},
+        "PartnerEventSourceArn":{
+          "shape":"PartnerEventSourceArn",
+          "documentation":"<p>ARN of the partner event source to forward. It is a partner-owned resource, so the account segment is empty: arn:aws:events:&lt;region&gt;::event-source/aws.partner/&lt;name&gt;.</p>"
+        },
         "Pattern":{
           "shape":"PartnerEventsSourceConfigurationPatternString",
           "documentation":"<p>A filter pattern, as a JSON string, that defines which of the partner event source's events are forwarded to the event bus. If no pattern is specified, all events from the partner event source are forwarded.</p>"
         },
-        "PartnerBusKmsKeyIdentifier":{"shape":"KmsKeyIdentifier"},
+        "PartnerBusKmsKeyIdentifier":{
+          "shape":"KmsKeyIdentifier",
+          "documentation":"<p>Identifier of the AWS KMS customer managed key used to encrypt events: a key ID, key ARN, alias name, or alias ARN. When absent, events are encrypted with an AWS owned key.</p>"
+        },
         "OnFailureConfiguration":{
           "shape":"OnFailureConfiguration",
           "documentation":"<p>The destination for events that could not be forwarded, covering both the forwarding target and the managed partner event bus.</p>"
@@ -1722,7 +2320,7 @@
     },
     "PolicyDocument":{
       "type":"string",
-      "documentation":"<p>A resource policy document, as a JSON string. The &quot;default&quot; policy can be up to 20 KB (20,480 bytes of UTF-8) by default. This quota is adjustable in Service Quotas. A &quot;default&quot; policy that exceeds the quota is rejected with PolicyLengthExceededException. No policy document can exceed 389,120 bytes of UTF-8, regardless of the quota.</p>",
+      "documentation":"<p>A resource policy document, as a JSON string. The maximum size is 389,120 bytes of UTF-8; the byte limit is enforced by the service.</p>",
       "max":389120,
       "min":1
     },
@@ -1731,7 +2329,7 @@
       "members":{
         "Message":{"shape":"String"}
       },
-      "documentation":"<p>The policy document is larger than the account's resource policy size quota, or larger than the service maximum.</p>",
+      "documentation":"<p>The policy document exceeds the maximum allowed size.</p>",
       "error":{
         "httpStatusCode":400,
         "senderFault":true
@@ -1740,7 +2338,7 @@
     },
     "PolicyName":{
       "type":"string",
-      "documentation":"<p>Name of a policy attached to a resource. Valid values: &quot;default&quot; (the customer-managed policy) and &quot;AWS_RAM&quot; (managed exclusively by AWS Resource Access Manager). Any other value is rejected.</p>",
+      "documentation":"<p>Name of a policy attached to a resource. Valid values: \"default\" (the customer-managed policy) and \"AWS_RAM\" (managed exclusively by AWS Resource Access Manager). Any other value is rejected.</p>",
       "max":128,
       "min":1,
       "pattern":"[A-Za-z0-9_]+"
@@ -1756,7 +2354,7 @@
       "members":{
         "Message":{"shape":"String"}
       },
-      "documentation":"<p>The policy was rejected because it would grant public access to the event bus. A statement grants public access when its principal is a wildcard and no condition limits the callers to specific AWS accounts or principals. To fix it, replace the wildcard principal with specific principals, or add a condition that limits the callers to specific AWS accounts. Conditions on event content (events:source, events:detail-type, events:Metadata/*) do not identify the caller and do not make a wildcard principal non-public. Returned only for the &quot;default&quot; policy; the &quot;AWS_RAM&quot; policy is composed by AWS Resource Access Manager and never grants public access.</p>",
+      "documentation":"<p>The policy was rejected because it would grant public access to the event bus. A statement grants public access when its principal is a wildcard and no condition limits the callers to specific AWS accounts or principals. To fix it, replace the wildcard principal with specific principals, or add a condition that limits the callers to specific AWS accounts. Conditions on event content (events:source, events:detail-type, events:Metadata/*) do not identify the caller and do not make a wildcard principal non-public. Returned only for the \"default\" policy; the \"AWS_RAM\" policy is composed by AWS Resource Access Manager and never grants public access.</p>",
       "error":{
         "httpStatusCode":400,
         "senderFault":true
@@ -1772,9 +2370,13 @@
       "members":{
         "EventBusArn":{
           "shape":"EventBusArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) that uniquely identifies an event bus.</p>",
           "contextParam":{"name":"EventBusArn"}
         },
-        "Entries":{"shape":"PutEventsRequestEntryList"},
+        "Entries":{
+          "shape":"PutEventsRequestEntryList",
+          "documentation":"<p>List of event entries to publish. Must contain at least one entry.</p>"
+        },
         "DeduplicationConfiguration":{
           "shape":"DeduplicationConfiguration",
           "documentation":"<p>Request-level deduplication settings, applied to every entry in the batch.</p>"
@@ -1792,7 +2394,10 @@
           "shape":"Source",
           "documentation":"<p>The source of the event. The <code>aws.</code> value prefix is service-reserved and cannot be used as a value.</p>"
         },
-        "DetailType":{"shape":"DetailType"},
+        "DetailType":{
+          "shape":"DetailType",
+          "documentation":"<p>Free-form detail-type classifying an event within its source.</p>"
+        },
         "Detail":{
           "shape":"EventDetail",
           "documentation":"<p>The event payload, as a valid JSON string.</p>"
@@ -1805,7 +2410,10 @@
           "shape":"Timestamp",
           "documentation":"<p>The time the event occurred. Defaults to the time the service receives the event when omitted.</p>"
         },
-        "SystemMetadata":{"shape":"PutEventsSystemMetadata"}
+        "SystemMetadata":{
+          "shape":"PutEventsSystemMetadata",
+          "documentation":"<p>System metadata for PutEvents entries. ContentType is not applicable (always application/eventbridge+json, set server-side).</p>"
+        }
       },
       "documentation":"<p>A single event entry in a PutEvents request.</p>"
     },
@@ -1829,17 +2437,35 @@
           "shape":"Integer",
           "documentation":"<p>The number of entries in the batch that failed to be published.</p>"
         },
-        "Entries":{"shape":"PutEventsResultEntryList"}
+        "Entries":{
+          "shape":"PutEventsResultEntryList",
+          "documentation":"<p>List of per-entry publish results, in the same order as the request entries.</p>"
+        }
       }
     },
     "PutEventsResultEntry":{
       "type":"structure",
       "members":{
-        "EventId":{"shape":"EventId"},
-        "SequenceNumber":{"shape":"SequenceNumber"},
-        "SuccessCode":{"shape":"SuccessCode"},
-        "ErrorCode":{"shape":"ErrorCode"},
-        "ErrorMessage":{"shape":"ErrorMessage"}
+        "EventId":{
+          "shape":"EventId",
+          "documentation":"<p>Unique event ID assigned by the service.</p>"
+        },
+        "SequenceNumber":{
+          "shape":"SequenceNumber",
+          "documentation":"<p>Sequence number assigned to the message for ordering within the message group.</p>"
+        },
+        "SuccessCode":{
+          "shape":"SuccessCode",
+          "documentation":"<p>Indicates the outcome for a successfully processed publish entry.</p>"
+        },
+        "ErrorCode":{
+          "shape":"ErrorCode",
+          "documentation":"<p>Error code if the entry failed.</p>"
+        },
+        "ErrorMessage":{
+          "shape":"ErrorMessage",
+          "documentation":"<p>Error message if the entry failed.</p>"
+        }
       },
       "documentation":"<p>Result entry for a published event. The position of each entry in the response list aligns 1:1 with the corresponding request entry.</p>"
     },
@@ -1871,9 +2497,13 @@
       "members":{
         "EventBusArn":{
           "shape":"EventBusArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) that uniquely identifies an event bus.</p>",
           "contextParam":{"name":"EventBusArn"}
         },
-        "Entries":{"shape":"PutRawEventsRequestEntryList"},
+        "Entries":{
+          "shape":"PutRawEventsRequestEntryList",
+          "documentation":"<p>List of event entries to publish. Must contain at least one entry.</p>"
+        },
         "SchemaRegistryConfiguration":{
           "shape":"SchemaRegistryConfiguration",
           "documentation":"<p>Schema-registry settings for encoding open-format (Avro/Protobuf) events. Required for open-format entries; ignored for JSON entries. The registry is read with the caller's credentials, so the caller needs read access to the registry it references.</p>"
@@ -1897,7 +2527,7 @@
         },
         "Metadata":{
           "shape":"EventMetadataMap",
-          "documentation":"<p>Metadata key-value pairs you define. Keys must be 1-128 characters and must not contain &quot;/&quot;.</p>"
+          "documentation":"<p>Metadata key-value pairs you define. Keys must be 1-128 characters and must not contain \"/\".</p>"
         },
         "SystemMetadata":{
           "shape":"PutRawEventsSystemMetadata",
@@ -1920,7 +2550,10 @@
           "shape":"Integer",
           "documentation":"<p>The number of entries in the batch that failed to be published.</p>"
         },
-        "Entries":{"shape":"PutRawEventsResultEntryList"}
+        "Entries":{
+          "shape":"PutRawEventsResultEntryList",
+          "documentation":"<p>List of per-entry publish results, in the same order as the request entries.</p>"
+        }
       }
     },
     "PutRawEventsResultEntry":{
@@ -1960,7 +2593,7 @@
       "members":{
         "ContentType":{
           "shape":"ContentType",
-          "documentation":"<p>Content type of the event data (e.g., &quot;application/cloudevents+json&quot;).</p>"
+          "documentation":"<p>Content type of the event data. Valid values: <code>application/json</code>, <code>application/avro</code>, <code>application/protobuf</code>, <code>application/octet-stream</code>.</p>"
         },
         "DeduplicationId":{
           "shape":"EventDeduplicationId",
@@ -1982,16 +2615,20 @@
       "members":{
         "ResourceArn":{
           "shape":"EventBusArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) that uniquely identifies an event bus.</p>",
           "contextParam":{"name":"EventBusArn"}
         },
-        "PolicyDocument":{"shape":"PolicyDocument"},
+        "PolicyDocument":{
+          "shape":"PolicyDocument",
+          "documentation":"<p>A resource policy document, as a JSON string. The maximum size is 389,120 bytes of UTF-8; the byte limit is enforced by the service.</p>"
+        },
         "PolicyName":{
           "shape":"PolicyName",
-          "documentation":"<p>Which named policy to write. Defaults to &quot;default&quot;, the customer-managed policy, when omitted (a write AWS Resource Access Manager makes on the owner's behalf resolves to &quot;AWS_RAM&quot; instead). The two writers are exclusive in both directions — only Resource Access Manager can write &quot;AWS_RAM&quot;, and only the bus owner can write &quot;default&quot; — so naming the other party's policy fails with AccessDeniedException. A well-formed name that is neither of the two fails with InvalidInputException.</p>"
+          "documentation":"<p>Which named policy to write. Defaults to \"default\", the customer-managed policy, when omitted (a write AWS Resource Access Manager makes on the owner's behalf resolves to \"AWS_RAM\" instead). The two writers are exclusive in both directions — only Resource Access Manager can write \"AWS_RAM\", and only the bus owner can write \"default\" — so naming the other party's policy fails with AccessDeniedException. A well-formed name that is neither of the two fails with InvalidInputException.</p>"
         },
         "ExpectedRevisionId":{
           "shape":"PolicyRevisionId",
-          "documentation":"<p>The write succeeds only if the named policy's current revision ID matches this value; a policy that does not exist yet matches only the sentinel &quot;NO_POLICY&quot; (create-only). On mismatch the operation fails with ConflictException. When omitted, the write is unconditional. Every attempt stores a newly generated revision ID, so retrying an unanswered request can conflict with the caller's own earlier attempt; read the policy back and compare it with the one you intended before treating a conflict as another writer's change.</p>"
+          "documentation":"<p>The write succeeds only if the named policy's current revision ID matches this value; a policy that does not exist yet matches only the sentinel \"NO_POLICY\" (create-only). On mismatch the operation fails with ConflictException. When omitted, the write is unconditional. Every attempt stores a newly generated revision ID, so retrying an unanswered request can conflict with the caller's own earlier attempt; read the policy back and compare it with the one you intended before treating a conflict as another writer's change.</p>"
         }
       }
     },
@@ -2002,8 +2639,14 @@
         "PolicyName"
       ],
       "members":{
-        "ResourceArn":{"shape":"EventBusArn"},
-        "PolicyName":{"shape":"PolicyName"},
+        "ResourceArn":{
+          "shape":"EventBusArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) that uniquely identifies an event bus.</p>"
+        },
+        "PolicyName":{
+          "shape":"PolicyName",
+          "documentation":"<p>Name of a policy attached to a resource. Valid values: \"default\" (the customer-managed policy) and \"AWS_RAM\" (managed exclusively by AWS Resource Access Manager). Any other value is rejected.</p>"
+        },
         "RevisionId":{
           "shape":"PolicyRevisionId",
           "documentation":"<p>Absent when the write removed the policy; a removal produces no new revision.</p>"
@@ -2073,8 +2716,14 @@
         "RevisionId"
       ],
       "members":{
-        "PolicyName":{"shape":"PolicyName"},
-        "RevisionId":{"shape":"PolicyRevisionId"}
+        "PolicyName":{
+          "shape":"PolicyName",
+          "documentation":"<p>Name of a policy attached to a resource. Valid values: \"default\" (the customer-managed policy) and \"AWS_RAM\" (managed exclusively by AWS Resource Access Manager). Any other value is rejected.</p>"
+        },
+        "RevisionId":{
+          "shape":"PolicyRevisionId",
+          "documentation":"<p>Revision ID of a resource policy. A new revision ID is generated on every successful write.</p>"
+        }
       },
       "documentation":"<p>Summary of a policy attached to a resource: its name and revision ID.</p>"
     },
@@ -2118,14 +2767,14 @@
     },
     "RetryPolicyMaxEventAgeInSecondsInteger":{
       "type":"integer",
-      "documentation":"<p>Nullable integer — no default, absence means &quot;not set&quot;.</p>",
+      "documentation":"<p>Nullable integer — no default, absence means \"not set\".</p>",
       "box":true,
       "max":86400,
       "min":60
     },
     "RetryPolicyMaxRetryAttemptsInteger":{
       "type":"integer",
-      "documentation":"<p>Nullable integer — no default, absence means &quot;not set&quot;.</p>",
+      "documentation":"<p>Nullable integer — no default, absence means \"not set\".</p>",
       "box":true,
       "max":185,
       "min":0
@@ -2140,19 +2789,25 @@
       "documentation":"<p>ARN of a resource a bus owner can revoke: a subscriber or an EventSource. The pattern is the revocable subset of TaggableResourceArn; buses are not revocable.</p>",
       "max":1011,
       "min":1,
-      "pattern":"arn:aws(-[a-z0-9]+)*:events:[a-z][a-z0-9]*(-[a-z0-9]+)*:([0-9]{12}):(subscriber|event-sourcev2\\/(aws\\.service|aws\\.partner))\\/[A-Za-z0-9][\\.\\-_A-Za-z0-9]{0,255}\\/[a-z0-9]{25}"
+      "pattern":"arn:aws(-[a-z0-9]+)*:events:[a-z][a-z0-9]*(-[a-z0-9]+)*:([0-9]{12}):(subscriber|event-sourcev2\\/(aws\\.service|aws\\.partner|webhook))\\/[A-Za-z0-9][\\.\\-_A-Za-z0-9]{0,255}\\/[a-z0-9]{25}"
     },
     "RevokeResourceRequest":{
       "type":"structure",
       "required":["Arn"],
       "members":{
-        "Arn":{"shape":"RevocableResourceArn"}
+        "Arn":{
+          "shape":"RevocableResourceArn",
+          "documentation":"<p>ARN of a resource a bus owner can revoke: a subscriber or an EventSource. The pattern is the revocable subset of TaggableResourceArn; buses are not revocable.</p>"
+        }
       }
     },
     "RevokeResourceResponse":{
       "type":"structure",
       "members":{
-        "Arn":{"shape":"RevocableResourceArn"}
+        "Arn":{
+          "shape":"RevocableResourceArn",
+          "documentation":"<p>ARN of a resource a bus owner can revoke: a subscriber or an EventSource. The pattern is the revocable subset of TaggableResourceArn; buses are not revocable.</p>"
+        }
       }
     },
     "RoleArn":{
@@ -2160,6 +2815,35 @@
       "max":1600,
       "min":1,
       "pattern":"arn:aws(-[a-z0-9]+)*:iam::\\d{12}:role\\/[\\w+=,.@/-]+"
+    },
+    "RotateWebhookCredentialsRequest":{
+      "type":"structure",
+      "required":["EventSourceArn"],
+      "members":{
+        "EventSourceArn":{
+          "shape":"WebhookEventSourceArn",
+          "documentation":"<p>The ARN of the webhook EventSource.</p>"
+        },
+        "Credential":{
+          "shape":"WebhookCredential",
+          "documentation":"<p>The new credential. Set the member that matches the authentication type of the EventSource. If you set a member that does not match the authentication type, EventBridge returns InvalidInputException. If you omit Credential, EventBridge generates a value.</p>"
+        },
+        "ClientToken":{
+          "shape":"ClientToken",
+          "documentation":"<p>Unique, case-sensitive identifier that ensures the idempotency of the request. The SDK generates one automatically when the field is omitted.</p>",
+          "idempotencyToken":true
+        }
+      }
+    },
+    "RotateWebhookCredentialsResponse":{
+      "type":"structure",
+      "required":["SecretArn"],
+      "members":{
+        "SecretArn":{
+          "shape":"WebhookSecretArn",
+          "documentation":"<p>The ARN of the AWS Secrets Manager secret that holds the credential. It doesn't change when the credential is rotated.</p>"
+        }
+      }
     },
     "SchemaRegistryConfiguration":{
       "type":"structure",
@@ -2257,7 +2941,7 @@
           "documentation":"<p>Custom message attributes for SNS filtering.</p>"
         }
       },
-      "documentation":"<p>SNS invocation parameters for subscribers. Values are forwarded to the SNS PublishBatch API. All scalar values accept a literal or a JSONata expression (e.g. &quot;{% $events.Data.groupId %}&quot;).</p>",
+      "documentation":"<p>SNS invocation parameters for subscribers. Values are forwarded to the SNS PublishBatch API. All scalar values accept a literal or a JSONata expression (e.g. \"{% $events.Data.groupId %}\").</p>",
       "sensitive":true
     },
     "SnsParametersMessageDeduplicationIdString":{
@@ -2282,7 +2966,7 @@
     },
     "Source":{
       "type":"string",
-      "documentation":"<p>The source of an event, e.g. &quot;myapp.orders&quot;.</p>",
+      "documentation":"<p>The source of an event, e.g. \"myapp.orders\".</p>",
       "max":256,
       "min":1
     },
@@ -2341,7 +3025,7 @@
           "documentation":"<p>System message attributes (e.g., AWSTraceHeader).</p>"
         }
       },
-      "documentation":"<p>SQS invocation parameters for subscribers. Values are forwarded to the SQS SendMessageBatch API. All scalar values accept a literal or a JSONata expression (e.g. &quot;{% $events.Data.groupId %}&quot;).</p>",
+      "documentation":"<p>SQS invocation parameters for subscribers. Values are forwarded to the SQS SendMessageBatch API. All scalar values accept a literal or a JSONata expression (e.g. \"{% $events.Data.groupId %}\").</p>",
       "sensitive":true
     },
     "SqsParametersDelaySecondsString":{
@@ -2369,7 +3053,7 @@
     },
     "StateReason":{
       "type":"string",
-      "documentation":"<p>Human-readable explanation of why an event bus is in its current State. Omitted when the bus is in a normal operational state (ACTIVE). It stands in for the error response an asynchronous failure cannot return, so it applies only to resources with an asynchronous lifecycle: event buses. EventSources and subscribers are provisioned synchronously and report failures directly on the request.</p>",
+      "documentation":"<p>Human-readable explanation of why a resource is in a failed state. Omitted when the resource is in a normal operational state (ACTIVE). It stands in for the error response that an asynchronous failure cannot return at request time.</p>",
       "max":1000,
       "min":0
     },
@@ -2393,7 +3077,7 @@
           "documentation":"<p>Timeout in seconds for each invocation of the target (1-30). String-typed (not integer) so the value may be a JSONata expression.</p>"
         }
       },
-      "documentation":"<p>Step Functions invocation parameters for subscribers. Values are forwarded to the Step Functions StartExecution or StartSyncExecution API. Every string member accepts a literal or a JSONata expression (e.g. &quot;{% $events.Data.executionName %}&quot;).</p>",
+      "documentation":"<p>Step Functions invocation parameters for subscribers. Values are forwarded to the Step Functions StartExecution or StartSyncExecution API. Every string member accepts a literal or a JSONata expression (e.g. \"{% $events.Data.executionName %}\").</p>",
       "sensitive":true
     },
     "StepFunctionsParametersInvocationTimeoutSecondsString":{
@@ -2414,14 +3098,20 @@
     "StorageConfiguration":{
       "type":"structure",
       "members":{
-        "RetentionPeriodInDays":{"shape":"RetentionPeriodInDays"}
+        "RetentionPeriodInDays":{
+          "shape":"RetentionPeriodInDays",
+          "documentation":"<p>Number of days events are retained on the event bus.</p>"
+        }
       },
       "documentation":"<p>Event storage configuration for an event bus.</p>"
     },
     "StorageConfigurationOutput":{
       "type":"structure",
       "members":{
-        "RetentionPeriodInDays":{"shape":"RetentionPeriodInDays"},
+        "RetentionPeriodInDays":{
+          "shape":"RetentionPeriodInDays",
+          "documentation":"<p>Number of days events are retained on the event bus.</p>"
+        },
         "RetentionWindowStartTime":{
           "shape":"Timestamp",
           "documentation":"<p>The earliest point in time from which stored events are available. Events older than this have expired from retention.</p>"
@@ -2437,6 +3127,16 @@
       "min":1,
       "pattern":"arn:aws(-[a-z0-9]+)*:events:[a-z][a-z0-9]*(-[a-z0-9]+)*:([0-9]{12}):subscriber\\/[A-Za-z0-9][\\.\\-_A-Za-z0-9]{0,255}\\/[a-z0-9]{25}"
     },
+    "SubscriberDetails":{
+      "type":"structure",
+      "members":{
+        "MskDetails":{
+          "shape":"MskDetails",
+          "documentation":"<p>Values EventBridge manages for a subscriber that targets an Amazon MSK cluster.</p>"
+        }
+      },
+      "documentation":"<p>Values EventBridge manages for a subscriber that depend on its target type. Only the member for the subscriber's target type is set. Returned in responses only; the customer never supplies these values.</p>"
+    },
     "SubscriberName":{
       "type":"string",
       "documentation":"<p>Name of a subscriber. The first character must be alphanumeric; the remaining characters may also include '.', '-', and '_'.</p>",
@@ -2446,7 +3146,7 @@
     },
     "SubscriberState":{
       "type":"string",
-      "documentation":"<p>Customer-controlled run state of a subscriber, set on create or update. Distinct from the bus lifecycle vocabulary, where ACTIVE means &quot;provisioned and healthy&quot;. Delivery requires State RUNNING on a subscriber that is not revoked.</p>",
+      "documentation":"<p>Customer-controlled run state of a subscriber, set on create or update. Distinct from the bus lifecycle vocabulary, where ACTIVE means \"provisioned and healthy\". Delivery requires State RUNNING on a subscriber that is not revoked.</p>",
       "enum":[
         "RUNNING",
         "STOPPED"
@@ -2455,16 +3155,34 @@
     "SubscriberSummary":{
       "type":"structure",
       "members":{
-        "SubscriberArn":{"shape":"SubscriberArn"},
-        "Name":{"shape":"SubscriberName"},
-        "EventBusArn":{"shape":"EventBusArn"},
-        "TargetArn":{"shape":"TargetResourceArn"},
-        "Type":{"shape":"OrderingType"},
+        "SubscriberArn":{
+          "shape":"SubscriberArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) that uniquely identifies a subscriber.</p>"
+        },
+        "Name":{
+          "shape":"SubscriberName",
+          "documentation":"<p>Name of a subscriber. The first character must be alphanumeric; the remaining characters may also include '.', '-', and '_'.</p>"
+        },
+        "EventBusArn":{
+          "shape":"EventBusArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) that uniquely identifies an event bus.</p>"
+        },
+        "TargetArn":{
+          "shape":"TargetResourceArn",
+          "documentation":"<p>ARN of the target a subscriber invokes. The resource grammar is service-neutral because target services use different separators and the USI form omits region and account.</p>"
+        },
+        "Type":{
+          "shape":"OrderingType",
+          "documentation":"<p>Delivery ordering mode of a subscriber: FIFO delivers events in order within an event group; UNORDERED delivers without an ordering guarantee.</p>"
+        },
         "Revoked":{
           "shape":"Boolean",
           "documentation":"<p>True when the bus owner has revoked this subscriber. Present only when true, so a bus owner listing subscribers sees at a glance which ones they revoked. See DescribeSubscriberResponse$Revoked.</p>"
         },
-        "State":{"shape":"SubscriberState"},
+        "State":{
+          "shape":"SubscriberState",
+          "documentation":"<p>Customer-controlled run state of a subscriber, set on create or update. Distinct from the bus lifecycle vocabulary, where ACTIVE means \"provisioned and healthy\". Delivery requires State RUNNING on a subscriber that is not revoked.</p>"
+        },
         "CreationTime":{
           "shape":"Timestamp",
           "documentation":"<p>The time the subscriber was created.</p>"
@@ -2473,7 +3191,10 @@
           "shape":"Timestamp",
           "documentation":"<p>The time the subscriber was last modified.</p>"
         },
-        "SubscriberAccountId":{"shape":"AccountId"}
+        "SubscriberAccountId":{
+          "shape":"AccountId",
+          "documentation":"<p>AWS Account Id.</p>"
+        }
       },
       "documentation":"<p>Summary of a subscriber, as returned by ListSubscribers.</p>"
     },
@@ -2511,8 +3232,14 @@
         "Tags"
       ],
       "members":{
-        "ResourceArn":{"shape":"TaggableResourceArn"},
-        "Tags":{"shape":"TagResourceRequestTagsMap"}
+        "ResourceArn":{
+          "shape":"TaggableResourceArn",
+          "documentation":"<p>ARN for an EventBridge resource that supports tagging: event buses, subscribers, and event sources.</p>"
+        },
+        "Tags":{
+          "shape":"TagResourceRequestTagsMap",
+          "documentation":"<p>Tags attached to a resource, as key-value pairs.</p>"
+        }
       }
     },
     "TagResourceRequestTagsMap":{
@@ -2537,7 +3264,7 @@
       "documentation":"<p>ARN for an EventBridge resource that supports tagging: event buses, subscribers, and event sources.</p>",
       "max":1011,
       "min":1,
-      "pattern":"arn:aws(-[a-z0-9]+)*:events:[a-z][a-z0-9]*(-[a-z0-9]+)*:([0-9]{12}):(event-busv2|subscriber|event-sourcev2\\/(aws\\.service|aws\\.partner))\\/[A-Za-z0-9][\\.\\-_A-Za-z0-9]{0,255}\\/[a-z0-9]{25}"
+      "pattern":"arn:aws(-[a-z0-9]+)*:events:[a-z][a-z0-9]*(-[a-z0-9]+)*:([0-9]{12}):(event-busv2|subscriber|event-sourcev2\\/(aws\\.service|aws\\.partner|webhook))\\/[A-Za-z0-9][\\.\\-_A-Za-z0-9]{0,255}\\/[a-z0-9]{25}"
     },
     "TargetResourceArn":{
       "type":"string",
@@ -2597,7 +3324,7 @@
         },
         "InvocationTimeoutSeconds":{
           "shape":"String",
-          "documentation":"<p>Timeout in seconds for each invocation of the target (1-30, default 30). Accepts a literal integer or a {% ... %} JSONata expression evaluated against the event at invocation time. A JSONata expression is syntax-checked at create time. Resolved values outside of the range [1, 30] will be constrained to the nearest bound at delivery time. Defaults to 30 seconds when unset.</p>"
+          "documentation":"<p>Timeout in seconds for each invocation of the target (1-30, default 30). Must be a literal integer; JSONata expressions are not supported for this field. String-typed to match the other targets' timeout fields. Defaults to 30s when unset.</p>"
         }
       },
       "documentation":"<p>Parameters for USI (Universal Service Integration) targets. Used when TargetArn is in the format arn:aws:events:::aws-sdk:{service}:{apiAction}</p>",
@@ -2610,8 +3337,14 @@
         "TagKeys"
       ],
       "members":{
-        "ResourceArn":{"shape":"TaggableResourceArn"},
-        "TagKeys":{"shape":"UntagResourceRequestTagKeysList"}
+        "ResourceArn":{
+          "shape":"TaggableResourceArn",
+          "documentation":"<p>ARN for an EventBridge resource that supports tagging: event buses, subscribers, and event sources.</p>"
+        },
+        "TagKeys":{
+          "shape":"UntagResourceRequestTagKeysList",
+          "documentation":"<p>List of tag keys.</p>"
+        }
       }
     },
     "UntagResourceRequestTagKeysList":{
@@ -2630,23 +3363,54 @@
       "members":{
         "EventBusArn":{
           "shape":"EventBusArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) that uniquely identifies an event bus.</p>",
           "contextParam":{"name":"EventBusArn"}
         },
-        "Description":{"shape":"Description"},
-        "EncryptionConfiguration":{"shape":"EncryptionConfiguration"},
-        "StorageConfiguration":{"shape":"StorageConfiguration"}
+        "Description":{
+          "shape":"Description",
+          "documentation":"<p>Free-text description. Used by every resource type that has one: event buses, subscribers, and event sources.</p>"
+        },
+        "EncryptionConfiguration":{
+          "shape":"EncryptionConfiguration",
+          "documentation":"<p>Encryption configuration for an event bus.</p>"
+        },
+        "StorageConfiguration":{
+          "shape":"StorageConfiguration",
+          "documentation":"<p>Event storage configuration for an event bus.</p>"
+        }
       }
     },
     "UpdateEventBusResponse":{
       "type":"structure",
       "members":{
-        "EventBusArn":{"shape":"EventBusArn"},
-        "Name":{"shape":"EventBusName"},
-        "Description":{"shape":"Description"},
-        "EncryptionConfiguration":{"shape":"EncryptionConfiguration"},
-        "StorageConfiguration":{"shape":"StorageConfigurationOutput"},
-        "State":{"shape":"BusState"},
-        "StateReason":{"shape":"StateReason"},
+        "EventBusArn":{
+          "shape":"EventBusArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) that uniquely identifies an event bus.</p>"
+        },
+        "Name":{
+          "shape":"EventBusName",
+          "documentation":"<p>Name of an event bus. The first character must be alphanumeric; the remaining characters may also include '.', '-', and '_'. The grammar matches the name segment of EventBusArn (event-busv2/&lt;name&gt;/&lt;id&gt;), so every valid name can be represented in the bus's ARN. The same type is used everywhere a bus name appears.</p>"
+        },
+        "Description":{
+          "shape":"Description",
+          "documentation":"<p>Free-text description. Used by every resource type that has one: event buses, subscribers, and event sources.</p>"
+        },
+        "EncryptionConfiguration":{
+          "shape":"EncryptionConfiguration",
+          "documentation":"<p>Encryption configuration for an event bus.</p>"
+        },
+        "StorageConfiguration":{
+          "shape":"StorageConfigurationOutput",
+          "documentation":"<p>Event storage configuration of an event bus, as returned on reads.</p>"
+        },
+        "State":{
+          "shape":"BusState",
+          "documentation":"<p>Lifecycle state of an event bus.</p> <ul> <li> <p>CREATING: Bus creation is in progress.</p> </li> <li> <p>CREATE_FAILED: Bus creation failed; see StateReason. The bus cannot be recovered or recreated in place: delete it with DeleteEventBus, then create a new bus.</p> </li> <li> <p>ACTIVE: Bus is fully operational and can accept events.</p> </li> <li> <p>UPDATING: Bus update is in progress.</p> </li> <li> <p>UPDATE_FAILED: Bus update failed; the bus remains operational with its previous configuration.</p> </li> <li> <p>DELETING: Bus deletion is actively in progress.</p> </li> <li> <p>DELETE_FAILED: Bus deletion failed; see StateReason. Retry DeleteEventBus after removing subscribers and event sources.</p> </li> </ul>"
+        },
+        "StateReason":{
+          "shape":"StateReason",
+          "documentation":"<p>Human-readable explanation of why an event bus is in its current State. Omitted when the bus is in a normal operational state (ACTIVE). It stands in for the error response an asynchronous failure cannot return, so it applies only to resources with an asynchronous lifecycle: event buses. EventSources and subscribers are provisioned synchronously and report failures directly on the request.</p>"
+        },
         "LastModifiedTime":{
           "shape":"Timestamp",
           "documentation":"<p>The time the event bus was last modified.</p>"
@@ -2657,18 +3421,39 @@
       "type":"structure",
       "required":["EventSourceArn"],
       "members":{
-        "EventSourceArn":{"shape":"EventSourceArn"},
-        "Configuration":{"shape":"EventSourceConfiguration"},
-        "Description":{"shape":"Description"}
+        "EventSourceArn":{
+          "shape":"EventSourceArn",
+          "documentation":"<p>EventSource ARN: event-sourcev2/&lt;type&gt;/&lt;name&gt;/&lt;id&gt;. The type segment is set by the service (aws.service for AWS service events, aws.partner for partner events, webhook for webhook events) and is not part of the resource's name. The id segment is a 25-character identifier generated by the service.</p>"
+        },
+        "Configuration":{
+          "shape":"EventSourceConfiguration",
+          "documentation":"<p>Discriminated EventSource configuration. Exactly one variant must be set.</p>"
+        },
+        "Description":{
+          "shape":"Description",
+          "documentation":"<p>Free-text description. Used by every resource type that has one: event buses, subscribers, and event sources.</p>"
+        }
       }
     },
     "UpdateEventSourceResponse":{
       "type":"structure",
       "members":{
-        "EventSourceArn":{"shape":"EventSourceArn"},
-        "Name":{"shape":"EventSourceName"},
-        "EventBusArn":{"shape":"EventBusArn"},
-        "State":{"shape":"EventSourceState"},
+        "EventSourceArn":{
+          "shape":"EventSourceArn",
+          "documentation":"<p>EventSource ARN: event-sourcev2/&lt;type&gt;/&lt;name&gt;/&lt;id&gt;. The type segment is set by the service (aws.service for AWS service events, aws.partner for partner events, webhook for webhook events) and is not part of the resource's name. The id segment is a 25-character identifier generated by the service.</p>"
+        },
+        "Name":{
+          "shape":"EventSourceName",
+          "documentation":"<p>EventSource name. First character alphanumeric; the rest may add '.', '-', '_'. Names may not begin with the reserved \"aws.\" prefix. The grammar matches the ARN local-name segment in EventSourceArn (event-sourcev2/&lt;type&gt;/&lt;name&gt;/&lt;id&gt;), mirroring EventBusName, so a name the ARN cannot represent cannot be created.</p>"
+        },
+        "EventBusArn":{
+          "shape":"EventBusArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) that uniquely identifies an event bus.</p>"
+        },
+        "State":{
+          "shape":"EventSourceState",
+          "documentation":"<p>Lifecycle state of an EventSource. Revocation is reported by the Revoked flag.</p>"
+        },
         "LastModifiedTime":{
           "shape":"Timestamp",
           "documentation":"<p>The time the EventSource was last modified.</p>"
@@ -2683,14 +3468,42 @@
           "shape":"RoleArn",
           "documentation":"<p>IAM role the service assumes to invoke the target. Must belong to the calling account.</p>"
         },
-        "LambdaParameters":{"shape":"LambdaParameters"},
-        "SqsParameters":{"shape":"SqsParameters"},
-        "SnsParameters":{"shape":"SnsParameters"},
-        "KinesisParameters":{"shape":"KinesisParameters"},
-        "StepFunctionsParameters":{"shape":"StepFunctionsParameters"},
-        "HttpParameters":{"shape":"HttpParameters"},
-        "UniversalTargetParameters":{"shape":"UniversalTargetParameters"},
-        "EventBusV2Parameters":{"shape":"EventBusV2Parameters"}
+        "LambdaParameters":{
+          "shape":"LambdaParameters",
+          "documentation":"<p>Lambda invocation parameters for subscribers. Values are forwarded to the Lambda Invoke API. Every string member accepts a literal or a JSONata expression (e.g. \"{% $events.Data.qualifier %}\").</p>"
+        },
+        "SqsParameters":{
+          "shape":"SqsParameters",
+          "documentation":"<p>SQS invocation parameters for subscribers. Values are forwarded to the SQS SendMessageBatch API. All scalar values accept a literal or a JSONata expression (e.g. \"{% $events.Data.groupId %}\").</p>"
+        },
+        "SnsParameters":{
+          "shape":"SnsParameters",
+          "documentation":"<p>SNS invocation parameters for subscribers. Values are forwarded to the SNS PublishBatch API. All scalar values accept a literal or a JSONata expression (e.g. \"{% $events.Data.groupId %}\").</p>"
+        },
+        "KinesisParameters":{
+          "shape":"KinesisParameters",
+          "documentation":"<p>Kinesis Data Streams invocation parameters for subscribers. Values are forwarded to the Kinesis PutRecords API. All scalar values accept a literal or a JSONata expression (e.g. \"{% $events.Data.partitionKey %}\").</p>"
+        },
+        "StepFunctionsParameters":{
+          "shape":"StepFunctionsParameters",
+          "documentation":"<p>Step Functions invocation parameters for subscribers. Values are forwarded to the Step Functions StartExecution or StartSyncExecution API. Every string member accepts a literal or a JSONata expression (e.g. \"{% $events.Data.executionName %}\").</p>"
+        },
+        "HttpParameters":{
+          "shape":"HttpParameters",
+          "documentation":"<p>HTTP invocation parameters for subscribers (API Gateway / API Destination). Values are forwarded to the HTTP endpoint.</p>"
+        },
+        "UniversalTargetParameters":{
+          "shape":"UniversalTargetParameters",
+          "documentation":"<p>Parameters for USI (Universal Service Integration) targets. Used when TargetArn is in the format arn:aws:events:::aws-sdk:{service}:{apiAction}</p>"
+        },
+        "EventBusV2Parameters":{
+          "shape":"EventBusV2Parameters",
+          "documentation":"<p>Parameters for forwarding events to another EventBridge event bus.</p>"
+        },
+        "MskParameters":{
+          "shape":"MskParameters",
+          "documentation":"<p>MSK (Apache Kafka) invocation parameters for subscribers targeting an Amazon MSK cluster.</p>"
+        }
       },
       "documentation":"<p>Update-able configuration for how the subscriber invokes its target.</p>"
     },
@@ -2698,38 +3511,404 @@
       "type":"structure",
       "required":["SubscriberArn"],
       "members":{
-        "SubscriberArn":{"shape":"SubscriberArn"},
-        "Description":{"shape":"Description"},
-        "State":{"shape":"SubscriberState"},
-        "ResumePosition":{"shape":"ResumePosition"},
-        "InvokeConfiguration":{"shape":"UpdateInvokeConfiguration"},
-        "FilterConfiguration":{"shape":"FilterConfiguration"},
-        "BatchConfiguration":{"shape":"BatchConfiguration"},
+        "SubscriberArn":{
+          "shape":"SubscriberArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) that uniquely identifies a subscriber.</p>"
+        },
+        "Description":{
+          "shape":"Description",
+          "documentation":"<p>Free-text description. Used by every resource type that has one: event buses, subscribers, and event sources.</p>"
+        },
+        "State":{
+          "shape":"SubscriberState",
+          "documentation":"<p>Customer-controlled run state of a subscriber, set on create or update. Distinct from the bus lifecycle vocabulary, where ACTIVE means \"provisioned and healthy\". Delivery requires State RUNNING on a subscriber that is not revoked.</p>"
+        },
+        "ResumePosition":{
+          "shape":"ResumePosition",
+          "documentation":"<p>Position from which delivery resumes when a subscriber is unpaused. Honored only on an UpdateSubscriber call that transitions State from STOPPED to RUNNING (unpause); ignored on any other call and not accepted on Create. Defaults to LAST_PROCESSED when omitted.</p>"
+        },
+        "InvokeConfiguration":{
+          "shape":"UpdateInvokeConfiguration",
+          "documentation":"<p>Update-able configuration for how the subscriber invokes its target.</p>"
+        },
+        "FilterConfiguration":{
+          "shape":"FilterConfiguration",
+          "documentation":"<p>Configuration for filtering events delivered to a subscriber. On CreateSubscriber, Filters is required and must contain at least one Filter with a non-empty Pattern. On UpdateSubscriber, an empty <code>FilterConfiguration:{}</code> clears the existing filter. Any non-empty shape (including <code>{Language:X}</code> without Filters) must contain a valid Filters list — same contract as CreateSubscriber. A non-empty Filters list overwrites; an omitted FilterConfiguration preserves existing state. All Filters are implicitly ANDed — an event must match every Filter to be delivered.</p>"
+        },
+        "BatchConfiguration":{
+          "shape":"BatchConfiguration",
+          "documentation":"<p>Batching configuration for a subscriber.</p>"
+        },
         "Transformer":{
           "shape":"Transformer",
-          "documentation":"<p>Not applicable to universal (aws-sdk) targets, whose input transformation is UniversalTargetParameters.Input; a Transformer on such a target is rejected.</p>"
+          "documentation":"<p>Transformer configuration for a subscriber.</p>"
         },
-        "RetryPolicy":{"shape":"RetryPolicy"},
-        "OnFailureConfiguration":{"shape":"OnFailureConfiguration"},
-        "LogConfiguration":{"shape":"LogConfiguration"}
+        "RetryPolicy":{
+          "shape":"RetryPolicy",
+          "documentation":"<p>Retry policy for a subscriber.</p>"
+        },
+        "OnFailureConfiguration":{
+          "shape":"OnFailureConfiguration",
+          "documentation":"<p>On-failure configuration: where a failed delivery is sent. Shared by the subscriber and the EventSource.</p>"
+        },
+        "LogConfiguration":{
+          "shape":"LogConfiguration",
+          "documentation":"<p>Log configuration for a subscriber.</p>"
+        }
       }
     },
     "UpdateSubscriberResponse":{
       "type":"structure",
       "members":{
-        "SubscriberArn":{"shape":"SubscriberArn"},
-        "Name":{"shape":"SubscriberName"},
-        "EventBusArn":{"shape":"EventBusArn"},
-        "Type":{"shape":"OrderingType"},
-        "StartingPosition":{"shape":"StartingPosition"},
-        "PointInTimeConfiguration":{"shape":"PointInTimeConfiguration"},
-        "State":{"shape":"SubscriberState"},
+        "SubscriberArn":{
+          "shape":"SubscriberArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) that uniquely identifies a subscriber.</p>"
+        },
+        "Name":{
+          "shape":"SubscriberName",
+          "documentation":"<p>Name of a subscriber. The first character must be alphanumeric; the remaining characters may also include '.', '-', and '_'.</p>"
+        },
+        "EventBusArn":{
+          "shape":"EventBusArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) that uniquely identifies an event bus.</p>"
+        },
+        "Type":{
+          "shape":"OrderingType",
+          "documentation":"<p>Delivery ordering mode of a subscriber: FIFO delivers events in order within an event group; UNORDERED delivers without an ordering guarantee.</p>"
+        },
+        "StartingPosition":{
+          "shape":"StartingPosition",
+          "documentation":"<p>Starting position for a subscriber.</p>"
+        },
+        "PointInTimeConfiguration":{
+          "shape":"PointInTimeConfiguration",
+          "documentation":"<p>Point-in-time configuration for a subscriber. Only applicable when StartingPosition is POINT_IN_TIME.</p>"
+        },
+        "State":{
+          "shape":"SubscriberState",
+          "documentation":"<p>Customer-controlled run state of a subscriber, set on create or update. Distinct from the bus lifecycle vocabulary, where ACTIVE means \"provisioned and healthy\". Delivery requires State RUNNING on a subscriber that is not revoked.</p>"
+        },
         "LastModifiedTime":{
           "shape":"Timestamp",
           "documentation":"<p>The time the subscriber was last modified.</p>"
-        }
+        },
+        "SubscriberDetails":{"shape":"SubscriberDetails"}
       }
+    },
+    "VpcConnectionArn":{
+      "type":"string",
+      "documentation":"<p>ARN of a VPC connection EventBridge creates to an Amazon MSK cluster. EventBridge owns the connection, so the account in the ARN is an EventBridge account, not the caller's.</p>",
+      "max":1011,
+      "min":1
+    },
+    "WebhookAuthConfiguration":{
+      "type":"structure",
+      "members":{
+        "StaticTokenAuthConfiguration":{
+          "shape":"WebhookStaticTokenAuthConfiguration",
+          "documentation":"<p>The provider sends a static token in an HTTP header.</p>"
+        },
+        "BasicHttpAuthConfiguration":{
+          "shape":"WebhookBasicHttpAuthConfiguration",
+          "documentation":"<p>The provider uses HTTP Basic authentication.</p>"
+        },
+        "HmacAuthConfiguration":{
+          "shape":"WebhookHmacAuthConfiguration",
+          "documentation":"<p>The provider signs each request with an HMAC of the secret.</p>"
+        }
+      },
+      "documentation":"<p>How the provider authenticates its webhook requests. Exactly one variant must be set.</p>",
+      "union":true
+    },
+    "WebhookBasicHttpAuthConfiguration":{
+      "type":"structure",
+      "members":{
+        "Username":{
+          "shape":"WebhookUsername",
+          "documentation":"<p>The username.</p>"
+        },
+        "Password":{
+          "shape":"WebhookSecretValue",
+          "documentation":"<p>The password.</p>"
+        }
+      },
+      "documentation":"<p>The provider sends HTTP Basic authentication credentials: an Authorization header with the value \"Basic \" followed by the Base64 encoding of username:password. Supply both Username and Password, or omit both so that EventBridge generates the pair. Supplying only one fails with InvalidInputException. EventBridge stores both only in AWS Secrets Manager and never returns them, including from DescribeEventSource.</p>"
+    },
+    "WebhookCredential":{
+      "type":"structure",
+      "members":{
+        "StaticTokenSecretValue":{
+          "shape":"WebhookSecretValue",
+          "documentation":"<p>The new token for static token authentication.</p>"
+        },
+        "BasicHttpPassword":{
+          "shape":"WebhookSecretValue",
+          "documentation":"<p>The new password for HTTP Basic authentication. The username does not change.</p>"
+        },
+        "HmacSecretValue":{
+          "shape":"WebhookSecretValue",
+          "documentation":"<p>The new HMAC secret, in the SecretEncoding of the EventSource. With BASE64, EventBridge removes a leading \"whsec_\". The key must be 16 to 512 bytes; with BASE64 SecretEncoding, this is measured after decoding.</p>"
+        }
+      },
+      "documentation":"<p>A new webhook credential. Exactly one variant must be set.</p>",
+      "union":true
+    },
+    "WebhookDeduplicationConfiguration":{
+      "type":"structure",
+      "required":["DeduplicationType"],
+      "members":{
+        "DeduplicationType":{
+          "shape":"WebhookDeduplicationType",
+          "documentation":"<p>How duplicate events are detected.</p>"
+        }
+      },
+      "documentation":"<p>Deduplication settings for a webhook EventSource's events.</p>"
+    },
+    "WebhookDeduplicationType":{
+      "type":"string",
+      "documentation":"<p>How duplicate events are detected. Deduplicating by a caller-supplied ID is not available for a webhook EventSource, because its sender calls an HTTP endpoint and so cannot set an ID per event.</p>",
+      "enum":["CONTENT_BASED"]
+    },
+    "WebhookDelimiter":{
+      "type":"string",
+      "documentation":"<p>The separator between parts of a header value.</p>",
+      "max":64,
+      "min":1,
+      "pattern":"[\\u0020-\\u007E]+"
+    },
+    "WebhookDetails":{
+      "type":"structure",
+      "members":{
+        "WebhookUrl":{
+          "shape":"WebhookUrl",
+          "documentation":"<p>The HTTPS URL to configure in the provider. The URL doesn't change for the life of the EventSource.</p>"
+        },
+        "SecretArn":{
+          "shape":"WebhookSecretArn",
+          "documentation":"<p>The ARN of the AWS Secrets Manager secret, in your account, that holds the secret.</p>"
+        }
+      },
+      "documentation":"<p>Values EventBridge generated for a webhook EventSource.</p>"
+    },
+    "WebhookEventSourceArn":{
+      "type":"string",
+      "documentation":"<p>ARN of a webhook EventSource: event-sourcev2/webhook/&lt;name&gt;/&lt;id&gt;.</p>",
+      "max":1011,
+      "min":1,
+      "pattern":"arn:aws(-[a-z0-9]+)*:events:[a-z][a-z0-9]*(-[a-z0-9]+)*:([0-9]{12}):event-sourcev2\\/webhook\\/[A-Za-z0-9][\\.\\-_A-Za-z0-9]{0,255}\\/[a-z0-9]{25}"
+    },
+    "WebhookEventsSourceConfiguration":{
+      "type":"structure",
+      "required":[
+        "AuthConfiguration",
+        "RoleArn"
+      ],
+      "members":{
+        "AuthConfiguration":{
+          "shape":"WebhookAuthConfiguration",
+          "documentation":"<p>How the provider authenticates its requests. Exactly one authentication type must be set, and it can't be changed after the EventSource is created.</p>"
+        },
+        "KmsKeyIdentifier":{
+          "shape":"KmsKeyIdentifier",
+          "documentation":"<p>Optional. The AWS KMS key that encrypts the EventSource's secret in AWS Secrets Manager. Omit it to encrypt the secret with the AWS managed key aws/secretsmanager. A key you supply must be an enabled customer managed key in your account and Region. Changing it re-encrypts the secret under the new key. The previous key can still decrypt the stored versions until the credential is next rotated.</p>"
+        },
+        "RoleArn":{
+          "shape":"RoleArn",
+          "documentation":"<p>IAM role the service assumes to put the webhook's events on the event bus. Must belong to the calling account.</p>"
+        },
+        "MetadataHttpHeaders":{
+          "shape":"WebhookMetadataHttpHeaderList",
+          "documentation":"<p>The HTTP request headers to add to each event's metadata, up to 20. Header names are case-insensitive and can't repeat. Each header is added under its lowercase name. Omit the list to add no headers. Headers that carry credentials or that describe the network path, and the header that carries the static token, can't be listed.</p>"
+        },
+        "DeduplicationConfiguration":{
+          "shape":"WebhookDeduplicationConfiguration",
+          "documentation":"<p>Optional. Deduplicates this EventSource's events on the event bus. Omit it to deduplicate nothing.</p>"
+        },
+        "LogConfiguration":{
+          "shape":"LogConfiguration",
+          "documentation":"<p>Optional. Controls the log records EventBridge delivers for this EventSource's webhook requests. Omit it to deliver no logs. Logs are delivered to the destinations you configure with Amazon CloudWatch Logs vended log delivery.</p>"
+        }
+      },
+      "documentation":"<p>Configuration for receiving events from an external provider, such as a SaaS application, that sends them as HTTPS POST requests to a webhook URL. The provider authenticates with an HTTP scheme instead of AWS credentials.</p>"
+    },
+    "WebhookHeaderName":{
+      "type":"string",
+      "documentation":"<p>The name of an HTTP header. Must be a valid header name as defined in RFC 7230.</p>",
+      "max":512,
+      "min":1,
+      "pattern":"[!#$%&'*+\\-.^_`|~0-9A-Za-z]+"
+    },
+    "WebhookHmacAlgorithm":{
+      "type":"string",
+      "documentation":"<p>Hash algorithms supported for hash-based message authentication code (HMAC) signatures.</p>",
+      "enum":[
+        "SHA256",
+        "SHA1"
+      ]
+    },
+    "WebhookHmacAuthConfiguration":{
+      "type":"structure",
+      "required":[
+        "Algorithm",
+        "Encoding",
+        "SignatureHttpHeader",
+        "SignedMessageComposition"
+      ],
+      "members":{
+        "Algorithm":{
+          "shape":"WebhookHmacAlgorithm",
+          "documentation":"<p>The hash algorithm the provider uses to compute the signature.</p>"
+        },
+        "Encoding":{
+          "shape":"WebhookHmacEncoding",
+          "documentation":"<p>How the provider encodes the signature in the header.</p>"
+        },
+        "SignatureHttpHeader":{
+          "shape":"WebhookHeaderName",
+          "documentation":"<p>The name of the header that carries the signature, for example X-Hub-Signature-256. When TimestampHttpHeader names the same header, Delimiter, SignaturePrefix and TimestampPrefix are all required. Reserved names are rejected, as described on StaticTokenAuthConfiguration's TokenHttpHeader.</p>"
+        },
+        "SignaturePrefix":{
+          "shape":"WebhookSignaturePrefix",
+          "documentation":"<p>The text that precedes the signature in the header value, for example sha256=. Required when TimestampHttpHeader is the same header as SignatureHttpHeader.</p>"
+        },
+        "Delimiter":{
+          "shape":"WebhookDelimiter",
+          "documentation":"<p>The separator between parts of the signature header value, for example a comma for a header value of t=1727816400,v1=&lt;signature&gt;, or a space when the header carries several signatures. Required when TimestampHttpHeader is the same header as SignatureHttpHeader.</p>"
+        },
+        "TimestampHttpHeader":{
+          "shape":"WebhookHeaderName",
+          "documentation":"<p>The name of the header that carries the request timestamp. Required when SignedMessageComposition is TIMESTAMP_DOT_BODY or MESSAGE_ID_DOT_TIMESTAMP_DOT_BODY, or when TimestampToleranceInSeconds is set. Not allowed when SignedMessageComposition is BODY, because BODY does not sign the timestamp. Reserved names are rejected, as described on StaticTokenAuthConfiguration's TokenHttpHeader.</p>"
+        },
+        "TimestampPrefix":{
+          "shape":"WebhookTimestampPrefix",
+          "documentation":"<p>The text that precedes the timestamp in the header value, for example t=. Required when TimestampHttpHeader is the same header as SignatureHttpHeader.</p>"
+        },
+        "TimestampToleranceInSeconds":{
+          "shape":"WebhookTimestampToleranceInSeconds",
+          "documentation":"<p>The maximum difference, in seconds, allowed between the request timestamp and the time EventBridge receives the request. Requests outside this window are rejected. The default is 300 seconds. Requires TimestampHttpHeader. Not allowed when SignedMessageComposition is BODY, because BODY does not sign the timestamp.</p>"
+        },
+        "MessageIdHttpHeader":{
+          "shape":"WebhookHeaderName",
+          "documentation":"<p>The name of the header that carries the message ID. Required when SignedMessageComposition is MESSAGE_ID_DOT_TIMESTAMP_DOT_BODY. Requests whose message ID contains a period (.) are rejected. Reserved names are rejected, as described on StaticTokenAuthConfiguration's TokenHttpHeader.</p>"
+        },
+        "SignedMessageComposition":{
+          "shape":"WebhookSignedMessageComposition",
+          "documentation":"<p>How the provider assembles the message it signs from the request.</p> <ul> <li> <p>BODY - The request body alone. BODY provides no replay protection.</p> </li> <li> <p>TIMESTAMP_DOT_BODY - &lt;timestamp&gt;.&lt;body&gt;. Requires TimestampHttpHeader.</p> </li> <li> <p>MESSAGE_ID_DOT_TIMESTAMP_DOT_BODY - &lt;messageId&gt;.&lt;timestamp&gt;.&lt;body&gt;, as in the Standard Webhooks specification. Requires TimestampHttpHeader and MessageIdHttpHeader.</p> </li> </ul>"
+        },
+        "SecretValue":{
+          "shape":"WebhookSecretValue",
+          "documentation":"<p>The signing key shared with the provider. If you omit it, EventBridge generates one. EventBridge stores the key only in AWS Secrets Manager and never returns it, including from DescribeEventSource. The key must be 16 to 512 bytes; with BASE64 SecretEncoding, this is measured after decoding.</p>"
+        },
+        "SecretEncoding":{
+          "shape":"WebhookSecretEncoding",
+          "documentation":"<p>How the secret is encoded. RAW uses the secret's characters as the signing key. BASE64 decodes the secret first, as providers that follow the Standard Webhooks specification require. The default is RAW.</p>"
+        }
+      },
+      "documentation":"<p>The provider signs each request with a hash-based message authentication code (HMAC) of the secret. Amazon EventBridge accepts the request if any signature in SignatureHttpHeader matches.</p>"
+    },
+    "WebhookHmacEncoding":{
+      "type":"string",
+      "documentation":"<p>Encodings supported for HMAC signatures.</p>",
+      "enum":[
+        "HEX",
+        "BASE64"
+      ]
+    },
+    "WebhookMetadataHttpHeaderList":{
+      "type":"list",
+      "member":{"shape":"WebhookMetadataHttpHeaderName"},
+      "documentation":"<p>The HTTP request headers to add to event metadata.</p>",
+      "max":20,
+      "min":0
+    },
+    "WebhookMetadataHttpHeaderName":{
+      "type":"string",
+      "documentation":"<p>The name of an HTTP request header to add to event metadata. Must be a valid header name as defined in RFC 7230.</p>",
+      "max":128,
+      "min":1,
+      "pattern":"[!#$%&'*+\\-.^_`|~0-9A-Za-z]+"
+    },
+    "WebhookSecretArn":{
+      "type":"string",
+      "documentation":"<p>The ARN of the AWS Secrets Manager secret that holds a webhook EventSource's secret.</p>",
+      "max":2048,
+      "min":20,
+      "pattern":"arn:aws(-[a-z0-9]+)*:secretsmanager:[a-z][a-z0-9]*(-[a-z0-9]+)*:([0-9]{12}):secret:events-webhook(-preprod)?[!/].+"
+    },
+    "WebhookSecretEncoding":{
+      "type":"string",
+      "documentation":"<p>Encodings supported for an HMAC secret.</p>",
+      "enum":[
+        "RAW",
+        "BASE64"
+      ]
+    },
+    "WebhookSecretValue":{
+      "type":"string",
+      "documentation":"<p>The secret a provider uses to authenticate webhook requests.</p>",
+      "max":512,
+      "min":6,
+      "sensitive":true
+    },
+    "WebhookSignaturePrefix":{
+      "type":"string",
+      "documentation":"<p>The text that precedes the signature in a header value.</p>",
+      "max":64,
+      "min":1,
+      "pattern":"[\\u0020-\\u007E]+"
+    },
+    "WebhookSignedMessageComposition":{
+      "type":"string",
+      "documentation":"<p>How the provider assembles the message it signs from the request.</p> <ul> <li> <p>BODY - The request body alone. BODY provides no replay protection.</p> </li> <li> <p>TIMESTAMP_DOT_BODY - &lt;timestamp&gt;.&lt;body&gt;. Requires TimestampHttpHeader.</p> </li> <li> <p>MESSAGE_ID_DOT_TIMESTAMP_DOT_BODY - &lt;messageId&gt;.&lt;timestamp&gt;.&lt;body&gt;, as in the Standard Webhooks specification. Requires TimestampHttpHeader and MessageIdHttpHeader.</p> </li> </ul>",
+      "enum":[
+        "BODY",
+        "TIMESTAMP_DOT_BODY",
+        "MESSAGE_ID_DOT_TIMESTAMP_DOT_BODY"
+      ]
+    },
+    "WebhookStaticTokenAuthConfiguration":{
+      "type":"structure",
+      "required":["TokenHttpHeader"],
+      "members":{
+        "TokenHttpHeader":{
+          "shape":"WebhookHeaderName",
+          "documentation":"<p>The name of the header that carries the secret, for example X-Webhook-Secret. Reserved names are rejected: the names EventBridge's edge writes, such as Host and the X-Forwarded-* family, and the hop-by-hop and framing names an HTTP intermediary may rewrite, such as Connection and Content-Length. Authorization is allowed.</p>"
+        },
+        "SecretValue":{
+          "shape":"WebhookSecretValue",
+          "documentation":"<p>The token the provider sends in the header. If you omit it, EventBridge generates one. EventBridge stores the token only in AWS Secrets Manager and never returns it, including from DescribeEventSource. EventBridge compares it against the entire header value, so a provider that sends Authorization: Bearer &lt;token&gt; needs SecretValue to include the \"Bearer \" prefix.</p>"
+        }
+      },
+      "documentation":"<p>The provider sends the secret as the value of an HTTP header.</p>"
+    },
+    "WebhookTimestampPrefix":{
+      "type":"string",
+      "documentation":"<p>The text that precedes the timestamp in a header value.</p>",
+      "max":64,
+      "min":1,
+      "pattern":"[\\u0020-\\u007E]+"
+    },
+    "WebhookTimestampToleranceInSeconds":{
+      "type":"integer",
+      "documentation":"<p>The maximum allowed difference, in seconds, between a request's timestamp and its receipt.</p>",
+      "box":true,
+      "max":900,
+      "min":1
+    },
+    "WebhookUrl":{
+      "type":"string",
+      "documentation":"<p>The HTTPS URL a provider sends webhook requests to.</p>",
+      "max":2048,
+      "min":1,
+      "sensitive":true
+    },
+    "WebhookUsername":{
+      "type":"string",
+      "documentation":"<p>The username for HTTP Basic authentication. Can't contain a colon or whitespace.</p>",
+      "max":512,
+      "min":1,
+      "pattern":"[^:\\s]+"
     }
   },
-  "documentation":"<p>Amazon EventBridge event bus API. An event bus receives events published by your applications and AWS services, stores them for a configurable retention period, and delivers them to subscribers. A subscriber filters events, optionally transforms them, and invokes a target such as Lambda, SQS, SNS, Kinesis, Step Functions, or an HTTP endpoint. The API manages event buses, subscribers, event sources, resource policies, and tags, and publishes events through PutEvents and PutRawEvents.</p>"
+  "documentation":"<p><fullname>Amazon EventBridge Custom Event Bus</fullname> <p>Amazon EventBridge event bus API. An event bus receives events published by your applications and AWS services, stores them for a configurable retention period, and delivers them to subscribers. A subscriber filters events, optionally transforms them, and invokes a target such as Lambda, SQS, SNS, Kinesis, Step Functions, or an HTTP endpoint. The API manages event buses, subscribers, event sources, resource policies, and tags, and publishes events through PutEvents and PutRawEvents.</p></p>"
 }

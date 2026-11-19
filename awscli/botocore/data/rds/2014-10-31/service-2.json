@@ -378,7 +378,7 @@
         {"shape":"DBSubnetGroupNotFoundFault"},
         {"shape":"DBClusterQuotaExceededFault"}
       ],
-      "documentation":"<p>Creates a new Amazon Aurora DB cluster or Multi-AZ DB cluster.</p> <p>If you create an Aurora DB cluster, the request creates an empty cluster. You must explicitly create the writer instance for your DB cluster using the <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/APIReference/API_CreateDBInstance.html\">CreateDBInstance</a> operation. If you create a Multi-AZ DB cluster, the request creates a writer and two reader DB instances for you, each in a different Availability Zone.</p> <p>You can use the <code>ReplicationSourceIdentifier</code> parameter to create an Amazon Aurora DB cluster as a read replica of another DB cluster or Amazon RDS for MySQL or PostgreSQL DB instance. For more information about Amazon Aurora, see <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/CHAP_AuroraOverview.html\">What is Amazon Aurora?</a> in the <i>Amazon Aurora User Guide</i>.</p> <p>You can also use the <code>ReplicationSourceIdentifier</code> parameter to create a Multi-AZ DB cluster read replica with an RDS for MySQL or PostgreSQL DB instance as the source. For more information about Multi-AZ DB clusters, see <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/multi-az-db-clusters-concepts.html\">Multi-AZ DB cluster deployments</a> in the <i>Amazon RDS User Guide</i>.</p> <p>You can use the <code>WithExpressConfiguration</code> parameter to create an Aurora DB Cluster with express configuration and create cluster in seconds. Express configuration provides a cluster with a writer instance and feature specific values set to all other input parameters of this API. </p> <p>You can use the <code>AssociatedRoles</code> parameter to associate one or more Amazon Web Services Identity and Access Management (IAM) roles with an Aurora DB cluster. Each associated role lets the DB cluster access other Amazon Web Services on your behalf, such as Amazon S3 for data import and export, or Amazon Web Services Lambda for invoking functions.</p>"
+      "documentation":"<p>Creates a new Amazon Aurora DB cluster or Multi-AZ DB cluster.</p> <p>If you create an Aurora DB cluster, the request creates an empty cluster. You must explicitly create the writer instance for your DB cluster using the <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/APIReference/API_CreateDBInstance.html\">CreateDBInstance</a> operation. If you create a Multi-AZ DB cluster, the request creates a writer and two reader DB instances for you, each in a different Availability Zone.</p> <p>You can use the <code>ReplicationSourceIdentifier</code> parameter to create an Amazon Aurora DB cluster as a read replica of another DB cluster or Amazon RDS for MySQL or PostgreSQL DB instance. For more information about Amazon Aurora, see <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/CHAP_AuroraOverview.html\">What is Amazon Aurora?</a> in the <i>Amazon Aurora User Guide</i>.</p> <p>You can also use the <code>ReplicationSourceIdentifier</code> parameter to create a Multi-AZ DB cluster read replica with an RDS for MySQL or PostgreSQL DB instance as the source. For more information about Multi-AZ DB clusters, see <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/multi-az-db-clusters-concepts.html\">Multi-AZ DB cluster deployments</a> in the <i>Amazon RDS User Guide</i>.</p> <p>You can use the <code>WithExpressConfiguration</code> parameter to create an Aurora DB Cluster with express configuration and create cluster in seconds. Express configuration provides a cluster with a writer instance and feature specific values set to all other input parameters of this API. </p> <p>To create an Aurora PostgreSQL DB cluster without VPC networking, see <code>EnableVPCNetworking</code>.</p> <p>You can use the <code>AssociatedRoles</code> parameter to associate one or more Amazon Web Services Identity and Access Management (IAM) roles with an Aurora DB cluster. Each associated role lets the DB cluster access other Amazon Web Services on your behalf, such as Amazon S3 for data import and export, or Amazon Web Services Lambda for invoking functions.</p>"
     },
     "CreateDBClusterEndpoint":{
       "name":"CreateDBClusterEndpoint",
@@ -2120,7 +2120,7 @@
         {"shape":"InvalidDBSubnetGroupStateFault"},
         {"shape":"DBSubnetGroupNotFoundFault"}
       ],
-      "documentation":"<p>Modifies the settings of an Amazon Aurora DB cluster or a Multi-AZ DB cluster. You can change one or more settings by specifying these parameters and the new values in the request.</p> <p>For more information on Amazon Aurora DB clusters, see <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/CHAP_AuroraOverview.html\"> What is Amazon Aurora?</a> in the <i>Amazon Aurora User Guide</i>.</p> <p>For more information on Multi-AZ DB clusters, see <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/multi-az-db-clusters-concepts.html\"> Multi-AZ DB cluster deployments</a> in the <i>Amazon RDS User Guide</i>.</p>"
+      "documentation":"<p>Modifies the settings of an Amazon Aurora DB cluster or a Multi-AZ DB cluster. You can change one or more settings by specifying these parameters and the new values in the request.</p> <p>To change the VPC networking configuration of an Aurora PostgreSQL DB cluster, see <code>EnableVPCNetworking</code>. To move an Aurora MySQL or Aurora PostgreSQL DB cluster to a different DB subnet group, in the same VPC or a different VPC, see <code>DBSubnetGroupName</code>.</p> <p>For more information on Amazon Aurora DB clusters, see <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/CHAP_AuroraOverview.html\"> What is Amazon Aurora?</a> in the <i>Amazon Aurora User Guide</i>.</p> <p>For more information on Multi-AZ DB clusters, see <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/multi-az-db-clusters-concepts.html\"> Multi-AZ DB cluster deployments</a> in the <i>Amazon RDS User Guide</i>.</p>"
     },
     "ModifyDBClusterEndpoint":{
       "name":"ModifyDBClusterEndpoint",
@@ -3477,7 +3477,7 @@
         },
         "ApplyAction":{
           "shape":"String",
-          "documentation":"<p>The pending maintenance action to apply to this resource.</p> <p>Valid Values:</p> <ul> <li> <p> <code>ca-certificate-rotation</code> </p> </li> <li> <p> <code>db-upgrade</code> </p> </li> <li> <p> <code>hardware-maintenance</code> </p> </li> <li> <p> <code>os-upgrade</code> </p> </li> <li> <p> <code>system-update</code> </p> </li> </ul> <p>For more information about these actions, see <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/USER_UpgradeDBInstance.Maintenance.html#maintenance-actions-aurora\">Maintenance actions for Amazon Aurora</a> or <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/USER_UpgradeDBInstance.Maintenance.html#maintenance-actions-rds\">Maintenance actions for Amazon RDS</a>.</p>"
+          "documentation":"<p>The pending maintenance action to apply to this resource.</p> <p>Valid Values:</p> <ul> <li> <p> <code>ca-certificate-rotation</code> </p> </li> <li> <p> <code>db-upgrade</code> </p> </li> <li> <p> <code>hardware-maintenance</code> </p> </li> <li> <p> <code>os-upgrade</code> </p> </li> <li> <p> <code>serverless-platform-version-update</code> </p> </li> <li> <p> <code>system-update</code> </p> </li> </ul> <p>For more information about these actions, see <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/USER_UpgradeDBInstance.Maintenance.html#maintenance-actions-aurora\">Maintenance actions for Amazon Aurora</a> or <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/USER_UpgradeDBInstance.Maintenance.html#maintenance-actions-rds\">Maintenance actions for Amazon RDS</a>.</p>"
         },
         "OptInType":{
           "shape":"String",
@@ -4088,7 +4088,15 @@
           "shape":"IntegerOptional",
           "documentation":"<p>The Provisioned IOPS (I/O operations per second) value. This setting is only for non-Aurora Multi-AZ DB clusters.</p>"
         },
-        "CertificateDetails":{"shape":"CertificateDetails"}
+        "CertificateDetails":{"shape":"CertificateDetails"},
+        "VPCNetworkingEnabled":{
+          "shape":"BooleanOptional",
+          "documentation":"<p>Indicates whether the DB cluster will use VPC networking after a pending networking change completes. For a pending move to a different DB subnet group, the value is <code>true</code>.</p> <p>Valid for Cluster Type: Aurora DB clusters only</p>"
+        },
+        "InternetAccessGatewayEnabled":{
+          "shape":"BooleanOptional",
+          "documentation":"<p>Indicates whether the DB cluster will use an internet access gateway after a pending networking change completes.</p> <p>Valid for Cluster Type: Aurora PostgreSQL DB clusters only</p>"
+        }
       },
       "documentation":"<p>This data type is used as a response element in the <code>ModifyDBCluster</code> operation and contains changes that will be applied during the next maintenance window.</p>"
     },
@@ -4616,11 +4624,11 @@
         },
         "VpcSecurityGroupIds":{
           "shape":"VpcSecurityGroupIdList",
-          "documentation":"<p>A list of EC2 VPC security groups to associate with this DB cluster.</p> <p>Valid for Cluster Type: Aurora DB clusters and Multi-AZ DB clusters</p>"
+          "documentation":"<p>A list of EC2 VPC security groups to associate with this DB cluster.</p> <p>Valid only for DB clusters inside a VPC. Don't specify it when you set <code>EnableVPCNetworking</code> to <code>false</code>.</p> <p>Valid for Cluster Type: Aurora DB clusters and Multi-AZ DB clusters</p>"
         },
         "DBSubnetGroupName":{
           "shape":"String",
-          "documentation":"<p>A DB subnet group to associate with this DB cluster.</p> <p>This setting is required to create a Multi-AZ DB cluster.</p> <p>Valid for Cluster Type: Aurora DB clusters and Multi-AZ DB clusters</p> <p>Constraints:</p> <ul> <li> <p>Must match the name of an existing DB subnet group.</p> </li> </ul> <p>Example: <code>mydbsubnetgroup</code> </p>"
+          "documentation":"<p>A DB subnet group to associate with this DB cluster.</p> <p>This setting is required to create a Multi-AZ DB cluster.</p> <p>Valid only for DB clusters inside a VPC. Don't specify it when you set <code>EnableVPCNetworking</code> to <code>false</code>.</p> <p>Valid for Cluster Type: Aurora DB clusters and Multi-AZ DB clusters</p> <p>Constraints:</p> <ul> <li> <p>Must match the name of an existing DB subnet group.</p> </li> </ul> <p>Example: <code>mydbsubnetgroup</code> </p>"
         },
         "Engine":{
           "shape":"String",
@@ -4752,7 +4760,7 @@
         },
         "NetworkType":{
           "shape":"String",
-          "documentation":"<p>The network type of the DB cluster.</p> <p>The network type is determined by the <code>DBSubnetGroup</code> specified for the DB cluster. A <code>DBSubnetGroup</code> can support only the IPv4 protocol or the IPv4 and the IPv6 protocols (<code>DUAL</code>).</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/USER_VPC.WorkingWithRDSInstanceinaVPC.html\"> Working with a DB instance in a VPC</a> in the <i>Amazon Aurora User Guide.</i> </p> <p>Valid for Cluster Type: Aurora DB clusters only</p> <p>Valid Values: <code>IPV4 | DUAL</code> </p>"
+          "documentation":"<p>The network type of the DB cluster.</p> <p>The network type is determined by the <code>DBSubnetGroup</code> specified for the DB cluster. A <code>DBSubnetGroup</code> can support only the IPv4 protocol or the IPv4 and the IPv6 protocols (<code>DUAL</code>).</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/USER_VPC.WorkingWithRDSInstanceinaVPC.html\"> Working with a DB instance in a VPC</a> in the <i>Amazon Aurora User Guide.</i> </p> <p>Don't specify it when you set <code>EnableVPCNetworking</code> to <code>false</code>.</p> <p>Valid for Cluster Type: Aurora DB clusters only</p> <p>Valid Values: <code>IPV4 | DUAL</code> </p>"
         },
         "ServerlessV2ScalingConfiguration":{"shape":"ServerlessV2ScalingConfiguration"},
         "MonitoringInterval":{
@@ -4819,9 +4827,17 @@
           "shape":"MasterUserAuthenticationType",
           "documentation":"<p>Specifies the authentication type for the master user. With IAM master user authentication, you can configure the master DB user with IAM database authentication when you create a DB cluster.</p> <p>You can specify one of the following values:</p> <ul> <li> <p> <code>password</code> - Use standard database authentication with a password.</p> </li> <li> <p> <code>iam-db-auth</code> - Use IAM database authentication for the master user.</p> </li> </ul> <p>Valid for Cluster Type: Aurora DB clusters and Multi-AZ DB clusters</p> <p>This option is only valid for RDS for PostgreSQL and Aurora PostgreSQL engines.</p>"
         },
+        "EnableVPCNetworking":{
+          "shape":"BooleanOptional",
+          "documentation":"<p>Specifies whether VPC networking is enabled for the DB cluster. Set to <code>false</code> to create a DB cluster without VPC networking.</p> <p>A DB cluster without VPC networking needs an internet access gateway and IAM database authentication. Set <code>EnableInternetAccessGateway</code> and <code>EnableIAMDatabaseAuthentication</code> to <code>true</code>, and set <code>MasterUserAuthenticationType</code> to <code>iam-db-auth</code>.</p> <p>Default: <code>true</code>. With <code>WithExpressConfiguration</code>, the default is <code>false</code>.</p> <p>Valid for Cluster Type: Aurora PostgreSQL DB clusters only</p>"
+        },
         "WithExpressConfiguration":{
           "shape":"BooleanOptional",
-          "documentation":"<p>Specifies to create an Aurora DB Cluster with express configuration in seconds. Express configuration provides a cluster with a writer instance and feature specific values set to all other input parameters of this API. </p> <p>Valid for Cluster Type: Aurora DB clusters</p>"
+          "documentation":"<p>Specifies to create an Aurora DB Cluster with express configuration in seconds. Express configuration provides a cluster with a writer instance and feature specific values set to all other input parameters of this API. </p> <p>By default, a DB cluster with express configuration doesn't use VPC networking. You connect to it over the internet through an internet access gateway.</p> <p>To create the DB cluster in a VPC instead, set <code>EnableVPCNetworking</code> to <code>true</code> and <code>EnableInternetAccessGateway</code> to <code>false</code>. You can also specify <code>DBSubnetGroupName</code>, <code>VpcSecurityGroupIds</code>, and <code>NetworkType</code>. If you don't specify <code>DBSubnetGroupName</code>, the DB cluster uses the default DB subnet group for your Amazon Web Services account, in your default VPC.</p> <p>A DB cluster with express configuration in a VPC takes longer to become available than one without VPC networking.</p> <p>Valid for Cluster Type: Aurora DB clusters</p>"
+        },
+        "EnableInternetAccessGateway":{
+          "shape":"BooleanOptional",
+          "documentation":"<p>Specifies whether the DB cluster uses an internet access gateway. With an internet access gateway, you connect to the DB cluster over the internet without a VPC.</p> <p>Set to <code>true</code> only when you set <code>EnableVPCNetworking</code> to <code>false</code>. A DB cluster can't use VPC networking and an internet access gateway at the same time.</p> <p>Default: <code>false</code>. With <code>WithExpressConfiguration</code>, the default is <code>true</code>. To create a DB cluster with express configuration in a VPC, set this parameter to <code>false</code>.</p> <p>Valid for Cluster Type: Aurora PostgreSQL DB clusters only</p>"
         },
         "AssociatedRoles":{
           "shape":"DBClusterAssociatedRoles",
@@ -6447,11 +6463,11 @@
         },
         "VPCNetworkingEnabled":{
           "shape":"BooleanOptional",
-          "documentation":"<p>Indicates whether the DB cluster uses VPC-based networking.</p> <p>This setting is applicable only for Aurora PostgreSQL clusters created through express configuration.</p>"
+          "documentation":"<p>Indicates whether the DB cluster uses VPC-based networking. The value is <code>false</code> only for an Aurora PostgreSQL DB cluster without VPC networking.</p> <p>Valid for Cluster Type: Aurora DB clusters and Multi-AZ DB clusters</p>"
         },
         "InternetAccessGatewayEnabled":{
           "shape":"BooleanOptional",
-          "documentation":"<p>Indicates whether the DB cluster has internet-based connectivity enabled through an internet access gateway.</p> <p>This setting is applicable only for Aurora PostgreSQL clusters created through express configuration.</p>"
+          "documentation":"<p>Indicates whether the DB cluster has internet-based connectivity enabled through an internet access gateway.</p> <p>Valid for Cluster Type: Aurora PostgreSQL DB clusters only</p>"
         }
       },
       "documentation":"<p>Contains the details of an Amazon Aurora DB cluster or Multi-AZ DB cluster. </p> <p>For an Amazon Aurora DB cluster, this data type is used as a response element in the operations <code>CreateDBCluster</code>, <code>DeleteDBCluster</code>, <code>DescribeDBClusters</code>, <code>FailoverDBCluster</code>, <code>ModifyDBCluster</code>, <code>PromoteReadReplicaDBCluster</code>, <code>RestoreDBClusterFromS3</code>, <code>RestoreDBClusterFromSnapshot</code>, <code>RestoreDBClusterToPointInTime</code>, <code>StartDBCluster</code>, and <code>StopDBCluster</code>.</p> <p>For a Multi-AZ DB cluster, this data type is used as a response element in the operations <code>CreateDBCluster</code>, <code>DeleteDBCluster</code>, <code>DescribeDBClusters</code>, <code>FailoverDBCluster</code>, <code>ModifyDBCluster</code>, <code>RebootDBCluster</code>, <code>RestoreDBClusterFromSnapshot</code>, and <code>RestoreDBClusterToPointInTime</code>.</p> <p>For more information on Amazon Aurora DB clusters, see <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/CHAP_AuroraOverview.html\"> What is Amazon Aurora?</a> in the <i>Amazon Aurora User Guide.</i> </p> <p>For more information on Multi-AZ DB clusters, see <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/multi-az-db-clusters-concepts.html\"> Multi-AZ deployments with two readable standby DB instances</a> in the <i>Amazon RDS User Guide.</i> </p>",
@@ -7501,6 +7517,10 @@
           "shape":"Endpoint",
           "documentation":"<p>The connection endpoint for the DB instance.</p> <note> <p>The endpoint might not be shown for instances with the status of <code>creating</code>.</p> </note>"
         },
+        "PrimaryEndpoint":{
+          "shape":"PrimaryEndpoint",
+          "documentation":"<p>Specifies the connection endpoint for the DB instance that currently has the primary role.</p> <p>This endpoint points to the new primary DB instance after a switchover, so you don't have to connect to a different DNS name.</p> <p>A read replica reports the same primary endpoint as the DB instance it replicates from. When you promote a read replica, it reports its own primary endpoint.</p>"
+        },
         "AllocatedStorage":{
           "shape":"Integer",
           "documentation":"<p>The amount of storage in gibibytes (GiB) allocated for the DB instance.</p>"
@@ -7845,6 +7865,10 @@
         "DBCapacityReservationIdentifier":{
           "shape":"DBCapacityReservationIdentifier",
           "documentation":"<p>The identifier of the DB capacity reservation associated with this DB instance. Amazon RDS doesn't return this value if the DB instance doesn't use a DB capacity reservation.</p>"
+        },
+        "VPCNetworkingEnabled":{
+          "shape":"BooleanOptional",
+          "documentation":"<p>Indicates whether the DB instance uses VPC networking. For a DB instance in an Aurora PostgreSQL DB cluster without VPC networking, the value is <code>false</code>.</p>"
         }
       },
       "documentation":"<p>Contains the details of an Amazon RDS DB instance.</p> <p>This data type is used as a response element in the operations <code>CreateDBInstance</code>, <code>CreateDBInstanceReadReplica</code>, <code>DeleteDBInstance</code>, <code>DescribeDBInstances</code>, <code>ModifyDBInstance</code>, <code>PromoteReadReplica</code>, <code>RebootDBInstance</code>, <code>RestoreDBInstanceFromDBSnapshot</code>, <code>RestoreDBInstanceFromS3</code>, <code>RestoreDBInstanceToPointInTime</code>, <code>StartDBInstance</code>, and <code>StopDBInstance</code>.</p>",
@@ -13308,7 +13332,7 @@
         },
         "VpcSecurityGroupIds":{
           "shape":"VpcSecurityGroupIdList",
-          "documentation":"<p>A list of EC2 VPC security groups to associate with this DB cluster.</p> <p>Valid for Cluster Type: Aurora DB clusters and Multi-AZ DB clusters</p>"
+          "documentation":"<p>A list of EC2 VPC security groups to associate with this DB cluster.</p> <p>Valid only for DB clusters inside a VPC. For a DB cluster that uses an internet access gateway, specify this parameter only when you re-enable VPC networking. Set <code>EnableVPCNetworking</code> to <code>true</code> and <code>EnableInternetAccessGateway</code> to <code>false</code>.</p> <p>When you move the DB cluster to a different DB subnet group with <code>DBSubnetGroupName</code>, or re-enable VPC networking, the security groups must belong to the VPC of the DB subnet group. If you leave out this parameter in those requests, the DB cluster uses the default security group of that VPC, even for a move within the same VPC. To keep the current security groups, specify their IDs. If the VPC is a shared VPC, you must specify this parameter.</p> <p>Valid for Cluster Type: Aurora DB clusters and Multi-AZ DB clusters</p>"
         },
         "Port":{
           "shape":"IntegerOptional",
@@ -13404,7 +13428,7 @@
         },
         "NetworkType":{
           "shape":"String",
-          "documentation":"<p>The network type of the DB cluster.</p> <p>The network type is determined by the <code>DBSubnetGroup</code> specified for the DB cluster. A <code>DBSubnetGroup</code> can support only the IPv4 protocol or the IPv4 and the IPv6 protocols (<code>DUAL</code>).</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/USER_VPC.WorkingWithRDSInstanceinaVPC.html\"> Working with a DB instance in a VPC</a> in the <i>Amazon Aurora User Guide.</i> </p> <p>Valid for Cluster Type: Aurora DB clusters only</p> <p>Valid Values: <code>IPV4 | DUAL</code> </p>"
+          "documentation":"<p>The network type of the DB cluster.</p> <p>The network type is determined by the <code>DBSubnetGroup</code> specified for the DB cluster. A <code>DBSubnetGroup</code> can support only the IPv4 protocol or the IPv4 and the IPv6 protocols (<code>DUAL</code>).</p> <p>If the subnets in the DB subnet group support only the IPv4 protocol, you can't set this parameter to <code>DUAL</code>.</p> <p>If you don't specify this parameter when you move the DB cluster to a different DB subnet group with <code>DBSubnetGroupName</code>, the DB cluster uses <code>IPV4</code>, even if it currently uses <code>DUAL</code>. To keep dual-stack mode, specify <code>DUAL</code>. The new DB subnet group must support the network type.</p> <p>Don't specify it when you set <code>EnableVPCNetworking</code> to <code>false</code>.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/USER_VPC.WorkingWithRDSInstanceinaVPC.html\"> Working with a DB instance in a VPC</a> in the <i>Amazon Aurora User Guide.</i> </p> <p>Valid for Cluster Type: Aurora DB clusters only</p> <p>Valid Values: <code>IPV4 | DUAL</code> </p>"
         },
         "ServerlessV2ScalingConfiguration":{"shape":"ServerlessV2ScalingConfiguration"},
         "MonitoringInterval":{
@@ -13474,6 +13498,18 @@
         "EngineLifecycleSupport":{
           "shape":"String",
           "documentation":"<p>The lifecycle type for this DB cluster.</p> <p>You can use this setting to enroll your DB cluster into Amazon RDS Extended Support or to opt out. With RDS Extended Support, you can run the selected major engine version on your DB cluster past the end of standard support for that engine version. For more information, see the following sections:</p> <ul> <li> <p>Amazon Aurora - <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/extended-support.html\">Amazon RDS Extended Support with Amazon Aurora</a> in the <i>Amazon Aurora User Guide</i> </p> </li> <li> <p>Amazon RDS - <a href=\"https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/extended-support.html\">Amazon RDS Extended Support with Amazon RDS</a> in the <i>Amazon RDS User Guide</i> </p> </li> </ul> <p>Valid for Cluster Type: Aurora DB clusters and Multi-AZ DB clusters</p> <p>Valid Values: <code>open-source-rds-extended-support | open-source-rds-extended-support-disabled</code> </p>"
+        },
+        "EnableInternetAccessGateway":{
+          "shape":"BooleanOptional",
+          "documentation":"<p>Specifies whether the DB cluster uses an internet access gateway. With an internet access gateway, you connect to the DB cluster over the internet without a VPC.</p> <p>Set to <code>true</code> together with <code>EnableVPCNetworking</code> set to <code>false</code> to move the DB cluster out of its VPC. Set to <code>false</code> together with <code>EnableVPCNetworking</code> set to <code>true</code> to move the DB cluster into a VPC. A DB cluster can't use VPC networking and an internet access gateway at the same time.</p> <p>Valid for Cluster Type: Aurora PostgreSQL DB clusters only</p>"
+        },
+        "EnableVPCNetworking":{
+          "shape":"BooleanOptional",
+          "documentation":"<p>Specifies whether VPC networking is enabled for the DB cluster. Set to <code>false</code> to disable VPC networking for the DB cluster.</p> <p>A DB cluster without VPC networking needs an internet access gateway and IAM database authentication. Set <code>EnableInternetAccessGateway</code> and <code>EnableIAMDatabaseAuthentication</code> to <code>true</code>, and set <code>MasterUserAuthenticationType</code> to <code>iam-db-auth</code>.</p> <p>Set to <code>true</code> to re-enable VPC networking for a DB cluster that uses an internet access gateway. You can also specify <code>DBSubnetGroupName</code>, <code>VpcSecurityGroupIds</code>, and <code>NetworkType</code>.</p> <p>The change is applied during the next maintenance window unless <code>ApplyImmediately</code> is enabled.</p> <p>To move a DB cluster that already uses VPC networking to a different DB subnet group, you don't need to set this parameter. Specify <code>DBSubnetGroupName</code> instead.</p> <p>Valid for Cluster Type: Aurora PostgreSQL DB clusters only</p>"
+        },
+        "DBSubnetGroupName":{
+          "shape":"String",
+          "documentation":"<p>The DB subnet group for the DB cluster.</p> <p>Specify this parameter for one of these purposes:</p> <ul> <li> <p>To move an Aurora MySQL or Aurora PostgreSQL DB cluster that uses VPC networking to a different DB subnet group. The new DB subnet group can be in the same VPC or in a different VPC.</p> </li> <li> <p>To enable VPC networking for an Aurora PostgreSQL DB cluster that uses an internet access gateway. Set <code>EnableVPCNetworking</code> to <code>true</code> and <code>EnableInternetAccessGateway</code> to <code>false</code>.</p> </li> </ul> <p>When you move a DB cluster to a different DB subnet group, you don't need to set <code>EnableVPCNetworking</code>. If you set it to <code>false</code>, Aurora rejects the request. Security groups in <code>VpcSecurityGroupIds</code> must belong to the VPC of the new DB subnet group. If you don't specify <code>VpcSecurityGroupIds</code>, the DB cluster uses the default security group of that VPC. If you don't specify <code>NetworkType</code>, the DB cluster uses <code>IPV4</code>. Both defaults apply even if the DB cluster stays in the same VPC.</p> <p>An outage occurs during the move. The DB cluster uses VPC networking before, during, and after the move, and the move doesn't turn on an internet access gateway. If you specify the DB subnet group that the DB cluster already uses, the DB cluster isn't moved. The change is applied during the next maintenance window unless <code>ApplyImmediately</code> is enabled.</p> <p>Aurora rejects the move if the DB cluster:</p> <ul> <li> <p>Is a member of an Aurora global database.</p> </li> <li> <p>Uses Aurora Limitless Database.</p> </li> <li> <p>Is a cross-Region or in-Region read replica, or is the source of one. Aurora Replicas in the DB cluster don't block the move.</p> </li> <li> <p>Has enhanced binlog (Aurora MySQL), enhanced logical replication (Aurora PostgreSQL), or Babelfish turned on.</p> </li> <li> <p>Is a target of an RDS Proxy.</p> </li> <li> <p>Is part of a blue/green deployment.</p> </li> <li> <p>Is the source of a zero-ETL integration.</p> </li> <li> <p>Has a database activity stream that isn't stopped.</p> </li> </ul> <p>The move also fails if the DB cluster is switching to a different DB cluster parameter group, or if a change to enhanced binlog, enhanced logical replication, or Babelfish is pending in its DB cluster parameter group. Apply the change, and reboot if required, before you move the DB cluster.</p> <p>If the move fails, Aurora returns the DB cluster to its original DB subnet group and cancels the change. To try again, call <code>ModifyDBCluster</code> again.</p> <p>Aurora can't always return the DB cluster. If the move fails after Aurora starts to update the DB cluster endpoints, or if the rollback fails, the change doesn't complete. If Aurora can't restore the original network configuration, the DB instances in the DB cluster enter the <code>incompatible-network</code> state. In these cases, contact Amazon Web Services Support.</p> <p>Valid for Cluster Type: Aurora DB clusters only</p> <p>Default: If you don't specify this parameter when you enable VPC networking, the DB cluster uses the default DB subnet group for your Amazon Web Services account.</p> <p>Constraints: The DB subnet group must contain a subnet in each Availability Zone that the DB instances in the DB cluster are located in.</p> <p>Example: <code>mydbsubnetgroup</code> </p>"
         }
       },
       "documentation":"<p/>"
@@ -15189,6 +15225,20 @@
       "sensitive":true
     },
     "PotentiallySensitiveParameterValue":{"type":"string"},
+    "PrimaryEndpoint":{
+      "type":"structure",
+      "members":{
+        "Address":{
+          "shape":"String",
+          "documentation":"<p>Specifies the DNS address of the DB instance that currently has the primary role. This address doesn't change when the DB instance is renamed.</p>"
+        },
+        "HostedZoneId":{
+          "shape":"String",
+          "documentation":"<p>Specifies the ID that Amazon Route 53 assigns when you create a hosted zone.</p>"
+        }
+      },
+      "documentation":"<p>Contains the information you need to connect to the DB instance that currently has the primary role. The endpoint stays the same when the primary role moves to another DB instance, so you don't have to connect to a different DNS name after a switchover.</p>"
+    },
     "ProcessorFeature":{
       "type":"structure",
       "members":{

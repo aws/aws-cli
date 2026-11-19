@@ -622,6 +622,10 @@
         "aliasName":{
           "shape":"AliasName",
           "documentation":"<p>An alias for the profile. When you set an alias, the response includes the alias ARN of the profile in <code>aliasArn</code>.</p> <p>An alias name contains 1 to 256 characters. It must begin with a letter (A-Z or a-z). It can contain only letters (A-Z and a-z), numbers (0-9), underscores (_), hyphens (-), and forward slashes (/). A forward slash can appear only between two other characters, so an alias name can't end with a forward slash or contain two in a row. Alias names that begin with <code>aws/</code>, in any combination of uppercase and lowercase letters, are reserved. Alias names are case sensitive.</p> <p>The alias name must be unique among resources of the same type in your account and Region. If another resource of the same type already has the alias, the request fails with a <code>ValidationException</code>. An invalid or reserved alias name also causes a <code>ValidationException</code>.</p> <p>If you omit this parameter or specify an empty string, the resource is created without an alias.</p>"
+        },
+        "tipConfiguration":{
+          "shape":"TipConfiguration",
+          "documentation":"<p>The trusted identity propagation (TIP) settings for the profile. When you enable TIP, sessions from the profile include the identity from the certificate in <code>aws:OriginIdentity</code> condition keys.</p> <p>If you omit this parameter, the profile doesn't use TIP.</p>"
         }
       }
     },
@@ -1219,6 +1223,10 @@
           "shape":"ProfileAliasArn",
           "documentation":"<p>The alias ARN of the profile, in the form <code>arn:<i>partition</i>:rolesanywhere:<i>region</i>:<i>account</i>:alias/profile/<i>alias-name</i> </code>. Present only if the profile has an alias.</p> <p>You can use the alias ARN in place of the resource ID or ARN in the request parameters whose descriptions say that they accept an alias ARN. Don't use the alias ARN in Identity and Access Management (IAM) policies. A policy statement that names an alias ARN doesn't apply to the resource that holds the alias. Write policies with the ARN that contains the resource ID instead.</p>"
         },
+        "tipConfiguration":{
+          "shape":"TipConfiguration",
+          "documentation":"<p>The trusted identity propagation (TIP) settings of the profile.</p>"
+        },
         "previousAliasName":{
           "shape":"AliasName",
           "documentation":"<p>The alias that the resource had before the update request. IAM Roles Anywhere returns this value only in the response to an update request that changed or removed an existing alias. It isn't returned when the alias was unchanged, when the resource had no alias before the request, or by other operations.</p>"
@@ -1627,6 +1635,46 @@
       "pattern":"[ a-zA-Z0-9_.:/=+@-]*",
       "sensitive":true
     },
+    "TipConfiguration":{
+      "type":"structure",
+      "required":["status"],
+      "members":{
+        "status":{
+          "shape":"TipStatus",
+          "documentation":"<p>Specifies whether you use trusted identity propagation (TIP) for the profile. This field supports the following values:</p> <ul> <li> <p> <code>ENABLED</code> – Sessions from the profile include the <code>aws:OriginIdentity</code> condition keys.</p> </li> <li> <p> <code>DISABLED</code> – Sessions from the profile don't include these keys.</p> </li> </ul>"
+        },
+        "subjectType":{
+          "shape":"TipSubjectType",
+          "documentation":"<p>Specifies whether the certificates for the profile identify workloads or people. This field supports the following values:</p> <ul> <li> <p> <code>workload</code> – The certificates identify workloads.</p> </li> <li> <p> <code>user</code> – The certificates identify people.</p> </li> </ul> <p>Sessions include the value in <code>aws:OriginIdentity/SubjectType</code>. If you omit this field, sessions don't include that key.</p>"
+        },
+        "subjectSource":{
+          "shape":"TipSubjectSource",
+          "documentation":"<p>The certificate field whose value becomes the subject, <code>aws:OriginIdentity/Subject</code>. This field supports the following values:</p> <ul> <li> <p> <code>x509Subject/CN</code> (default) – The common name (CN) in the certificate's Subject.</p> </li> <li> <p> <code>x509SAN/URI</code> – The first URI in the certificate's Subject Alternative Name (SAN) extension.</p> </li> </ul> <p>The profile's attribute mappings must include a rule for this field, and the default attribute mappings include one for each value. If the certificate has no value for the field, <code>CreateSession</code> denies the request.</p>"
+        }
+      },
+      "documentation":"<p>The trusted identity propagation (TIP) settings of a profile. When you enable TIP, sessions from the profile include the identity from the certificate in <code>aws:OriginIdentity</code> condition keys, which callers can't set.</p>"
+    },
+    "TipStatus":{
+      "type":"string",
+      "enum":[
+        "ENABLED",
+        "DISABLED"
+      ]
+    },
+    "TipSubjectSource":{
+      "type":"string",
+      "enum":[
+        "x509SAN/URI",
+        "x509Subject/CN"
+      ]
+    },
+    "TipSubjectType":{
+      "type":"string",
+      "enum":[
+        "user",
+        "workload"
+      ]
+    },
     "TooManyTagsException":{
       "type":"structure",
       "members":{
@@ -1826,6 +1874,10 @@
         "aliasName":{
           "shape":"AliasName",
           "documentation":"<p>The alias for the profile.</p> <p>You can use this parameter in the following ways:</p> <ul> <li> <p>To set or change the alias, specify the new alias name. After the change, the previous alias ARN no longer identifies the resource. You can then assign the previous alias to another resource of the same type. A change can take a short time to take effect for requests that use an alias ARN.</p> </li> <li> <p>To remove the alias, specify an empty string.</p> </li> <li> <p>To keep the current alias, omit this parameter.</p> </li> </ul> <p>An alias name contains 1 to 256 characters. It must begin with a letter (A-Z or a-z). It can contain only letters (A-Z and a-z), numbers (0-9), underscores (_), hyphens (-), and forward slashes (/). A forward slash can appear only between two other characters, so an alias name can't end with a forward slash or contain two in a row. Alias names that begin with <code>aws/</code>, in any combination of uppercase and lowercase letters, are reserved. Alias names are case sensitive.</p> <p>The alias name must be unique among resources of the same type in your account and Region. If another resource of the same type already has the alias, the request fails with a <code>ValidationException</code>. An invalid or reserved alias name also causes a <code>ValidationException</code>.</p>"
+        },
+        "tipConfiguration":{
+          "shape":"TipConfiguration",
+          "documentation":"<p>The trusted identity propagation (TIP) settings for the profile. The settings that you specify replace the current settings, and a field that you omit returns to its default. If you omit this parameter, the TIP settings don't change.</p>"
         }
       }
     },

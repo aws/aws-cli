@@ -3057,6 +3057,10 @@
           "documentation":"<p>The streaming protocol you want your stack to prefer. This can be UDP or TCP. Currently, UDP is only supported in the Windows native client.</p>"
         },
         "ContentRedirection":{"shape":"ContentRedirection"},
+        "WebAuthnRedirection":{
+          "shape":"WebAuthnRedirection",
+          "documentation":"<p>Configuration for WebAuthn redirection between the streaming session and the user's local device. Use ProcessCompatibilityList to specify which processes can use WebAuthn redirection on Windows fleets.</p>"
+        },
         "AgentAccessConfig":{
           "shape":"AgentAccessConfig",
           "documentation":"<p>The configuration for agent access on the stack. If specified, agent access is enabled for the stack.</p>"
@@ -5577,6 +5581,20 @@
         "UDP"
       ]
     },
+    "ProcessCompatibilityList":{
+      "type":"list",
+      "member":{"shape":"ProcessImageName"},
+      "documentation":"<p>The list of process executable names on the remote host for which you enable WebAuthn redirection. Matching is case-insensitive, and duplicates are not allowed.</p> <p>If you omit this field on a Windows fleet, WorkSpaces Applications uses a built-in default list of common browser and sign-in processes. If you specify a list, your list replaces the default list rather than adding to it. Include any default entries that your workloads still need.</p> <p>WorkSpaces Applications does not support this field on Linux fleets.</p>",
+      "max":100,
+      "min":1
+    },
+    "ProcessImageName":{
+      "type":"string",
+      "documentation":"<p>The file name of a process executable on the remote host for which you want to redirect WebAuthn requests. For example, chrome.exe.</p>",
+      "max":260,
+      "min":1,
+      "pattern":"^[\\p{L}0-9_](?:[\\p{L}0-9._ ()+-]*[\\p{L}0-9._()+-])?(?<!\\.[eE][xX][eE])\\.[eE][xX][eE]$"
+    },
     "RedirectURL":{
       "type":"string",
       "max":1000
@@ -5969,6 +5987,10 @@
           "shape":"ContentRedirection",
           "documentation":"<p>Configuration for bidirectional URL redirection between the streaming session and the local client. Use HostToClient to redirect URLs from the remote desktop to the local browser.</p>"
         },
+        "WebAuthnRedirection":{
+          "shape":"WebAuthnRedirection",
+          "documentation":"<p>Configuration for WebAuthn redirection between the streaming session and the user's local device. Use ProcessCompatibilityList to specify which processes can use WebAuthn redirection on Windows fleets.</p>"
+        },
         "AgentAccessConfig":{
           "shape":"AgentAccessConfig",
           "documentation":"<p>The agent access configuration of the stack, if agent access is enabled.</p>"
@@ -5982,7 +6004,7 @@
     },
     "StackAttribute":{
       "type":"string",
-      "documentation":"<p>The stack attributes to delete.</p> <ul> <li> <p>STORAGE_CONNECTORS</p> </li> <li> <p>STORAGE_CONNECTOR_HOMEFOLDERS</p> </li> <li> <p>STORAGE_CONNECTOR_GOOGLE_DRIVE</p> </li> <li> <p>STORAGE_CONNECTOR_ONE_DRIVE</p> </li> <li> <p>REDIRECT_URL</p> </li> <li> <p>FEEDBACK_URL</p> </li> <li> <p>THEME_NAME</p> </li> <li> <p>USER_SETTINGS</p> </li> <li> <p>EMBED_HOST_DOMAINS</p> </li> <li> <p>IAM_ROLE_ARN</p> </li> <li> <p>ACCESS_ENDPOINTS</p> </li> <li> <p>STREAMING_EXPERIENCE_SETTINGS</p> </li> <li> <p>AGENT_ACCESS_CONFIG</p> </li> <li> <p>AGENT_ACCESS_CONFIG_KMS_KEY_ARN</p> </li> <li> <p>STORAGE_CONNECTOR_AUTHENTICATION</p> </li> </ul>",
+      "documentation":"<p>The stack attributes to delete.</p> <ul> <li> <p>STORAGE_CONNECTORS</p> </li> <li> <p>STORAGE_CONNECTOR_HOMEFOLDERS</p> </li> <li> <p>STORAGE_CONNECTOR_GOOGLE_DRIVE</p> </li> <li> <p>STORAGE_CONNECTOR_ONE_DRIVE</p> </li> <li> <p>REDIRECT_URL</p> </li> <li> <p>FEEDBACK_URL</p> </li> <li> <p>THEME_NAME</p> </li> <li> <p>USER_SETTINGS</p> </li> <li> <p>EMBED_HOST_DOMAINS</p> </li> <li> <p>IAM_ROLE_ARN</p> </li> <li> <p>ACCESS_ENDPOINTS</p> </li> <li> <p>STREAMING_EXPERIENCE_SETTINGS</p> </li> <li> <p>AGENT_ACCESS_CONFIG</p> </li> <li> <p>AGENT_ACCESS_CONFIG_KMS_KEY_ARN</p> </li> <li> <p>STORAGE_CONNECTOR_AUTHENTICATION</p> </li> <li> <p>WEB_AUTHN_REDIRECTION</p> </li> </ul>",
       "enum":[
         "STORAGE_CONNECTORS",
         "STORAGE_CONNECTOR_HOMEFOLDERS",
@@ -5997,6 +6019,7 @@
         "ACCESS_ENDPOINTS",
         "STREAMING_EXPERIENCE_SETTINGS",
         "CONTENT_REDIRECTION",
+        "WEB_AUTHN_REDIRECTION",
         "AGENT_ACCESS_CONFIG",
         "STORAGE_CONNECTOR_AUTHENTICATION",
         "AGENT_ACCESS_CONFIG_KMS_KEY_ARN"
@@ -6814,6 +6837,10 @@
           "documentation":"<p>The streaming protocol you want your stack to prefer. This can be UDP or TCP. Currently, UDP is only supported in the Windows native client.</p>"
         },
         "ContentRedirection":{"shape":"ContentRedirection"},
+        "WebAuthnRedirection":{
+          "shape":"WebAuthnRedirection",
+          "documentation":"<p>Configuration for WebAuthn redirection between the streaming session and the user's local device. Use ProcessCompatibilityList to specify which processes can use WebAuthn redirection on Windows fleets. To remove WebAuthn redirection, use AttributesToDelete with the WEB_AUTHN_REDIRECTION value.</p>"
+        },
         "AgentAccessConfig":{
           "shape":"AgentAccessConfigForUpdate",
           "documentation":"<p>The configuration for agent access on the stack. Specify this to update agent access settings. To remove agent access, use AttributesToDelete with the AGENT_ACCESS_CONFIG value.</p>"
@@ -6882,7 +6909,7 @@
     },
     "UrlPattern":{
       "type":"string",
-      "documentation":"<p>A glob pattern using wildcards (* for zero or more characters, ? for exactly one character) to match URLs for redirection rules. Patterns do not include a protocol prefix; HTTPS is enforced automatically. Valid examples: *, *.example.com, github.com/myorg/*, api?.example.com Invalid examples: https://example.com (no protocol), empty string</p>",
+      "documentation":"<p>A glob pattern using wildcards (* for zero or more characters, ? for exactly one character) to match URLs for redirection rules. The pattern must begin with a supported scheme prefix — http://, https://, ftp://, sftp://, or mailto: — and cannot contain whitespace, commas, semicolons, or angle brackets; maximum length 2048 characters. Valid examples: https://*.example.com, , sftp://files.example.com/*, mailto:*@example.com. Invalid examples: *.example.com (no scheme), https://exam ple.com (contains whitespace), empty string.</p>",
       "max":2048,
       "min":1,
       "pattern":"^((https?|ftp|sftp)://|mailto:)[^\\s,;<>]+$"
@@ -7152,6 +7179,21 @@
         }
       },
       "documentation":"<p>Describes VPC configuration information for fleets and image builders.</p>"
+    },
+    "WebAuthnRedirection":{
+      "type":"structure",
+      "required":["Enabled"],
+      "members":{
+        "Enabled":{
+          "shape":"BooleanObject",
+          "documentation":"<p>Specifies whether WebAuthn redirection is enabled for the stack.</p>"
+        },
+        "ProcessCompatibilityList":{
+          "shape":"ProcessCompatibilityList",
+          "documentation":"<p>The list of process executable names for which you enable WebAuthn redirection. For example, chrome.exe.</p>"
+        }
+      },
+      "documentation":"<p>Describes the WebAuthn redirection configuration for a stack. With WebAuthn redirection, your users can complete passkey and security-key authentication from a streaming session by using an authenticator attached to their local device.</p>"
     },
     "WorkspaceImageId":{
       "type":"string",

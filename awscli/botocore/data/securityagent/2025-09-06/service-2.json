@@ -3133,6 +3133,17 @@
       "member":{"shape":"CodeLocation"},
       "documentation":"<p>List of code locations.</p>"
     },
+    "CodeRemediationJobStatus":{
+      "type":"string",
+      "documentation":"<p>Code remediation status for a particular repository.</p>",
+      "enum":[
+        "IN_PROGRESS",
+        "COMPLETED",
+        "FAILED",
+        "NO_CHANGE_REQUIRED",
+        "UNKNOWN"
+      ]
+    },
     "CodeRemediationStrategy":{
       "type":"string",
       "documentation":"<p>Strategy for automated code remediation.</p>",
@@ -3147,15 +3158,15 @@
       "members":{
         "status":{
           "shape":"CodeRemediationTaskStatus",
-          "documentation":"<p>The current status of the code remediation task.</p>"
+          "documentation":"<p>The current status of the overall code remediation task.</p>"
         },
         "statusReason":{
           "shape":"String",
-          "documentation":"<p>The reason for the current status of the code remediation task.</p>"
+          "documentation":"<p>The reason for the current status of the overall code remediation task.</p>"
         },
         "taskDetails":{
           "shape":"CodeRemediationTaskDetailsList",
-          "documentation":"<p>The list of details for the code remediation task, including repository name, code diff link, and pull request link.</p>"
+          "documentation":"<p>The list of details for a code remediation task, including repository names, status of code remediation for each associated repository, and generated code diff or pull request links.</p>"
         }
       },
       "documentation":"<p>Represents a code remediation task that was initiated to fix a security finding.</p>"
@@ -3165,7 +3176,7 @@
       "members":{
         "repoName":{
           "shape":"String",
-          "documentation":"<p>The name of the repository where the remediation was applied.</p>"
+          "documentation":"<p>The name of an associated repository where the remediation was applied.</p>"
         },
         "codeDiffLink":{
           "shape":"String",
@@ -3174,6 +3185,18 @@
         "pullRequestLink":{
           "shape":"String",
           "documentation":"<p>The link to the pull request created for the remediation.</p>"
+        },
+        "status":{
+          "shape":"CodeRemediationJobStatus",
+          "documentation":"<p>The current status of the code remediation task for the particular repository.</p>"
+        },
+        "statusCode":{
+          "shape":"String",
+          "documentation":"<p>A category classifier if a repository's code remediation fails.</p>"
+        },
+        "statusReason":{
+          "shape":"String",
+          "documentation":"<p>A descriptive reason when a repository's code remediation fails.</p>"
         }
       },
       "documentation":"<p>Contains details about a code remediation task, including links to the code diff and pull request.</p>"

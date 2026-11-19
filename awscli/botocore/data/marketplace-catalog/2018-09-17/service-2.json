@@ -218,6 +218,25 @@
       ],
       "documentation":"<p>Attaches a resource-based policy to an entity. Examples of an entity include: <code>AmiProduct</code> and <code>ContainerProduct</code>.</p>"
     },
+    "StartAssessment":{
+      "name":"StartAssessment",
+      "http":{
+        "method":"POST",
+        "requestUri":"/StartAssessment"
+      },
+      "input":{"shape":"StartAssessmentRequest"},
+      "output":{"shape":"StartAssessmentResponse"},
+      "errors":[
+        {"shape":"InternalServiceException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ValidationException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ResourceInUseException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ServiceQuotaExceededException"}
+      ],
+      "documentation":"<p>Starts an assessment of a product entity against a framework. An <i>assessment</i> is the result of evaluating an entity against the controls of a framework. You choose the controls to run and provide the input that each control needs.</p> <p>The assessment runs asynchronously. This action returns the ID of the assessment immediately. To get its status and the results of each control, use the <code>DescribeAssessment</code> action. To find assessments that you started earlier, use the <code>ListAssessments</code> action.</p>"
+    },
     "StartChangeSet":{
       "name":"StartChangeSet",
       "http":{
@@ -308,6 +327,59 @@
       "error":{"httpStatusCode":403},
       "exception":true,
       "synthetic":true
+    },
+    "AdditionalResource":{
+      "type":"structure",
+      "required":[
+        "Type",
+        "Text",
+        "Url"
+      ],
+      "members":{
+        "Type":{
+          "shape":"ResourceType",
+          "documentation":"<p>The type of the resource. Currently, the only value that the service returns is <code>Link</code>.</p>"
+        },
+        "Text":{
+          "shape":"ResourceText",
+          "documentation":"<p>The text to display for the resource.</p>"
+        },
+        "Url":{
+          "shape":"ResourceUrl",
+          "documentation":"<p>The URL of the resource.</p>"
+        }
+      },
+      "documentation":"<p>An additional resource for a listing, with its type, display text, and URL.</p>"
+    },
+    "AdditionalResourceList":{
+      "type":"list",
+      "member":{"shape":"AdditionalResource"},
+      "max":8,
+      "min":1
+    },
+    "AdditionalResourcesAlternative":{
+      "type":"structure",
+      "required":[
+        "Value",
+        "Rationale"
+      ],
+      "members":{
+        "Value":{
+          "shape":"AdditionalResourceList",
+          "documentation":"<p>The proposed additional resources.</p>"
+        },
+        "Rationale":{
+          "shape":"Rationale",
+          "documentation":"<p>Why this alternative is recommended.</p>"
+        }
+      },
+      "documentation":"<p>A proposed set of additional resources for a listing.</p>"
+    },
+    "AdditionalResourcesAlternativeList":{
+      "type":"list",
+      "member":{"shape":"AdditionalResourcesAlternative"},
+      "max":3,
+      "min":0
     },
     "AmiProductEntityIdFilter":{
       "type":"structure",
@@ -530,6 +602,10 @@
         "ChangeSetId":{
           "shape":"ResourceId",
           "documentation":"<p>The unique ID of the change set that triggered the assessments you want to list.</p>"
+        },
+        "EntityIds":{
+          "shape":"EntityIdList",
+          "documentation":"<p>A list of up to 50 entity IDs whose assessments you want to list. The response includes only the latest published assessment of each entity. You must also specify <code>FrameworkId</code> in the request, and you can't combine <code>EntityIds</code> with <code>EntityId</code> or <code>ChangeSetId</code>.</p>"
         }
       },
       "documentation":"<p>Filters assessment list results by the resource that was assessed. Provide an entity identifier, a change set identifier, or both.</p>"
@@ -631,11 +707,46 @@
         }
       }
     },
+    "CaseStudiesAlternative":{
+      "type":"structure",
+      "required":[
+        "Value",
+        "Rationale"
+      ],
+      "members":{
+        "Value":{
+          "shape":"CaseStudyList",
+          "documentation":"<p>The proposed case studies.</p>"
+        },
+        "Rationale":{
+          "shape":"Rationale",
+          "documentation":"<p>Why this set of case studies fits the solution.</p>"
+        }
+      },
+      "documentation":"<p>A proposed set of case studies for a solution.</p>"
+    },
+    "CaseStudiesAlternativeList":{
+      "type":"list",
+      "member":{"shape":"CaseStudiesAlternative"},
+      "max":3,
+      "min":0
+    },
+    "CaseStudyList":{
+      "type":"list",
+      "member":{"shape":"ListingCaseStudy"},
+      "max":20,
+      "min":1
+    },
+    "CaseStudyTitle":{
+      "type":"string",
+      "max":200,
+      "min":1
+    },
     "Catalog":{
       "type":"string",
       "max":64,
       "min":1,
-      "pattern":"^[a-zA-Z]+$"
+      "pattern":"^(?![.-])(?!.*[.-]{2})(?![0-9]+\\.[0-9.]+$)[a-zA-Z0-9.-]{1,47}(?<![.-])$"
     },
     "Change":{
       "type":"structure",
@@ -774,6 +885,18 @@
       "max":255,
       "min":1,
       "pattern":"^[A-Z][\\w]*$"
+    },
+    "CitationList":{
+      "type":"list",
+      "member":{"shape":"RecommendationCitation"},
+      "max":5,
+      "min":0
+    },
+    "CitationUrl":{
+      "type":"string",
+      "max":255,
+      "min":1,
+      "pattern":"^https://\\S+$"
     },
     "ClientRequestToken":{
       "type":"string",
@@ -958,6 +1081,68 @@
       },
       "documentation":"<p>The details of the resource assessed under the Container Security framework.</p>"
     },
+    "ContentAlternatives":{
+      "type":"structure",
+      "members":{
+        "Text":{
+          "shape":"TextAlternativeList",
+          "documentation":"<p>The proposed values for a text field, such as <code>ProductTitle</code> or <code>LongDescription</code>. You can have up to 3 alternatives.</p>"
+        },
+        "TextList":{
+          "shape":"TextListAlternativeList",
+          "documentation":"<p>The proposed values for <code>Highlights</code>, <code>SearchKeywords</code>, or <code>Categories</code>. You can have up to 3 alternatives.</p>"
+        },
+        "AdditionalResources":{
+          "shape":"AdditionalResourcesAlternativeList",
+          "documentation":"<p>The proposed values for <code>AdditionalResources</code>. You can have up to 3 alternatives.</p>"
+        },
+        "UseCases":{
+          "shape":"UseCasesAlternativeList",
+          "documentation":"<p>The proposed values for <code>UseCases</code>. You can have up to 3 alternatives.</p>"
+        },
+        "CaseStudies":{
+          "shape":"CaseStudiesAlternativeList",
+          "documentation":"<p>The proposed values for <code>CaseStudies</code>. You can have up to 3 alternatives.</p>"
+        }
+      },
+      "documentation":"<p>The proposed values for a listing field. Exactly one member is set, depending on the field. The list in that member is empty if the status of the recommendation is <code>INSUFFICIENT_CONTEXT</code>.</p>",
+      "union":true
+    },
+    "ContentRecommendation":{
+      "type":"structure",
+      "required":[
+        "Status",
+        "Alternatives",
+        "FollowUpQuestions",
+        "Findings"
+      ],
+      "members":{
+        "Status":{
+          "shape":"ContentRecommendationStatus",
+          "documentation":"<p>The status of the recommendation. Valid values are:</p> <ul> <li> <p> <code>GENERATED</code> - The service proposed values for the field.</p> </li> <li> <p> <code>INSUFFICIENT_CONTEXT</code> - The service couldn't propose a value. The follow-up questions say what is missing.</p> </li> </ul>"
+        },
+        "Alternatives":{
+          "shape":"ContentAlternatives",
+          "documentation":"<p>The proposed values for the field, in ranked order.</p>"
+        },
+        "FollowUpQuestions":{
+          "shape":"FollowUpQuestionList",
+          "documentation":"<p>Questions that you can answer to get a better recommendation. The list is empty if there are none.</p>"
+        },
+        "Findings":{
+          "shape":"FindingList",
+          "documentation":"<p>The checklist of criteria for the field, in ranked order. It includes the criteria that the field passes and the criteria that it fails. The list is empty if there are none.</p>"
+        }
+      },
+      "documentation":"<p>A recommendation for a listing field.</p>"
+    },
+    "ContentRecommendationStatus":{
+      "type":"string",
+      "enum":[
+        "GENERATED",
+        "INSUFFICIENT_CONTEXT"
+      ]
+    },
     "ControlAssessment":{
       "type":"structure",
       "members":{
@@ -969,9 +1154,17 @@
           "shape":"ControlAssessmentResult",
           "documentation":"<p>The result of the control evaluation.</p>"
         },
+        "VerificationSource":{
+          "shape":"VerificationSource",
+          "documentation":"<p>Where the result of the control came from. This value doesn't say whether the control passed. A control that you attested to can still have a result of <code>PASS</code>. Valid values are:</p> <ul> <li> <p> <code>AWS_VERIFIED</code> - AWS evaluated the control.</p> </li> <li> <p> <code>SELF_ATTESTED</code> - You attested to the result of the control.</p> </li> </ul>"
+        },
         "Errors":{
           "shape":"ControlErrorList",
           "documentation":"<p>An array of <code>ControlError</code> objects associated with the control evaluation.</p>"
+        },
+        "ControlSummary":{
+          "shape":"ControlSummary",
+          "documentation":"<p>A summary of what the control produced, such as recommendations for the listing.</p>"
         }
       },
       "documentation":"<p>The result of evaluating a single control as part of an assessment.</p>"
@@ -1010,6 +1203,38 @@
     "ControlErrorList":{
       "type":"list",
       "member":{"shape":"ControlError"}
+    },
+    "ControlInput":{
+      "type":"structure",
+      "required":["ControlId"],
+      "members":{
+        "ControlId":{
+          "shape":"ResourceId",
+          "documentation":"<p>The unique identifier of the control to run.</p>"
+        },
+        "Input":{
+          "shape":"JsonDocumentType",
+          "documentation":"<p>Optional. The input for the control, as a JSON document. The fields that a control accepts depend on the control.</p>"
+        }
+      },
+      "documentation":"<p>A control to run as part of an assessment, and the input to run it with.</p>"
+    },
+    "ControlInputList":{
+      "type":"list",
+      "member":{"shape":"ControlInput"},
+      "max":100,
+      "min":1
+    },
+    "ControlSummary":{
+      "type":"structure",
+      "members":{
+        "ListingRecommendations":{
+          "shape":"ListingRecommendations",
+          "documentation":"<p>The recommendations that a listing recommendations control produced for the listing.</p>"
+        }
+      },
+      "documentation":"<p>A summary of what a control produced. Exactly one member is set, corresponding to the kind of control.</p>",
+      "union":true
     },
     "DataProductEntityIdFilter":{
       "type":"structure",
@@ -1434,6 +1659,12 @@
       "min":1,
       "pattern":"^[a-zA-Z0-9][.a-zA-Z0-9/-]+[a-zA-Z0-9]$"
     },
+    "EntityIdList":{
+      "type":"list",
+      "member":{"shape":"ResourceId"},
+      "max":50,
+      "min":1
+    },
     "EntityNameString":{
       "type":"string",
       "max":255,
@@ -1462,6 +1693,11 @@
       "type":"list",
       "member":{"shape":"EntityRequest"},
       "max":20,
+      "min":1
+    },
+    "EntityRevision":{
+      "type":"string",
+      "max":255,
       "min":1
     },
     "EntitySummary":{
@@ -1822,11 +2058,77 @@
         "SERVER_FAULT"
       ]
     },
+    "FeatureRecommendation":{
+      "type":"structure",
+      "required":[
+        "FeatureId",
+        "Action",
+        "Rationale",
+        "Severity",
+        "Status"
+      ],
+      "members":{
+        "FeatureId":{
+          "shape":"RecommendedFeatureId",
+          "documentation":"<p>The feature that is recommended. Valid values are <code>REQUEST_PRIVATE_OFFER</code>, <code>REQUEST_A_DEMO</code>, <code>PROMOTIONAL_MEDIA</code>, <code>FREE_TRIAL</code>, and <code>QUICK_LAUNCH</code>.</p>"
+        },
+        "Action":{
+          "shape":"RecommendedAction",
+          "documentation":"<p>What you should do. It might contain a link to the console.</p>"
+        },
+        "Rationale":{
+          "shape":"Rationale",
+          "documentation":"<p>Why the feature is recommended.</p>"
+        },
+        "Severity":{
+          "shape":"RecommendationSeverity",
+          "documentation":"<p>How much the recommendation blocks the listing. Valid values are <code>BLOCKING</code> and <code>ADVISORY</code>.</p>"
+        },
+        "Status":{
+          "shape":"RecommendedFeatureStatus",
+          "documentation":"<p>Whether the listing has the feature. Valid values are:</p> <ul> <li> <p> <code>PASS</code> - The listing already has the feature.</p> </li> <li> <p> <code>FAIL</code> - The feature is one to turn on.</p> </li> </ul>"
+        }
+      },
+      "documentation":"<p>A recommended AWS Marketplace feature for a listing.</p>"
+    },
+    "FeatureRecommendationList":{
+      "type":"list",
+      "member":{"shape":"FeatureRecommendation"},
+      "max":5,
+      "min":0
+    },
+    "FeatureRecommendations":{
+      "type":"structure",
+      "required":["Recommendations"],
+      "members":{
+        "Recommendations":{
+          "shape":"FeatureRecommendationList",
+          "documentation":"<p>The recommended features, in ranked order. The list has at most one entry for each feature and up to 5 entries.</p>"
+        }
+      },
+      "documentation":"<p>The feature recommendations for a listing, for a product or a solution.</p>"
+    },
     "FieldName":{
       "type":"string",
       "max":255,
       "min":1,
       "pattern":"^[a-zA-Z0-9\\-_\\.\\/]+$"
+    },
+    "FieldText":{
+      "type":"string",
+      "max":5000,
+      "min":1
+    },
+    "FieldTextItem":{
+      "type":"string",
+      "max":500,
+      "min":1
+    },
+    "FieldTextList":{
+      "type":"list",
+      "member":{"shape":"FieldTextItem"},
+      "max":15,
+      "min":1
     },
     "Filter":{
       "type":"structure",
@@ -1860,6 +2162,51 @@
       "min":1,
       "pattern":"^(.)+$"
     },
+    "FindingDescription":{
+      "type":"string",
+      "max":500,
+      "min":1
+    },
+    "FindingList":{
+      "type":"list",
+      "member":{"shape":"ListingFinding"},
+      "max":30,
+      "min":0
+    },
+    "FollowUpQuestion":{
+      "type":"structure",
+      "required":[
+        "Question",
+        "Justification"
+      ],
+      "members":{
+        "Question":{
+          "shape":"FollowUpQuestionText",
+          "documentation":"<p>The question to answer.</p>"
+        },
+        "Justification":{
+          "shape":"FollowUpQuestionJustification",
+          "documentation":"<p>Why the question is asked.</p>"
+        }
+      },
+      "documentation":"<p>A question that you can answer to get a better recommendation, and the reason that it's asked.</p>"
+    },
+    "FollowUpQuestionJustification":{
+      "type":"string",
+      "max":5000,
+      "min":1
+    },
+    "FollowUpQuestionList":{
+      "type":"list",
+      "member":{"shape":"FollowUpQuestion"},
+      "max":25,
+      "min":0
+    },
+    "FollowUpQuestionText":{
+      "type":"string",
+      "max":255,
+      "min":1
+    },
     "FrameworkFilters":{
       "type":"structure",
       "members":{
@@ -1891,6 +2238,14 @@
         "ContainerSecuritySummary":{
           "shape":"ContainerSecuritySummary",
           "documentation":"<p>The details of the resource assessed under the Container Security framework.</p>"
+        },
+        "ListingQualitySummary":{
+          "shape":"ListingQualitySummary",
+          "documentation":"<p>The details of the resource assessed under the Listing Quality framework.</p>"
+        },
+        "ListingRecommendationsSummary":{
+          "shape":"ListingRecommendationsSummary",
+          "documentation":"<p>The details of the resource assessed under the Listing Recommendations framework.</p>"
         }
       },
       "documentation":"<p>The framework-specific details of the assessed resource. Exactly one member is set, corresponding to the framework that was assessed.</p>",
@@ -1967,7 +2322,7 @@
         },
         "FrameworkId":{
           "shape":"FrameworkId",
-          "documentation":"<p>The unique identifier of a framework. When specified, only assessments performed against this framework are returned. For example, <code>AMISecurity</code>.</p>"
+          "documentation":"<p>The unique identifier of a framework. When specified, only assessments performed against this framework are returned. For example, <code>AMISecurity</code>. Required when you use <code>EntityIds</code> in <code>AssessmentTargetFilter</code>.</p>"
         },
         "AssessmentTargetFilter":{
           "shape":"AssessmentTargetFilter",
@@ -2131,6 +2486,164 @@
           "documentation":"<p>Required. A list of objects specifying each key name and value. Number of objects allowed: 1-50.</p>"
         }
       }
+    },
+    "ListingCaseStudy":{
+      "type":"structure",
+      "required":[
+        "Id",
+        "Title",
+        "Rationale"
+      ],
+      "members":{
+        "Id":{
+          "shape":"EntityId",
+          "documentation":"<p>The ID of the case study entity. Identify a case study by this ID and not by <code>Title</code>, which you can edit.</p>"
+        },
+        "Title":{
+          "shape":"CaseStudyTitle",
+          "documentation":"<p>The title of the case study.</p>"
+        },
+        "Rationale":{
+          "shape":"Rationale",
+          "documentation":"<p>Why this case study was selected.</p>"
+        }
+      },
+      "documentation":"<p>A recommended case study.</p>"
+    },
+    "ListingFinding":{
+      "type":"structure",
+      "required":[
+        "Action",
+        "Description",
+        "Severity",
+        "Status"
+      ],
+      "members":{
+        "Action":{
+          "shape":"RecommendedAction",
+          "documentation":"<p>What you should do to meet the criterion.</p>"
+        },
+        "Description":{
+          "shape":"FindingDescription",
+          "documentation":"<p>What the criterion asks for. The text is the same for every listing. The reasoning for a specific listing is in the rationale of the alternatives.</p>"
+        },
+        "Severity":{
+          "shape":"RecommendationSeverity",
+          "documentation":"<p>How much the criterion blocks the listing. It is set on every row. For a row with a status of <code>PASS</code>, it is the weight of a criterion that is already met. Valid values are <code>BLOCKING</code> and <code>ADVISORY</code>.</p>"
+        },
+        "Status":{
+          "shape":"ListingFindingStatus",
+          "documentation":"<p>The result for the criterion. Valid values are:</p> <ul> <li> <p> <code>PASS</code> - The criterion is met and no action is needed.</p> </li> <li> <p> <code>FAIL</code> - The criterion isn't met or wasn't scored.</p> </li> </ul> <p>This value is different from the status of the content recommendation.</p>"
+        }
+      },
+      "documentation":"<p>One row of the checklist of criteria for a listing field. A row is either a criterion that the field already meets or advice for a criterion that it doesn't.</p>"
+    },
+    "ListingFindingStatus":{
+      "type":"string",
+      "enum":[
+        "PASS",
+        "FAIL"
+      ]
+    },
+    "ListingQualitySummary":{
+      "type":"structure",
+      "required":["Tier"],
+      "members":{
+        "Tier":{
+          "shape":"ListingQualityTier",
+          "documentation":"<p>The quality tier of the listing. Valid values are <code>NEEDS_IMPROVEMENT</code>, <code>BASIC</code>, <code>STRONG</code>, and <code>EXCELLENT</code>.</p>"
+        },
+        "EntityRevision":{
+          "shape":"EntityRevision",
+          "documentation":"<p>The revision of the entity that the tier was evaluated against. To check whether the tier is out of date, compare this value with the current revision of the entity.</p>"
+        }
+      },
+      "documentation":"<p>The details of the resource assessed under the Listing Quality framework.</p>"
+    },
+    "ListingQualityTier":{
+      "type":"string",
+      "enum":[
+        "NEEDS_IMPROVEMENT",
+        "BASIC",
+        "STRONG",
+        "EXCELLENT"
+      ]
+    },
+    "ListingRecommendations":{
+      "type":"structure",
+      "members":{
+        "ProductContentRecommendations":{
+          "shape":"ProductContentRecommendations",
+          "documentation":"<p>The content recommendations for a product listing.</p>"
+        },
+        "SolutionContentRecommendations":{
+          "shape":"SolutionContentRecommendations",
+          "documentation":"<p>The content recommendations for a solution listing.</p>"
+        },
+        "FeatureRecommendations":{
+          "shape":"FeatureRecommendations",
+          "documentation":"<p>The recommendations for AWS Marketplace features to use with the listing, for a product or a solution.</p>"
+        }
+      },
+      "documentation":"<p>The recommendations that a listing recommendations control produced. Exactly one member is set, corresponding to the control: content recommendations for a product, content recommendations for a solution, or feature recommendations.</p>",
+      "union":true
+    },
+    "ListingRecommendationsSummary":{
+      "type":"structure",
+      "required":["Tier"],
+      "members":{
+        "Tier":{
+          "shape":"ListingQualityTier",
+          "documentation":"<p>The quality tier of the listing. Valid values are <code>NEEDS_IMPROVEMENT</code>, <code>BASIC</code>, <code>STRONG</code>, and <code>EXCELLENT</code>.</p>"
+        },
+        "EntityRevision":{
+          "shape":"EntityRevision",
+          "documentation":"<p>The revision of the entity that the recommendations were generated against. To check whether the recommendations are out of date, compare this value with the current revision of the entity.</p>"
+        }
+      },
+      "documentation":"<p>The details of the resource assessed under the Listing Recommendations framework.</p>"
+    },
+    "ListingUseCase":{
+      "type":"structure",
+      "required":[
+        "Id",
+        "Rank",
+        "Name",
+        "Group",
+        "Subgroup",
+        "Rationale"
+      ],
+      "members":{
+        "Id":{
+          "shape":"UseCaseId",
+          "documentation":"<p>The unique identifier of the use case.</p>"
+        },
+        "Rank":{
+          "shape":"UseCaseRank",
+          "documentation":"<p>The rank of the use case. A rank of 1 is the strongest match. Valid values range from 1 to 5.</p>"
+        },
+        "Name":{
+          "shape":"UseCaseTaxonomyValue",
+          "documentation":"<p>The name of the use case.</p>"
+        },
+        "Group":{
+          "shape":"UseCaseTaxonomyValue",
+          "documentation":"<p>The group of the use case in the taxonomy.</p>"
+        },
+        "Subgroup":{
+          "shape":"UseCaseTaxonomyValue",
+          "documentation":"<p>The subgroup of the use case in the taxonomy.</p>"
+        },
+        "UseCaseDetails":{
+          "shape":"UseCaseDetails",
+          "documentation":"<p>How the solution serves the use case.</p>"
+        },
+        "Rationale":{
+          "shape":"Rationale",
+          "documentation":"<p>Why this use case is recommended.</p>"
+        }
+      },
+      "documentation":"<p>A use case from the AWS Marketplace use case taxonomy.</p>"
     },
     "MachineLearningProductEntityIdFilter":{
       "type":"structure",
@@ -2416,6 +2929,10 @@
         "ResaleAuthorizationId":{
           "shape":"OfferResaleAuthorizationIdFilter",
           "documentation":"<p>Allows filtering on the <code>ResaleAuthorizationId</code> of an offer.</p> <note> <p>Not all offers have a <code>ResaleAuthorizationId</code>. The response will only include offers for which you have permissions.</p> </note>"
+        },
+        "SubsidiaryAuthorizationId":{
+          "shape":"OfferSubsidiaryAuthorizationIdFilter",
+          "documentation":"<p>A filter that matches offers by the ID of the subsidiary authorization that they were created from.</p> <note> <p>Not all offers have a <code>SubsidiaryAuthorizationId</code>.</p> </note>"
         },
         "ReleaseDate":{
           "shape":"OfferReleaseDateFilter",
@@ -2871,6 +3388,7 @@
         "Name",
         "ProductId",
         "ResaleAuthorizationId",
+        "SubsidiaryAuthorizationId",
         "ReleaseDate",
         "AvailabilityEndDate",
         "BuyerAccounts",
@@ -2906,6 +3424,28 @@
         "Released"
       ]
     },
+    "OfferSubsidiaryAuthorizationIdFilter":{
+      "type":"structure",
+      "members":{
+        "ValueList":{
+          "shape":"OfferSubsidiaryAuthorizationIdFilterValueList",
+          "documentation":"<p>A list of subsidiary authorization IDs to filter offers by. You can include up to 10 subsidiary authorization IDs in this list.</p>"
+        }
+      },
+      "documentation":"<p>A filter that matches offers by the ID of the subsidiary authorization they were created from.</p> <note> <p>Not all offers have a <code>SubsidiaryAuthorizationId</code>.</p> </note>"
+    },
+    "OfferSubsidiaryAuthorizationIdFilterValueList":{
+      "type":"list",
+      "member":{"shape":"OfferSubsidiaryAuthorizationIdString"},
+      "max":10,
+      "min":1
+    },
+    "OfferSubsidiaryAuthorizationIdString":{
+      "type":"string",
+      "max":22,
+      "min":1,
+      "pattern":"^subauthz-[a-zA-Z0-9]{13}$"
+    },
     "OfferSummary":{
       "type":"structure",
       "members":{
@@ -2920,6 +3460,10 @@
         "ResaleAuthorizationId":{
           "shape":"OfferResaleAuthorizationIdString",
           "documentation":"<p>The ResaleAuthorizationId of the offer.</p>"
+        },
+        "SubsidiaryAuthorizationId":{
+          "shape":"OfferSubsidiaryAuthorizationIdString",
+          "documentation":"<p>The ID of the subsidiary authorization that the offer was created from. The ID begins with <code>subauthz-</code> followed by 13 alphanumeric characters.</p>"
         },
         "ReleaseDate":{
           "shape":"DateTimeISO8601",
@@ -3040,6 +3584,49 @@
         "SHARED"
       ]
     },
+    "ProductContentRecommendations":{
+      "type":"structure",
+      "required":["Citations"],
+      "members":{
+        "ProductTitle":{
+          "shape":"ContentRecommendation",
+          "documentation":"<p>The recommendation for the product title.</p>"
+        },
+        "ShortDescription":{
+          "shape":"ContentRecommendation",
+          "documentation":"<p>The recommendation for the short description.</p>"
+        },
+        "LongDescription":{
+          "shape":"ContentRecommendation",
+          "documentation":"<p>The recommendation for the long description.</p>"
+        },
+        "SupportDescription":{
+          "shape":"ContentRecommendation",
+          "documentation":"<p>The recommendation for the support description.</p>"
+        },
+        "Highlights":{
+          "shape":"ContentRecommendation",
+          "documentation":"<p>The recommendation for the highlights.</p>"
+        },
+        "SearchKeywords":{
+          "shape":"ContentRecommendation",
+          "documentation":"<p>The recommendation for the search keywords.</p>"
+        },
+        "Categories":{
+          "shape":"ContentRecommendation",
+          "documentation":"<p>The recommendation for the categories.</p>"
+        },
+        "AdditionalResources":{
+          "shape":"ContentRecommendation",
+          "documentation":"<p>The recommendation for the additional resources. Each alternative has up to 3 resources.</p>"
+        },
+        "Citations":{
+          "shape":"CitationList",
+          "documentation":"<p>The sources that the recommendations are based on. You can have up to 5 sources. The list is empty if there are none.</p>"
+        }
+      },
+      "documentation":"<p>The content recommendations for a product listing, with one member for each listing field. A member is absent if nothing is recommended for that field.</p>"
+    },
     "PutResourcePolicyRequest":{
       "type":"structure",
       "required":[
@@ -3060,6 +3647,51 @@
     "PutResourcePolicyResponse":{
       "type":"structure",
       "members":{}
+    },
+    "Rationale":{
+      "type":"string",
+      "max":1000,
+      "min":1
+    },
+    "RecommendationCitation":{
+      "type":"structure",
+      "required":["Url"],
+      "members":{
+        "Url":{
+          "shape":"CitationUrl",
+          "documentation":"<p>The HTTPS URL of the source.</p>"
+        }
+      },
+      "documentation":"<p>A source that the recommendations are based on.</p>"
+    },
+    "RecommendationSeverity":{
+      "type":"string",
+      "enum":[
+        "BLOCKING",
+        "ADVISORY"
+      ]
+    },
+    "RecommendedAction":{
+      "type":"string",
+      "max":1000,
+      "min":1
+    },
+    "RecommendedFeatureId":{
+      "type":"string",
+      "enum":[
+        "REQUEST_PRIVATE_OFFER",
+        "REQUEST_A_DEMO",
+        "PROMOTIONAL_MEDIA",
+        "FREE_TRIAL",
+        "QUICK_LAUNCH"
+      ]
+    },
+    "RecommendedFeatureStatus":{
+      "type":"string",
+      "enum":[
+        "PASS",
+        "FAIL"
+      ]
     },
     "RequestedChangeList":{
       "type":"list",
@@ -3737,6 +4369,21 @@
       "min":1,
       "pattern":"^[\\u0009\\u000A\\u000D\\u0020-\\u00FF]+$"
     },
+    "ResourceText":{
+      "type":"string",
+      "max":500,
+      "min":1
+    },
+    "ResourceType":{
+      "type":"string",
+      "max":64,
+      "min":1
+    },
+    "ResourceUrl":{
+      "type":"string",
+      "max":2048,
+      "min":1
+    },
     "SaaSProductEntityIdFilter":{
       "type":"structure",
       "members":{
@@ -3914,6 +4561,45 @@
       "exception":true,
       "synthetic":true
     },
+    "SolutionContentRecommendations":{
+      "type":"structure",
+      "required":["Citations"],
+      "members":{
+        "Title":{
+          "shape":"ContentRecommendation",
+          "documentation":"<p>The recommendation for the external title of the solution.</p>"
+        },
+        "ShortDescription":{
+          "shape":"ContentRecommendation",
+          "documentation":"<p>The recommendation for the value proposition of the solution.</p>"
+        },
+        "LongDescription":{
+          "shape":"ContentRecommendation",
+          "documentation":"<p>The recommendation for the long description of the solution.</p>"
+        },
+        "IntegrationDetails":{
+          "shape":"ContentRecommendation",
+          "documentation":"<p>The recommendation for the integration details of the solution.</p>"
+        },
+        "AdditionalResources":{
+          "shape":"ContentRecommendation",
+          "documentation":"<p>The recommendation for the additional resources. Each alternative has up to 8 resources.</p>"
+        },
+        "UseCases":{
+          "shape":"ContentRecommendation",
+          "documentation":"<p>The recommendation for the use cases of the solution.</p>"
+        },
+        "CaseStudies":{
+          "shape":"ContentRecommendation",
+          "documentation":"<p>The recommendation for the case studies of the solution. Each alternative has up to 20 case studies.</p>"
+        },
+        "Citations":{
+          "shape":"CitationList",
+          "documentation":"<p>The sources that the recommendations are based on. You can have up to 5 sources. The list is empty if there are none.</p>"
+        }
+      },
+      "documentation":"<p>The content recommendations for a solution listing, with one member for each listing field. A member is absent if nothing is recommended for that field.</p>"
+    },
     "Sort":{
       "type":"structure",
       "members":{
@@ -3940,6 +4626,50 @@
         "ASCENDING",
         "DESCENDING"
       ]
+    },
+    "StartAssessmentRequest":{
+      "type":"structure",
+      "required":[
+        "Catalog",
+        "FrameworkId",
+        "EntityId"
+      ],
+      "members":{
+        "Catalog":{
+          "shape":"Catalog",
+          "documentation":"<p>The catalog related to the request. Fixed value: <code>AWSMarketplace</code> </p>"
+        },
+        "ClientToken":{
+          "shape":"ClientRequestToken",
+          "documentation":"<p>A unique token to identify the request to ensure idempotency.</p>",
+          "idempotencyToken":true
+        },
+        "FrameworkId":{
+          "shape":"FrameworkId",
+          "documentation":"<p>The unique identifier of the framework that defines the controls to run.</p>"
+        },
+        "EntityId":{
+          "shape":"ResourceId",
+          "documentation":"<p>The unique ID of the product entity to assess.</p>"
+        },
+        "Controls":{
+          "shape":"ControlInputList",
+          "documentation":"<p>The controls to provide input for. Every control in the framework is included in the assessment, and a control that you don't specify gets no input. You can specify 1–100 controls.</p>"
+        },
+        "Tags":{
+          "shape":"TagMap",
+          "documentation":"<p>A map of tags to apply to the assessment when you create it. Each tag is a key-value pair. You can specify 1–200 tags.</p>"
+        }
+      }
+    },
+    "StartAssessmentResponse":{
+      "type":"structure",
+      "members":{
+        "AssessmentId":{
+          "shape":"AssessmentIdentifier",
+          "documentation":"<p>The unique ID of the assessment that was started.</p>"
+        }
+      }
     },
     "StartChangeSetRequest":{
       "type":"structure",
@@ -4347,6 +5077,13 @@
       "max":200,
       "min":1
     },
+    "TagMap":{
+      "type":"map",
+      "key":{"shape":"TagKey"},
+      "value":{"shape":"TagValue"},
+      "max":200,
+      "min":1
+    },
     "TagResourceRequest":{
       "type":"structure",
       "required":[
@@ -4373,6 +5110,54 @@
       "max":256,
       "min":0,
       "pattern":"^([\\p{L}\\p{Z}\\p{N}_.:/=+\\-@]*)$"
+    },
+    "TextAlternative":{
+      "type":"structure",
+      "required":[
+        "Value",
+        "Rationale"
+      ],
+      "members":{
+        "Value":{
+          "shape":"FieldText",
+          "documentation":"<p>The proposed text. The limit of the field itself, such as 255 characters for a title, applies.</p>"
+        },
+        "Rationale":{
+          "shape":"Rationale",
+          "documentation":"<p>Why this alternative is recommended.</p>"
+        }
+      },
+      "documentation":"<p>A proposed text value for a listing field.</p>"
+    },
+    "TextAlternativeList":{
+      "type":"list",
+      "member":{"shape":"TextAlternative"},
+      "max":3,
+      "min":0
+    },
+    "TextListAlternative":{
+      "type":"structure",
+      "required":[
+        "Value",
+        "Rationale"
+      ],
+      "members":{
+        "Value":{
+          "shape":"FieldTextList",
+          "documentation":"<p>The proposed list of text values. The list has 1–15 items.</p>"
+        },
+        "Rationale":{
+          "shape":"Rationale",
+          "documentation":"<p>Why this alternative is recommended.</p>"
+        }
+      },
+      "documentation":"<p>A proposed list of text values for a listing field.</p>"
+    },
+    "TextListAlternativeList":{
+      "type":"list",
+      "member":{"shape":"TextListAlternative"},
+      "max":3,
+      "min":0
     },
     "ThrottlingException":{
       "type":"structure",
@@ -4404,6 +5189,57 @@
     "UntagResourceResponse":{
       "type":"structure",
       "members":{}
+    },
+    "UseCaseDetails":{
+      "type":"string",
+      "max":500,
+      "min":1
+    },
+    "UseCaseId":{
+      "type":"string",
+      "max":100,
+      "min":1
+    },
+    "UseCaseList":{
+      "type":"list",
+      "member":{"shape":"ListingUseCase"},
+      "max":5,
+      "min":1
+    },
+    "UseCaseRank":{
+      "type":"integer",
+      "box":true,
+      "max":5,
+      "min":1
+    },
+    "UseCaseTaxonomyValue":{
+      "type":"string",
+      "max":100,
+      "min":1
+    },
+    "UseCasesAlternative":{
+      "type":"structure",
+      "required":[
+        "Value",
+        "Rationale"
+      ],
+      "members":{
+        "Value":{
+          "shape":"UseCaseList",
+          "documentation":"<p>The proposed use cases, in ranked order.</p>"
+        },
+        "Rationale":{
+          "shape":"Rationale",
+          "documentation":"<p>Why this alternative is recommended.</p>"
+        }
+      },
+      "documentation":"<p>A proposed set of use cases for a solution.</p>"
+    },
+    "UseCasesAlternativeList":{
+      "type":"list",
+      "member":{"shape":"UseCasesAlternative"},
+      "max":3,
+      "min":0
     },
     "ValidationException":{
       "type":"structure",
@@ -4467,6 +5303,13 @@
       "member":{"shape":"FilterValueContent"},
       "max":10,
       "min":1
+    },
+    "VerificationSource":{
+      "type":"string",
+      "enum":[
+        "AWS_VERIFIED",
+        "SELF_ATTESTED"
+      ]
     },
     "VersionedFrameworkId":{
       "type":"string",

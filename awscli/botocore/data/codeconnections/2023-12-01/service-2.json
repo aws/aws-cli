@@ -41,6 +41,12 @@
         },
         {
           "shape": "ResourceUnavailableException"
+        },
+        {
+          "shape": "InvalidInputException"
+        },
+        {
+          "shape": "UnsupportedProviderTypeException"
         }
       ],
       "documentation": "<p>Creates a connection that can then be given to other Amazon Web Services services like CodePipeline so that it can access third-party code repositories. The connection is in pending status until the third-party connection handshake is completed from the console.</p>"
@@ -96,6 +102,9 @@
           "shape": "ResourceAlreadyExistsException"
         },
         {
+          "shape": "ResourceNotFoundException"
+        },
+        {
           "shape": "ThrottlingException"
         }
       ],
@@ -131,6 +140,9 @@
         },
         {
           "shape": "ResourceAlreadyExistsException"
+        },
+        {
+          "shape": "ResourceNotFoundException"
         },
         {
           "shape": "ThrottlingException"
@@ -894,6 +906,10 @@
         "HostArn": {
           "shape": "HostArn",
           "documentation": "<p>The Amazon Resource Name (ARN) of the host associated with the connection.</p>"
+        },
+        "ProviderEndpoint": {
+          "shape": "Url",
+          "documentation": "<p>The endpoint of the ghe.com tenant where your organization resides. This value is populated only for a connection with a <code>ProviderType</code> of <code>GitHubEnterpriseCloudDataResidency</code>. It is empty for all other provider types.</p>"
         }
       },
       "documentation": "<p>A resource that is used to connect third-party source providers with services like CodePipeline.</p> <p>Note: A connection created through CloudFormation, the CLI, or the SDK is in `PENDING` status by default. You can make its status `AVAILABLE` by updating the connection in the console.</p>"
@@ -902,7 +918,7 @@
       "type": "string",
       "max": 256,
       "min": 0,
-      "pattern": "arn:aws(-[\\w]+)*:.+:.+:[0-9]{12}:.+"
+      "pattern": "arn:aws(-[\\w]+)*:(codestar-connections|codeconnections):[a-z0-9\\-]+:[0-9]{12}:connection\\/[\\w\\-]+"
     },
     "ConnectionList": {
       "type": "list",
@@ -945,6 +961,10 @@
         "HostArn": {
           "shape": "HostArn",
           "documentation": "<p>The Amazon Resource Name (ARN) of the host associated with the connection to be created.</p>"
+        },
+        "ProviderEndpoint": {
+          "shape": "Url",
+          "documentation": "<p>The endpoint of the ghe.com tenant where your organization resides. Provide this parameter only when <code>ProviderType</code> is <code>GitHubEnterpriseCloudDataResidency</code>. Leave this parameter empty for all other provider types.</p>"
         }
       }
     },
@@ -1535,13 +1555,13 @@
     "ListConnectionsInput": {
       "type": "structure",
       "members": {
-        "ProviderTypeFilter": {
-          "shape": "ProviderType",
-          "documentation": "<p>Filters the list of connections to those associated with a specified provider, such as Bitbucket.</p>"
-        },
         "HostArnFilter": {
           "shape": "HostArn",
           "documentation": "<p>Filters the list of connections to those associated with a specified host.</p>"
+        },
+        "ProviderTypeFilter": {
+          "shape": "ProviderType",
+          "documentation": "<p>Filters the list of connections to those associated with a specified provider, such as Bitbucket.</p>"
         },
         "MaxResults": {
           "shape": "MaxResults",
@@ -1723,7 +1743,7 @@
     },
     "NextToken": {
       "type": "string",
-      "max": 1024,
+      "max": 2048,
       "min": 1,
       "pattern": "^.*$"
     },
@@ -1744,7 +1764,8 @@
         "GitHubEnterpriseServer",
         "GitLab",
         "GitLabSelfManaged",
-        "AzureDevOps"
+        "AzureDevOps",
+        "GitHubEnterpriseCloudDataResidency"
       ]
     },
     "PublishDeploymentStatus": {

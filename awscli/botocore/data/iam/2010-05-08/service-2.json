@@ -518,7 +518,7 @@
           "shape": "OpenIdIdpCommunicationErrorException"
         }
       ],
-      "documentation": "<p>Creates an IAM entity to describe an identity provider (IdP) that supports <a href=\"http://openid.net/connect/\">OpenID Connect (OIDC)</a>.</p> <p>The OIDC provider that you create with this operation can be used as a principal in a role's trust policy. Such a policy establishes a trust relationship between Amazon Web Services and the OIDC provider.</p> <p>If you are using an OIDC identity provider from Google, Facebook, or Amazon Cognito, you don't need to create a separate IAM identity provider. These OIDC identity providers are already built-in to Amazon Web Services and are available for your use. Instead, you can move directly to creating new roles using your identity provider. To learn more, see <a href=\"https://docs.aws.amazon.com/IAM/latest/UserGuide/id_roles_create_for-idp_oidc.html\">Creating a role for web identity or OpenID connect federation</a> in the <i>IAM User Guide</i>.</p> <p>When you create the IAM OIDC provider, you specify the following:</p> <ul> <li> <p>The URL of the OIDC identity provider (IdP) to trust</p> </li> <li> <p>A list of client IDs (also known as audiences) that identify the application or applications allowed to authenticate using the OIDC provider</p> </li> <li> <p>A list of tags that are attached to the specified IAM OIDC provider</p> </li> <li> <p>A list of thumbprints of one or more server certificates that the IdP uses</p> </li> </ul> <p>You get all of this information from the OIDC IdP you want to use to access Amazon Web Services.</p> <note> <p>Amazon Web Services secures communication with OIDC identity providers (IdPs) using our library of trusted root certificate authorities (CAs) to verify the JSON Web Key Set (JWKS) endpoint's TLS certificate. If your OIDC IdP relies on a certificate that is not signed by one of these trusted CAs, only then we secure communication using the thumbprints set in the IdP's configuration.</p> </note> <note> <p>The trust for the OIDC provider is derived from the IAM provider that this operation creates. Therefore, it is best to limit access to the <a href=\"https://docs.aws.amazon.com/IAM/latest/APIReference/API_CreateOpenIDConnectProvider.html\">CreateOpenIDConnectProvider</a> operation to highly privileged users.</p> </note>"
+      "documentation": "<p>Creates an IAM entity to describe an identity provider (IdP) that supports <a href=\"http://openid.net/connect/\">OpenID Connect (OIDC)</a>.</p> <p>The OIDC provider that you create with this operation can be used as a principal in a role's trust policy. Such a policy establishes a trust relationship between Amazon Web Services and the OIDC provider.</p> <p>If you are using an OIDC identity provider from Google, Facebook, or Amazon Cognito, you don't need to create a separate IAM identity provider. These OIDC identity providers are already built-in to Amazon Web Services and are available for your use. Instead, you can move directly to creating new roles using your identity provider. To learn more, see <a href=\"https://docs.aws.amazon.com/IAM/latest/UserGuide/id_roles_create_for-idp_oidc.html\">Creating a role for web identity or OpenID connect federation</a> in the <i>IAM User Guide</i>.</p> <p>When you create the IAM OIDC provider, you specify the following:</p> <ul> <li> <p>The URL of the OIDC identity provider (IdP) to trust</p> </li> <li> <p>A list of client IDs (also known as audiences) that identify the application or applications allowed to authenticate using the OIDC provider</p> </li> <li> <p>A list of tags that are attached to the specified IAM OIDC provider</p> </li> <li> <p>A list of thumbprints of one or more server certificates that the IdP uses</p> </li> <li> <p>A trusted identity propagation context provider that defines how the subject is derived and how keys from the provider's token are mapped into trusted context keys. Specifying a context provider enables trusted identity propagation for the provider. For more information, see <a href=\"https://docs.aws.amazon.com/IAM/latest/APIReference/API_ContextProvider.html\">ContextProvider</a>.</p> </li> <li> <p>The ARN of an IAM Identity Center instance to associate with the OIDC provider. If you specify an IAM Identity Center instance, you must also specify a context provider.</p> </li> </ul> <p>You get the URL, client IDs, and thumbprints from the OIDC IdP you want to use to access Amazon Web Services.</p> <note> <p>Amazon Web Services secures communication with OIDC identity providers (IdPs) using our library of trusted root certificate authorities (CAs) to verify the JSON Web Key Set (JWKS) endpoint's TLS certificate. If your OIDC IdP relies on a certificate that is not signed by one of these trusted CAs, only then we secure communication using the thumbprints set in the IdP's configuration.</p> </note> <note> <p>The trust for the OIDC provider is derived from the IAM provider that this operation creates. Therefore, it is best to limit access to the <a href=\"https://docs.aws.amazon.com/IAM/latest/APIReference/API_CreateOpenIDConnectProvider.html\">CreateOpenIDConnectProvider</a> operation to highly privileged users.</p> </note> <p>To control who can configure trusted identity propagation on an OIDC provider, use the <a href=\"https://docs.aws.amazon.com/IAM/latest/UserGuide/reference_policies_iam-condition-keys.html#ck_EnableIdentityPropagation\">iam:EnableIdentityPropagation</a>, <a href=\"https://docs.aws.amazon.com/IAM/latest/UserGuide/reference_policies_iam-condition-keys.html#ck_EnableIdentityCenterAssociation\">iam:EnableIdentityCenterAssociation</a>, <a href=\"https://docs.aws.amazon.com/IAM/latest/UserGuide/reference_policies_iam-condition-keys.html#ck_RequestIdentityProviderIssuers\">iam:RequestIdentityProviderIssuers</a>, <a href=\"https://docs.aws.amazon.com/IAM/latest/UserGuide/reference_policies_iam-condition-keys.html#ck_ResourceIdentityProviderIssuers\">iam:ResourceIdentityProviderIssuers</a>, <a href=\"https://docs.aws.amazon.com/IAM/latest/UserGuide/reference_policies_iam-condition-keys.html#ck_RequestIdentityCenterInstanceArn\">iam:RequestIdentityCenterInstanceArn</a>, and <a href=\"https://docs.aws.amazon.com/IAM/latest/UserGuide/reference_policies_iam-condition-keys.html#ck_ResourceIdentityCenterInstanceArn\">iam:ResourceIdentityCenterInstanceArn</a> condition keys in IAM policies. The <code>Request</code> keys contain the values in the request. The <code>Resource</code> keys contain the values stored on the provider.</p>"
     },
     "CreatePolicy": {
       "name": "CreatePolicy",
@@ -652,7 +652,7 @@
           "shape": "ServiceFailureException"
         }
       ],
-      "documentation": "<p>Creates an IAM resource that describes an identity provider (IdP) that supports SAML 2.0.</p> <p>The SAML provider resource that you create with this operation can be used as a principal in an IAM role's trust policy. Such a policy can enable federated users who sign in using the SAML IdP to assume the role. You can create an IAM role that supports Web-based single sign-on (SSO) to the Amazon Web Services Management Console or one that supports API access to Amazon Web Services.</p> <p>When you create the SAML provider resource, you upload a SAML metadata document that you get from your IdP. That document includes the issuer's name, expiration information, and keys that can be used to validate the SAML authentication response (assertions) that the IdP sends. You must generate the metadata document using the identity management software that is used as your organization's IdP.</p> <note> <p> This operation requires <a href=\"https://docs.aws.amazon.com/general/latest/gr/signature-version-4.html\">Signature Version 4</a>.</p> </note> <p> For more information, see <a href=\"https://docs.aws.amazon.com/IAM/latest/UserGuide/id_roles_providers_enable-console-saml.html\">Enabling SAML 2.0 federated users to access the Amazon Web Services Management Console</a> and <a href=\"https://docs.aws.amazon.com/IAM/latest/UserGuide/id_roles_providers_saml.html\">About SAML 2.0-based federation</a> in the <i>IAM User Guide</i>.</p>"
+      "documentation": "<p>Creates an IAM resource that describes an identity provider (IdP) that supports SAML 2.0.</p> <p>The SAML provider resource that you create with this operation can be used as a principal in an IAM role's trust policy. Such a policy can enable federated users who sign in using the SAML IdP to assume the role. You can create an IAM role that supports Web-based single sign-on (SSO) to the Amazon Web Services Management Console or one that supports API access to Amazon Web Services.</p> <p>When you create the SAML provider resource, you upload a SAML metadata document that you get from your IdP. That document includes the issuer's name, expiration information, and keys that can be used to validate the SAML authentication response (assertions) that the IdP sends. You must generate the metadata document using the identity management software that is used as your organization's IdP.</p> <note> <p> This operation requires <a href=\"https://docs.aws.amazon.com/general/latest/gr/signature-version-4.html\">Signature Version 4</a>.</p> </note> <p> For more information, see <a href=\"https://docs.aws.amazon.com/IAM/latest/UserGuide/id_roles_providers_enable-console-saml.html\">Enabling SAML 2.0 federated users to access the Amazon Web Services Management Console</a> and <a href=\"https://docs.aws.amazon.com/IAM/latest/UserGuide/id_roles_providers_saml.html\">About SAML 2.0-based federation</a> in the <i>IAM User Guide</i>.</p> <p>To control who can configure trusted identity propagation on a SAML provider, use the <a href=\"https://docs.aws.amazon.com/IAM/latest/UserGuide/reference_policies_iam-condition-keys.html#ck_EnableIdentityPropagation\">iam:EnableIdentityPropagation</a>, <a href=\"https://docs.aws.amazon.com/IAM/latest/UserGuide/reference_policies_iam-condition-keys.html#ck_EnableIdentityCenterAssociation\">iam:EnableIdentityCenterAssociation</a>, <a href=\"https://docs.aws.amazon.com/IAM/latest/UserGuide/reference_policies_iam-condition-keys.html#ck_RequestIdentityProviderIssuers\">iam:RequestIdentityProviderIssuers</a>, <a href=\"https://docs.aws.amazon.com/IAM/latest/UserGuide/reference_policies_iam-condition-keys.html#ck_ResourceIdentityProviderIssuers\">iam:ResourceIdentityProviderIssuers</a>, <a href=\"https://docs.aws.amazon.com/IAM/latest/UserGuide/reference_policies_iam-condition-keys.html#ck_RequestIdentityCenterInstanceArn\">iam:RequestIdentityCenterInstanceArn</a>, and <a href=\"https://docs.aws.amazon.com/IAM/latest/UserGuide/reference_policies_iam-condition-keys.html#ck_ResourceIdentityCenterInstanceArn\">iam:ResourceIdentityCenterInstanceArn</a> condition keys in IAM policies. The <code>Request</code> keys contain the values in the request. The <code>Resource</code> keys contain the values stored on the provider.</p>"
     },
     "CreateServiceLinkedRole": {
       "name": "CreateServiceLinkedRole",
@@ -984,10 +984,13 @@
           "shape": "NoSuchEntityException"
         },
         {
+          "shape": "ConcurrentModificationException"
+        },
+        {
           "shape": "ServiceFailureException"
         }
       ],
-      "documentation": "<p>Deletes an OpenID Connect identity provider (IdP) resource object in IAM.</p> <p>Deleting an IAM OIDC provider resource does not update any roles that reference the provider as a principal in their trust policies. Any attempt to assume a role that references a deleted provider fails.</p> <p>This operation is idempotent; it does not fail or return an error if you call the operation for a provider that does not exist.</p>"
+      "documentation": "<p>Deletes an OpenID Connect identity provider (IdP) resource object in IAM. Deleting the provider also deletes its trusted identity propagation context provider and removes any IAM Identity Center instance association.</p> <p>Deleting an IAM OIDC provider resource does not update any roles that reference the provider as a principal in their trust policies. Any attempt to assume a role that references a deleted provider fails.</p>"
     },
     "DeletePolicy": {
       "name": "DeletePolicy",
@@ -1141,6 +1144,9 @@
         },
         {
           "shape": "NoSuchEntityException"
+        },
+        {
+          "shape": "ConcurrentModificationException"
         },
         {
           "shape": "ServiceFailureException"
@@ -4205,6 +4211,31 @@
       ],
       "documentation": "<p>Changes the password or the maximum sign-in session duration for the specified IAM user. You can use the CLI, the Amazon Web Services API, or the <b>Users</b> page in the IAM console to change the password for any IAM user. Use <a href=\"https://docs.aws.amazon.com/IAM/latest/APIReference/API_ChangePassword.html\">ChangePassword</a> to change your own password in the <b>My Security Credentials</b> page in the Amazon Web Services Management Console.</p> <p>For more information about modifying passwords, see <a href=\"https://docs.aws.amazon.com/IAM/latest/UserGuide/Using_ManagingLogins.html\">Managing passwords</a> in the <i>IAM User Guide</i>.</p>"
     },
+    "UpdateOpenIDConnectProvider": {
+      "name": "UpdateOpenIDConnectProvider",
+      "http": {
+        "method": "POST",
+        "requestUri": "/"
+      },
+      "input": {
+        "shape": "UpdateOpenIDConnectProviderRequest"
+      },
+      "errors": [
+        {
+          "shape": "ConcurrentModificationException"
+        },
+        {
+          "shape": "InvalidInputException"
+        },
+        {
+          "shape": "NoSuchEntityException"
+        },
+        {
+          "shape": "ServiceFailureException"
+        }
+      ],
+      "documentation": "<p>Updates the configuration of an existing IAM OpenID Connect (OIDC) identity provider resource object. Use this operation to set, change, or remove the trusted identity propagation context provider, and to associate or disassociate an IAM Identity Center instance with the provider.</p> <note> <p>This operation does not update the OIDC provider's server certificate thumbprints. Thumbprints are managed only by the <a href=\"https://docs.aws.amazon.com/IAM/latest/APIReference/API_UpdateOpenIDConnectProviderThumbprint.html\">UpdateOpenIDConnectProviderThumbprint</a> operation. To change a provider's thumbprints, call that operation instead.</p> </note> <p>To remove a configuration rather than replace it, use the <code>RemoveContextProvider</code> and <code>RemoveIdentityCenterInstance</code> parameters. For each configuration, provide either the new value or the corresponding <code>Remove</code> flag in a single request, but not both. For example, specifying both <code>ContextProvider</code> and <code>RemoveContextProvider</code> in the same request is not allowed.</p> <p>A single request can change either the context provider or the IAM Identity Center association, but not both. To change both, make separate <code>UpdateOpenIDConnectProvider</code> requests. To remove the context provider, first remove the IAM Identity Center association in a separate request.</p> <p>To control who can configure trusted identity propagation on an OIDC provider, use the <a href=\"https://docs.aws.amazon.com/IAM/latest/UserGuide/reference_policies_iam-condition-keys.html#ck_EnableIdentityPropagation\">iam:EnableIdentityPropagation</a>, <a href=\"https://docs.aws.amazon.com/IAM/latest/UserGuide/reference_policies_iam-condition-keys.html#ck_EnableIdentityCenterAssociation\">iam:EnableIdentityCenterAssociation</a>, <a href=\"https://docs.aws.amazon.com/IAM/latest/UserGuide/reference_policies_iam-condition-keys.html#ck_ResourceIdentityProviderIssuers\">iam:ResourceIdentityProviderIssuers</a>, <a href=\"https://docs.aws.amazon.com/IAM/latest/UserGuide/reference_policies_iam-condition-keys.html#ck_RequestIdentityCenterInstanceArn\">iam:RequestIdentityCenterInstanceArn</a>, and <a href=\"https://docs.aws.amazon.com/IAM/latest/UserGuide/reference_policies_iam-condition-keys.html#ck_ResourceIdentityCenterInstanceArn\">iam:ResourceIdentityCenterInstanceArn</a> condition keys in IAM policies. The <code>Request</code> keys contain the values in the request. The <code>Resource</code> keys contain the values stored on the provider.</p>"
+    },
     "UpdateOpenIDConnectProviderThumbprint": {
       "name": "UpdateOpenIDConnectProviderThumbprint",
       "http": {
@@ -4315,7 +4346,7 @@
           "shape": "ConcurrentModificationException"
         }
       ],
-      "documentation": "<p>Updates the metadata document, SAML encryption settings, and private keys for an existing SAML provider. To rotate private keys, add your new private key and then remove the old key in a separate request.</p>"
+      "documentation": "<p>Updates the metadata document, SAML encryption settings, and private keys for an existing SAML provider. To rotate private keys, add your new private key and then remove the old key in a separate request.</p> <p>You can also use this operation to set, change, or remove the trusted identity propagation context provider, and to associate or disassociate an IAM Identity Center instance with the provider. To remove a configuration rather than replace it, use the <code>RemoveContextProvider</code> and <code>RemoveIdentityCenterInstance</code> parameters. For each configuration, provide either the new value or the corresponding <code>Remove</code> flag in a single request, but not both.</p> <p>A single request can change either the context provider or the provider metadata, but not both. Provider metadata includes the SAML metadata document, assertion encryption mode, private keys, and IAM Identity Center association. To change both, make separate <code>UpdateSAMLProvider</code> requests. To remove the context provider, first remove the IAM Identity Center association in a separate request.</p> <p>To control who can configure trusted identity propagation on a SAML provider, use the <a href=\"https://docs.aws.amazon.com/IAM/latest/UserGuide/reference_policies_iam-condition-keys.html#ck_EnableIdentityPropagation\">iam:EnableIdentityPropagation</a>, <a href=\"https://docs.aws.amazon.com/IAM/latest/UserGuide/reference_policies_iam-condition-keys.html#ck_EnableIdentityCenterAssociation\">iam:EnableIdentityCenterAssociation</a>, <a href=\"https://docs.aws.amazon.com/IAM/latest/UserGuide/reference_policies_iam-condition-keys.html#ck_RequestIdentityProviderIssuers\">iam:RequestIdentityProviderIssuers</a>, <a href=\"https://docs.aws.amazon.com/IAM/latest/UserGuide/reference_policies_iam-condition-keys.html#ck_ResourceIdentityProviderIssuers\">iam:ResourceIdentityProviderIssuers</a>, <a href=\"https://docs.aws.amazon.com/IAM/latest/UserGuide/reference_policies_iam-condition-keys.html#ck_RequestIdentityCenterInstanceArn\">iam:RequestIdentityCenterInstanceArn</a>, and <a href=\"https://docs.aws.amazon.com/IAM/latest/UserGuide/reference_policies_iam-condition-keys.html#ck_ResourceIdentityCenterInstanceArn\">iam:ResourceIdentityCenterInstanceArn</a> condition keys in IAM policies. The <code>Request</code> keys contain the values in the request. The <code>Resource</code> keys contain the values stored on the provider.</p>"
     },
     "UpdateSSHPublicKey": {
       "name": "UpdateSSHPublicKey",
@@ -5021,6 +5052,48 @@
     "ContextKeyValueType": {
       "type": "string"
     },
+    "ContextProvider": {
+      "type": "structure",
+      "required": [
+        "SubjectSourceKey"
+      ],
+      "members": {
+        "KeyDefinitionList": {
+          "shape": "keyDefinitionListType",
+          "documentation": "<p>A list of source-to-target key mappings that define how keys from the external identity provider's assertion or token are mapped into trusted context keys. You can specify from 0 to 10 mappings.</p>"
+        },
+        "SubjectSourceKey": {
+          "shape": "contextProviderSourceKeyType",
+          "documentation": "<p>The source key that is used to derive the subject for the injected trusted context. This value identifies the claim or attribute in the external identity provider's assertion or token that supplies the subject.</p> <p>The key can contain only ASCII letters (A-Z, a-z), numbers (0-9), single spaces, and the following characters: <code>_ . : / = + - @ #</code>. It can't start or end with a space or contain two spaces in a row.</p>"
+        },
+        "SubjectTypeValue": {
+          "shape": "subjectTypeValueType",
+          "documentation": "<p>A static value for the subject type, such as <code>user</code> or <code>workload</code>.</p> <p>This parameter is optional and is mutually exclusive with <code>SubjectTypeSourceKey</code>. Specify either <code>SubjectTypeValue</code> or <code>SubjectTypeSourceKey</code>, but not both.</p>"
+        },
+        "SubjectTypeSourceKey": {
+          "shape": "contextProviderSourceKeyType",
+          "documentation": "<p>The source key that supplies the subject type from the external identity provider's assertion or token.</p> <p>The key can contain only ASCII letters (A-Z, a-z), numbers (0-9), single spaces, and the following characters: <code>_ . : / = + - @ #</code>. It can't start or end with a space or contain two spaces in a row.</p> <p>This parameter is mutually exclusive with <code>SubjectTypeValue</code>. Specify either <code>SubjectTypeSourceKey</code> or <code>SubjectTypeValue</code>, but not both.</p>"
+        }
+      },
+      "documentation": "<p>Contains the trusted identity propagation context provider configuration for a SAML or OpenID Connect (OIDC) identity provider. The context provider defines how the subject is derived and how keys from the external identity provider's assertion or token are mapped into trusted context keys.</p> <p>This data type is used as a request parameter in the <a href=\"https://docs.aws.amazon.com/IAM/latest/APIReference/API_CreateOpenIDConnectProvider.html\">CreateOpenIDConnectProvider</a>, <a href=\"https://docs.aws.amazon.com/IAM/latest/APIReference/API_UpdateOpenIDConnectProvider.html\">UpdateOpenIDConnectProvider</a>, <a href=\"https://docs.aws.amazon.com/IAM/latest/APIReference/API_CreateSAMLProvider.html\">CreateSAMLProvider</a>, and <a href=\"https://docs.aws.amazon.com/IAM/latest/APIReference/API_UpdateSAMLProvider.html\">UpdateSAMLProvider</a> operations, and as a response element in the <a href=\"https://docs.aws.amazon.com/IAM/latest/APIReference/API_GetOpenIDConnectProvider.html\">GetOpenIDConnectProvider</a> and <a href=\"https://docs.aws.amazon.com/IAM/latest/APIReference/API_GetSAMLProvider.html\">GetSAMLProvider</a> operations.</p>"
+    },
+    "ContextProviderKeyDefinition": {
+      "type": "structure",
+      "required": [
+        "SourceKey"
+      ],
+      "members": {
+        "SourceKey": {
+          "shape": "contextProviderSourceKeyType",
+          "documentation": "<p>The key in the external identity provider's assertion or token to read the value from.</p> <p>The key can contain only ASCII letters (A-Z, a-z), numbers (0-9), single spaces, and the following characters: <code>_ . : / = + - @ #</code>. It can't start or end with a space or contain two spaces in a row.</p>"
+        },
+        "TargetKey": {
+          "shape": "contextProviderTargetKeyType",
+          "documentation": "<p>The trusted context key to map the source value into.</p> <p>The key can contain only ASCII letters (A-Z, a-z), numbers (0-9), single spaces, and the following characters: <code>_ . : / = + - @ #</code>. It can't start or end with a space or contain two spaces in a row.</p>"
+        }
+      },
+      "documentation": "<p>Defines a single mapping from a source key in the external identity provider's assertion or token to a target trusted context key.</p> <p>This data type is used as a member of the <a href=\"https://docs.aws.amazon.com/IAM/latest/APIReference/API_ContextProvider.html\">ContextProvider</a> data type.</p>"
+    },
     "CreateAccessKeyRequest": {
       "type": "structure",
       "members": {
@@ -5233,6 +5306,14 @@
         "Tags": {
           "shape": "tagListType",
           "documentation": "<p>A list of tags that you want to attach to the new IAM OpenID Connect (OIDC) provider. Each tag consists of a key name and an associated value. For more information about tagging, see <a href=\"https://docs.aws.amazon.com/IAM/latest/UserGuide/id_tags.html\">Tagging IAM resources</a> in the <i>IAM User Guide</i>.</p> <note> <p>If any one of the tags is invalid or if you exceed the allowed maximum number of tags, then the entire request fails and the resource is not created.</p> </note>"
+        },
+        "ContextProvider": {
+          "shape": "ContextProvider",
+          "documentation": "<p>The trusted identity propagation context provider configuration to associate with the OpenID Connect (OIDC) provider. The context provider defines how the subject is derived and how keys from the provider's token are mapped into trusted context keys. Specifying a context provider enables trusted identity propagation for the provider. For more information, see <a href=\"https://docs.aws.amazon.com/IAM/latest/APIReference/API_ContextProvider.html\">ContextProvider</a>.</p>"
+        },
+        "IdentityCenterInstanceArn": {
+          "shape": "identityCenterInstanceArnType",
+          "documentation": "<p>The Amazon Resource Name (ARN) of the IAM Identity Center instance to associate with the OpenID Connect (OIDC) provider. If you specify this parameter, you must also specify <code>ContextProvider</code>.</p> <p>For the format, see <a href=\"https://docs.aws.amazon.com/singlesignon/latest/APIReference/API_InstanceMetadata.html\">InstanceMetadata</a> in the <i>IAM Identity Center API Reference</i>.</p>"
         }
       }
     },
@@ -5400,6 +5481,14 @@
         "AddPrivateKey": {
           "shape": "privateKeyType",
           "documentation": "<p>The private key generated from your external identity provider. The private key must be a .pem file that uses AES-GCM or AES-CBC encryption algorithm to decrypt SAML assertions.</p>"
+        },
+        "ContextProvider": {
+          "shape": "ContextProvider",
+          "documentation": "<p>The trusted identity propagation context provider configuration to associate with the SAML provider. The context provider defines how the subject is derived and how keys from the provider's SAML assertion are mapped into trusted context keys. Specifying a context provider enables trusted identity propagation for the provider. For more information, see <a href=\"https://docs.aws.amazon.com/IAM/latest/APIReference/API_ContextProvider.html\">ContextProvider</a>.</p>"
+        },
+        "IdentityCenterInstanceArn": {
+          "shape": "identityCenterInstanceArnType",
+          "documentation": "<p>The Amazon Resource Name (ARN) of the IAM Identity Center instance to associate with the SAML provider. If you specify this parameter, you must also specify <code>ContextProvider</code>.</p> <p>For the format, see <a href=\"https://docs.aws.amazon.com/singlesignon/latest/APIReference/API_InstanceMetadata.html\">InstanceMetadata</a> in the <i>IAM Identity Center API Reference</i>.</p>"
         }
       }
     },
@@ -6963,6 +7052,18 @@
         "Tags": {
           "shape": "tagListType",
           "documentation": "<p>A list of tags that are attached to the specified IAM OIDC provider. The returned list of tags is sorted by tag key. For more information about tagging, see <a href=\"https://docs.aws.amazon.com/IAM/latest/UserGuide/id_tags.html\">Tagging IAM resources</a> in the <i>IAM User Guide</i>.</p>"
+        },
+        "ContextProvider": {
+          "shape": "ContextProvider",
+          "documentation": "<p>The trusted identity propagation context provider configuration associated with the IAM OIDC provider resource object. For more information, see <a href=\"https://docs.aws.amazon.com/IAM/latest/APIReference/API_ContextProvider.html\">ContextProvider</a>.</p> <p>This element is returned only when a trusted identity propagation context provider is configured for the OIDC provider.</p>"
+        },
+        "IdentityCenterInstanceArn": {
+          "shape": "identityCenterInstanceArnType",
+          "documentation": "<p>The Amazon Resource Name (ARN) of the IAM Identity Center instance associated with the IAM OIDC provider resource object.</p> <p>For the format, see <a href=\"https://docs.aws.amazon.com/singlesignon/latest/APIReference/API_InstanceMetadata.html\">InstanceMetadata</a> in the <i>IAM Identity Center API Reference</i>.</p> <p>This element is returned only when an IAM Identity Center instance is associated with the OIDC provider.</p>"
+        },
+        "IdentityStoreArn": {
+          "shape": "arnType",
+          "documentation": "<p>The Amazon Resource Name (ARN) of the identity store that is resolved from the associated IAM Identity Center instance.</p> <p>For the format, see <a href=\"https://docs.aws.amazon.com/singlesignon/latest/APIReference/API_InstanceMetadata.html\">InstanceMetadata</a> in the <i>IAM Identity Center API Reference</i>.</p> <p>This element is returned only when an IAM Identity Center instance is associated with the OIDC provider.</p>"
         }
       },
       "documentation": "<p>Contains the response to a successful <a href=\"https://docs.aws.amazon.com/IAM/latest/APIReference/API_GetOpenIDConnectProvider.html\">GetOpenIDConnectProvider</a> request. </p>"
@@ -7213,6 +7314,14 @@
           "shape": "SAMLMetadataDocumentType",
           "documentation": "<p>The XML metadata document that includes information about an identity provider.</p>"
         },
+        "ContextProvider": {
+          "shape": "ContextProvider",
+          "documentation": "<p>The trusted identity propagation context provider configuration associated with the SAML provider. For more information, see <a href=\"https://docs.aws.amazon.com/IAM/latest/APIReference/API_ContextProvider.html\">ContextProvider</a>.</p> <p>This element is returned only when a trusted identity propagation context provider is configured for the SAML provider.</p>"
+        },
+        "SAMLKeyHashes": {
+          "shape": "SAMLKeyHashListType",
+          "documentation": "<p>The key hashes associated with the SAML provider, grouped by identity provider issuer. For more information, see <a href=\"https://docs.aws.amazon.com/IAM/latest/APIReference/API_SAMLKeyHashEntry.html\">SAMLKeyHashEntry</a>.</p>"
+        },
         "CreateDate": {
           "shape": "dateType",
           "documentation": "<p>The date and time when the SAML provider was created.</p>"
@@ -7232,6 +7341,14 @@
         "PrivateKeyList": {
           "shape": "privateKeyList",
           "documentation": "<p>The private key metadata for the SAML provider.</p>"
+        },
+        "IdentityCenterInstanceArn": {
+          "shape": "identityCenterInstanceArnType",
+          "documentation": "<p>The Amazon Resource Name (ARN) of the IAM Identity Center instance associated with the SAML provider.</p> <p>For the format, see <a href=\"https://docs.aws.amazon.com/singlesignon/latest/APIReference/API_InstanceMetadata.html\">InstanceMetadata</a> in the <i>IAM Identity Center API Reference</i>.</p> <p>This element is returned only when an IAM Identity Center instance is associated with the SAML provider.</p>"
+        },
+        "IdentityStoreArn": {
+          "shape": "arnType",
+          "documentation": "<p>The Amazon Resource Name (ARN) of the identity store that is resolved from the associated IAM Identity Center instance.</p> <p>For the format, see <a href=\"https://docs.aws.amazon.com/singlesignon/latest/APIReference/API_InstanceMetadata.html\">InstanceMetadata</a> in the <i>IAM Identity Center API Reference</i>.</p> <p>This element is returned only when an IAM Identity Center instance is associated with the SAML provider.</p>"
         }
       },
       "documentation": "<p>Contains the response to a successful <a href=\"https://docs.aws.amazon.com/IAM/latest/APIReference/API_GetSAMLProvider.html\">GetSAMLProvider</a> request. </p>"
@@ -7733,6 +7850,13 @@
         "senderFault": true
       },
       "exception": true
+    },
+    "KeyHashListType": {
+      "type": "list",
+      "member": {
+        "shape": "stringType"
+      },
+      "documentation": "<p>Contains a list of key hashes for a SAML identity provider issuer.</p>"
     },
     "KeyPairMismatchException": {
       "type": "structure",
@@ -9321,6 +9445,10 @@
       "members": {
         "Arn": {
           "shape": "arnType"
+        },
+        "IsTrustedIdentityPropagationEnabled": {
+          "shape": "booleanType",
+          "documentation": "<p>Specifies whether trusted identity propagation is enabled for the OpenID Connect (OIDC) provider. This is <code>true</code> when an IAM Identity Center instance is associated with the provider.</p>"
         }
       },
       "documentation": "<p>Contains the Amazon Resource Name (ARN) for an IAM OpenID Connect provider.</p>"
@@ -10454,6 +10582,33 @@
       },
       "documentation": "<p>An object that contains details about how a service-linked role is used, if that information is returned by the service.</p> <p>This data type is used as a response element in the <a href=\"https://docs.aws.amazon.com/IAM/latest/APIReference/API_GetServiceLinkedRoleDeletionStatus.html\">GetServiceLinkedRoleDeletionStatus</a> operation.</p>"
     },
+    "SAMLIssuerURLType": {
+      "type": "string",
+      "documentation": "<p>Contains the issuer URL for a SAML identity provider. The value can be from 1 to 1024 characters in length.</p>",
+      "max": 1024,
+      "min": 1
+    },
+    "SAMLKeyHashEntry": {
+      "type": "structure",
+      "members": {
+        "IssuerURL": {
+          "shape": "SAMLIssuerURLType",
+          "documentation": "<p>The issuer URL of the SAML identity provider that the key hashes are associated with.</p>"
+        },
+        "KeyHashes": {
+          "shape": "KeyHashListType",
+          "documentation": "<p>The list of key hashes for the SAML identity provider issuer.</p>"
+        }
+      },
+      "documentation": "<p>Contains the key hashes that are associated with a SAML identity provider issuer.</p> <p>This data type is used as a response element in the <a href=\"https://docs.aws.amazon.com/IAM/latest/APIReference/API_GetSAMLProvider.html\">GetSAMLProvider</a> operation.</p>"
+    },
+    "SAMLKeyHashListType": {
+      "type": "list",
+      "member": {
+        "shape": "SAMLKeyHashEntry"
+      },
+      "documentation": "<p>Contains a list of <a href=\"https://docs.aws.amazon.com/IAM/latest/APIReference/API_SAMLKeyHashEntry.html\">SAMLKeyHashEntry</a> values, each of which pairs a SAML identity provider issuer with its key hashes.</p>"
+    },
     "SAMLMetadataDocumentType": {
       "type": "string",
       "max": 10000000,
@@ -10487,6 +10642,10 @@
         "CreateDate": {
           "shape": "dateType",
           "documentation": "<p>The date and time when the SAML provider was created.</p>"
+        },
+        "IsTrustedIdentityPropagationEnabled": {
+          "shape": "booleanType",
+          "documentation": "<p>Specifies whether trusted identity propagation is enabled for the SAML provider. This is <code>true</code> when an IAM Identity Center instance is associated with the provider.</p>"
         }
       },
       "documentation": "<p>Contains the list of SAML providers for this account.</p>"
@@ -11588,6 +11747,34 @@
         }
       }
     },
+    "UpdateOpenIDConnectProviderRequest": {
+      "type": "structure",
+      "required": [
+        "OpenIDConnectProviderArn"
+      ],
+      "members": {
+        "OpenIDConnectProviderArn": {
+          "shape": "arnType",
+          "documentation": "<p>The Amazon Resource Name (ARN) of the IAM OIDC provider resource object to update. You can get a list of OIDC provider resource ARNs by using the <a href=\"https://docs.aws.amazon.com/IAM/latest/APIReference/API_ListOpenIDConnectProviders.html\">ListOpenIDConnectProviders</a> operation.</p> <p>For more information about ARNs, see <a href=\"https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html\">Amazon Resource Names (ARNs)</a> in the <i>Amazon Web Services General Reference</i>.</p>"
+        },
+        "ContextProvider": {
+          "shape": "ContextProvider",
+          "documentation": "<p>The trusted identity propagation context provider configuration to set on the OIDC provider. This configuration defines the subject mapping and the source-to-target key mappings that are used when trusted context is injected. For more information, see <a href=\"https://docs.aws.amazon.com/IAM/latest/APIReference/API_ContextProvider.html\">ContextProvider</a>.</p> <p>To remove the existing context provider instead of replacing it, use <code>RemoveContextProvider</code>. Do not specify both <code>ContextProvider</code> and <code>RemoveContextProvider</code> in the same request.</p>"
+        },
+        "IdentityCenterInstanceArn": {
+          "shape": "identityCenterInstanceArnType",
+          "documentation": "<p>The Amazon Resource Name (ARN) of the IAM Identity Center instance to associate with the OIDC provider.</p> <p>For the format, see <a href=\"https://docs.aws.amazon.com/singlesignon/latest/APIReference/API_InstanceMetadata.html\">InstanceMetadata</a> in the <i>IAM Identity Center API Reference</i>.</p> <p>To disassociate the currently associated instance instead of changing it, use <code>RemoveIdentityCenterInstance</code>. Do not specify both <code>IdentityCenterInstanceArn</code> and <code>RemoveIdentityCenterInstance</code> in the same request.</p>"
+        },
+        "RemoveContextProvider": {
+          "shape": "booleanType",
+          "documentation": "<p>Specifies whether to remove the existing context provider configuration from the OIDC provider. Set this value to <code>true</code> to remove the context provider.</p> <p>This parameter is mutually exclusive with <code>ContextProvider</code>. In a single request, specify either a new <code>ContextProvider</code> value or <code>RemoveContextProvider</code>, but not both.</p>"
+        },
+        "RemoveIdentityCenterInstance": {
+          "shape": "booleanType",
+          "documentation": "<p>Specifies whether to disassociate the IAM Identity Center instance from the OIDC provider. Set this value to <code>true</code> to remove the association.</p> <p>This parameter is mutually exclusive with <code>IdentityCenterInstanceArn</code>. In a single request, specify either a new <code>IdentityCenterInstanceArn</code> value or <code>RemoveIdentityCenterInstance</code>, but not both.</p>"
+        }
+      }
+    },
     "UpdateOpenIDConnectProviderThumbprintRequest": {
       "type": "structure",
       "required": [
@@ -11688,6 +11875,22 @@
         "RemovePrivateKey": {
           "shape": "privateKeyIdType",
           "documentation": "<p>The Key ID of the private key to remove.</p>"
+        },
+        "ContextProvider": {
+          "shape": "ContextProvider",
+          "documentation": "<p>The trusted identity propagation context provider configuration to associate with the SAML provider. This replaces the existing context provider configuration. For more information, see <a href=\"https://docs.aws.amazon.com/IAM/latest/APIReference/API_ContextProvider.html\">ContextProvider</a>.</p>"
+        },
+        "IdentityCenterInstanceArn": {
+          "shape": "identityCenterInstanceArnType",
+          "documentation": "<p>The Amazon Resource Name (ARN) of the IAM Identity Center instance to associate with the SAML provider.</p> <p>For the format, see <a href=\"https://docs.aws.amazon.com/singlesignon/latest/APIReference/API_InstanceMetadata.html\">InstanceMetadata</a> in the <i>IAM Identity Center API Reference</i>.</p>"
+        },
+        "RemoveContextProvider": {
+          "shape": "booleanType",
+          "documentation": "<p>Specifies whether to remove the existing trusted identity propagation context provider configuration from the SAML provider. When set to <code>true</code>, the context provider is removed. This parameter is mutually exclusive with <code>ContextProvider</code>.</p>"
+        },
+        "RemoveIdentityCenterInstance": {
+          "shape": "booleanType",
+          "documentation": "<p>Specifies whether to disassociate the IAM Identity Center instance from the SAML provider. When set to <code>true</code>, the instance is disassociated. This parameter is mutually exclusive with <code>IdentityCenterInstanceArn</code>.</p>"
         }
       }
     },
@@ -12174,6 +12377,18 @@
       "max": 255,
       "min": 1
     },
+    "contextProviderSourceKeyType": {
+      "type": "string",
+      "documentation": "<p>Contains a source key for a trusted identity propagation context provider. The value can be from 1 to 128 characters in length.</p> <p>The key can contain only ASCII letters (A-Z, a-z), numbers (0-9), single spaces, and the following characters: <code>_ . : / = + - @ #</code>. It can't start or end with a space or contain two spaces in a row.</p>",
+      "max": 128,
+      "min": 1
+    },
+    "contextProviderTargetKeyType": {
+      "type": "string",
+      "documentation": "<p>Contains a target trusted context key for a trusted identity propagation context provider. The value can be from 1 to 128 characters in length.</p> <p>The key can contain only ASCII letters (A-Z, a-z), numbers (0-9), single spaces, and the following characters: <code>_ . : / = + - @ #</code>. It can't start or end with a space or contain two spaces in a row.</p>",
+      "max": 128,
+      "min": 1
+    },
     "credentialAgeDays": {
       "type": "integer",
       "max": 36600,
@@ -12298,6 +12513,12 @@
       "min": 16,
       "pattern": "[\\w]+"
     },
+    "identityCenterInstanceArnType": {
+      "type": "string",
+      "documentation": "<p>Contains the Amazon Resource Name (ARN) of an IAM Identity Center instance. The value can be from 1 to 1224 characters in length.</p> <p>For the format, see <a href=\"https://docs.aws.amazon.com/singlesignon/latest/APIReference/API_InstanceMetadata.html\">InstanceMetadata</a> in the <i>IAM Identity Center API Reference</i>.</p>",
+      "max": 1224,
+      "min": 1
+    },
     "inlinePolicyTemplateListType": {
       "type": "list",
       "member": {
@@ -12347,6 +12568,15 @@
         "COMPLETED",
         "FAILED"
       ]
+    },
+    "keyDefinitionListType": {
+      "type": "list",
+      "member": {
+        "shape": "ContextProviderKeyDefinition"
+      },
+      "documentation": "<p>Contains a list of source-to-target key mappings for a trusted identity propagation context provider. The list can contain from 0 to 10 <a href=\"https://docs.aws.amazon.com/IAM/latest/APIReference/API_ContextProviderKeyDefinition.html\">ContextProviderKeyDefinition</a> values.</p>",
+      "max": 10,
+      "min": 0
     },
     "keyPairMismatchMessage": {
       "type": "string"
@@ -12910,6 +13140,12 @@
     },
     "stringType": {
       "type": "string"
+    },
+    "subjectTypeValueType": {
+      "type": "string",
+      "documentation": "<p>Contains a static subject type value for a trusted identity propagation context provider, such as <code>user</code> or <code>workload</code>. The value can be from 0 to 128 characters in length. An empty value indicates that no static subject type is set.</p>",
+      "max": 128,
+      "min": 0
     },
     "summaryContentType": {
       "type": "string",

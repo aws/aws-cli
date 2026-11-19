@@ -49,7 +49,8 @@
         {"shape":"ResourceExistsException"},
         {"shape":"InternalServiceErrorException"},
         {"shape":"LimitExceededException"},
-        {"shape":"ThrottlingException"}
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"}
       ],
       "documentation":"<p>Adds IP addresses to an inbound or an outbound Resolver endpoint. If you want to add more than one IP address, submit one <code>AssociateResolverEndpointIpAddress</code> request for each IP address.</p> <p>To remove an IP address from an endpoint, see <a href=\"https://docs.aws.amazon.com/Route53/latest/APIReference/API_route53resolver_DisassociateResolverEndpointIpAddress.html\">DisassociateResolverEndpointIpAddress</a>. </p>"
     },
@@ -89,7 +90,8 @@
         {"shape":"ResourceUnavailableException"},
         {"shape":"ResourceExistsException"},
         {"shape":"InternalServiceErrorException"},
-        {"shape":"ThrottlingException"}
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"}
       ],
       "documentation":"<p>Associates a Resolver rule with a VPC. When you associate a rule with a VPC, Resolver forwards all DNS queries for the domain name that is specified in the rule and that originate in the VPC. The queries are forwarded to the IP addresses for the DNS resolvers that are specified in the rule. For more information about rules, see <a href=\"https://docs.aws.amazon.com/Route53/latest/APIReference/API_route53resolver_CreateResolverRule.html\">CreateResolverRule</a>. </p>"
     },
@@ -177,7 +179,7 @@
         {"shape":"InternalServiceErrorException"},
         {"shape":"ThrottlingException"}
       ],
-      "documentation":"<p>Creates a single DNS Firewall rule in the specified rule group. The rule can use any one of the following match sources, and the chosen source must be supplied through the matching request field — they are mutually exclusive:</p> <ul> <li> <p> <code>FirewallDomainListId</code> — match a customer-managed or Amazon Web Services-managed domain list.</p> </li> <li> <p> <code>DnsThreatProtection</code> — match a built-in DNS Firewall Advanced threat detector (<code>DGA</code>, <code>DNS_TUNNELING</code>, or <code>DICTIONARY_DGA</code>).</p> </li> <li> <p> <code>FirewallRuleType</code> — match one of the rule-type variants returned by <a>ListFirewallRuleTypes</a>: <code>FirewallAdvancedContentCategory</code>, <code>FirewallAdvancedThreatCategory</code>, <code>DnsThreatProtection</code>, or <code>PartnerThreatProtection</code>. The <code>PartnerThreatProtection</code> variant requires an active Amazon Web Services Marketplace subscription to the named partner product.</p> </li> </ul> <p>For rules that require asynchronous provisioning (today, the <code>PartnerThreatProtection</code> rule type), the rule's <code>Status</code> begins at <code>CREATING</code> and transitions to <code>COMPLETE</code> once the rule is provisioned and the marketplace entitlement is verified. If provisioning fails, <code>Status</code> becomes <code>CREATION_FAILED</code> and <code>StatusMessage</code> contains a human-readable reason; the rule is then immutable and must be removed with <a>DeleteFirewallRule</a>.</p>"
+      "documentation":"<p>Creates a single DNS Firewall rule in the specified rule group. The rule can use any one of the following match sources, and the chosen source must be supplied through the matching request field — they are mutually exclusive:</p> <ul> <li> <p> <code>FirewallDomainListId</code> — match a customer-managed or Amazon Web Services-managed domain list.</p> </li> <li> <p> <code>DnsThreatProtection</code> — match a built-in DNS Firewall Advanced threat detector (<code>DGA</code>, <code>DNS_TUNNELING</code>, or <code>DICTIONARY_DGA</code>).</p> </li> <li> <p> <code>FirewallRuleType</code> — match one of the rule-type variants: <code>FirewallAdvancedContentCategory</code>, <code>FirewallAdvancedThreatCategory</code>, <code>DnsThreatProtection</code>, <code>PartnerThreatProtection</code>, or <code>AutoAllowlist</code>. <a>ListFirewallRuleTypes</a> returns the first four. The <code>PartnerThreatProtection</code> variant requires an active Amazon Web Services Marketplace subscription to the named partner product.</p> </li> </ul> <p>For rules that require asynchronous provisioning (the <code>PartnerThreatProtection</code> and <code>AutoAllowlist</code> rule types), the rule's <code>Status</code> begins at <code>CREATING</code> and transitions to <code>COMPLETE</code> once the rule is provisioned: for <code>PartnerThreatProtection</code>, when the marketplace entitlement is verified, and for <code>AutoAllowlist</code>, when DNS Firewall has read the look-back window of every VPC that uses the rule group, which can take hours for a rule group that many VPCs use. If provisioning fails, <code>Status</code> becomes <code>CREATION_FAILED</code> and <code>StatusMessage</code> contains a human-readable reason; the rule is then immutable and must be removed with <a>DeleteFirewallRule</a>.</p>"
     },
     "CreateFirewallRuleGroup":{
       "name":"CreateFirewallRuleGroup",
@@ -358,7 +360,8 @@
         {"shape":"InvalidParameterException"},
         {"shape":"InvalidRequestException"},
         {"shape":"InternalServiceErrorException"},
-        {"shape":"ThrottlingException"}
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"}
       ],
       "documentation":"<p>Deletes a Resolver endpoint. The effect of deleting a Resolver endpoint depends on whether it's an inbound or an outbound Resolver endpoint:</p> <ul> <li> <p> <b>Inbound</b>: DNS queries from your network are no longer routed to the DNS service for the specified VPC.</p> </li> <li> <p> <b>Outbound</b>: DNS queries from a VPC are no longer routed to your network.</p> </li> </ul>"
     },
@@ -394,7 +397,8 @@
         {"shape":"ResourceNotFoundException"},
         {"shape":"ResourceInUseException"},
         {"shape":"InternalServiceErrorException"},
-        {"shape":"ThrottlingException"}
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"}
       ],
       "documentation":"<p>Deletes a Resolver rule. Before you can delete a Resolver rule, you must disassociate it from all the VPCs that you associated the Resolver rule with. For more information, see <a href=\"https://docs.aws.amazon.com/Route53/latest/APIReference/API_route53resolver_DisassociateResolverRule.html\">DisassociateResolverRule</a>.</p>"
     },
@@ -430,7 +434,8 @@
         {"shape":"InvalidRequestException"},
         {"shape":"ResourceExistsException"},
         {"shape":"InternalServiceErrorException"},
-        {"shape":"ThrottlingException"}
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"}
       ],
       "documentation":"<p>Removes IP addresses from an inbound or an outbound Resolver endpoint. If you want to remove more than one IP address, submit one <code>DisassociateResolverEndpointIpAddress</code> request for each IP address.</p> <p>To add an IP address to an endpoint, see <a href=\"https://docs.aws.amazon.com/Route53/latest/APIReference/API_route53resolver_AssociateResolverEndpointIpAddress.html\">AssociateResolverEndpointIpAddress</a>. </p>"
     },
@@ -465,7 +470,8 @@
         {"shape":"InvalidRequestException"},
         {"shape":"InvalidParameterException"},
         {"shape":"InternalServiceErrorException"},
-        {"shape":"ThrottlingException"}
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"}
       ],
       "documentation":"<p>Removes the association between a specified Resolver rule and a specified VPC.</p> <important> <p>If you disassociate a Resolver rule from a VPC, Resolver stops forwarding DNS queries for the domain name that you specified in the Resolver rule. </p> </important>"
     },
@@ -616,7 +622,8 @@
         {"shape":"ResourceNotFoundException"},
         {"shape":"InvalidParameterException"},
         {"shape":"InternalServiceErrorException"},
-        {"shape":"ThrottlingException"}
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"}
       ],
       "documentation":"<p>Gets information about a specified Resolver endpoint, such as whether it's an inbound or an outbound Resolver endpoint, and the current status of the endpoint.</p>"
     },
@@ -685,7 +692,8 @@
         {"shape":"ResourceNotFoundException"},
         {"shape":"InvalidParameterException"},
         {"shape":"InternalServiceErrorException"},
-        {"shape":"ThrottlingException"}
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"}
       ],
       "documentation":"<p>Gets information about a specified Resolver rule, such as the domain name that the rule forwards DNS queries for and the ID of the outbound Resolver endpoint that the rule is associated with.</p>"
     },
@@ -701,7 +709,8 @@
         {"shape":"ResourceNotFoundException"},
         {"shape":"InvalidParameterException"},
         {"shape":"InternalServiceErrorException"},
-        {"shape":"ThrottlingException"}
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"}
       ],
       "documentation":"<p>Gets information about an association between a specified Resolver rule and a VPC. You associate a Resolver rule and a VPC using <a href=\"https://docs.aws.amazon.com/Route53/latest/APIReference/API_route53resolver_AssociateResolverRule.html\">AssociateResolverRule</a>. </p>"
     },
@@ -738,7 +747,7 @@
         {"shape":"InternalServiceErrorException"},
         {"shape":"ThrottlingException"}
       ],
-      "documentation":"<p>Imports domain names from a file into a domain list, for use in a DNS firewall rule group. </p> <p>Each domain specification in your domain list must satisfy the following requirements: </p> <ul> <li> <p>It can optionally start with <code>*</code> (asterisk).</p> </li> <li> <p>With the exception of the optional starting asterisk, it must only contain the following characters: <code>A-Z</code>, <code>a-z</code>, <code>0-9</code>, <code>-</code> (hyphen).</p> </li> <li> <p>It must be from 1-255 characters in length. </p> </li> </ul>"
+      "documentation":"<p>Imports domain names from a file into a domain list, for use in a DNS firewall rule group. </p> <p>You can't import into an AutoAllowlist rule's managed domain list. To seed such a list, specify <code>ImportFromFirewallDomainListId</code> when you create the rule.</p> <p>Each domain specification in your domain list must satisfy the following requirements: </p> <ul> <li> <p>It can optionally start with <code>*</code> (asterisk).</p> </li> <li> <p>With the exception of the optional starting asterisk, it must only contain the following characters: <code>A-Z</code>, <code>a-z</code>, <code>0-9</code>, <code>-</code> (hyphen).</p> </li> <li> <p>It must be from 1-255 characters in length. </p> </li> </ul>"
     },
     "ListFirewallConfigs":{
       "name":"ListFirewallConfigs",
@@ -789,6 +798,23 @@
       ],
       "documentation":"<p>Retrieves the domains that you have defined for the specified firewall domain list. </p> <p>A single call might return only a partial list of the domains. For information, see <code>MaxResults</code>. </p>"
     },
+    "ListFirewallRuleDomains":{
+      "name":"ListFirewallRuleDomains",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"ListFirewallRuleDomainsRequest"},
+      "output":{"shape":"ListFirewallRuleDomainsResponse"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"InternalServiceErrorException"},
+        {"shape":"ThrottlingException"}
+      ],
+      "documentation":"<p>Retrieves the domains of an AutoAllowlist firewall rule. Only the owner of the rule group can call this operation. Results are paginated. Use <code>MaxResults</code> and <code>NextToken</code> to retrieve additional domains.</p> <p>Identify the rule by <code>FirewallThreatProtectionId</code> to get the domains that DNS Firewall observed in the VPCs that use the rule group, through a rule group association or through a Route 53 Profile that includes the rule group, including VPCs in other accounts. Each domain is returned with its <code>DomainStatus</code> and request counts. Use <code>QueryOptions</code> to filter and sort the results.</p> <p>Identify the rule's managed domain list by <code>FirewallDomainListId</code> to get the domains that the rule currently allows. For any other domain list, use <a>ListFirewallDomains</a>.</p>"
+    },
     "ListFirewallRuleGroupAssociations":{
       "name":"ListFirewallRuleGroupAssociations",
       "http":{
@@ -835,7 +861,7 @@
         {"shape":"InternalServiceErrorException"},
         {"shape":"ThrottlingException"}
       ],
-      "documentation":"<p>Retrieves the rule-type variants that can be used in the <code>FirewallRuleType</code> field of <a>CreateFirewallRule</a> and <a>UpdateFirewallRule</a>. Each returned <a>FirewallRuleTypeDefinition</a> identifies one variant + value combination — for example, <code>FirewallAdvancedContentCategory</code> + <code>VIOLENCE_AND_HATE_SPEECH</code>, or <code>PartnerThreatProtection</code> + a partner-managed feed.</p> <p>The supported <code>RuleType</code> filter values are <code>FirewallAdvancedContentCategory</code>, <code>FirewallAdvancedThreatCategory</code>, <code>DnsThreatProtection</code>, and <code>PartnerThreatProtection</code>. When a returned definition's variant requires an external subscription (currently only <code>PartnerThreatProtection</code>), the response also includes a <a>SubscriptionInfo</a> identifying the Amazon Web Services Marketplace product that backs it; absence of <code>SubscriptionInfo</code> means the variant is fully managed by Amazon Web Services and requires no separate subscription.</p>"
+      "documentation":"<p>Retrieves the rule-type variants that can be used in the <code>FirewallRuleType</code> field of <a>CreateFirewallRule</a> and <a>UpdateFirewallRule</a>. Each returned <a>FirewallRuleTypeDefinition</a> identifies one variant + value combination — for example, <code>FirewallAdvancedContentCategory</code> + <code>VIOLENCE_AND_HATE_SPEECH</code>, or <code>PartnerThreatProtection</code> + a partner-managed feed.</p> <p>The supported <code>RuleType</code> filter values are <code>FirewallAdvancedContentCategory</code>, <code>FirewallAdvancedThreatCategory</code>, <code>DnsThreatProtection</code>, and <code>PartnerThreatProtection</code>. When a returned definition's variant requires an external subscription (currently only <code>PartnerThreatProtection</code>), the response also includes a <a>SubscriptionInfo</a> identifying the Amazon Web Services Marketplace product that backs it; absence of <code>SubscriptionInfo</code> means the variant is fully managed by Amazon Web Services and requires no separate subscription.</p> <p>This operation doesn't return the <code>AutoAllowlist</code> variant. Configure an AutoAllowlist rule with <a>AutoAllowlistConfig</a>.</p>"
     },
     "ListFirewallRules":{
       "name":"ListFirewallRules",
@@ -852,7 +878,7 @@
         {"shape":"InternalServiceErrorException"},
         {"shape":"ThrottlingException"}
       ],
-      "documentation":"<p>Retrieves the firewall rules that you have defined for the specified firewall rule group. DNS Firewall uses the rules in a rule group to filter DNS network traffic for a VPC.</p> <p>A single call might return only a partial list of the rules. For information, see <code>MaxResults</code>.</p> <p>For rules that require asynchronous provisioning, the response includes <code>Status</code> (see <a>FirewallRuleStatus</a>) and, on failure, <code>StatusMessage</code> with the reason.</p>"
+      "documentation":"<p>Retrieves the firewall rules that you have defined for the specified firewall rule group. DNS Firewall uses the rules in a rule group to filter DNS network traffic for a VPC.</p> <p>A single call might return only a partial list of the rules. For information, see <code>MaxResults</code>.</p> <p>For rules that require asynchronous provisioning, the response includes <code>Status</code> (see <a>FirewallRule</a>) and, on failure, <code>StatusMessage</code> with the reason.</p>"
     },
     "ListOutpostResolvers":{
       "name":"ListOutpostResolvers",
@@ -921,7 +947,8 @@
         {"shape":"InvalidParameterException"},
         {"shape":"InternalServiceErrorException"},
         {"shape":"InvalidNextTokenException"},
-        {"shape":"ThrottlingException"}
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"}
       ],
       "documentation":"<p>Gets the IP addresses for a specified Resolver endpoint.</p>"
     },
@@ -938,7 +965,8 @@
         {"shape":"InvalidRequestException"},
         {"shape":"InvalidParameterException"},
         {"shape":"InternalServiceErrorException"},
-        {"shape":"ThrottlingException"}
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"}
       ],
       "documentation":"<p>Lists all the Resolver endpoints that were created using the current Amazon Web Services account.</p>"
     },
@@ -991,7 +1019,8 @@
         {"shape":"InvalidRequestException"},
         {"shape":"InvalidParameterException"},
         {"shape":"InternalServiceErrorException"},
-        {"shape":"ThrottlingException"}
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"}
       ],
       "documentation":"<p>Lists the associations that were created between Resolver rules and VPCs using the current Amazon Web Services account.</p>"
     },
@@ -1008,7 +1037,8 @@
         {"shape":"InvalidRequestException"},
         {"shape":"InvalidParameterException"},
         {"shape":"InternalServiceErrorException"},
-        {"shape":"ThrottlingException"}
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"}
       ],
       "documentation":"<p>Lists the Resolver rules that were created using the current Amazon Web Services account.</p>"
     },
@@ -1026,7 +1056,8 @@
         {"shape":"InvalidNextTokenException"},
         {"shape":"InvalidRequestException"},
         {"shape":"InternalServiceErrorException"},
-        {"shape":"ThrottlingException"}
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"}
       ],
       "documentation":"<p>Lists the tags that you associated with the specified resource.</p>"
     },
@@ -1097,7 +1128,8 @@
         {"shape":"InvalidRequestException"},
         {"shape":"InvalidTagException"},
         {"shape":"InternalServiceErrorException"},
-        {"shape":"ThrottlingException"}
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"}
       ],
       "documentation":"<p>Adds one or more tags to a specified resource.</p>"
     },
@@ -1114,7 +1146,8 @@
         {"shape":"InvalidParameterException"},
         {"shape":"InvalidRequestException"},
         {"shape":"InternalServiceErrorException"},
-        {"shape":"ThrottlingException"}
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"}
       ],
       "documentation":"<p>Removes one or more tags from a specified resource.</p>"
     },
@@ -1152,7 +1185,7 @@
         {"shape":"InternalServiceErrorException"},
         {"shape":"ThrottlingException"}
       ],
-      "documentation":"<p>Updates the firewall domain list from an array of domain specifications. </p>"
+      "documentation":"<p>Updates the firewall domain list from an array of domain specifications. </p> <p>For an AutoAllowlist rule's managed domain list, use <code>ADD</code> to approve observed domains, <code>REMOVE</code> to stop allowing domains, unless a wildcard entry that's still on the list matches them, and <code>DENY</code> to dismiss observed domains. <code>REPLACE</code> and <a>ImportFirewallDomains</a> aren't supported for these lists.</p> <p>DNS Firewall throttles <code>UpdateFirewallDomains</code> requests based on both the request rate and the total number of domains across your requests.</p> <p> <b>Best Practice for Updating Domain Lists</b> </p> <p>If you only need to modify a subset of domains, use the <code>ADD</code> or <code>REMOVE</code> operations instead of <code>REPLACE</code>. With <code>REPLACE</code>, you send the complete list you want to end up with, and throttling counts every domain in that request, including domains that aren't changing, which can use up your available throttling capacity.</p>"
     },
     "UpdateFirewallRule":{
       "name":"UpdateFirewallRule",
@@ -1447,6 +1480,27 @@
           "documentation":"<p>Information about the <code>AssociateResolverRule</code> request, including the status of the request.</p>"
         }
       }
+    },
+    "AutoAllowlistConfig":{
+      "type":"structure",
+      "required":["InitialDataTimeframeHours"],
+      "members":{
+        "InitialDataTimeframeHours":{
+          "shape":"InitialDataTimeframeHours",
+          "documentation":"<p>The look-back window, in hours, of historical DNS traffic that DNS Firewall uses to seed the initial set of observed domains when you create the rule. Valid values are from <code>1</code> to <code>168</code> (7 days). You can't change this value after you create the rule.</p>"
+        },
+        "ImportFromFirewallDomainListId":{
+          "shape":"ResourceId",
+          "documentation":"<p>The ID of a domain list whose domains DNS Firewall copies into the AutoAllowlist rule's managed domain list after you create the rule. You must own the source list, and it must be in <code>COMPLETE</code> status, in the same Region, and not a managed or AutoAllowlist list. DNS Firewall reads the source list while the copy runs, so don't change or delete it until the managed list's status is no longer <code>IMPORTING</code>. A change made to the source list during the copy can be reflected in the managed list, and deleting the source list fails the copy. The managed list then has status <code>COMPLETE</code>, or <code>COMPLETE_IMPORT_FAILED</code> if the copy failed. DNS Firewall uses this value only when you create the rule.</p>",
+          "box":true
+        },
+        "AutoAllowlistFirewallDomainListId":{
+          "shape":"ResourceId",
+          "documentation":"<p>The ID of the managed domain list that DNS Firewall creates and maintains for this AutoAllowlist rule. The list is named <code>AutoAllowlist - </code> followed by the rule name, cut to 64 characters, and is renamed when you rename the rule. DNS Firewall returns this value in responses. You can't set it.</p>",
+          "box":true
+        }
+      },
+      "documentation":"<p>The configuration for an AutoAllowlist firewall rule, which observes the DNS traffic of the VPCs that use the rule group, through a rule group association or a Route 53 Profile. The rule allows the domains on its managed domain list. When you create the rule, DNS Firewall seeds the observed domains from the look-back window of each VPC. After that, a domain is listed as observed when any DNS Firewall rule blocks a query for it from a VPC that uses the rule group, including rules in other rule groups, so place a rule that blocks the domains you haven't approved after the AutoAllowlist rule. To review the observed domains, call <a>ListFirewallRuleDomains</a>. To approve or deny them, call <a>UpdateFirewallDomains</a> on the rule's managed domain list.</p> <p>An AutoAllowlist rule uses the <code>ALLOW</code> action, applies to all query types, and always inspects redirection domains. You can't set <code>Qtype</code>, <code>FirewallDomainRedirectionAction</code>, <code>BlockResponse</code>, or the DNS Firewall Advanced settings on it. A rule group can contain one AutoAllowlist rule.</p> <p>A new AutoAllowlist rule has status <code>CREATING</code> while DNS Firewall reads the look-back window of each VPC that uses the rule group, which can take hours for a rule group that many VPCs use. Until the status is <code>COMPLETE</code>, the observed domains and request counts are partial and <a>UpdateFirewallRule</a> rejects the rule. You can approve, remove, and deny domains while the rule is <code>CREATING</code>.</p>"
     },
     "AutodefinedReverseFlag":{
       "type":"string",
@@ -1749,7 +1803,7 @@
         },
         "FirewallRuleType":{
           "shape":"FirewallRuleType",
-          "documentation":"<p>The rule type configuration for the firewall rule. This is a tagged union — set exactly one of its members. This setting is mutually exclusive with the top-level <code>FirewallDomainListId</code> and <code>DnsThreatProtection</code> fields. Use one of:</p> <ul> <li> <p> <code>FirewallAdvancedContentCategory</code> — match an Amazon Web Services-managed content category (for example, <code>VIOLENCE_AND_HATE_SPEECH</code>).</p> </li> <li> <p> <code>FirewallAdvancedThreatCategory</code> — match an Amazon Web Services-managed advanced threat category (for example, <code>PHISHING</code>).</p> </li> <li> <p> <code>DnsThreatProtection</code> — match a built-in DNS Firewall Advanced threat detector (<code>DGA</code>, <code>DNS_TUNNELING</code>, or <code>DICTIONARY_DGA</code>).</p> </li> <li> <p> <code>PartnerThreatProtection</code> — match a third-party threat feed delivered through Amazon Web Services Marketplace. The selected partner must be an active subscription on the calling account.</p> </li> </ul> <p>To enumerate the values supported in your account, call <a>ListFirewallRuleTypes</a>.</p>",
+          "documentation":"<p>The rule type configuration for the firewall rule. This is a tagged union — set exactly one of its members. This setting is mutually exclusive with the top-level <code>FirewallDomainListId</code> and <code>DnsThreatProtection</code> fields. Use one of:</p> <ul> <li> <p> <code>FirewallAdvancedContentCategory</code> — match an Amazon Web Services-managed content category (for example, <code>VIOLENCE_AND_HATE_SPEECH</code>).</p> </li> <li> <p> <code>FirewallAdvancedThreatCategory</code> — match an Amazon Web Services-managed advanced threat category (for example, <code>PHISHING</code>).</p> </li> <li> <p> <code>DnsThreatProtection</code> — match a built-in DNS Firewall Advanced threat detector (<code>DGA</code>, <code>DNS_TUNNELING</code>, or <code>DICTIONARY_DGA</code>).</p> </li> <li> <p> <code>PartnerThreatProtection</code> — match a third-party threat feed delivered through Amazon Web Services Marketplace. The selected partner must be an active subscription on the calling account.</p> </li> <li> <p> <code>AutoAllowlist</code> — automatically observe the domains that the VPCs associated with the rule group resolve, and allow the ones that you approve. See <a>AutoAllowlistConfig</a>.</p> </li> </ul> <p>To enumerate the values supported in your account, call <a>ListFirewallRuleTypes</a>. It doesn't return <code>AutoAllowlist</code>.</p>",
           "box":true
         }
       },
@@ -1845,12 +1899,12 @@
         },
         "FirewallDomainRedirectionAction":{
           "shape":"FirewallDomainRedirectionAction",
-          "documentation":"<p> How you want the the rule to evaluate DNS redirection in the DNS redirection chain, such as CNAME or DNAME. </p> <p> <code>INSPECT_REDIRECTION_DOMAIN</code>: (Default) inspects all domains in the redirection chain. The individual domains in the redirection chain must be added to the domain list.</p> <p> <code>TRUST_REDIRECTION_DOMAIN</code>: Inspects only the first domain in the redirection chain. You don't need to add the subsequent domains in the domain in the redirection list to the domain list.</p>",
+          "documentation":"<p> How you want the the rule to evaluate DNS redirection in the DNS redirection chain, such as CNAME or DNAME. </p> <p> <code>INSPECT_REDIRECTION_DOMAIN</code>: (Default) inspects all domains in the redirection chain. The individual domains in the redirection chain must be added to the domain list.</p> <p> <code>TRUST_REDIRECTION_DOMAIN</code>: Inspects only the first domain in the redirection chain. You don't need to add the subsequent domains in the domain in the redirection list to the domain list.</p> <p>You can't set this value on an AutoAllowlist rule, which always inspects the redirection chain.</p>",
           "box":true
         },
         "Qtype":{
           "shape":"Qtype",
-          "documentation":"<p> The DNS query type you want the rule to evaluate. Allowed values are; </p> <ul> <li> <p> A: Returns an IPv4 address.</p> </li> <li> <p>AAAA: Returns an Ipv6 address.</p> </li> <li> <p>CAA: Restricts CAs that can create SSL/TLS certifications for the domain.</p> </li> <li> <p>CNAME: Returns another domain name.</p> </li> <li> <p>DS: Record that identifies the DNSSEC signing key of a delegated zone.</p> </li> <li> <p>MX: Specifies mail servers.</p> </li> <li> <p>NAPTR: Regular-expression-based rewriting of domain names.</p> </li> <li> <p>NS: Authoritative name servers.</p> </li> <li> <p>PTR: Maps an IP address to a domain name.</p> </li> <li> <p>SOA: Start of authority record for the zone.</p> </li> <li> <p>SPF: Lists the servers authorized to send emails from a domain.</p> </li> <li> <p>SRV: Application specific values that identify servers.</p> </li> <li> <p>TXT: Verifies email senders and application-specific values.</p> </li> <li> <p>A query type you define by using the DNS type ID, for example 28 for AAAA. The values must be defined as TYPENUMBER, where the NUMBER can be 1-65534, for example, TYPE28. For more information, see <a href=\"https://en.wikipedia.org/wiki/List_of_DNS_record_types\">List of DNS record types</a>.</p> </li> </ul>",
+          "documentation":"<p> The DNS query type you want the rule to evaluate. Allowed values are; </p> <ul> <li> <p> A: Returns an IPv4 address.</p> </li> <li> <p>AAAA: Returns an Ipv6 address.</p> </li> <li> <p>CAA: Restricts CAs that can create SSL/TLS certifications for the domain.</p> </li> <li> <p>CNAME: Returns another domain name.</p> </li> <li> <p>DS: Record that identifies the DNSSEC signing key of a delegated zone.</p> </li> <li> <p>MX: Specifies mail servers.</p> </li> <li> <p>NAPTR: Regular-expression-based rewriting of domain names.</p> </li> <li> <p>NS: Authoritative name servers.</p> </li> <li> <p>PTR: Maps an IP address to a domain name.</p> </li> <li> <p>SOA: Start of authority record for the zone.</p> </li> <li> <p>SPF: Lists the servers authorized to send emails from a domain.</p> </li> <li> <p>SRV: Application specific values that identify servers.</p> </li> <li> <p>TXT: Verifies email senders and application-specific values.</p> </li> <li> <p>A query type you define by using the DNS type ID, for example 28 for AAAA. The values must be defined as TYPENUMBER, where the NUMBER can be 1-65534, for example, TYPE28. For more information, see <a href=\"https://en.wikipedia.org/wiki/List_of_DNS_record_types\">List of DNS record types</a>.</p> </li> </ul> <p>You can't set <code>Qtype</code> on an AutoAllowlist rule, because the rule applies to all query types.</p>",
           "box":true
         },
         "DnsThreatProtection":{
@@ -1865,7 +1919,7 @@
         },
         "FirewallRuleType":{
           "shape":"FirewallRuleType",
-          "documentation":"<p>The rule type configuration for the firewall rule. This is a tagged union — set exactly one of its members. This setting is mutually exclusive with the top-level <code>FirewallDomainListId</code> and <code>DnsThreatProtection</code> fields. Use one of:</p> <ul> <li> <p> <code>FirewallAdvancedContentCategory</code> — match an Amazon Web Services-managed content category (for example, <code>VIOLENCE_AND_HATE_SPEECH</code>).</p> </li> <li> <p> <code>FirewallAdvancedThreatCategory</code> — match an Amazon Web Services-managed advanced threat category (for example, <code>PHISHING</code>).</p> </li> <li> <p> <code>DnsThreatProtection</code> — match a built-in DNS Firewall Advanced threat detector (<code>DGA</code>, <code>DNS_TUNNELING</code>, or <code>DICTIONARY_DGA</code>).</p> </li> <li> <p> <code>PartnerThreatProtection</code> — match a third-party threat feed delivered through Amazon Web Services Marketplace. The selected partner must be an active subscription on the calling account.</p> </li> </ul> <p>To enumerate the values supported in your account, call <a>ListFirewallRuleTypes</a>.</p>",
+          "documentation":"<p>The rule type configuration for the firewall rule. This is a tagged union — set exactly one of its members. This setting is mutually exclusive with the top-level <code>FirewallDomainListId</code> and <code>DnsThreatProtection</code> fields. Use one of:</p> <ul> <li> <p> <code>FirewallAdvancedContentCategory</code> — match an Amazon Web Services-managed content category (for example, <code>VIOLENCE_AND_HATE_SPEECH</code>).</p> </li> <li> <p> <code>FirewallAdvancedThreatCategory</code> — match an Amazon Web Services-managed advanced threat category (for example, <code>PHISHING</code>).</p> </li> <li> <p> <code>DnsThreatProtection</code> — match a built-in DNS Firewall Advanced threat detector (<code>DGA</code>, <code>DNS_TUNNELING</code>, or <code>DICTIONARY_DGA</code>).</p> </li> <li> <p> <code>PartnerThreatProtection</code> — match a third-party threat feed delivered through Amazon Web Services Marketplace. The selected partner must be an active subscription on the calling account.</p> </li> <li> <p> <code>AutoAllowlist</code> — automatically observe the domains that the VPCs associated with the rule group resolve, and allow the ones that you approve. See <a>AutoAllowlistConfig</a>.</p> </li> </ul> <p>To enumerate the values supported in your account, call <a>ListFirewallRuleTypes</a>. It doesn't return <code>AutoAllowlist</code>.</p>",
           "box":true
         }
       }
@@ -2437,7 +2491,8 @@
       "type":"string",
       "enum":[
         "THREAT",
-        "CONTENT"
+        "CONTENT",
+        "AUTOALLOWLIST"
       ]
     },
     "DomainName":{
@@ -2626,6 +2681,20 @@
         "Category":{
           "shape":"Category",
           "documentation":"<p>The category of the domain list.</p>"
+        },
+        "FirewallRuleGroupId":{
+          "shape":"ResourceId",
+          "documentation":"<p>For an AutoAllowlist domain list, the ID of the firewall rule group that contains the auto-allowlist rule that owns this domain list. Use it to navigate to the rule group and its VPC associations. Present only when <code>ManagedListType</code> is <code>AUTOALLOWLIST</code>.</p>",
+          "box":true
+        },
+        "FirewallThreatProtectionId":{
+          "shape":"ResourceId",
+          "documentation":"<p>For an AutoAllowlist domain list, the threat protection ID of the auto-allowlist rule that owns this domain list. Provide it to <a>ListFirewallRuleDomains</a> to review the observed, allowed, and denied domains. Present only when <code>ManagedListType</code> is <code>AUTOALLOWLIST</code>.</p>",
+          "box":true
+        },
+        "Status":{
+          "shape":"FirewallDomainListStatus",
+          "documentation":"<p>For an AutoAllowlist domain list, the status of the list: <code>IMPORTING</code> while domains are being copied from the source domain list specified at rule creation, <code>COMPLETE_IMPORT_FAILED</code> if that copy failed, <code>UPDATING</code> while a change made with <a>UpdateFirewallDomains</a> is being applied, <code>COMPLETE</code> otherwise, and <code>DELETING</code> while the owning rule is being deleted. The first change that you make after a failed copy replaces <code>COMPLETE_IMPORT_FAILED</code> with <code>UPDATING</code> and then <code>COMPLETE</code>. Present only when <code>ManagedListType</code> is <code>AUTOALLOWLIST</code>. Use <a>GetFirewallDomainList</a> for the status of other domain lists.</p>"
         }
       },
       "documentation":"<p>Minimal high-level information for a firewall domain list. The action <a>ListFirewallDomainLists</a> returns an array of these objects. </p> <p>To retrieve full information for a firewall domain list, call <a>GetFirewallDomainList</a> and <a>ListFirewallDomains</a>.</p>"
@@ -2656,12 +2725,30 @@
         "TRUST_REDIRECTION_DOMAIN"
       ]
     },
+    "FirewallDomainStatus":{
+      "type":"string",
+      "enum":[
+        "OBSERVED",
+        "ALLOWED",
+        "DENIED",
+        "UNKNOWN"
+      ]
+    },
+    "FirewallDomainStatusFilter":{
+      "type":"string",
+      "enum":[
+        "OBSERVED",
+        "ALLOWED",
+        "DENIED"
+      ]
+    },
     "FirewallDomainUpdateOperation":{
       "type":"string",
       "enum":[
         "ADD",
         "REMOVE",
-        "REPLACE"
+        "REPLACE",
+        "DENY"
       ]
     },
     "FirewallDomains":{
@@ -2749,11 +2836,11 @@
         },
         "FirewallRuleType":{
           "shape":"FirewallRuleType",
-          "documentation":"<p>The rule type configuration for the firewall rule. This is a tagged union — exactly one of its members will be populated. Possible members are:</p> <ul> <li> <p> <code>FirewallAdvancedContentCategory</code> — an Amazon Web Services-managed content category (for example, <code>VIOLENCE_AND_HATE_SPEECH</code>).</p> </li> <li> <p> <code>FirewallAdvancedThreatCategory</code> — an Amazon Web Services-managed advanced threat category (for example, <code>PHISHING</code>).</p> </li> <li> <p> <code>DnsThreatProtection</code> — a built-in DNS Firewall Advanced threat detector (<code>DGA</code>, <code>DNS_TUNNELING</code>, or <code>DICTIONARY_DGA</code>).</p> </li> <li> <p> <code>PartnerThreatProtection</code> — a third-party threat feed delivered through Amazon Web Services Marketplace.</p> </li> </ul> <p>To enumerate the values supported in your account, call <a>ListFirewallRuleTypes</a>.</p>"
+          "documentation":"<p>The rule type configuration for the firewall rule. This is a tagged union — exactly one of its members will be populated. Possible members are:</p> <ul> <li> <p> <code>FirewallAdvancedContentCategory</code> — an Amazon Web Services-managed content category (for example, <code>VIOLENCE_AND_HATE_SPEECH</code>).</p> </li> <li> <p> <code>FirewallAdvancedThreatCategory</code> — an Amazon Web Services-managed advanced threat category (for example, <code>PHISHING</code>).</p> </li> <li> <p> <code>DnsThreatProtection</code> — a built-in DNS Firewall Advanced threat detector (<code>DGA</code>, <code>DNS_TUNNELING</code>, or <code>DICTIONARY_DGA</code>).</p> </li> <li> <p> <code>PartnerThreatProtection</code> — a third-party threat feed delivered through Amazon Web Services Marketplace.</p> </li> <li> <p> <code>AutoAllowlist</code> — an AutoAllowlist rule, which allows the domains on its managed domain list. See <a>AutoAllowlistConfig</a>.</p> </li> </ul> <p>To enumerate the values supported in your account, call <a>ListFirewallRuleTypes</a>. It doesn't return <code>AutoAllowlist</code>.</p>"
         },
         "Status":{
           "shape":"FirewallRuleStatus",
-          "documentation":"<p>The lifecycle state of the firewall rule. Possible values:</p> <ul> <li> <p> <code>CREATING</code> — DNS Firewall is provisioning the rule. Rules created with the <code>PartnerThreatProtection</code> rule type begin in this state while DNS Firewall verifies the calling account's Amazon Web Services Marketplace entitlement.</p> </li> <li> <p> <code>COMPLETE</code> — The rule is provisioned and enforcing matches.</p> </li> <li> <p> <code>CREATION_FAILED</code> — Provisioning failed. <code>StatusMessage</code> contains a human-readable reason. A rule in this state is immutable: <a>UpdateFirewallRule</a> rejects the request, and the rule must be removed with <a>DeleteFirewallRule</a>.</p> </li> </ul> <p>For rules that do not require asynchronous provisioning, this field may be absent.</p>"
+          "documentation":"<p>The lifecycle state of the firewall rule. Possible values:</p> <ul> <li> <p> <code>CREATING</code> — DNS Firewall is provisioning the rule. Rules created with the <code>PartnerThreatProtection</code> rule type begin in this state while DNS Firewall verifies the calling account's Amazon Web Services Marketplace entitlement. Rules created with the <code>AutoAllowlist</code> rule type begin in this state while DNS Firewall reads the look-back window of each VPC that uses the rule group.</p> </li> <li> <p> <code>COMPLETE</code> — The rule is provisioned and enforcing matches.</p> </li> <li> <p> <code>CREATION_FAILED</code> — Provisioning failed. <code>StatusMessage</code> contains a human-readable reason. A rule in this state is immutable: <a>UpdateFirewallRule</a> rejects the request, and the rule must be removed with <a>DeleteFirewallRule</a>.</p> </li> </ul> <p>For rules that do not require asynchronous provisioning, this field may be absent.</p>"
         },
         "StatusMessage":{
           "shape":"FirewallRuleStatusMessage",
@@ -2761,6 +2848,54 @@
         }
       },
       "documentation":"<p>A single firewall rule in a rule group.</p>"
+    },
+    "FirewallRuleDomain":{
+      "type":"structure",
+      "members":{
+        "DomainName":{
+          "shape":"FirewallDomainName",
+          "documentation":"<p>The domain name.</p>"
+        },
+        "DomainStatus":{
+          "shape":"FirewallDomainStatus",
+          "documentation":"<p>The review status of the domain:</p> <ul> <li> <p> <code>OBSERVED</code> - DNS Firewall saw the domain in the VPCs' DNS traffic and you haven't allowed or denied it. The look-back window seeds the initial observed domains. After that, a domain becomes observed when any DNS Firewall rule blocks a query for it from a VPC that uses the rule group, including rules in other rule groups, or when you remove it from the managed domain list with <code>REMOVE</code>. To keep observing new domains, place a rule that blocks the domains you haven't approved after the AutoAllowlist rule. Domains from the look-back period that keep being queried and aren't blocked move to <code>ALLOWED</code> within about a day after the rule is created. Observed domains aren't evaluated for safety, so review them before you allow them.</p> </li> <li> <p> <code>ALLOWED</code> - DNS Firewall allowed queries for the domain, whether or not the domain is in the rule's managed domain list. To get the domains in the managed domain list (the allowlist that the rule enforces), call <a>ListFirewallRuleDomains</a> with <code>FirewallDomainListId</code>.</p> </li> <li> <p> <code>DENIED</code> - The domain was denied with the <code>DENY</code> operation of <a>UpdateFirewallDomains</a>, which also removes it from the managed domain list if it was there. A denied domain that is still queried and not blocked can move to <code>ALLOWED</code>.</p> </li> </ul>"
+        },
+        "Last24HourRequests":{
+          "shape":"FirewallRuleDomainRequestCount",
+          "documentation":"<p>The number of DNS requests observed for this domain in the last 24 hours.</p>",
+          "box":true
+        },
+        "TotalRequests":{
+          "shape":"FirewallRuleDomainRequestCount",
+          "documentation":"<p>The total number of DNS requests observed for this domain since it was first added, including the requests in the look-back window that seeded the rule.</p>",
+          "box":true
+        },
+        "AddedTime":{
+          "shape":"Rfc3339TimeString",
+          "documentation":"<p>The date and time when the domain was first observed and added, in RFC 3339 format.</p>"
+        }
+      },
+      "documentation":"<p>A domain that DNS Firewall observed for an AutoAllowlist rule, with its review status and request volume. Counts are aggregated across all VPCs that use the rule group, through a rule group association or through a Route 53 Profile that includes the rule group, including VPCs in other accounts. The domain isn't attributed to the VPC or account in which it was observed.</p>"
+    },
+    "FirewallRuleDomainRequestCount":{"type":"long"},
+    "FirewallRuleDomainSortBy":{
+      "type":"string",
+      "enum":[
+        "TIME_ADDED",
+        "DAILY_TOTAL",
+        "TOTAL_REQUESTS"
+      ]
+    },
+    "FirewallRuleDomainSortOrder":{
+      "type":"string",
+      "enum":[
+        "ASC",
+        "DESC"
+      ]
+    },
+    "FirewallRuleDomains":{
+      "type":"list",
+      "member":{"shape":"FirewallRuleDomain"}
     },
     "FirewallRuleGroup":{
       "type":"structure",
@@ -2930,7 +3065,7 @@
     },
     "FirewallRuleStatus":{
       "type":"string",
-      "documentation":"<p>The lifecycle state of a DNS Firewall rule. Known values:</p> <ul> <li> <p> <code>CREATING</code> — DNS Firewall is provisioning the rule. Rules created with the <code>PartnerThreatProtection</code> rule type begin in this state while DNS Firewall verifies the calling account's Amazon Web Services Marketplace entitlement.</p> </li> <li> <p> <code>COMPLETE</code> — The rule is provisioned and enforcing matches.</p> </li> <li> <p> <code>CREATION_FAILED</code> — Provisioning failed. <a>UpdateFirewallRule</a> rejects updates to a rule in this state; the rule must be removed with <a>DeleteFirewallRule</a>.</p> </li> </ul>",
+      "documentation":"<p>The lifecycle state of a DNS Firewall rule. Known values:</p> <ul> <li> <p> <code>CREATING</code> — DNS Firewall is provisioning the rule. Rules created with the <code>PartnerThreatProtection</code> rule type begin in this state while DNS Firewall verifies the calling account's Amazon Web Services Marketplace entitlement. Rules created with the <code>AutoAllowlist</code> rule type begin in this state while DNS Firewall reads the look-back window of each VPC that uses the rule group.</p> </li> <li> <p> <code>COMPLETE</code> — The rule is provisioned and enforcing matches.</p> </li> <li> <p> <code>CREATION_FAILED</code> — Provisioning failed. <a>UpdateFirewallRule</a> rejects updates to a rule in this state; the rule must be removed with <a>DeleteFirewallRule</a>.</p> </li> </ul>",
       "max":32
     },
     "FirewallRuleStatusMessage":{
@@ -2960,9 +3095,14 @@
           "shape":"DnsThreatProtectionRuleTypeConfig",
           "documentation":"<p>Configures the rule to match a built-in DNS Firewall Advanced threat detector — <code>DGA</code>, <code>DNS_TUNNELING</code>, or <code>DICTIONARY_DGA</code>. See <a>DnsThreatProtectionRuleTypeConfig</a>.</p>",
           "box":true
+        },
+        "AutoAllowlist":{
+          "shape":"AutoAllowlistConfig",
+          "documentation":"<p>Configures the rule as an AutoAllowlist rule, which observes the DNS traffic of the VPCs that use the rule group, through a rule group association or a Route 53 Profile, so that you can review the domains and allow them. See <a>AutoAllowlistConfig</a>.</p>",
+          "box":true
         }
       },
-      "documentation":"<p>The rule-type configuration for a DNS Firewall rule. <code>FirewallRuleType</code> is a tagged union — exactly one member must be set per rule, and the member determines what the rule matches against. This shape is mutually exclusive with the top-level <code>FirewallDomainListId</code> and <code>DnsThreatProtection</code> fields on <a>CreateFirewallRule</a> and <a>UpdateFirewallRule</a>.</p> <p>Call <a>ListFirewallRuleTypes</a> to discover which rule-type variants and which values within each variant are available in your account and Region.</p>"
+      "documentation":"<p>The rule-type configuration for a DNS Firewall rule. <code>FirewallRuleType</code> is a tagged union — exactly one member must be set per rule, and the member determines what the rule matches against. This shape is mutually exclusive with the top-level <code>FirewallDomainListId</code> and <code>DnsThreatProtection</code> fields on <a>CreateFirewallRule</a> and <a>UpdateFirewallRule</a>.</p> <p>Call <a>ListFirewallRuleTypes</a> to discover which rule-type variants and which values within each variant are available in your account and Region. It doesn't return the <code>AutoAllowlist</code> variant.</p>"
     },
     "FirewallRuleTypeDefinition":{
       "type":"structure",
@@ -3034,6 +3174,16 @@
         "FirewallDomainList":{
           "shape":"FirewallDomainList",
           "documentation":"<p>The domain list that you requested. </p>"
+        },
+        "FirewallRuleGroupId":{
+          "shape":"ResourceId",
+          "documentation":"<p>For an AutoAllowlist domain list, the ID of the firewall rule group that contains the AutoAllowlist rule that owns this domain list. Present only when <code>ManagedListType</code> is <code>AUTOALLOWLIST</code>.</p>",
+          "box":true
+        },
+        "FirewallThreatProtectionId":{
+          "shape":"ResourceId",
+          "documentation":"<p>For an AutoAllowlist domain list, the threat protection ID of the auto-allowlist rule that owns this domain list. Provide it to <a>ListFirewallRuleDomains</a> to review the observed, allowed, and denied domains. Present only when <code>ManagedListType</code> is <code>AUTOALLOWLIST</code>.</p>",
+          "box":true
         }
       }
     },
@@ -3327,6 +3477,11 @@
         }
       }
     },
+    "InitialDataTimeframeHours":{
+      "type":"integer",
+      "max":168,
+      "min":1
+    },
     "InstanceCount":{"type":"integer"},
     "InternalServiceErrorException":{
       "type":"structure",
@@ -3615,6 +3770,73 @@
         "Domains":{
           "shape":"FirewallDomains",
           "documentation":"<p>A list of the domains in the firewall domain list. </p> <p>This might be a partial list of the domains that you've defined in the domain list. For information, see <code>MaxResults</code>. </p>"
+        }
+      }
+    },
+    "ListFirewallRuleDomainsQueryOptions":{
+      "type":"structure",
+      "members":{
+        "DomainStatus":{
+          "shape":"FirewallDomainStatusFilter",
+          "documentation":"<p>Filters the returned domains by review status. Valid values:</p> <ul> <li> <p> <code>OBSERVED</code> - Domains that DNS Firewall saw in the VPCs' DNS traffic and that you haven't allowed or denied. After the look-back window, a domain is observed when any DNS Firewall rule blocks a query for it from a VPC that uses the rule group, including rules in other rule groups, or when you remove it from the managed domain list. Domains from the look-back period that keep being queried and aren't blocked move to <code>ALLOWED</code> within about a day after the rule is created.</p> </li> <li> <p> <code>ALLOWED</code> - Domains that DNS Firewall allowed queries for, whether or not they're in the rule's managed domain list.</p> </li> <li> <p> <code>DENIED</code> - Domains that were denied with the <code>DENY</code> operation. A denied domain that is still queried and not blocked can move to <code>ALLOWED</code>.</p> </li> </ul> <p>If you don't specify a value, the operation returns <code>OBSERVED</code> domains.</p>"
+        },
+        "SortBy":{
+          "shape":"FirewallRuleDomainSortBy",
+          "documentation":"<p>The attribute to sort the returned domains by. Valid values:</p> <ul> <li> <p> <code>TIME_ADDED</code> - The <code>AddedTime</code> of the domain.</p> </li> <li> <p> <code>DAILY_TOTAL</code> - The <code>Last24HourRequests</code> count.</p> </li> <li> <p> <code>TOTAL_REQUESTS</code> - The <code>TotalRequests</code> count.</p> </li> </ul> <p>If you don't specify a value, the operation sorts by <code>TIME_ADDED</code>.</p>"
+        },
+        "SortOrder":{
+          "shape":"FirewallRuleDomainSortOrder",
+          "documentation":"<p>The sort direction: <code>ASC</code> for ascending or <code>DESC</code> for descending. If you don't specify a value, the operation sorts in descending order.</p>"
+        },
+        "DomainNameFilter":{
+          "shape":"FirewallDomainName",
+          "documentation":"<p>Returns only the domains whose name contains this substring.</p>"
+        }
+      },
+      "documentation":"<p>Optional filters and sort order for <a>ListFirewallRuleDomains</a>.</p>"
+    },
+    "ListFirewallRuleDomainsRequest":{
+      "type":"structure",
+      "required":["FirewallRuleGroupId"],
+      "members":{
+        "FirewallRuleGroupId":{
+          "shape":"ResourceId",
+          "documentation":"<p>The unique identifier of the firewall rule group that contains the rule.</p>"
+        },
+        "FirewallThreatProtectionId":{
+          "shape":"ResourceId",
+          "documentation":"<p>The threat protection ID that identifies an AutoAllowlist rule. Provide this to list an AutoAllowlist rule's domains.</p>"
+        },
+        "FirewallDomainListId":{
+          "shape":"ResourceId",
+          "documentation":"<p>The ID of the AutoAllowlist rule's managed domain list. Provide this to list the domains that the rule currently allows.</p>"
+        },
+        "QueryOptions":{
+          "shape":"ListFirewallRuleDomainsQueryOptions",
+          "documentation":"<p>Optional filters and sort order for the returned domains. If you don't specify this, the operation returns the <code>OBSERVED</code> domains sorted by <code>TIME_ADDED</code> in descending order. See <a>ListFirewallRuleDomainsQueryOptions</a>.</p>"
+        },
+        "MaxResults":{
+          "shape":"MaxResults",
+          "documentation":"<p>The maximum number of domains that you want to return in a single call. If more domains remain than can be returned, the response includes a <code>NextToken</code> value that you can use in a subsequent call to get the next batch. The default is 100.</p>",
+          "box":true
+        },
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>For the first call to this operation, omit this value. If more domains remain than can be returned in a single call, the response includes a <code>NextToken</code> value. In your next call, specify that value to get the next batch of domains.</p>",
+          "box":true
+        }
+      }
+    },
+    "ListFirewallRuleDomainsResponse":{
+      "type":"structure",
+      "members":{
+        "Domains":{
+          "shape":"FirewallRuleDomains",
+          "documentation":"<p>The domains for the rule. See <a>FirewallRuleDomain</a>.</p>"
+        },
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>If more domains remain than were returned in this response, DNS Firewall provides a <code>NextToken</code> value that you can use in a subsequent call to get the next batch of domains.</p>"
         }
       }
     },
@@ -5161,7 +5383,7 @@
         },
         "Operation":{
           "shape":"FirewallDomainUpdateOperation",
-          "documentation":"<p>What you want DNS Firewall to do with the domains that you are providing: </p> <ul> <li> <p> <code>ADD</code> - Add the domains to the ones that are already in the domain list. </p> </li> <li> <p> <code>REMOVE</code> - Search the domain list for the domains and remove them from the list.</p> </li> <li> <p> <code>REPLACE</code> - Update the domain list to exactly match the list that you are providing. </p> </li> </ul>"
+          "documentation":"<p>What you want DNS Firewall to do with the domains that you are providing: </p> <ul> <li> <p> <code>ADD</code> - Add the domains to the ones that are already in the domain list. For an AutoAllowlist rule's managed domain list, this also marks the observed domains as allowed.</p> </li> <li> <p> <code>REMOVE</code> - Search the domain list for the domains and remove them from the list. For an AutoAllowlist rule's managed domain list, the rule no longer allows the removed domains, unless a wildcard entry that's still on the list matches them.</p> </li> <li> <p> <code>REPLACE</code> - Update the domain list to exactly match the list that you are providing. Not supported for an AutoAllowlist rule's managed domain list.</p> </li> <li> <p> <code>DENY</code> - For an AutoAllowlist rule's managed domain list only, mark the specified observed domains as denied so that they're no longer listed for review. If a domain is on the managed domain list, <code>DENY</code> also removes it from the list. Specify fully qualified domain names. Wildcards aren't accepted.</p> </li> </ul>"
         },
         "Domains":{
           "shape":"FirewallDomains",
@@ -5268,7 +5490,7 @@
         },
         "FirewallRuleType":{
           "shape":"FirewallRuleType",
-          "documentation":"<p>The rule type configuration for the firewall rule. This is a tagged union — set exactly one of its members. This setting is mutually exclusive with the top-level <code>FirewallDomainListId</code> and <code>DnsThreatProtection</code> fields. Use one of:</p> <ul> <li> <p> <code>FirewallAdvancedContentCategory</code> — match an Amazon Web Services-managed content category (for example, <code>VIOLENCE_AND_HATE_SPEECH</code>).</p> </li> <li> <p> <code>FirewallAdvancedThreatCategory</code> — match an Amazon Web Services-managed advanced threat category (for example, <code>PHISHING</code>).</p> </li> <li> <p> <code>DnsThreatProtection</code> — match a built-in DNS Firewall Advanced threat detector (<code>DGA</code>, <code>DNS_TUNNELING</code>, or <code>DICTIONARY_DGA</code>).</p> </li> <li> <p> <code>PartnerThreatProtection</code> — match a third-party threat feed delivered through Amazon Web Services Marketplace. The selected partner must be an active subscription on the calling account.</p> </li> </ul> <p>To enumerate the values supported in your account, call <a>ListFirewallRuleTypes</a>.</p>",
+          "documentation":"<p>The rule type configuration for the firewall rule. This is a tagged union — set exactly one of its members. This setting is mutually exclusive with the top-level <code>FirewallDomainListId</code> and <code>DnsThreatProtection</code> fields. Use one of:</p> <ul> <li> <p> <code>FirewallAdvancedContentCategory</code> — match an Amazon Web Services-managed content category (for example, <code>VIOLENCE_AND_HATE_SPEECH</code>).</p> </li> <li> <p> <code>FirewallAdvancedThreatCategory</code> — match an Amazon Web Services-managed advanced threat category (for example, <code>PHISHING</code>).</p> </li> <li> <p> <code>DnsThreatProtection</code> — match a built-in DNS Firewall Advanced threat detector (<code>DGA</code>, <code>DNS_TUNNELING</code>, or <code>DICTIONARY_DGA</code>).</p> </li> <li> <p> <code>PartnerThreatProtection</code> — match a third-party threat feed delivered through Amazon Web Services Marketplace. The selected partner must be an active subscription on the calling account.</p> </li> </ul> <p>To enumerate the values supported in your account, call <a>ListFirewallRuleTypes</a>. It doesn't return <code>AutoAllowlist</code>.</p> <p>You can't specify <code>FirewallRuleType</code> when you update an AutoAllowlist rule, even with its current values. <code>InitialDataTimeframeHours</code> and <code>ImportFromFirewallDomainListId</code> can't be changed. To change them, delete the rule and create a new one. Deleting an AutoAllowlist rule also deletes its managed domain list and the domains that you allowed.</p>",
           "box":true
         }
       },
@@ -5363,12 +5585,12 @@
         },
         "FirewallDomainRedirectionAction":{
           "shape":"FirewallDomainRedirectionAction",
-          "documentation":"<p> How you want the the rule to evaluate DNS redirection in the DNS redirection chain, such as CNAME or DNAME. </p> <p> <code>INSPECT_REDIRECTION_DOMAIN</code>: (Default) inspects all domains in the redirection chain. The individual domains in the redirection chain must be added to the domain list.</p> <p> <code>TRUST_REDIRECTION_DOMAIN</code>: Inspects only the first domain in the redirection chain. You don't need to add the subsequent domains in the domain in the redirection list to the domain list.</p>",
+          "documentation":"<p> How you want the the rule to evaluate DNS redirection in the DNS redirection chain, such as CNAME or DNAME. </p> <p> <code>INSPECT_REDIRECTION_DOMAIN</code>: (Default) inspects all domains in the redirection chain. The individual domains in the redirection chain must be added to the domain list.</p> <p> <code>TRUST_REDIRECTION_DOMAIN</code>: Inspects only the first domain in the redirection chain. You don't need to add the subsequent domains in the domain in the redirection list to the domain list.</p> <p>You can't set this value on an AutoAllowlist rule, which always inspects the redirection chain.</p>",
           "box":true
         },
         "Qtype":{
           "shape":"Qtype",
-          "documentation":"<p> The DNS query type you want the rule to evaluate. Allowed values are; </p> <ul> <li> <p> A: Returns an IPv4 address.</p> </li> <li> <p>AAAA: Returns an Ipv6 address.</p> </li> <li> <p>CAA: Restricts CAs that can create SSL/TLS certifications for the domain.</p> </li> <li> <p>CNAME: Returns another domain name.</p> </li> <li> <p>DS: Record that identifies the DNSSEC signing key of a delegated zone.</p> </li> <li> <p>MX: Specifies mail servers.</p> </li> <li> <p>NAPTR: Regular-expression-based rewriting of domain names.</p> </li> <li> <p>NS: Authoritative name servers.</p> </li> <li> <p>PTR: Maps an IP address to a domain name.</p> </li> <li> <p>SOA: Start of authority record for the zone.</p> </li> <li> <p>SPF: Lists the servers authorized to send emails from a domain.</p> </li> <li> <p>SRV: Application specific values that identify servers.</p> </li> <li> <p>TXT: Verifies email senders and application-specific values.</p> </li> <li> <p>A query type you define by using the DNS type ID, for example 28 for AAAA. The values must be defined as TYPENUMBER, where the NUMBER can be 1-65534, for example, TYPE28. For more information, see <a href=\"https://en.wikipedia.org/wiki/List_of_DNS_record_types\">List of DNS record types</a>.</p> <note> <p>If you set up a firewall BLOCK rule with action NXDOMAIN on query type equals AAAA, this action will not be applied to synthetic IPv6 addresses generated when DNS64 is enabled. </p> </note> </li> </ul>"
+          "documentation":"<p> The DNS query type you want the rule to evaluate. Allowed values are; </p> <ul> <li> <p> A: Returns an IPv4 address.</p> </li> <li> <p>AAAA: Returns an Ipv6 address.</p> </li> <li> <p>CAA: Restricts CAs that can create SSL/TLS certifications for the domain.</p> </li> <li> <p>CNAME: Returns another domain name.</p> </li> <li> <p>DS: Record that identifies the DNSSEC signing key of a delegated zone.</p> </li> <li> <p>MX: Specifies mail servers.</p> </li> <li> <p>NAPTR: Regular-expression-based rewriting of domain names.</p> </li> <li> <p>NS: Authoritative name servers.</p> </li> <li> <p>PTR: Maps an IP address to a domain name.</p> </li> <li> <p>SOA: Start of authority record for the zone.</p> </li> <li> <p>SPF: Lists the servers authorized to send emails from a domain.</p> </li> <li> <p>SRV: Application specific values that identify servers.</p> </li> <li> <p>TXT: Verifies email senders and application-specific values.</p> </li> <li> <p>A query type you define by using the DNS type ID, for example 28 for AAAA. The values must be defined as TYPENUMBER, where the NUMBER can be 1-65534, for example, TYPE28. For more information, see <a href=\"https://en.wikipedia.org/wiki/List_of_DNS_record_types\">List of DNS record types</a>.</p> <note> <p>If you set up a firewall BLOCK rule with action NXDOMAIN on query type equals AAAA, this action will not be applied to synthetic IPv6 addresses generated when DNS64 is enabled. </p> </note> </li> </ul> <p>You can't set <code>Qtype</code> on an AutoAllowlist rule, because the rule applies to all query types.</p>"
         },
         "DnsThreatProtection":{
           "shape":"DnsThreatProtection",
@@ -5382,7 +5604,7 @@
         },
         "FirewallRuleType":{
           "shape":"FirewallRuleType",
-          "documentation":"<p>The rule type configuration for the firewall rule. This is a tagged union — set exactly one of its members. This setting is mutually exclusive with the top-level <code>FirewallDomainListId</code> and <code>DnsThreatProtection</code> fields. Use one of:</p> <ul> <li> <p> <code>FirewallAdvancedContentCategory</code> — match an Amazon Web Services-managed content category (for example, <code>VIOLENCE_AND_HATE_SPEECH</code>).</p> </li> <li> <p> <code>FirewallAdvancedThreatCategory</code> — match an Amazon Web Services-managed advanced threat category (for example, <code>PHISHING</code>).</p> </li> <li> <p> <code>DnsThreatProtection</code> — match a built-in DNS Firewall Advanced threat detector (<code>DGA</code>, <code>DNS_TUNNELING</code>, or <code>DICTIONARY_DGA</code>).</p> </li> <li> <p> <code>PartnerThreatProtection</code> — match a third-party threat feed delivered through Amazon Web Services Marketplace. The selected partner must be an active subscription on the calling account.</p> </li> </ul> <p>To enumerate the values supported in your account, call <a>ListFirewallRuleTypes</a>.</p>",
+          "documentation":"<p>The rule type configuration for the firewall rule. This is a tagged union — set exactly one of its members. This setting is mutually exclusive with the top-level <code>FirewallDomainListId</code> and <code>DnsThreatProtection</code> fields. Use one of:</p> <ul> <li> <p> <code>FirewallAdvancedContentCategory</code> — match an Amazon Web Services-managed content category (for example, <code>VIOLENCE_AND_HATE_SPEECH</code>).</p> </li> <li> <p> <code>FirewallAdvancedThreatCategory</code> — match an Amazon Web Services-managed advanced threat category (for example, <code>PHISHING</code>).</p> </li> <li> <p> <code>DnsThreatProtection</code> — match a built-in DNS Firewall Advanced threat detector (<code>DGA</code>, <code>DNS_TUNNELING</code>, or <code>DICTIONARY_DGA</code>).</p> </li> <li> <p> <code>PartnerThreatProtection</code> — match a third-party threat feed delivered through Amazon Web Services Marketplace. The selected partner must be an active subscription on the calling account.</p> </li> </ul> <p>To enumerate the values supported in your account, call <a>ListFirewallRuleTypes</a>. It doesn't return <code>AutoAllowlist</code>.</p> <p>You can't specify <code>FirewallRuleType</code> when you update an AutoAllowlist rule, even with its current values. <code>InitialDataTimeframeHours</code> and <code>ImportFromFirewallDomainListId</code> can't be changed. To change them, delete the rule and create a new one. Deleting an AutoAllowlist rule also deletes its managed domain list and the domains that you allowed.</p>",
           "box":true
         }
       }

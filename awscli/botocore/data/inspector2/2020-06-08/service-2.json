@@ -3853,6 +3853,10 @@
       "documentation":"<p>The metadata for a cluster.</p>",
       "union":true
     },
+    "CodeConnectionsHostArn":{
+      "type":"string",
+      "pattern":"arn:aws(-[\\w]+)*:(codestar-connections|codeconnections):.+:[0-9]{12}:host\\/.+"
+    },
     "CodeFilePath":{
       "type":"structure",
       "required":[
@@ -4141,6 +4145,40 @@
         }
       },
       "documentation":"<p>A summary of information about a code security integration.</p>"
+    },
+    "CodeSecurityIntegrationVpcConfiguration":{
+      "type":"structure",
+      "required":[
+        "vpcId",
+        "vpcEndpointId"
+      ],
+      "members":{
+        "vpcId":{
+          "shape":"VpcId",
+          "documentation":"<p>The ID of the VPC that Amazon Inspector connects through to reach the repository provider.</p>"
+        },
+        "vpcEndpointId":{
+          "shape":"VpcEndpointId",
+          "documentation":"<p>The ID of the VPC endpoint used for the connection.</p>"
+        },
+        "codeConnectionsHostArn":{
+          "shape":"CodeConnectionsHostArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the AWS CodeConnections host used for the connection.</p>"
+        },
+        "subnetIds":{
+          "shape":"SubnetIdList",
+          "documentation":"<p>The IDs of the subnets used for the connection.</p>"
+        },
+        "securityGroups":{
+          "shape":"SecurityGroupIdList",
+          "documentation":"<p>The IDs of the security groups used for the connection.</p>"
+        },
+        "tlsCertificate":{
+          "shape":"TlsCertificate",
+          "documentation":"<p>The TLS certificate used to establish a trusted connection to the repository provider.</p>"
+        }
+      },
+      "documentation":"<p>The VPC configuration that Amazon Inspector uses to connect to a source code repository provider that is hosted in a private network.</p>"
     },
     "CodeSecurityResource":{
       "type":"structure",
@@ -5568,6 +5606,21 @@
         }
       }
     },
+    "CreateGitHubEnterpriseIntegrationDetail":{
+      "type":"structure",
+      "required":["instanceUrl"],
+      "members":{
+        "instanceUrl":{
+          "shape":"InstanceUrl",
+          "documentation":"<p>The URL of the GitHub Enterprise Server instance.</p>"
+        },
+        "vpcConfiguration":{
+          "shape":"CodeSecurityIntegrationVpcConfiguration",
+          "documentation":"<p>The VPC configuration used to connect to the GitHub Enterprise Server instance in a private network. For publicly accessible instances, omit this field.</p>"
+        }
+      },
+      "documentation":"<p>Contains the details required to create an integration with a GitHub Enterprise Server instance.</p>"
+    },
     "CreateGitLabSelfManagedIntegrationDetail":{
       "type":"structure",
       "required":[
@@ -5582,6 +5635,10 @@
         "accessToken":{
           "shape":"GitLabAccessToken",
           "documentation":"<p>The personal access token used to authenticate with the self-managed GitLab instance.</p>"
+        },
+        "vpcConfiguration":{
+          "shape":"CodeSecurityIntegrationVpcConfiguration",
+          "documentation":"<p>The VPC configuration used to connect to the self-managed GitLab instance in a private network. For publicly accessible instances, omit this field.</p>"
         }
       },
       "documentation":"<p>Contains details required to create an integration with a self-managed GitLab instance.</p>"
@@ -5592,6 +5649,10 @@
         "gitlabSelfManaged":{
           "shape":"CreateGitLabSelfManagedIntegrationDetail",
           "documentation":"<p>Details specific to creating an integration with a self-managed GitLab instance.</p>"
+        },
+        "githubEnterprise":{
+          "shape":"CreateGitHubEnterpriseIntegrationDetail",
+          "documentation":"<p>Details specific to creating an integration with a GitHub Enterprise Server instance.</p>"
         }
       },
       "documentation":"<p>Contains details required to create a code security integration with a specific repository provider.</p>",
@@ -7863,6 +7924,14 @@
           "shape":"AuthorizationUrl",
           "documentation":"<p>The URL used to authorize the integration with the repository provider. This is only returned if reauthorization is required to fix a connection issue. Otherwise, it is null.</p>"
         },
+        "vpcConfiguration":{
+          "shape":"CodeSecurityIntegrationVpcConfiguration",
+          "documentation":"<p>The VPC configuration associated with the integration, if it connects to a repository provider in a private network.</p>"
+        },
+        "instanceUrl":{
+          "shape":"InstanceUrl",
+          "documentation":"<p>The URL of the self-managed GitLab or GitHub Enterprise Server instance associated with the integration.</p>"
+        },
         "tags":{
           "shape":"TagMap",
           "documentation":"<p>The tags associated with the code security integration.</p>"
@@ -8233,6 +8302,24 @@
       "min":1,
       "sensitive":true
     },
+    "GitHubEnterpriseServerAppRegistrationDetail":{
+      "type":"structure",
+      "required":["manifestCode"],
+      "members":{
+        "manifestCode":{
+          "shape":"GitHubEnterpriseServerManifestCode",
+          "documentation":"<p>The manifest code used to register the GitHub App on the GitHub Enterprise Server instance.</p>"
+        }
+      },
+      "documentation":"<p>Contains the details required to register the GitHub App on the GitHub Enterprise Server instance.</p>"
+    },
+    "GitHubEnterpriseServerManifestCode":{
+      "type":"string",
+      "max":1024,
+      "min":1,
+      "pattern":"[a-zA-Z0-9._~+/-]+",
+      "sensitive":true
+    },
     "GitHubInstallationId":{
       "type":"string",
       "max":1024,
@@ -8466,7 +8553,13 @@
         "IN_PROGRESS",
         "ACTIVE",
         "INACTIVE",
-        "DISABLING"
+        "DISABLING",
+        "ESTABLISHING_CONNECTION_IN_PROGRESS",
+        "ESTABLISHING_CONNECTION_COMPLETED",
+        "ESTABLISHING_CONNECTION_FAILED",
+        "PENDING_MANIFEST_CODE",
+        "DELETE_IN_PROGRESS",
+        "DELETE_FAILED"
       ]
     },
     "IntegrationSummaries":{
@@ -8479,7 +8572,8 @@
       "type":"string",
       "enum":[
         "GITLAB_SELF_MANAGED",
-        "GITHUB"
+        "GITHUB",
+        "GITHUB_ENTERPRISE_SERVER"
       ]
     },
     "InternalServerException":{
@@ -9581,50 +9675,50 @@
       "members":{
         "machineImageId":{
           "shape":"MachineImageDetailsMachineImageIdString",
-          "documentation":"<p>The machine image ID (e.g., ami-0abcdef1234567890)</p>"
+          "documentation":"<p>The ID of the machine image, for example <code>ami-0abcdef1234567890</code>.</p>"
         },
         "name":{
           "shape":"NonEmptyString",
-          "documentation":"<p>Human-readable image name</p>"
+          "documentation":"<p>The name of the machine image.</p>"
         },
         "ownerAccountId":{
           "shape":"ProviderAccountId",
-          "documentation":"<p>Account ID that owns the image</p>"
+          "documentation":"<p>The ID of the account that owns the machine image.</p>"
         },
         "platform":{
           "shape":"Platform",
-          "documentation":"<p>OS platform (Linux/Windows)</p>"
+          "documentation":"<p>The operating system platform of the machine image.</p>"
         },
         "architecture":{
           "shape":"Architecture",
-          "documentation":"<p>CPU architecture (x86_64/arm64)</p>"
+          "documentation":"<p>The CPU architecture of the machine image, for example <code>x86_64</code> or <code>arm64</code>.</p>"
         },
         "creationDate":{
           "shape":"DateTimeTimestamp",
-          "documentation":"<p>When the image was created</p>"
+          "documentation":"<p>The date and time that the machine image was created.</p>"
         },
         "state":{
           "shape":"NonEmptyString",
-          "documentation":"<p>Image state (available/pending/deregistered)</p>"
+          "documentation":"<p>The state of the machine image, for example <code>available</code>, <code>pending</code>, or <code>deregistered</code>.</p>"
         },
         "isPublic":{
           "shape":"Boolean",
-          "documentation":"<p>Whether the image is publicly shared</p>"
+          "documentation":"<p>Indicates whether the machine image is shared publicly.</p>"
         },
         "rootDeviceType":{
           "shape":"NonEmptyString",
-          "documentation":"<p>Root device type (ebs/instance-store) — AWS-specific</p>"
+          "documentation":"<p>The root device type of the machine image, either <code>ebs</code> or <code>instance-store</code>.</p>"
         },
         "virtualizationType":{
           "shape":"NonEmptyString",
-          "documentation":"<p>Virtualization type (hvm/paravirtual) — AWS-specific</p>"
+          "documentation":"<p>The virtualization type of the machine image, either <code>hvm</code> or <code>paravirtual</code>.</p>"
         },
         "sourceResourceId":{
           "shape":"MachineImageDetailsSourceResourceIdString",
-          "documentation":"<p>Source resource the image was created from (nullable)</p>"
+          "documentation":"<p>The ID of the Amazon EC2 instance that the machine image was created from, if available.</p>"
         }
       },
-      "documentation":"<p>Details about a machine image resource scanned directly by Inspector.</p>"
+      "documentation":"<p>Contains details about an Amazon Machine Image (AMI) that Amazon Inspector scanned directly.</p>"
     },
     "MachineImageDetailsMachineImageIdString":{
       "type":"string",
@@ -10223,6 +10317,13 @@
       "max":1024,
       "min":0
     },
+    "PkceState":{
+      "type":"string",
+      "max":1024,
+      "min":1,
+      "pattern":"[A-Za-z0-9_-]+",
+      "sensitive":true
+    },
     "Platform":{
       "type":"string",
       "max":1024,
@@ -10682,7 +10783,10 @@
           "shape":"CodeRepositoryDetails",
           "documentation":"<p>Contains details about a code repository resource associated with a finding.</p>"
         },
-        "machineImage":{"shape":"MachineImageDetails"},
+        "machineImage":{
+          "shape":"MachineImageDetails",
+          "documentation":"<p>An object that contains details about the Amazon Machine Image (AMI) involved in the finding.</p>"
+        },
         "vm":{
           "shape":"Vm",
           "documentation":"<p>An object that contains details about a VM instance involved in the finding.</p>"
@@ -12350,6 +12454,13 @@
         "ALL"
       ]
     },
+    "TlsCertificate":{
+      "type":"string",
+      "max":16384,
+      "min":1,
+      "pattern":"[\\s\\S]*",
+      "sensitive":true
+    },
     "Tool":{
       "type":"string",
       "min":0
@@ -12699,6 +12810,43 @@
         }
       }
     },
+    "UpdateGitHubEnterpriseServerAppInstallationDetail":{
+      "type":"structure",
+      "required":[
+        "code",
+        "installationId"
+      ],
+      "members":{
+        "code":{
+          "shape":"GitHubAuthCode",
+          "documentation":"<p>The authorization code received from GitHub Enterprise Server.</p>"
+        },
+        "installationId":{
+          "shape":"GitHubInstallationId",
+          "documentation":"<p>The installation ID of the GitHub App associated with the integration.</p>"
+        },
+        "stateToken":{
+          "shape":"PkceState",
+          "documentation":"<p>The PKCE state token used to validate the authorization request.</p>"
+        }
+      },
+      "documentation":"<p>Contains the details required to complete the GitHub App installation for a GitHub Enterprise Server integration.</p>"
+    },
+    "UpdateGitHubEnterpriseServerIntegrationDetail":{
+      "type":"structure",
+      "members":{
+        "appInstallation":{
+          "shape":"UpdateGitHubEnterpriseServerAppInstallationDetail",
+          "documentation":"<p>Details for completing the GitHub App installation step of the GitHub Enterprise Server integration.</p>"
+        },
+        "appRegistration":{
+          "shape":"GitHubEnterpriseServerAppRegistrationDetail",
+          "documentation":"<p>Details for completing the GitHub App manifest registration step of the GitHub Enterprise Server integration.</p>"
+        }
+      },
+      "documentation":"<p>Contains the details required to update an integration with a GitHub Enterprise Server instance. Provide one of the following, depending on the step of the setup flow.</p>",
+      "union":true
+    },
     "UpdateGitHubIntegrationDetail":{
       "type":"structure",
       "required":[
@@ -12713,6 +12861,10 @@
         "installationId":{
           "shape":"GitHubInstallationId",
           "documentation":"<p>The installation ID of the GitHub App associated with the integration.</p>"
+        },
+        "stateToken":{
+          "shape":"PkceState",
+          "documentation":"<p>The PKCE state token used to validate the authorization request.</p>"
         }
       },
       "documentation":"<p>Contains details required to update an integration with GitHub.</p>"
@@ -12724,6 +12876,10 @@
         "authCode":{
           "shape":"GitLabAuthCode",
           "documentation":"<p>The authorization code received from the self-managed GitLab instance to update the integration.</p>"
+        },
+        "stateToken":{
+          "shape":"PkceState",
+          "documentation":"<p>The PKCE state token used to validate the authorization request.</p>"
         }
       },
       "documentation":"<p>Contains details required to update an integration with a self-managed GitLab instance.</p>"
@@ -12738,6 +12894,10 @@
         "github":{
           "shape":"UpdateGitHubIntegrationDetail",
           "documentation":"<p>Details specific to updating an integration with GitHub.</p>"
+        },
+        "githubEnterpriseServer":{
+          "shape":"UpdateGitHubEnterpriseServerIntegrationDetail",
+          "documentation":"<p>Details specific to updating an integration with a GitHub Enterprise Server instance.</p>"
         }
       },
       "documentation":"<p>Contains details required to update a code security integration with a specific repository provider.</p>",
@@ -13171,6 +13331,10 @@
         "LINUX",
         "UNKNOWN"
       ]
+    },
+    "VpcEndpointId":{
+      "type":"string",
+      "pattern":"vpce-[0-9a-f]{8}([0-9a-f]{9})?"
     },
     "VpcId":{
       "type":"string",

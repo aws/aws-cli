@@ -46,6 +46,7 @@
       "input":{"shape":"CreateMarketplaceRevenueShareAllocationInput"},
       "output":{"shape":"CreateMarketplaceRevenueShareAllocationOutput"},
       "errors":[
+        {"shape":"ServiceQuotaExceededException"},
         {"shape":"ThrottlingException"},
         {"shape":"ValidationException"},
         {"shape":"AccessDeniedException"},
@@ -53,7 +54,7 @@
         {"shape":"ResourceNotFoundException"},
         {"shape":"ConflictException"}
       ],
-      "documentation":"<p>Creates a new marketplace revenue share allocation for the specified product.</p>",
+      "documentation":"<p>Creates a new allocation under the specified marketplace revenue share.</p>",
       "idempotent":true
     },
     "CreateRevenueAttribution":{
@@ -197,7 +198,8 @@
         {"shape":"ThrottlingException"},
         {"shape":"ValidationException"},
         {"shape":"AccessDeniedException"},
-        {"shape":"InternalServerException"}
+        {"shape":"InternalServerException"},
+        {"shape":"ResourceNotFoundException"}
       ],
       "documentation":"<p>Returns a paginated list of marketplace revenue shares with optional filters.</p>",
       "readonly":true
@@ -309,6 +311,26 @@
       ],
       "documentation":"<p>Removes one or more tags from the specified resource.</p>"
     },
+    "UpdateMarketplaceRevenueShare":{
+      "name":"UpdateMarketplaceRevenueShare",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"UpdateMarketplaceRevenueShareInput"},
+      "output":{"shape":"UpdateMarketplaceRevenueShareOutput"},
+      "errors":[
+        {"shape":"ServiceQuotaExceededException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ConflictException"},
+        {"shape":"ResourceNotFoundException"}
+      ],
+      "documentation":"<p>Replaces the products of a marketplace revenue share. The request carries the complete desired set of products and their typed account lists; a product not listed is removed and its account lists cleared, and an empty Products list closes the marketplace revenue share. Closing is one-way.</p>",
+      "idempotent":true
+    },
     "UpdateMarketplaceRevenueShareAllocation":{
       "name":"UpdateMarketplaceRevenueShareAllocation",
       "http":{
@@ -325,7 +347,7 @@
         {"shape":"ResourceNotFoundException"},
         {"shape":"ConflictException"}
       ],
-      "documentation":"<p>Updates an existing marketplace revenue share allocation. Supports modifying effective dates, revenue share percentage, and status with time-based mutability rules.</p>",
+      "documentation":"<p>Updates an existing marketplace revenue share allocation. Supports modifying the revenue share percentage and status only, with time-based mutability rules.</p>",
       "idempotent":true
     },
     "UpdateRevenueAttribution":{
@@ -356,7 +378,10 @@
         "Reason"
       ],
       "members":{
-        "Message":{"shape":"String"},
+        "Message":{
+          "shape":"String",
+          "documentation":"<p>A human-readable message describing the access denial reason.</p>"
+        },
         "Reason":{
           "shape":"AccessDeniedExceptionReason",
           "documentation":"<p>The reason for the access denial.</p>"
@@ -450,6 +475,10 @@
         "TotalRevenueAttributionAllocationCount":{
           "shape":"AllocationCount",
           "documentation":"<p>The total number of allocations under this revenue attribution, counting both ACTIVE and INACTIVE.</p>"
+        },
+        "Context":{
+          "shape":"RevenueAttributionContext",
+          "documentation":"<p>Program-defined key-value attributes for the revenue attribution.</p>"
         }
       },
       "documentation":"<p>Summary representation of a revenue attribution returned in list operations.</p>"
@@ -479,7 +508,10 @@
         "Reason"
       ],
       "members":{
-        "Message":{"shape":"String"},
+        "Message":{
+          "shape":"String",
+          "documentation":"<p>A human-readable message describing the conflict that occurred.</p>"
+        },
         "Reason":{
           "shape":"ConflictExceptionReason",
           "documentation":"<p>The reason for the conflict.</p>"
@@ -501,12 +533,53 @@
         "REVISION_MISMATCH"
       ]
     },
+    "ContextFilter":{
+      "type":"structure",
+      "required":["Key"],
+      "members":{
+        "Key":{
+          "shape":"ContextKey",
+          "documentation":"<p>The context key to filter on.</p>"
+        },
+        "Values":{
+          "shape":"ContextFilterValueList",
+          "documentation":"<p>Matches when the stored value equals any of these values. When omitted, matches when the key is present.</p>"
+        }
+      },
+      "documentation":"<p>Filters revenue attributions by a context key and, optionally, a set of values.</p>"
+    },
+    "ContextFilterList":{
+      "type":"list",
+      "member":{"shape":"ContextFilter"},
+      "max":5,
+      "min":1
+    },
+    "ContextFilterValueList":{
+      "type":"list",
+      "member":{"shape":"ContextValue"},
+      "max":20,
+      "min":1
+    },
+    "ContextKey":{
+      "type":"string",
+      "max":128,
+      "min":1,
+      "pattern":"[\\x21-\\x7E]+"
+    },
+    "ContextValue":{
+      "type":"string",
+      "max":1024,
+      "min":1,
+      "pattern":"[\\x20-\\x7E]+"
+    },
     "CreateMarketplaceRevenueShareAllocationInput":{
       "type":"structure",
       "required":[
         "Catalog",
-        "ProductId",
+        "MarketplaceRevenueShareIdentifier",
+        "MarketplaceRevenueShareRevision",
         "EffectiveFrom",
+        "EffectiveUntil",
         "RevenueSharePercent"
       ],
       "members":{
@@ -514,14 +587,18 @@
           "shape":"CatalogName",
           "documentation":"<p>The catalog in which to create the allocation.</p>"
         },
-        "ProductId":{
-          "shape":"MarketplaceProductId",
-          "documentation":"<p>The AWS Marketplace product identifier for the parent revenue share.</p>"
+        "MarketplaceRevenueShareIdentifier":{
+          "shape":"MarketplaceRevenueShareIdentifier",
+          "documentation":"<p>The parent marketplace revenue share, by ID (mrs-...) or ARN.</p>"
         },
         "ClientToken":{
           "shape":"ClientToken",
           "documentation":"<p>A unique token to ensure idempotency of the create request.</p>",
           "idempotencyToken":true
+        },
+        "MarketplaceRevenueShareRevision":{
+          "shape":"RevisionToken",
+          "documentation":"<p>The revision of the parent marketplace revenue share that the caller last read, for optimistic concurrency control. A stale value returns ConflictException with Reason REVISION_MISMATCH.</p>"
         },
         "EffectiveFrom":{
           "shape":"AllocationEffectiveDateString",
@@ -529,7 +606,7 @@
         },
         "EffectiveUntil":{
           "shape":"AllocationEffectiveDateString",
-          "documentation":"<p>The effective end date for the allocation. Must be the last day of a month (YYYY-MM-DD). Omit for open-ended allocations.</p>"
+          "documentation":"<p>The effective end date for the allocation. Must be the last day of a month (YYYY-MM-DD).</p>"
         },
         "RevenueSharePercent":{
           "shape":"RevenueSharePercent",
@@ -541,28 +618,24 @@
       "type":"structure",
       "required":[
         "MarketplaceRevenueShareAllocationId",
-        "ProductId",
-        "Arn",
+        "MarketplaceRevenueShareIdentifier",
         "EffectiveFrom",
+        "EffectiveUntil",
         "RevenueSharePercent",
-        "Status"
+        "Status",
+        "CreatedDate",
+        "LastModifiedDate",
+        "MarketplaceRevenueShareRevision",
+        "MarketplaceRevenueShareLatestRevision"
       ],
       "members":{
         "MarketplaceRevenueShareAllocationId":{
           "shape":"MarketplaceRevenueShareAllocationId",
           "documentation":"<p>The unique identifier of the newly created allocation.</p>"
         },
-        "ProductId":{
-          "shape":"MarketplaceProductId",
-          "documentation":"<p>The AWS Marketplace product identifier.</p>"
-        },
-        "ProductName":{
-          "shape":"String",
-          "documentation":"<p>The display name of the AWS Marketplace product.</p>"
-        },
-        "Arn":{
-          "shape":"String",
-          "documentation":"<p>The Amazon Resource Name (ARN) of the allocation.</p>"
+        "MarketplaceRevenueShareIdentifier":{
+          "shape":"MarketplaceRevenueShareId",
+          "documentation":"<p>The parent marketplace revenue share, short ID form (mrs-...).</p>"
         },
         "EffectiveFrom":{
           "shape":"AllocationEffectiveDateString",
@@ -570,7 +643,7 @@
         },
         "EffectiveUntil":{
           "shape":"AllocationEffectiveDateString",
-          "documentation":"<p>The effective end date of the allocation, or null if open-ended.</p>"
+          "documentation":"<p>The effective end date of the allocation.</p>"
         },
         "RevenueSharePercent":{
           "shape":"RevenueSharePercent",
@@ -588,7 +661,11 @@
           "shape":"Timestamp",
           "documentation":"<p>The date when the allocation was last modified.</p>"
         },
-        "LatestMarketplaceRevenueShareRevision":{
+        "MarketplaceRevenueShareRevision":{
+          "shape":"RevisionToken",
+          "documentation":"<p>The revision of the parent marketplace revenue share at which the allocation was created.</p>"
+        },
+        "MarketplaceRevenueShareLatestRevision":{
           "shape":"RevisionToken",
           "documentation":"<p>The latest revision of the parent marketplace revenue share.</p>"
         }
@@ -598,7 +675,7 @@
       "type":"structure",
       "required":[
         "Catalog",
-        "ProductId"
+        "Products"
       ],
       "members":{
         "Catalog":{
@@ -610,42 +687,49 @@
           "documentation":"<p>A unique token to ensure idempotency of the create request.</p>",
           "idempotencyToken":true
         },
-        "ProductId":{
-          "shape":"MarketplaceProductId",
-          "documentation":"<p>The AWS Marketplace product identifier for this revenue share.</p>"
+        "Products":{
+          "shape":"CreateMarketplaceRevenueShareInputProductsList",
+          "documentation":"<p>The products in the marketplace revenue share, each with its typed account lists. 1 to 25 products.</p>"
         },
         "Tags":{
-          "shape":"MarketplaceRevenueShareTagList",
+          "shape":"TagList",
           "documentation":"<p>Tags to associate with the marketplace revenue share upon creation.</p>"
         }
       }
     },
+    "CreateMarketplaceRevenueShareInputProductsList":{
+      "type":"list",
+      "member":{"shape":"MarketplaceRevenueShareProductEntry"},
+      "max":25,
+      "min":1
+    },
     "CreateMarketplaceRevenueShareOutput":{
       "type":"structure",
       "required":[
-        "ProductId",
-        "Arn"
+        "Id",
+        "Arn",
+        "Catalog",
+        "Products",
+        "CreatedDate",
+        "LastModifiedDate",
+        "Revision"
       ],
       "members":{
-        "ProductId":{
-          "shape":"MarketplaceProductId",
-          "documentation":"<p>The AWS Marketplace product identifier of the newly created revenue share.</p>"
+        "Id":{
+          "shape":"MarketplaceRevenueShareId",
+          "documentation":"<p>The unique identifier of the newly created marketplace revenue share, short ID form (mrs-...).</p>"
         },
         "Arn":{
-          "shape":"String",
+          "shape":"MarketplaceRevenueShareArn",
           "documentation":"<p>The Amazon Resource Name (ARN) of the newly created marketplace revenue share.</p>"
         },
         "Catalog":{
           "shape":"CatalogName",
           "documentation":"<p>The catalog that the marketplace revenue share belongs to.</p>"
         },
-        "ProductCode":{
-          "shape":"String",
-          "documentation":"<p>The AWS Marketplace product code.</p>"
-        },
-        "ProductName":{
-          "shape":"String",
-          "documentation":"<p>The display name of the AWS Marketplace product.</p>"
+        "Products":{
+          "shape":"MarketplaceRevenueShareProductSummaryList",
+          "documentation":"<p>The products in the newly created marketplace revenue share, each with per-type account counts.</p>"
         },
         "CreatedDate":{
           "shape":"Timestamp",
@@ -656,15 +740,10 @@
           "documentation":"<p>The date when the marketplace revenue share was last modified.</p>"
         },
         "Revision":{
-          "shape":"CreateMarketplaceRevenueShareOutputRevisionInteger",
-          "documentation":"<p>The revision number of the newly created marketplace revenue share.</p>"
+          "shape":"RevisionToken",
+          "documentation":"<p>The revision of the newly created marketplace revenue share.</p>"
         }
       }
-    },
-    "CreateMarketplaceRevenueShareOutputRevisionInteger":{
-      "type":"integer",
-      "box":true,
-      "min":1
     },
     "CreateRevenueAttributionInput":{
       "type":"structure",
@@ -702,6 +781,10 @@
         "Tags":{
           "shape":"TagList",
           "documentation":"<p>Tags to associate with the revenue attribution upon creation.</p>"
+        },
+        "Context":{
+          "shape":"RevenueAttributionContext",
+          "documentation":"<p>Program-defined key-value attributes for the revenue attribution.</p>"
         }
       }
     },
@@ -758,6 +841,10 @@
         "Revision":{
           "shape":"RevisionToken",
           "documentation":"<p>The revision of the newly created attribution resource.</p>"
+        },
+        "Context":{
+          "shape":"RevenueAttributionContext",
+          "documentation":"<p>Program-defined key-value attributes for the revenue attribution.</p>"
         }
       }
     },
@@ -817,7 +904,7 @@
       "type":"structure",
       "required":[
         "Catalog",
-        "ProductId",
+        "MarketplaceRevenueShareIdentifier",
         "MarketplaceRevenueShareAllocationId"
       ],
       "members":{
@@ -825,9 +912,9 @@
           "shape":"CatalogName",
           "documentation":"<p>The catalog that the allocation belongs to.</p>"
         },
-        "ProductId":{
-          "shape":"MarketplaceProductId",
-          "documentation":"<p>The AWS Marketplace product identifier of the parent revenue share.</p>"
+        "MarketplaceRevenueShareIdentifier":{
+          "shape":"MarketplaceRevenueShareIdentifier",
+          "documentation":"<p>The parent marketplace revenue share, by ID (mrs-...) or ARN.</p>"
         },
         "MarketplaceRevenueShareAllocationId":{
           "shape":"MarketplaceRevenueShareAllocationId",
@@ -843,28 +930,24 @@
       "type":"structure",
       "required":[
         "MarketplaceRevenueShareAllocationId",
-        "ProductId",
-        "Arn",
+        "MarketplaceRevenueShareIdentifier",
         "EffectiveFrom",
+        "EffectiveUntil",
         "RevenueSharePercent",
-        "Status"
+        "Status",
+        "CreatedDate",
+        "LastModifiedDate",
+        "MarketplaceRevenueShareRevision",
+        "MarketplaceRevenueShareLatestRevision"
       ],
       "members":{
         "MarketplaceRevenueShareAllocationId":{
           "shape":"MarketplaceRevenueShareAllocationId",
           "documentation":"<p>The unique identifier of the allocation.</p>"
         },
-        "ProductId":{
-          "shape":"MarketplaceProductId",
-          "documentation":"<p>The AWS Marketplace product identifier.</p>"
-        },
-        "ProductName":{
-          "shape":"String",
-          "documentation":"<p>The display name of the AWS Marketplace product.</p>"
-        },
-        "Arn":{
-          "shape":"String",
-          "documentation":"<p>The Amazon Resource Name (ARN) of the allocation.</p>"
+        "MarketplaceRevenueShareIdentifier":{
+          "shape":"MarketplaceRevenueShareId",
+          "documentation":"<p>The parent marketplace revenue share, short ID form (mrs-...).</p>"
         },
         "EffectiveFrom":{
           "shape":"AllocationEffectiveDateString",
@@ -872,7 +955,7 @@
         },
         "EffectiveUntil":{
           "shape":"AllocationEffectiveDateString",
-          "documentation":"<p>The effective end date of the allocation, or null if open-ended.</p>"
+          "documentation":"<p>The effective end date of the allocation.</p>"
         },
         "RevenueSharePercent":{
           "shape":"RevenueSharePercent",
@@ -890,7 +973,11 @@
           "shape":"Timestamp",
           "documentation":"<p>The date when the allocation was last modified.</p>"
         },
-        "LatestMarketplaceRevenueShareRevision":{
+        "MarketplaceRevenueShareRevision":{
+          "shape":"RevisionToken",
+          "documentation":"<p>The revision of the parent marketplace revenue share at which the allocation was read.</p>"
+        },
+        "MarketplaceRevenueShareLatestRevision":{
           "shape":"RevisionToken",
           "documentation":"<p>The latest revision of the parent marketplace revenue share.</p>"
         }
@@ -900,55 +987,53 @@
       "type":"structure",
       "required":[
         "Catalog",
-        "ProductId"
+        "Identifier"
       ],
       "members":{
         "Catalog":{
           "shape":"CatalogName",
           "documentation":"<p>The catalog that the marketplace revenue share belongs to.</p>"
         },
-        "ProductId":{
-          "shape":"MarketplaceProductId",
-          "documentation":"<p>The AWS Marketplace product identifier of the revenue share to retrieve.</p>"
+        "Identifier":{
+          "shape":"MarketplaceRevenueShareIdentifier",
+          "documentation":"<p>The marketplace revenue share to retrieve, by ID (mrs-...) or ARN.</p>"
         },
         "Revision":{
-          "shape":"GetMarketplaceRevenueShareInputRevisionInteger",
+          "shape":"RevisionToken",
           "documentation":"<p>The revision of the marketplace revenue share to retrieve. Omit to return the latest revision.</p>"
         }
       }
     },
-    "GetMarketplaceRevenueShareInputRevisionInteger":{
-      "type":"integer",
-      "box":true,
-      "min":1
-    },
     "GetMarketplaceRevenueShareOutput":{
       "type":"structure",
       "required":[
-        "ProductId",
+        "Id",
         "Arn",
-        "Catalog"
+        "Catalog",
+        "Products",
+        "CreatedDate",
+        "LastModifiedDate",
+        "Revision",
+        "LatestRevision",
+        "TotalActiveMarketplaceRevenueShareAllocationCount",
+        "TotalMarketplaceRevenueShareAllocationCount"
       ],
       "members":{
-        "ProductId":{
-          "shape":"MarketplaceProductId",
-          "documentation":"<p>The AWS Marketplace product identifier of the revenue share.</p>"
+        "Id":{
+          "shape":"MarketplaceRevenueShareId",
+          "documentation":"<p>The unique identifier of the marketplace revenue share, short ID form (mrs-...).</p>"
         },
         "Arn":{
-          "shape":"String",
+          "shape":"MarketplaceRevenueShareArn",
           "documentation":"<p>The Amazon Resource Name (ARN) of the marketplace revenue share.</p>"
         },
         "Catalog":{
           "shape":"CatalogName",
           "documentation":"<p>The catalog that the marketplace revenue share belongs to.</p>"
         },
-        "ProductCode":{
-          "shape":"String",
-          "documentation":"<p>The AWS Marketplace product code.</p>"
-        },
-        "ProductName":{
-          "shape":"String",
-          "documentation":"<p>The display name of the AWS Marketplace product.</p>"
+        "Products":{
+          "shape":"MarketplaceRevenueShareProductDetailList",
+          "documentation":"<p>The products in the marketplace revenue share, each with its typed account lists and full account IDs. Empty when the share is closed.</p>"
         },
         "CreatedDate":{
           "shape":"Timestamp",
@@ -959,32 +1044,30 @@
           "documentation":"<p>The date when the marketplace revenue share was last modified.</p>"
         },
         "Revision":{
-          "shape":"GetMarketplaceRevenueShareOutputRevisionInteger",
-          "documentation":"<p>The revision number of the retrieved marketplace revenue share.</p>"
+          "shape":"RevisionToken",
+          "documentation":"<p>The revision of the retrieved marketplace revenue share.</p>"
         },
         "LatestRevision":{
-          "shape":"GetMarketplaceRevenueShareOutputLatestRevisionInteger",
-          "documentation":"<p>The latest revision number of the marketplace revenue share.</p>"
+          "shape":"RevisionToken",
+          "documentation":"<p>The latest revision of the marketplace revenue share.</p>"
+        },
+        "EffectiveFrom":{
+          "shape":"AllocationEffectiveDateString",
+          "documentation":"<p>The date from which this share is effective, derived from the earliest ACTIVE allocation start date (YYYY-MM-DD). Absent when no ACTIVE allocation remains.</p>"
+        },
+        "EffectiveUntil":{
+          "shape":"AllocationEffectiveDateString",
+          "documentation":"<p>The date until which this share is effective, derived from the latest ACTIVE allocation end date (YYYY-MM-DD). Absent when no ACTIVE allocation remains.</p>"
         },
         "TotalActiveMarketplaceRevenueShareAllocationCount":{
-          "shape":"Integer",
+          "shape":"AllocationCount",
           "documentation":"<p>The number of active allocations under this marketplace revenue share.</p>"
         },
         "TotalMarketplaceRevenueShareAllocationCount":{
-          "shape":"Integer",
+          "shape":"AllocationCount",
           "documentation":"<p>The total number of allocations under this marketplace revenue share.</p>"
         }
       }
-    },
-    "GetMarketplaceRevenueShareOutputLatestRevisionInteger":{
-      "type":"integer",
-      "box":true,
-      "min":1
-    },
-    "GetMarketplaceRevenueShareOutputRevisionInteger":{
-      "type":"integer",
-      "box":true,
-      "min":1
     },
     "GetRevenueAttributionAllocationInput":{
       "type":"structure",
@@ -1247,6 +1330,10 @@
         "TotalRevenueAttributionAllocationCount":{
           "shape":"AllocationCount",
           "documentation":"<p>The total number of allocations under this revenue attribution, counting both ACTIVE and INACTIVE.</p>"
+        },
+        "Context":{
+          "shape":"RevenueAttributionContext",
+          "documentation":"<p>Program-defined key-value attributes for the revenue attribution.</p>"
         }
       }
     },
@@ -1268,7 +1355,10 @@
       "type":"structure",
       "required":["Message"],
       "members":{
-        "Message":{"shape":"String"}
+        "Message":{
+          "shape":"String",
+          "documentation":"<p>A human-readable message describing the internal server error.</p>"
+        }
       },
       "documentation":"<p>An internal server error occurred. Retry your request.</p>",
       "error":{"httpStatusCode":500},
@@ -1280,18 +1370,18 @@
       "type":"structure",
       "required":[
         "Catalog",
-        "ProductId"
+        "MarketplaceRevenueShareIdentifier"
       ],
       "members":{
         "Catalog":{
           "shape":"CatalogName",
           "documentation":"<p>The catalog containing the allocations.</p>"
         },
-        "ProductId":{
-          "shape":"MarketplaceProductId",
-          "documentation":"<p>The AWS Marketplace product identifier for the parent revenue share.</p>"
+        "MarketplaceRevenueShareIdentifier":{
+          "shape":"MarketplaceRevenueShareIdentifier",
+          "documentation":"<p>The parent marketplace revenue share, by ID (mrs-...) or ARN.</p>"
         },
-        "Status":{
+        "StatusFilter":{
           "shape":"AllocationStatus",
           "documentation":"<p>Filter by allocation status.</p>"
         },
@@ -1303,13 +1393,21 @@
           "shape":"AllocationEffectiveDateString",
           "documentation":"<p>Exclusive upper bound for EffectiveFrom date filter (half-open range).</p>"
         },
+        "AfterEffectiveUntil":{
+          "shape":"AllocationEffectiveDateString",
+          "documentation":"<p>Inclusive lower bound for EffectiveUntil date filter.</p>"
+        },
+        "BeforeEffectiveUntil":{
+          "shape":"AllocationEffectiveDateString",
+          "documentation":"<p>Exclusive upper bound for EffectiveUntil date filter (half-open range).</p>"
+        },
         "SortBy":{
           "shape":"MarketplaceRevenueShareAllocationSortField",
           "documentation":"<p>The field to sort marketplace revenue share allocations by.</p>"
         },
         "SortOrder":{
           "shape":"SortOrder",
-          "documentation":"<p>The direction to sort results. Defaults to DESCENDING.</p>"
+          "documentation":"<p>The direction to sort results. Defaults to ASCENDING.</p>"
         },
         "MaxResults":{
           "shape":"ListMarketplaceRevenueShareAllocationsInputMaxResultsInteger",
@@ -1353,13 +1451,17 @@
           "shape":"CatalogName",
           "documentation":"<p>The catalog to list marketplace revenue shares from.</p>"
         },
+        "Identifiers":{
+          "shape":"MarketplaceRevenueShareIdentifierList",
+          "documentation":"<p>Filter results to only include these marketplace revenue shares, by ID or ARN. 1 to 100 identifiers. When several filters are sent, a share must match all of them.</p>"
+        },
         "ProductIds":{
           "shape":"MarketplaceProductIdList",
-          "documentation":"<p>Filter results to only include shares with these product identifiers.</p>"
+          "documentation":"<p>Filter results to the marketplace revenue shares that contain any of these products. 1 to 10 product IDs or product ARNs. Shares the caller does not own are never returned.</p>"
         },
         "ProductCodes":{
           "shape":"ProductCodeList",
-          "documentation":"<p>Filter results to only include shares with these product codes.</p>"
+          "documentation":"<p>Filter results to the marketplace revenue shares that contain a product with any of these product codes. 1 to 10 product codes.</p>"
         },
         "MaxResults":{
           "shape":"ListMarketplaceRevenueSharesInputMaxResultsInteger",
@@ -1379,11 +1481,11 @@
         },
         "CreatedAfter":{
           "shape":"Timestamp",
-          "documentation":"<p>Filter results to only include marketplace revenue shares created after this timestamp.</p>"
+          "documentation":"<p>Filter results to marketplace revenue shares created at or after this timestamp (inclusive).</p>"
         },
         "CreatedBefore":{
           "shape":"Timestamp",
-          "documentation":"<p>Filter results to only include marketplace revenue shares created before this timestamp.</p>"
+          "documentation":"<p>Filter results to marketplace revenue shares created before this timestamp (exclusive).</p>"
         }
       }
     },
@@ -1531,6 +1633,10 @@
         "NextToken":{
           "shape":"NextToken",
           "documentation":"<p>Token for pagination. Use the value returned in the previous response to retrieve the next page.</p>"
+        },
+        "ContextFilters":{
+          "shape":"ContextFilterList",
+          "documentation":"<p>Filter results by context. Filters are combined with AND; values within a filter are combined with OR.</p>"
         }
       }
     },
@@ -1574,15 +1680,21 @@
     },
     "MarketplaceProductId":{
       "type":"string",
-      "max":18,
-      "min":18,
-      "pattern":"prod-[a-z0-9]{13}"
+      "max":256,
+      "min":3,
+      "pattern":"[a-zA-Z0-9][.a-zA-Z0-9/-]{1,254}[a-zA-Z0-9]"
     },
     "MarketplaceProductIdList":{
       "type":"list",
-      "member":{"shape":"MarketplaceProductId"},
+      "member":{"shape":"MarketplaceProductIdentifier"},
       "max":10,
       "min":1
+    },
+    "MarketplaceProductIdentifier":{
+      "type":"string",
+      "max":255,
+      "min":1,
+      "pattern":"[\\w\\-:/.]+"
     },
     "MarketplaceProductSummary":{
       "type":"structure",
@@ -1612,7 +1724,7 @@
       "type":"string",
       "max":18,
       "min":18,
-      "pattern":"mrsa-[A-Za-z0-9]{13}"
+      "pattern":"mrsa-[a-z0-9]{13}"
     },
     "MarketplaceRevenueShareAllocationSortField":{
       "type":"string",
@@ -1622,28 +1734,22 @@
       "type":"structure",
       "required":[
         "MarketplaceRevenueShareAllocationId",
-        "ProductId",
-        "Arn",
+        "MarketplaceRevenueShareIdentifier",
         "EffectiveFrom",
+        "EffectiveUntil",
         "RevenueSharePercent",
-        "Status"
+        "Status",
+        "CreatedDate",
+        "LastModifiedDate"
       ],
       "members":{
         "MarketplaceRevenueShareAllocationId":{
           "shape":"MarketplaceRevenueShareAllocationId",
           "documentation":"<p>The unique identifier of the allocation.</p>"
         },
-        "ProductId":{
-          "shape":"MarketplaceProductId",
-          "documentation":"<p>The AWS Marketplace product identifier.</p>"
-        },
-        "ProductName":{
-          "shape":"String",
-          "documentation":"<p>The display name of the AWS Marketplace product.</p>"
-        },
-        "Arn":{
-          "shape":"String",
-          "documentation":"<p>The Amazon Resource Name (ARN) of the parent marketplace revenue share.</p>"
+        "MarketplaceRevenueShareIdentifier":{
+          "shape":"MarketplaceRevenueShareId",
+          "documentation":"<p>The parent marketplace revenue share, short ID form (mrs-...).</p>"
         },
         "EffectiveFrom":{
           "shape":"AllocationEffectiveDateString",
@@ -1651,7 +1757,7 @@
         },
         "EffectiveUntil":{
           "shape":"AllocationEffectiveDateString",
-          "documentation":"<p>The effective end date of the allocation, or null if open-ended.</p>"
+          "documentation":"<p>The effective end date of the allocation.</p>"
         },
         "RevenueSharePercent":{
           "shape":"RevenueSharePercent",
@@ -1676,6 +1782,109 @@
       "type":"list",
       "member":{"shape":"MarketplaceRevenueShareAllocationSummary"}
     },
+    "MarketplaceRevenueShareArn":{
+      "type":"string",
+      "max":1011,
+      "min":1,
+      "pattern":"arn:aws:partnercentral:[a-z0-9-]+:[0-9]{12}:catalog/[a-zA-Z]+/marketplace-revenue-share/mrs-[a-z0-9]{13}"
+    },
+    "MarketplaceRevenueShareId":{
+      "type":"string",
+      "max":17,
+      "min":17,
+      "pattern":"mrs-[a-z0-9]{13}"
+    },
+    "MarketplaceRevenueShareIdentifier":{
+      "type":"string",
+      "max":1011,
+      "min":17,
+      "pattern":"(arn:[a-z-]+:partnercentral:[a-z0-9-]+:[0-9]{12}:catalog/[a-zA-Z]+/marketplace-revenue-share/mrs-[a-z0-9]{13}|mrs-[a-z0-9]{13})"
+    },
+    "MarketplaceRevenueShareIdentifierList":{
+      "type":"list",
+      "member":{"shape":"MarketplaceRevenueShareIdentifier"},
+      "max":100,
+      "min":1
+    },
+    "MarketplaceRevenueShareProductDetail":{
+      "type":"structure",
+      "required":["ProductId"],
+      "members":{
+        "ProductId":{
+          "shape":"MarketplaceProductId",
+          "documentation":"<p>The AWS Marketplace product identifier.</p>"
+        },
+        "ProductCode":{
+          "shape":"ProductCode",
+          "documentation":"<p>The AWS Marketplace product code, resolved by the service.</p>"
+        },
+        "ProductName":{
+          "shape":"String",
+          "documentation":"<p>The display name of the AWS Marketplace product, resolved by the service.</p>"
+        },
+        "Accounts":{
+          "shape":"RevenueShareProductAccountDetailList",
+          "documentation":"<p>The typed account lists for this product, each with its count and full list of IDs.</p>"
+        }
+      },
+      "documentation":"<p>A product in a marketplace revenue share, as returned by GetMarketplaceRevenueShare, with the full typed account lists.</p>"
+    },
+    "MarketplaceRevenueShareProductDetailList":{
+      "type":"list",
+      "member":{"shape":"MarketplaceRevenueShareProductDetail"},
+      "max":25,
+      "min":0
+    },
+    "MarketplaceRevenueShareProductEntry":{
+      "type":"structure",
+      "required":["ProductId"],
+      "members":{
+        "ProductId":{
+          "shape":"MarketplaceProductIdentifier",
+          "documentation":"<p>The AWS Marketplace product ID or product ARN. The share stores and returns the product ID.</p>"
+        },
+        "Accounts":{
+          "shape":"RevenueShareProductAccountEntryList",
+          "documentation":"<p>The typed account lists for this product. Omit to have the service determine the accounts. At most one entry per type; each entry must carry at least one account. An empty list is the same as omitting the field.</p>"
+        }
+      },
+      "documentation":"<p>A product and its typed account lists as supplied in a CreateMarketplaceRevenueShare or UpdateMarketplaceRevenueShare request.</p>"
+    },
+    "MarketplaceRevenueShareProductEntryList":{
+      "type":"list",
+      "member":{"shape":"MarketplaceRevenueShareProductEntry"},
+      "max":25,
+      "min":0
+    },
+    "MarketplaceRevenueShareProductSummary":{
+      "type":"structure",
+      "required":["ProductId"],
+      "members":{
+        "ProductId":{
+          "shape":"MarketplaceProductId",
+          "documentation":"<p>The AWS Marketplace product identifier.</p>"
+        },
+        "ProductCode":{
+          "shape":"ProductCode",
+          "documentation":"<p>The AWS Marketplace product code, resolved by the service.</p>"
+        },
+        "ProductName":{
+          "shape":"String",
+          "documentation":"<p>The display name of the AWS Marketplace product, resolved by the service.</p>"
+        },
+        "Accounts":{
+          "shape":"RevenueShareProductAccountSummaryList",
+          "documentation":"<p>Per-type counts of the accounts associated with this product.</p>"
+        }
+      },
+      "documentation":"<p>A product in a marketplace revenue share, as returned in Create, Update and List responses, with per-type account counts but no account IDs.</p>"
+    },
+    "MarketplaceRevenueShareProductSummaryList":{
+      "type":"list",
+      "member":{"shape":"MarketplaceRevenueShareProductSummary"},
+      "max":25,
+      "min":0
+    },
     "MarketplaceRevenueShareSortBy":{
       "type":"string",
       "enum":["LastModifiedDate"]
@@ -1683,29 +1892,32 @@
     "MarketplaceRevenueShareSummary":{
       "type":"structure",
       "required":[
-        "ProductId",
-        "Arn"
+        "Id",
+        "Arn",
+        "Catalog",
+        "Products",
+        "CreatedDate",
+        "LastModifiedDate",
+        "LatestRevision",
+        "TotalActiveMarketplaceRevenueShareAllocationCount",
+        "TotalMarketplaceRevenueShareAllocationCount"
       ],
       "members":{
-        "ProductId":{
-          "shape":"MarketplaceProductId",
-          "documentation":"<p>The AWS Marketplace product identifier.</p>"
+        "Id":{
+          "shape":"MarketplaceRevenueShareId",
+          "documentation":"<p>The unique identifier of the marketplace revenue share, short ID form (mrs-...).</p>"
         },
         "Arn":{
-          "shape":"String",
+          "shape":"MarketplaceRevenueShareArn",
           "documentation":"<p>The Amazon Resource Name (ARN) of the marketplace revenue share.</p>"
         },
         "Catalog":{
           "shape":"CatalogName",
           "documentation":"<p>The catalog that the marketplace revenue share belongs to.</p>"
         },
-        "ProductCode":{
-          "shape":"String",
-          "documentation":"<p>The AWS Marketplace product code.</p>"
-        },
-        "ProductName":{
-          "shape":"String",
-          "documentation":"<p>The display name of the AWS Marketplace product.</p>"
+        "Products":{
+          "shape":"MarketplaceRevenueShareProductSummaryList",
+          "documentation":"<p>The products in the marketplace revenue share, each with per-type account counts. Empty when the share is closed.</p>"
         },
         "CreatedDate":{
           "shape":"Timestamp",
@@ -1716,15 +1928,23 @@
           "documentation":"<p>The date when the marketplace revenue share was last modified.</p>"
         },
         "LatestRevision":{
-          "shape":"Integer",
-          "documentation":"<p>The latest revision number of the marketplace revenue share.</p>"
+          "shape":"RevisionToken",
+          "documentation":"<p>The latest revision of the marketplace revenue share.</p>"
+        },
+        "EffectiveFrom":{
+          "shape":"AllocationEffectiveDateString",
+          "documentation":"<p>The date from which this share is effective, derived from the earliest ACTIVE allocation start date (YYYY-MM-DD). Absent when no ACTIVE allocation remains.</p>"
+        },
+        "EffectiveUntil":{
+          "shape":"AllocationEffectiveDateString",
+          "documentation":"<p>The date until which this share is effective, derived from the latest ACTIVE allocation end date (YYYY-MM-DD). Absent when no ACTIVE allocation remains.</p>"
         },
         "TotalActiveMarketplaceRevenueShareAllocationCount":{
-          "shape":"Integer",
+          "shape":"AllocationCount",
           "documentation":"<p>The number of active allocations under this share.</p>"
         },
         "TotalMarketplaceRevenueShareAllocationCount":{
-          "shape":"Integer",
+          "shape":"AllocationCount",
           "documentation":"<p>The total number of allocations under this share.</p>"
         }
       },
@@ -1734,21 +1954,21 @@
       "type":"list",
       "member":{"shape":"MarketplaceRevenueShareSummary"}
     },
-    "MarketplaceRevenueShareTagList":{
-      "type":"list",
-      "member":{"shape":"Tag"},
-      "max":50,
-      "min":0
-    },
     "NextToken":{
       "type":"string",
       "max":2048,
       "min":1,
       "pattern":"[\\S]+"
     },
+    "ProductCode":{
+      "type":"string",
+      "max":64,
+      "min":1,
+      "pattern":"[A-Za-z0-9]+"
+    },
     "ProductCodeList":{
       "type":"list",
-      "member":{"shape":"String"},
+      "member":{"shape":"ProductCode"},
       "max":10,
       "min":1
     },
@@ -1756,7 +1976,7 @@
       "type":"string",
       "max":1011,
       "min":1,
-      "pattern":"arn:aws:partnercentral:[a-z0-9-]+:[0-9]{12}:catalog/[a-zA-Z]+/(revenue-attribution/[a-zA-Z0-9-]+|marketplace-revenue-share/prod-[a-z0-9]{13})"
+      "pattern":"arn:aws:partnercentral:[a-z0-9-]+:[0-9]{12}:catalog/[a-zA-Z]+/(revenue-attribution/[a-zA-Z0-9-]+|marketplace-revenue-share/mrs-[a-z0-9]{13})"
     },
     "ResourceNotFoundException":{
       "type":"structure",
@@ -1765,7 +1985,10 @@
         "Reason"
       ],
       "members":{
-        "Message":{"shape":"String"},
+        "Message":{
+          "shape":"String",
+          "documentation":"<p>A human-readable message describing which resource was not found.</p>"
+        },
         "Reason":{
           "shape":"ResourceNotFoundExceptionReason",
           "documentation":"<p>The reason the resource was not found.</p>"
@@ -1942,6 +2165,13 @@
         "FAILED"
       ]
     },
+    "RevenueAttributionContext":{
+      "type":"map",
+      "key":{"shape":"ContextKey"},
+      "value":{"shape":"ContextValue"},
+      "max":10,
+      "min":0
+    },
     "RevenueAttributionId":{
       "type":"string",
       "max":1011,
@@ -2027,6 +2257,108 @@
       "min":1,
       "pattern":"\\d{1,3}(\\.\\d{1,2})?"
     },
+    "RevenueShareProductAccountCount":{
+      "type":"integer",
+      "box":true,
+      "min":0
+    },
+    "RevenueShareProductAccountDetail":{
+      "type":"structure",
+      "required":[
+        "AccountType",
+        "Count",
+        "AccountIds"
+      ],
+      "members":{
+        "AccountType":{
+          "shape":"RevenueShareProductAccountType",
+          "documentation":"<p>The type of account list.</p>"
+        },
+        "Count":{
+          "shape":"RevenueShareProductAccountCount",
+          "documentation":"<p>The number of accounts of this type.</p>"
+        },
+        "AccountIds":{
+          "shape":"RevenueShareProductAccountIdList",
+          "documentation":"<p>The full list of AWS account identifiers of this type.</p>"
+        }
+      },
+      "documentation":"<p>A typed account list returned by GetMarketplaceRevenueShare, with its count and full list of IDs.</p>"
+    },
+    "RevenueShareProductAccountDetailList":{
+      "type":"list",
+      "member":{"shape":"RevenueShareProductAccountDetail"},
+      "max":2,
+      "min":0
+    },
+    "RevenueShareProductAccountEntry":{
+      "type":"structure",
+      "required":[
+        "AccountType",
+        "AccountIds"
+      ],
+      "members":{
+        "AccountType":{
+          "shape":"RevenueShareProductAccountType",
+          "documentation":"<p>The type of account list.</p>"
+        },
+        "AccountIds":{
+          "shape":"RevenueShareProductAccountIdList",
+          "documentation":"<p>The AWS account identifiers for this type. Each ID must be a 12-digit AWS account ID. Account ownership is verified after the request is accepted.</p>"
+        }
+      },
+      "documentation":"<p>A typed account list supplied for a product in a CreateMarketplaceRevenueShare or UpdateMarketplaceRevenueShare request.</p>"
+    },
+    "RevenueShareProductAccountEntryList":{
+      "type":"list",
+      "member":{"shape":"RevenueShareProductAccountEntry"},
+      "max":2,
+      "min":0
+    },
+    "RevenueShareProductAccountId":{
+      "type":"string",
+      "max":12,
+      "min":12,
+      "pattern":"[0-9]{12}",
+      "sensitive":true
+    },
+    "RevenueShareProductAccountIdList":{
+      "type":"list",
+      "member":{"shape":"RevenueShareProductAccountId"},
+      "max":1000,
+      "min":1
+    },
+    "RevenueShareProductAccountSummary":{
+      "type":"structure",
+      "required":[
+        "AccountType",
+        "Count"
+      ],
+      "members":{
+        "AccountType":{
+          "shape":"RevenueShareProductAccountType",
+          "documentation":"<p>The type of account list.</p>"
+        },
+        "Count":{
+          "shape":"RevenueShareProductAccountCount",
+          "documentation":"<p>The number of accounts of this type.</p>"
+        }
+      },
+      "documentation":"<p>A per-type count of accounts associated with a product.</p>"
+    },
+    "RevenueShareProductAccountSummaryList":{
+      "type":"list",
+      "member":{"shape":"RevenueShareProductAccountSummary"},
+      "max":2,
+      "min":0
+    },
+    "RevenueShareProductAccountType":{
+      "type":"string",
+      "enum":[
+        "DEPLOYMENT",
+        "ORGANIZATION"
+      ]
+    },
     "RevisionToken":{
       "type":"string",
       "max":19,
@@ -2040,7 +2372,10 @@
         "Reason"
       ],
       "members":{
-        "Message":{"shape":"String"},
+        "Message":{
+          "shape":"String",
+          "documentation":"<p>A human-readable message describing which service quota would be exceeded.</p>"
+        },
         "Reason":{
           "shape":"ServiceQuotaExceededExceptionReason",
           "documentation":"<p>The reason the service quota was exceeded.</p>"
@@ -2215,7 +2550,10 @@
       "type":"structure",
       "required":["Message"],
       "members":{
-        "Message":{"shape":"String"},
+        "Message":{
+          "shape":"String",
+          "documentation":"<p>A human-readable message indicating that the request rate limit has been exceeded.</p>"
+        },
         "ServiceCode":{
           "shape":"String",
           "documentation":"<p>The service code associated with the throttling error.</p>"
@@ -2255,7 +2593,7 @@
       "type":"structure",
       "required":[
         "Catalog",
-        "ProductId",
+        "MarketplaceRevenueShareIdentifier",
         "MarketplaceRevenueShareAllocationId",
         "MarketplaceRevenueShareRevision"
       ],
@@ -2264,9 +2602,9 @@
           "shape":"CatalogName",
           "documentation":"<p>The catalog containing the allocation.</p>"
         },
-        "ProductId":{
-          "shape":"MarketplaceProductId",
-          "documentation":"<p>The AWS Marketplace product identifier for the parent revenue share.</p>"
+        "MarketplaceRevenueShareIdentifier":{
+          "shape":"MarketplaceRevenueShareIdentifier",
+          "documentation":"<p>The parent marketplace revenue share, by ID (mrs-...) or ARN.</p>"
         },
         "MarketplaceRevenueShareAllocationId":{
           "shape":"MarketplaceRevenueShareAllocationId",
@@ -2280,14 +2618,6 @@
           "shape":"ClientToken",
           "documentation":"<p>A unique token to ensure idempotency of the update request.</p>",
           "idempotencyToken":true
-        },
-        "EffectiveFrom":{
-          "shape":"AllocationEffectiveDateString",
-          "documentation":"<p>The new effective start date. Must be the first day of a month. Only modifiable on future-dated allocations.</p>"
-        },
-        "EffectiveUntil":{
-          "shape":"AllocationEffectiveDateString",
-          "documentation":"<p>The new effective end date. Must be the last day of a month and on or after today.</p>"
         },
         "RevenueSharePercent":{
           "shape":"RevenueSharePercent",
@@ -2303,28 +2633,24 @@
       "type":"structure",
       "required":[
         "MarketplaceRevenueShareAllocationId",
-        "ProductId",
-        "Arn",
+        "MarketplaceRevenueShareIdentifier",
         "EffectiveFrom",
+        "EffectiveUntil",
         "RevenueSharePercent",
-        "Status"
+        "Status",
+        "CreatedDate",
+        "LastModifiedDate",
+        "MarketplaceRevenueShareRevision",
+        "MarketplaceRevenueShareLatestRevision"
       ],
       "members":{
         "MarketplaceRevenueShareAllocationId":{
           "shape":"MarketplaceRevenueShareAllocationId",
           "documentation":"<p>The unique identifier of the updated allocation.</p>"
         },
-        "ProductId":{
-          "shape":"MarketplaceProductId",
-          "documentation":"<p>The AWS Marketplace product identifier.</p>"
-        },
-        "ProductName":{
-          "shape":"String",
-          "documentation":"<p>The display name of the AWS Marketplace product.</p>"
-        },
-        "Arn":{
-          "shape":"String",
-          "documentation":"<p>The Amazon Resource Name (ARN) of the parent marketplace revenue share.</p>"
+        "MarketplaceRevenueShareIdentifier":{
+          "shape":"MarketplaceRevenueShareId",
+          "documentation":"<p>The parent marketplace revenue share, short ID form (mrs-...).</p>"
         },
         "EffectiveFrom":{
           "shape":"AllocationEffectiveDateString",
@@ -2332,7 +2658,7 @@
         },
         "EffectiveUntil":{
           "shape":"AllocationEffectiveDateString",
-          "documentation":"<p>The effective end date of the allocation, or null if open-ended.</p>"
+          "documentation":"<p>The effective end date of the allocation.</p>"
         },
         "RevenueSharePercent":{
           "shape":"RevenueSharePercent",
@@ -2350,9 +2676,77 @@
           "shape":"Timestamp",
           "documentation":"<p>The date when the allocation was last modified.</p>"
         },
-        "LatestMarketplaceRevenueShareRevision":{
+        "MarketplaceRevenueShareRevision":{
+          "shape":"RevisionToken",
+          "documentation":"<p>The revision of the parent marketplace revenue share at which the update was committed.</p>"
+        },
+        "MarketplaceRevenueShareLatestRevision":{
           "shape":"RevisionToken",
           "documentation":"<p>The latest revision of the parent marketplace revenue share after the update.</p>"
+        }
+      }
+    },
+    "UpdateMarketplaceRevenueShareInput":{
+      "type":"structure",
+      "required":[
+        "Catalog",
+        "Identifier",
+        "Revision",
+        "Products"
+      ],
+      "members":{
+        "Catalog":{
+          "shape":"CatalogName",
+          "documentation":"<p>The catalog that the marketplace revenue share belongs to.</p>"
+        },
+        "Identifier":{
+          "shape":"MarketplaceRevenueShareIdentifier",
+          "documentation":"<p>The marketplace revenue share to update, by ID (mrs-...) or ARN.</p>"
+        },
+        "ClientToken":{
+          "shape":"ClientToken",
+          "documentation":"<p>A unique token to ensure idempotency of the update request.</p>",
+          "idempotencyToken":true
+        },
+        "Revision":{
+          "shape":"RevisionToken",
+          "documentation":"<p>The current revision of the marketplace revenue share, for optimistic concurrency control. A stale value returns ConflictException with Reason REVISION_MISMATCH.</p>"
+        },
+        "Products":{
+          "shape":"MarketplaceRevenueShareProductEntryList",
+          "documentation":"<p>The complete desired set of products in the marketplace revenue share, each with its typed account lists. 0 to 25 products; an empty list closes the marketplace revenue share.</p>"
+        }
+      }
+    },
+    "UpdateMarketplaceRevenueShareOutput":{
+      "type":"structure",
+      "required":[
+        "Id",
+        "Arn",
+        "Products",
+        "LastModifiedDate",
+        "LatestRevision"
+      ],
+      "members":{
+        "Id":{
+          "shape":"MarketplaceRevenueShareId",
+          "documentation":"<p>The unique identifier of the updated marketplace revenue share, short ID form (mrs-...).</p>"
+        },
+        "Arn":{
+          "shape":"MarketplaceRevenueShareArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the updated marketplace revenue share.</p>"
+        },
+        "Products":{
+          "shape":"MarketplaceRevenueShareProductSummaryList",
+          "documentation":"<p>The products in the marketplace revenue share after the update, each with per-type account counts. Empty when the marketplace revenue share is closed.</p>"
+        },
+        "LastModifiedDate":{
+          "shape":"Timestamp",
+          "documentation":"<p>The date when the marketplace revenue share was last modified.</p>"
+        },
+        "LatestRevision":{
+          "shape":"RevisionToken",
+          "documentation":"<p>The latest revision of the marketplace revenue share after the update.</p>"
         }
       }
     },
@@ -2384,6 +2778,10 @@
         "Revision":{
           "shape":"RevisionToken",
           "documentation":"<p>The current revision of the revenue attribution. Must match the server's current value.</p>"
+        },
+        "Context":{
+          "shape":"RevenueAttributionContext",
+          "documentation":"<p>Full-replacement context map. Omit to leave the stored context unchanged; pass an empty map to clear it.</p>"
         }
       }
     },
@@ -2420,6 +2818,10 @@
         "LatestRevision":{
           "shape":"RevisionToken",
           "documentation":"<p>The latest revision of the attribution after the update.</p>"
+        },
+        "Context":{
+          "shape":"RevenueAttributionContext",
+          "documentation":"<p>The context stored on the revenue attribution after the update.</p>"
         }
       }
     },
@@ -2430,7 +2832,10 @@
         "Reason"
       ],
       "members":{
-        "Message":{"shape":"String"},
+        "Message":{
+          "shape":"String",
+          "documentation":"<p>A human-readable message describing the validation failure.</p>"
+        },
         "Reason":{
           "shape":"ValidationExceptionReason",
           "documentation":"<p>The reason for the validation failure.</p>"

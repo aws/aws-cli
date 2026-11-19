@@ -555,6 +555,10 @@
           "shape":"CgroupCustomSettings",
           "documentation":"<p>Additional Cgroup-specific configuration that directly maps to Cgroup settings.</p>"
         },
+        "jobSubmitPlugins":{
+          "shape":"JobSubmitPluginList",
+          "documentation":"<p>The job submit plugins to run on the cluster controller. Use job submit plugins to execute custom scripts during job submission and job modification to validate or modify the job's configuration. Custom scripts can accept or reject jobs based on their configuration or modify the configuration before job execution.</p>"
+        },
         "authKey":{
           "shape":"SlurmAuthKey",
           "documentation":"<p>The shared Slurm key for authentication, also known as the <b>cluster secret</b>.</p>"
@@ -592,6 +596,10 @@
         "cgroupCustomSettings":{
           "shape":"CgroupCustomSettings",
           "documentation":"<p>Additional Cgroup-specific configuration that directly maps to Cgroup settings.</p>"
+        },
+        "jobSubmitPlugins":{
+          "shape":"JobSubmitPluginList",
+          "documentation":"<p>The job submit plugins to run on the cluster controller. Use job submit plugins to execute custom scripts during job submission and job modification to validate or modify the job's configuration. Custom scripts can accept or reject jobs based on their configuration or modify the configuration before job execution.</p>"
         },
         "accounting":{
           "shape":"AccountingRequest",
@@ -1358,6 +1366,82 @@
       "exception":true,
       "fault":true,
       "retryable":{"throttling":false}
+    },
+    "JobSubmitPlugin":{
+      "type":"structure",
+      "required":[
+        "name",
+        "type",
+        "scriptSource"
+      ],
+      "members":{
+        "name":{
+          "shape":"JobSubmitPluginNameString",
+          "documentation":"<p>A unique name for the plugin. The name can be up to 64 characters long. Valid characters are letters, numbers, spaces, underscores (<code>_</code>), and hyphens (<code>-</code>). The first character must be a letter or a number.</p>"
+        },
+        "type":{
+          "shape":"JobSubmitPluginType",
+          "documentation":"<p>The runtime language used to execute the custom script. Valid values:</p> <ul> <li> <p> <code>STARLARK</code> – The script uses Starlark syntax.</p> </li> </ul>"
+        },
+        "scriptSource":{
+          "shape":"JobSubmitScriptSource",
+          "documentation":"<p>The source location and integrity information for the script.</p>"
+        }
+      },
+      "documentation":"<p>A job submit plugin configuration, including its name, runtime language, and script source.</p>"
+    },
+    "JobSubmitPluginList":{
+      "type":"list",
+      "member":{"shape":"JobSubmitPlugin"},
+      "max":1,
+      "min":0
+    },
+    "JobSubmitPluginNameString":{
+      "type":"string",
+      "max":64,
+      "min":1,
+      "pattern":"[A-Za-z0-9][A-Za-z0-9_-]*"
+    },
+    "JobSubmitPluginType":{
+      "type":"string",
+      "documentation":"<p>The runtime language used to execute the custom script. Valid values:</p> <ul> <li> <p> <code>STARLARK</code> – The script uses Starlark syntax.</p> </li> </ul>",
+      "enum":["STARLARK"]
+    },
+    "JobSubmitScriptSource":{
+      "type":"structure",
+      "required":["scriptLocation"],
+      "members":{
+        "scriptLocation":{
+          "shape":"JobSubmitScriptSourceScriptLocationString",
+          "documentation":"<p>The location of the script. Specify an Amazon S3 URI in the format <code>s3://bucket-name/key</code>.</p>"
+        },
+        "s3VersionId":{
+          "shape":"JobSubmitScriptSourceS3VersionIdString",
+          "documentation":"<p>The Amazon S3 version ID of the script. Use this value to pin the script to a specific version in a versioned Amazon S3 bucket.</p>"
+        },
+        "checksum":{
+          "shape":"JobSubmitScriptSourceChecksumString",
+          "documentation":"<p>The SHA-256 checksum of the script content, as a 64-character hexadecimal string. This value is optional. When specified, PCS uses this value to verify the integrity of the downloaded script.</p>"
+        }
+      },
+      "documentation":"<p>The source location and integrity information for the script.</p>"
+    },
+    "JobSubmitScriptSourceChecksumString":{
+      "type":"string",
+      "max":64,
+      "min":64,
+      "pattern":"[a-fA-F0-9]{64}"
+    },
+    "JobSubmitScriptSourceS3VersionIdString":{
+      "type":"string",
+      "max":1024,
+      "min":0
+    },
+    "JobSubmitScriptSourceScriptLocationString":{
+      "type":"string",
+      "max":1024,
+      "min":1,
+      "pattern":"s3://[a-z0-9][a-z0-9.-]{1,61}[a-z0-9]/.+"
     },
     "JwtAuth":{
       "type":"structure",
@@ -2381,6 +2465,10 @@
         "cgroupCustomSettings":{
           "shape":"CgroupCustomSettings",
           "documentation":"<p>Additional Cgroup-specific configuration that directly maps to Cgroup settings.</p>"
+        },
+        "jobSubmitPlugins":{
+          "shape":"JobSubmitPluginList",
+          "documentation":"<p>The job submit plugins to run on the cluster controller. Use job submit plugins to execute custom scripts during job submission and job modification to validate or modify the job's configuration. Custom scripts can accept or reject jobs based on their configuration or modify the configuration before job execution.</p>"
         },
         "accounting":{
           "shape":"UpdateAccountingRequest",

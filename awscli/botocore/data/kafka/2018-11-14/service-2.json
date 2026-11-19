@@ -61,6 +61,56 @@
       ],
       "documentation": "\n            <p>Associates one or more Scram Secrets with an Amazon MSK cluster.</p>\n         "
     },
+    "CreateAssessment": {
+      "name": "CreateAssessment",
+      "http": {
+        "method": "POST",
+        "requestUri": "/v1/clusters/{clusterArn}/assessments",
+        "responseCode": 200
+      },
+      "input": {
+        "shape": "CreateAssessmentRequest"
+      },
+      "output": {
+        "shape": "CreateAssessmentResponse",
+        "documentation": "\n            <p>200 response</p>\n         "
+      },
+      "errors": [
+        {
+          "shape": "BadRequestException",
+          "documentation": "\n            <p>The request isn't valid because the input is incorrect. Correct your input and then submit it again.</p>\n         "
+        },
+        {
+          "shape": "UnauthorizedException",
+          "documentation": "\n            <p>The request is not authorized. The provided credentials couldn't be validated.</p>\n         "
+        },
+        {
+          "shape": "InternalServerErrorException",
+          "documentation": "\n            <p>There was an unexpected internal server error. Retrying your request might resolve the issue.</p>\n         "
+        },
+        {
+          "shape": "ForbiddenException",
+          "documentation": "\n            <p>Access forbidden. Check your credentials and then retry your request.</p>\n         "
+        },
+        {
+          "shape": "ServiceUnavailableException",
+          "documentation": "\n            <p>503 response</p>\n         "
+        },
+        {
+          "shape": "NotFoundException",
+          "documentation": "\n            <p>The resource could not be found due to incorrect input. Correct the input, then retry the request.</p>\n         "
+        },
+        {
+          "shape": "TooManyRequestsException",
+          "documentation": "\n            <p>The cluster has reached its assessment quota. Delete a completed or failed assessment for this cluster and retry.</p>\n         "
+        },
+        {
+          "shape": "ConflictException",
+          "documentation": "\n            <p>An assessment of the same type is already in progress for this cluster.</p>\n         "
+        }
+      ],
+      "documentation": "<p>Creates a new assessment for the specified cluster. Kicks off an asynchronous scan.</p>"
+    },
     "CreateChannel": {
       "name": "CreateChannel",
       "http": {
@@ -422,6 +472,57 @@
       ],
       "documentation": "\n            <p>Creates a new MSK VPC connection.</p>\n         "
     },
+    "DeleteAssessment": {
+      "name": "DeleteAssessment",
+      "http": {
+        "method": "DELETE",
+        "requestUri": "/v1/clusters/{clusterArn}/assessments/{assessmentArn}",
+        "responseCode": 200
+      },
+      "input": {
+        "shape": "DeleteAssessmentRequest"
+      },
+      "output": {
+        "shape": "DeleteAssessmentResponse",
+        "documentation": "\n            <p>200 response</p>\n         "
+      },
+      "errors": [
+        {
+          "shape": "BadRequestException",
+          "documentation": "\n            <p>The request isn't valid because the input is incorrect. Correct your input and then submit it again.</p>\n         "
+        },
+        {
+          "shape": "UnauthorizedException",
+          "documentation": "\n            <p>The request is not authorized. The provided credentials couldn't be validated.</p>\n         "
+        },
+        {
+          "shape": "InternalServerErrorException",
+          "documentation": "\n            <p>There was an unexpected internal server error. Retrying your request might resolve the issue.</p>\n         "
+        },
+        {
+          "shape": "ForbiddenException",
+          "documentation": "\n            <p>Access forbidden. Check your credentials and then retry your request.</p>\n         "
+        },
+        {
+          "shape": "NotFoundException",
+          "documentation": "\n            <p>The resource could not be found due to incorrect input. Correct the input, then retry the request.</p>\n         "
+        },
+        {
+          "shape": "ServiceUnavailableException",
+          "documentation": "\n            <p>503 response</p>\n         "
+        },
+        {
+          "shape": "TooManyRequestsException",
+          "documentation": "\n            <p>429 response</p>\n         "
+        },
+        {
+          "shape": "ConflictException",
+          "documentation": "\n            <p>Assessment is still in progress. Wait for the assessment to complete before deleting.</p>\n         "
+        }
+      ],
+      "documentation": "<p>Deletes an assessment and its findings. Frees one slot against the cluster's assessment quota.</p>",
+      "idempotent": true
+    },
     "DeleteCluster": {
       "name": "DeleteCluster",
       "http": {
@@ -716,6 +817,53 @@
         }
       ],
       "documentation": "\n            <p>Deletes a MSK VPC connection.</p>\n         "
+    },
+    "DescribeAssessment": {
+      "name": "DescribeAssessment",
+      "http": {
+        "method": "GET",
+        "requestUri": "/v1/clusters/{clusterArn}/assessments/{assessmentArn}",
+        "responseCode": 200
+      },
+      "input": {
+        "shape": "DescribeAssessmentRequest"
+      },
+      "output": {
+        "shape": "DescribeAssessmentResponse",
+        "documentation": "\n            <p>200 response</p>\n         "
+      },
+      "errors": [
+        {
+          "shape": "BadRequestException",
+          "documentation": "\n            <p>The request isn't valid because the input is incorrect. Correct your input and then submit it again.</p>\n         "
+        },
+        {
+          "shape": "UnauthorizedException",
+          "documentation": "\n            <p>The request is not authorized. The provided credentials couldn't be validated.</p>\n         "
+        },
+        {
+          "shape": "InternalServerErrorException",
+          "documentation": "\n            <p>There was an unexpected internal server error. Retrying your request might resolve the issue.</p>\n         "
+        },
+        {
+          "shape": "ForbiddenException",
+          "documentation": "\n            <p>Access forbidden. Check your credentials and then retry your request.</p>\n         "
+        },
+        {
+          "shape": "NotFoundException",
+          "documentation": "\n            <p>The resource could not be found due to incorrect input. Correct the input, then retry the request.</p>\n         "
+        },
+        {
+          "shape": "ServiceUnavailableException",
+          "documentation": "\n            <p>503 response</p>\n         "
+        },
+        {
+          "shape": "TooManyRequestsException",
+          "documentation": "\n            <p>429 response</p>\n         "
+        }
+      ],
+      "documentation": "<p>Returns the status and summary of an assessment.</p>",
+      "readonly": true
     },
     "DescribeCluster": {
       "name": "DescribeCluster",
@@ -1130,6 +1278,53 @@
       ],
       "documentation": "\n            <p>Returns partition details of this topic on a MSK cluster.</p>\n         "
     },
+    "DescribeTopicReassignment": {
+      "name": "DescribeTopicReassignment",
+      "http": {
+        "method": "GET",
+        "requestUri": "/v1/clusters/{clusterArn}/topic-reassignments/{topicReassignmentOperationArn}",
+        "responseCode": 200
+      },
+      "input": {
+        "shape": "DescribeTopicReassignmentRequest"
+      },
+      "output": {
+        "shape": "DescribeTopicReassignmentResponse",
+        "documentation": "\n            <p>200 response</p>\n         "
+      },
+      "errors": [
+        {
+          "shape": "BadRequestException",
+          "documentation": "\n            <p>The request isn't valid because the input is incorrect. Correct your input and then submit it again.</p>\n         "
+        },
+        {
+          "shape": "InternalServerErrorException",
+          "documentation": "\n            <p>There was an unexpected internal server error. Retrying your request might resolve the issue.</p>\n         "
+        },
+        {
+          "shape": "UnauthorizedException",
+          "documentation": "\n            <p>The request is not authorized. The provided credentials couldn't be validated.</p>\n         "
+        },
+        {
+          "shape": "ForbiddenException",
+          "documentation": "\n            <p>Access forbidden. Check your credentials and then retry your request.</p>\n         "
+        },
+        {
+          "shape": "ServiceUnavailableException",
+          "documentation": "\n            <p>503 response</p>\n         "
+        },
+        {
+          "shape": "NotFoundException",
+          "documentation": "\n            <p>The resource could not be found due to incorrect input. Correct the input, then retry the request.</p>\n         "
+        },
+        {
+          "shape": "TooManyRequestsException",
+          "documentation": "\n            <p>429 response</p>\n         "
+        }
+      ],
+      "documentation": "<p>Returns the status and progress of a topic reassignment operation.</p>",
+      "readonly": true
+    },
     "DescribeVpcConnection": {
       "name": "DescribeVpcConnection",
       "http": {
@@ -1335,6 +1530,104 @@
         }
       ],
       "documentation": "\n            <p>Get the MSK cluster policy specified by the Amazon Resource Name (ARN) in the request.</p>\n         "
+    },
+    "ListAssessmentFindings": {
+      "name": "ListAssessmentFindings",
+      "http": {
+        "method": "GET",
+        "requestUri": "/v1/clusters/{clusterArn}/assessments/{assessmentArn}/findings",
+        "responseCode": 200
+      },
+      "input": {
+        "shape": "ListAssessmentFindingsRequest"
+      },
+      "output": {
+        "shape": "ListAssessmentFindingsResponse",
+        "documentation": "\n            <p>200 response</p>\n         "
+      },
+      "errors": [
+        {
+          "shape": "BadRequestException",
+          "documentation": "\n            <p>The request isn't valid because the input is incorrect. Correct your input and then submit it again.</p>\n         "
+        },
+        {
+          "shape": "InternalServerErrorException",
+          "documentation": "\n            <p>There was an unexpected internal server error. Retrying your request might resolve the issue.</p>\n         "
+        },
+        {
+          "shape": "UnauthorizedException",
+          "documentation": "\n            <p>The request is not authorized. The provided credentials couldn't be validated.</p>\n         "
+        },
+        {
+          "shape": "ForbiddenException",
+          "documentation": "\n            <p>Access forbidden. Check your credentials and then retry your request.</p>\n         "
+        },
+        {
+          "shape": "ServiceUnavailableException",
+          "documentation": "\n            <p>503 response</p>\n         "
+        },
+        {
+          "shape": "NotFoundException",
+          "documentation": "\n            <p>The resource could not be found due to incorrect input. Correct the input, then retry the request.</p>\n         "
+        },
+        {
+          "shape": "TooManyRequestsException",
+          "documentation": "\n            <p>429 response</p>\n         "
+        },
+        {
+          "shape": "ConflictException",
+          "documentation": "\n            <p>Assessment is not yet complete. Findings are only available when status is COMPLETE.</p>\n         "
+        }
+      ],
+      "documentation": "<p>Returns the findings for a completed assessment. Paginated.</p>",
+      "readonly": true
+    },
+    "ListAssessments": {
+      "name": "ListAssessments",
+      "http": {
+        "method": "GET",
+        "requestUri": "/v1/clusters/{clusterArn}/assessments",
+        "responseCode": 200
+      },
+      "input": {
+        "shape": "ListAssessmentsRequest"
+      },
+      "output": {
+        "shape": "ListAssessmentsResponse",
+        "documentation": "\n            <p>200 response</p>\n         "
+      },
+      "errors": [
+        {
+          "shape": "BadRequestException",
+          "documentation": "\n            <p>The request isn't valid because the input is incorrect. Correct your input and then submit it again.</p>\n         "
+        },
+        {
+          "shape": "InternalServerErrorException",
+          "documentation": "\n            <p>There was an unexpected internal server error. Retrying your request might resolve the issue.</p>\n         "
+        },
+        {
+          "shape": "UnauthorizedException",
+          "documentation": "\n            <p>The request is not authorized. The provided credentials couldn't be validated.</p>\n         "
+        },
+        {
+          "shape": "ForbiddenException",
+          "documentation": "\n            <p>Access forbidden. Check your credentials and then retry your request.</p>\n         "
+        },
+        {
+          "shape": "NotFoundException",
+          "documentation": "\n            <p>The resource could not be found due to incorrect input. Correct the input, then retry the request.</p>\n         "
+        },
+        {
+          "shape": "ServiceUnavailableException",
+          "documentation": "\n            <p>503 response</p>\n         "
+        },
+        {
+          "shape": "TooManyRequestsException",
+          "documentation": "\n            <p>429 response</p>\n         "
+        }
+      ],
+      "documentation": "<p>Returns a list of assessments for the specified cluster. Optionally filterable by assessment type.</p>",
+      "readonly": true
     },
     "ListClusterOperations": {
       "name": "ListClusterOperations",
@@ -1838,6 +2131,53 @@
       ],
       "documentation": "\n            <p>Returns a list of all the VPC connections in this Region.</p>\n         "
     },
+    "ListTopicReassignments": {
+      "name": "ListTopicReassignments",
+      "http": {
+        "method": "GET",
+        "requestUri": "/v1/clusters/{clusterArn}/topic-reassignments",
+        "responseCode": 200
+      },
+      "input": {
+        "shape": "ListTopicReassignmentsRequest"
+      },
+      "output": {
+        "shape": "ListTopicReassignmentsResponse",
+        "documentation": "\n            <p>200 response</p>\n         "
+      },
+      "errors": [
+        {
+          "shape": "BadRequestException",
+          "documentation": "\n            <p>The request isn't valid because the input is incorrect. Correct your input and then submit it again.</p>\n         "
+        },
+        {
+          "shape": "UnauthorizedException",
+          "documentation": "\n            <p>The request is not authorized. The provided credentials couldn't be validated.</p>\n         "
+        },
+        {
+          "shape": "InternalServerErrorException",
+          "documentation": "\n            <p>There was an unexpected internal server error. Retrying your request might resolve the issue.</p>\n         "
+        },
+        {
+          "shape": "ForbiddenException",
+          "documentation": "\n            <p>Access forbidden. Check your credentials and then retry your request.</p>\n         "
+        },
+        {
+          "shape": "NotFoundException",
+          "documentation": "\n            <p>The resource could not be found due to incorrect input. Correct the input, then retry the request.</p>\n         "
+        },
+        {
+          "shape": "ServiceUnavailableException",
+          "documentation": "\n            <p>503 response</p>\n         "
+        },
+        {
+          "shape": "TooManyRequestsException",
+          "documentation": "\n            <p>429 response</p>\n         "
+        }
+      ],
+      "documentation": "<p>Lists topic reassignment operations for a cluster.</p>",
+      "readonly": true
+    },
     "ListTopics": {
       "name": "ListTopics",
       "http": {
@@ -2027,6 +2367,102 @@
         }
       ],
       "documentation": "Reboots brokers."
+    },
+    "StartTopicReassignment": {
+      "name": "StartTopicReassignment",
+      "http": {
+        "method": "POST",
+        "requestUri": "/v1/clusters/{clusterArn}/topic-reassignments",
+        "responseCode": 200
+      },
+      "input": {
+        "shape": "StartTopicReassignmentRequest"
+      },
+      "output": {
+        "shape": "StartTopicReassignmentResponse",
+        "documentation": "\n            <p>200 response</p>\n         "
+      },
+      "errors": [
+        {
+          "shape": "BadRequestException",
+          "documentation": "\n            <p>The request isn't valid because the input is incorrect. Correct your input and then submit it again.</p>\n         "
+        },
+        {
+          "shape": "UnauthorizedException",
+          "documentation": "\n            <p>The request is not authorized. The provided credentials couldn't be validated.</p>\n         "
+        },
+        {
+          "shape": "InternalServerErrorException",
+          "documentation": "\n            <p>There was an unexpected internal server error. Retrying your request might resolve the issue.</p>\n         "
+        },
+        {
+          "shape": "ForbiddenException",
+          "documentation": "\n            <p>Access forbidden. Check your credentials and then retry your request.</p>\n         "
+        },
+        {
+          "shape": "ServiceUnavailableException",
+          "documentation": "\n            <p>503 response</p>\n         "
+        },
+        {
+          "shape": "NotFoundException",
+          "documentation": "\n            <p>The resource could not be found due to incorrect input. Correct the input, then retry the request.</p>\n         "
+        },
+        {
+          "shape": "TooManyRequestsException",
+          "documentation": "\n            <p>429 response</p>\n         "
+        },
+        {
+          "shape": "ConflictException",
+          "documentation": "\n            <p>A reassignment is already active for this cluster.</p>\n         "
+        }
+      ],
+      "documentation": "<p>Initiates topic partition reassignment between broker types in a mixed-mode cluster.</p>"
+    },
+    "StopTopicReassignment": {
+      "name": "StopTopicReassignment",
+      "http": {
+        "method": "POST",
+        "requestUri": "/v1/clusters/{clusterArn}/topic-reassignments/{topicReassignmentOperationArn}/stop",
+        "responseCode": 200
+      },
+      "input": {
+        "shape": "StopTopicReassignmentRequest"
+      },
+      "output": {
+        "shape": "StopTopicReassignmentResponse",
+        "documentation": "\n            <p>200 response</p>\n         "
+      },
+      "errors": [
+        {
+          "shape": "BadRequestException",
+          "documentation": "\n            <p>The request isn't valid because the input is incorrect. Correct your input and then submit it again.</p>\n         "
+        },
+        {
+          "shape": "InternalServerErrorException",
+          "documentation": "\n            <p>There was an unexpected internal server error. Retrying your request might resolve the issue.</p>\n         "
+        },
+        {
+          "shape": "UnauthorizedException",
+          "documentation": "\n            <p>The request is not authorized. The provided credentials couldn't be validated.</p>\n         "
+        },
+        {
+          "shape": "ForbiddenException",
+          "documentation": "\n            <p>Access forbidden. Check your credentials and then retry your request.</p>\n         "
+        },
+        {
+          "shape": "NotFoundException",
+          "documentation": "\n            <p>The resource could not be found due to incorrect input. Correct the input, then retry the request.</p>\n         "
+        },
+        {
+          "shape": "ServiceUnavailableException",
+          "documentation": "\n            <p>503 response</p>\n         "
+        },
+        {
+          "shape": "TooManyRequestsException",
+          "documentation": "\n            <p>429 response</p>\n         "
+        }
+      ],
+      "documentation": "<p>Stops an active topic reassignment operation.</p>"
     },
     "TagResource": {
       "name": "TagResource",
@@ -2744,6 +3180,143 @@
         "BootstrapBrokerString"
       ]
     },
+    "AssessmentFinding": {
+      "type": "structure",
+      "members": {
+        "Category": {
+          "shape": "FindingCategory",
+          "locationName": "category",
+          "documentation": "<p>The category of this finding.</p>"
+        },
+        "FindingId": {
+          "shape": "__string",
+          "locationName": "findingId",
+          "documentation": "<p>A deterministic content-based identifier for this finding. Generated from hash(category + resource + check_type). The same resource with the same problem always produces the same findingId across assessment runs.</p>"
+        },
+        "Message": {
+          "shape": "__string",
+          "locationName": "message",
+          "documentation": "<p>Human-readable description of what is wrong, why it matters, and what to do.</p>"
+        },
+        "Remediation": {
+          "shape": "FindingRemediation",
+          "locationName": "remediation",
+          "documentation": "<p>Guidance for resolving this finding. Absent when no specific remediation applies.</p>"
+        },
+        "Resource": {
+          "shape": "__string",
+          "locationName": "resource",
+          "documentation": "<p>The specific resource affected (e.g., topic name). Absent for cluster-level findings.</p>"
+        },
+        "Severity": {
+          "shape": "FindingSeverity",
+          "locationName": "severity",
+          "documentation": "<p>The severity of this finding.</p>"
+        }
+      },
+      "required": [
+        "Category",
+        "Message",
+        "Severity",
+        "FindingId"
+      ],
+      "documentation": "<p>A single finding from an assessment, describing a specific issue or observation.</p>"
+    },
+    "AssessmentInfo": {
+      "type": "structure",
+      "members": {
+        "AssessmentArn": {
+          "shape": "__stringMax2048",
+          "locationName": "assessmentArn",
+          "documentation": "<p>The Amazon Resource Name (ARN) of the assessment.</p>"
+        },
+        "AssessmentType": {
+          "shape": "AssessmentType",
+          "locationName": "assessmentType",
+          "documentation": "<p>The type of assessment.</p>"
+        },
+        "ClusterArn": {
+          "shape": "__stringMax2048",
+          "locationName": "clusterArn",
+          "documentation": "<p>The Amazon Resource Name (ARN) of the cluster that was assessed.</p>"
+        },
+        "CreationTime": {
+          "shape": "__timestampIso8601",
+          "locationName": "creationTime",
+          "documentation": "<p>The time when the assessment was created.</p>"
+        },
+        "Status": {
+          "shape": "AssessmentStatus",
+          "locationName": "status",
+          "documentation": "<p>The current status of the assessment.</p>"
+        },
+        "Tags": {
+          "shape": "__mapOf__string",
+          "locationName": "tags",
+          "documentation": "<p>The tags attached to the assessment.</p>"
+        }
+      },
+      "documentation": "<p>Summary information about an assessment, returned by ListAssessments.</p>"
+    },
+    "AssessmentParameters": {
+      "type": "structure",
+      "members": {
+        "TargetInstanceType": {
+          "shape": "__stringMax256",
+          "locationName": "targetInstanceType",
+          "documentation": "<p>The target instance type to assess against (for example, express.m7g.large). Optional: when omitted, the assessment reports a recommended instance type as a CAPACITY finding. Supply it to assess readiness for a specific instance type.</p>"
+        }
+      },
+      "documentation": "<p>Type-specific parameters for the assessment. All fields are optional.</p>"
+    },
+    "AssessmentStatus": {
+      "type": "string",
+      "enum": [
+        "IN_PROGRESS",
+        "COMPLETE",
+        "FAILED",
+        "DELETING"
+      ],
+      "documentation": "<p>The lifecycle status of an assessment.</p>"
+    },
+    "AssessmentSummary": {
+      "type": "structure",
+      "members": {
+        "ByCategory": {
+          "shape": "__mapOf__integer",
+          "locationName": "byCategory",
+          "documentation": "<p>Count of findings grouped by category.</p>"
+        },
+        "BySeverity": {
+          "shape": "__mapOf__integer",
+          "locationName": "bySeverity",
+          "documentation": "<p>Count of findings grouped by severity.</p>"
+        },
+        "FindingsCapped": {
+          "shape": "__boolean",
+          "locationName": "findingsCapped",
+          "documentation": "<p>True when the assessment detected more findings than it stores. Resolve the reported findings and re-run the assessment to surface the remaining ones.</p>"
+        },
+        "HasBlockingFindings": {
+          "shape": "__boolean",
+          "locationName": "hasBlockingFindings",
+          "documentation": "<p>True when the assessment detected at least one ERROR-severity finding. ERROR findings block the migration until resolved.</p>"
+        },
+        "TotalFindings": {
+          "shape": "__integer",
+          "locationName": "totalFindings",
+          "documentation": "<p>The total number of findings detected by the assessment, including any findings beyond the stored-findings cap.</p>"
+        }
+      },
+      "documentation": "<p>Summary of assessment findings broken down by category and severity.</p>"
+    },
+    "AssessmentType": {
+      "type": "string",
+      "enum": [
+        "UPDATE_BROKER_TYPE"
+      ],
+      "documentation": "<p>The type of assessment to perform.</p>"
+    },
     "AuthorizerLogs": {
       "type": "structure",
       "members": {
@@ -2885,6 +3458,22 @@
         }
       }
     },
+    "BrokerTypeUpgradeInfo": {
+      "type": "structure",
+      "members": {
+        "TopicReassignmentMode": {
+          "shape": "TopicReassignmentMode",
+          "locationName": "topicReassignmentMode",
+          "documentation": "<p>How topics are reassigned to the Express brokers.</p>"
+        },
+        "TopicReassignmentOperationArn": {
+          "shape": "__stringMax2048",
+          "locationName": "topicReassignmentOperationArn",
+          "documentation": "<p>The Amazon Resource Name (ARN) of the topic reassignment operation that Amazon MSK started for this upgrade. Present once that reassignment has started. Under MANUAL you start reassignments yourself, so Amazon MSK starts none.</p>"
+        }
+      },
+      "documentation": "<p>Information about the topic reassignment of an UpdateBrokerType operation that upgrades a cluster from Standard brokers to Express brokers. Present only on the operation that initiated the upgrade.</p>"
+    },
     "Rebalancing": {
       "type": "structure",
       "documentation": "\n            <p>Specifies whether or not intelligent rebalancing is turned on for a newly created MSK Provisioned cluster with Express brokers. Intelligent rebalancing performs automatic partition balancing operations when you scale your clusters up or down. By default, intelligent rebalancing is ACTIVE for all new Express-based clusters.</p>\n         ",
@@ -2918,7 +3507,7 @@
           "documentation": "\n            <p>The list of subnets to connect to in the client virtual private cloud (VPC). AWS creates elastic network interfaces inside these subnets. Client applications use elastic network interfaces to produce and consume data. Client subnets can't occupy the Availability Zone with ID use use1-az3.</p>\n         "
         },
         "InstanceType": {
-          "shape": "__stringMin5Max32",
+          "shape": "__stringMin5Max64",
           "locationName": "instanceType",
           "documentation": "\n            <p>The type of Amazon EC2 instances to use for Apache Kafka brokers. The following instance types are allowed: kafka.m5.large, kafka.m5.xlarge, kafka.m5.2xlarge,\nkafka.m5.4xlarge, kafka.m5.12xlarge, and kafka.m5.24xlarge.</p>\n         "
         },
@@ -2962,6 +3551,11 @@
           "locationName": "brokerId",
           "documentation": "\n            <p>The ID of the broker.</p>\n         "
         },
+        "BrokerNodeType": {
+          "shape": "BrokerNodeType",
+          "locationName": "brokerNodeType",
+          "documentation": "\n            <p>Whether this broker is a Standard broker or an Express broker. While an UpdateBrokerType operation upgrades a cluster in place from Standard brokers to Express brokers, the cluster contains brokers of both types and this field tells them apart.</p>\n         "
+        },
         "ClientSubnet": {
           "shape": "__string",
           "locationName": "clientSubnet",
@@ -2984,6 +3578,14 @@
         }
       },
       "documentation": "\n            <p>BrokerNodeInfo</p>\n         "
+    },
+    "BrokerNodeType": {
+      "type": "string",
+      "documentation": "<p>The broker type of an individual broker node. STANDARD: a Standard broker. EXPRESS: an Express broker. A cluster contains brokers of both types while an UpdateBrokerType operation upgrades it in place from Standard brokers to Express brokers.</p>",
+      "enum": [
+        "STANDARD",
+        "EXPRESS"
+      ]
     },
     "BrokerSoftwareInfo": {
       "type": "structure",
@@ -3348,6 +3950,11 @@
     "ClusterOperationInfo": {
       "type": "structure",
       "members": {
+        "BrokerTypeUpgradeInfo": {
+          "shape": "BrokerTypeUpgradeInfo",
+          "locationName": "brokerTypeUpgradeInfo",
+          "documentation": "\n            <p>Topic reassignment details of the UpdateBrokerType operation that started an upgrade from Standard brokers to Express brokers.</p>\n         "
+        },
         "ClientRequestId": {
           "shape": "__string",
           "locationName": "clientRequestId",
@@ -3983,6 +4590,68 @@
         "DetectAndCopyNewConsumerGroups"
       ]
     },
+    "CreateAssessmentRequest": {
+      "type": "structure",
+      "members": {
+        "AssessmentParameters": {
+          "shape": "AssessmentParameters",
+          "locationName": "assessmentParameters",
+          "documentation": "<p>Optional type-specific parameters for the assessment.</p>"
+        },
+        "AssessmentType": {
+          "shape": "AssessmentType",
+          "locationName": "assessmentType",
+          "documentation": "<p>The type of assessment to perform.</p>"
+        },
+        "ClusterArn": {
+          "shape": "__string",
+          "location": "uri",
+          "locationName": "clusterArn",
+          "documentation": "<p>The Amazon Resource Name (ARN) of the cluster to assess.</p>"
+        },
+        "Tags": {
+          "shape": "__mapOf__string",
+          "locationName": "tags",
+          "documentation": "<p>The tags to attach to the assessment.</p>"
+        }
+      },
+      "required": [
+        "ClusterArn",
+        "AssessmentType"
+      ],
+      "documentation": "<p>Creates a new assessment for a cluster. Kicks off an asynchronous scan and returns immediately with an assessment ARN and status.</p>"
+    },
+    "CreateAssessmentResponse": {
+      "type": "structure",
+      "members": {
+        "AssessmentArn": {
+          "shape": "__stringMax2048",
+          "locationName": "assessmentArn",
+          "documentation": "<p>The Amazon Resource Name (ARN) of the assessment.</p>"
+        },
+        "AssessmentType": {
+          "shape": "AssessmentType",
+          "locationName": "assessmentType",
+          "documentation": "<p>The type of assessment.</p>"
+        },
+        "ClusterArn": {
+          "shape": "__stringMax2048",
+          "locationName": "clusterArn",
+          "documentation": "<p>The Amazon Resource Name (ARN) of the cluster being assessed.</p>"
+        },
+        "CreationTime": {
+          "shape": "__timestampIso8601",
+          "locationName": "creationTime",
+          "documentation": "<p>The time when the assessment was created.</p>"
+        },
+        "Status": {
+          "shape": "AssessmentStatus",
+          "locationName": "status",
+          "documentation": "<p>The current status of the assessment.</p>"
+        }
+      },
+      "documentation": "<p>Returns information about the created assessment.</p>"
+    },
     "CreateClusterV2Request": {
       "type": "structure",
       "members": {
@@ -4472,6 +5141,43 @@
         }
       }
     },
+    "DeleteAssessmentRequest": {
+      "type": "structure",
+      "members": {
+        "AssessmentArn": {
+          "shape": "__string",
+          "location": "uri",
+          "locationName": "assessmentArn",
+          "documentation": "<p>The Amazon Resource Name (ARN) of the assessment to delete.</p>"
+        },
+        "ClusterArn": {
+          "shape": "__string",
+          "location": "uri",
+          "locationName": "clusterArn",
+          "documentation": "<p>The Amazon Resource Name (ARN) of the cluster.</p>"
+        }
+      },
+      "required": [
+        "ClusterArn",
+        "AssessmentArn"
+      ]
+    },
+    "DeleteAssessmentResponse": {
+      "type": "structure",
+      "members": {
+        "AssessmentArn": {
+          "shape": "__stringMax2048",
+          "locationName": "assessmentArn",
+          "documentation": "<p>The Amazon Resource Name (ARN) of the assessment being deleted.</p>"
+        },
+        "Status": {
+          "shape": "AssessmentStatus",
+          "locationName": "status",
+          "documentation": "<p>The current status of the assessment. Will be DELETING.</p>"
+        }
+      },
+      "documentation": "<p>Returns the result of deleting an assessment.</p>"
+    },
     "DeleteTopicRequest": {
       "type": "structure",
       "members": {
@@ -4623,6 +5329,11 @@
     "ClusterOperationV2Provisioned": {
       "type": "structure",
       "members": {
+        "BrokerTypeUpgradeInfo": {
+          "shape": "BrokerTypeUpgradeInfo",
+          "locationName": "brokerTypeUpgradeInfo",
+          "documentation": "\n            <p>Topic reassignment details of the UpdateBrokerType operation that started an upgrade from Standard brokers to Express brokers.</p>"
+        },
         "OperationSteps": {
           "shape": "__listOfClusterOperationStep",
           "locationName": "operationSteps",
@@ -4938,6 +5649,83 @@
         }
       }
     },
+    "DescribeAssessmentRequest": {
+      "type": "structure",
+      "members": {
+        "AssessmentArn": {
+          "shape": "__string",
+          "location": "uri",
+          "locationName": "assessmentArn",
+          "documentation": "<p>The Amazon Resource Name (ARN) of the assessment.</p>"
+        },
+        "ClusterArn": {
+          "shape": "__string",
+          "location": "uri",
+          "locationName": "clusterArn",
+          "documentation": "<p>The Amazon Resource Name (ARN) of the cluster.</p>"
+        }
+      },
+      "required": [
+        "ClusterArn",
+        "AssessmentArn"
+      ]
+    },
+    "DescribeAssessmentResponse": {
+      "type": "structure",
+      "members": {
+        "AssessmentArn": {
+          "shape": "__stringMax2048",
+          "locationName": "assessmentArn",
+          "documentation": "<p>The Amazon Resource Name (ARN) of the assessment.</p>"
+        },
+        "AssessmentParameters": {
+          "shape": "AssessmentParameters",
+          "locationName": "assessmentParameters",
+          "documentation": "<p>The parameters that were provided when creating the assessment.</p>"
+        },
+        "AssessmentType": {
+          "shape": "AssessmentType",
+          "locationName": "assessmentType",
+          "documentation": "<p>The type of assessment.</p>"
+        },
+        "ClusterArn": {
+          "shape": "__stringMax2048",
+          "locationName": "clusterArn",
+          "documentation": "<p>The Amazon Resource Name (ARN) of the cluster that was assessed.</p>"
+        },
+        "CompletionTime": {
+          "shape": "__timestampIso8601",
+          "locationName": "completionTime",
+          "documentation": "<p>The time when the assessment completed. Present only when status is COMPLETE or FAILED.</p>"
+        },
+        "CreationTime": {
+          "shape": "__timestampIso8601",
+          "locationName": "creationTime",
+          "documentation": "<p>The time when the assessment was created.</p>"
+        },
+        "Status": {
+          "shape": "AssessmentStatus",
+          "locationName": "status",
+          "documentation": "<p>The current status of the assessment.</p>"
+        },
+        "StatusMessage": {
+          "shape": "__string",
+          "locationName": "statusMessage",
+          "documentation": "<p>Additional information about the current status. Present when status is FAILED.</p>"
+        },
+        "Summary": {
+          "shape": "AssessmentSummary",
+          "locationName": "summary",
+          "documentation": "<p>Summary of findings by category and severity. Present only when status is COMPLETE.</p>"
+        },
+        "Tags": {
+          "shape": "__mapOf__string",
+          "locationName": "tags",
+          "documentation": "<p>The tags attached to the assessment.</p>"
+        }
+      },
+      "documentation": "<p>Returns the status and summary of an assessment.</p>"
+    },
     "DescribeChannelRequest": {
       "type": "structure",
       "members": {
@@ -5239,6 +6027,98 @@
         }
       }
     },
+    "DescribeTopicReassignmentRequest": {
+      "type": "structure",
+      "members": {
+        "ClusterArn": {
+          "shape": "__string",
+          "location": "uri",
+          "locationName": "clusterArn",
+          "documentation": "<p>The Amazon Resource Name (ARN) of the cluster.</p>"
+        },
+        "TopicReassignmentOperationArn": {
+          "shape": "__string",
+          "location": "uri",
+          "locationName": "topicReassignmentOperationArn",
+          "documentation": "<p>The Amazon Resource Name (ARN) of the topic reassignment operation.</p>"
+        }
+      },
+      "required": [
+        "TopicReassignmentOperationArn",
+        "ClusterArn"
+      ]
+    },
+    "DescribeTopicReassignmentResponse": {
+      "type": "structure",
+      "members": {
+        "ClusterArn": {
+          "shape": "__stringMax2048",
+          "locationName": "clusterArn",
+          "documentation": "<p>The Amazon Resource Name (ARN) of the cluster.</p>"
+        },
+        "CompletedTopics": {
+          "shape": "__integer",
+          "locationName": "completedTopics",
+          "documentation": "<p>Number of topics fully migrated to the target broker type.</p>"
+        },
+        "CreationTime": {
+          "shape": "__timestampIso8601",
+          "locationName": "creationTime",
+          "documentation": "<p>When the operation was created.</p>"
+        },
+        "ErrorInfo": {
+          "shape": "ErrorInfo",
+          "locationName": "errorInfo",
+          "documentation": "<p>Error details. Present only when status is FAILED.</p>"
+        },
+        "LastUpdateTime": {
+          "shape": "__timestampIso8601",
+          "locationName": "lastUpdateTime",
+          "documentation": "<p>Last time the status or progress counters were updated.</p>"
+        },
+        "MigratedPartitions": {
+          "shape": "__integer",
+          "locationName": "migratedPartitions",
+          "documentation": "<p>Number of partitions confirmed on the target broker type.</p>"
+        },
+        "Status": {
+          "shape": "TopicReassignmentStatus",
+          "locationName": "status",
+          "documentation": "<p>The current status of the reassignment operation.</p>"
+        },
+        "TargetInstanceType": {
+          "shape": "__string",
+          "locationName": "targetInstanceType",
+          "documentation": "<p>The target broker instance type for this reassignment.</p>"
+        },
+        "TopicReassignmentOperationArn": {
+          "shape": "__stringMax2048",
+          "locationName": "topicReassignmentOperationArn",
+          "documentation": "<p>The Amazon Resource Name (ARN) of the topic reassignment operation.</p>"
+        },
+        "TopicsToExclude": {
+          "shape": "__listOf__string",
+          "locationName": "topicsToExclude",
+          "documentation": "<p>The original exclude patterns provided in the request.</p>"
+        },
+        "TopicsToInclude": {
+          "shape": "__listOf__string",
+          "locationName": "topicsToInclude",
+          "documentation": "<p>The original include patterns provided in the request.</p>"
+        },
+        "TotalPartitions": {
+          "shape": "__integer",
+          "locationName": "totalPartitions",
+          "documentation": "<p>Total number of partitions across all matched topics.</p>"
+        },
+        "TotalTopics": {
+          "shape": "__integer",
+          "locationName": "totalTopics",
+          "documentation": "<p>Total number of topics matching the selector at resolution time.</p>"
+        }
+      },
+      "documentation": "<p>Returns the status and progress of a topic reassignment operation.</p>"
+    },
     "DescribeTopicRequest": {
       "type": "structure",
       "members": {
@@ -5325,6 +6205,11 @@
           "shape": "TopicState",
           "locationName": "status",
           "documentation": "\n            <p>The status of the topic.</p>\n         "
+        },
+        "ReplicaIds": {
+          "shape": "__listOf__integer",
+          "locationName": "replicaIds",
+          "documentation": "\n            <p>The broker IDs hosting replicas of this topic's partitions.</p>\n         "
         }
       }
     },
@@ -5696,6 +6581,42 @@
         }
       },
       "documentation": "\n            <p>Returns information about an error state of the cluster.</p>\n         "
+    },
+    "FindingCategory": {
+      "type": "string",
+      "enum": [
+        "INFRASTRUCTURE",
+        "BROKER_CONFIGURATION",
+        "TOPIC_CONFIGURATION",
+        "CAPACITY",
+        "HEALTH"
+      ],
+      "documentation": "<p>The category of an assessment finding.</p>"
+    },
+    "FindingRemediation": {
+      "type": "structure",
+      "members": {
+        "Action": {
+          "shape": "__string",
+          "locationName": "action",
+          "documentation": "<p>The recommended action to resolve this finding.</p>"
+        },
+        "DocumentationUrl": {
+          "shape": "__stringMax2048",
+          "locationName": "documentationUrl",
+          "documentation": "<p>A link to documentation with more detail about this finding and how to resolve it.</p>"
+        }
+      },
+      "documentation": "<p>Guidance for resolving a finding.</p>"
+    },
+    "FindingSeverity": {
+      "type": "string",
+      "enum": [
+        "ERROR",
+        "WARNING",
+        "INFO"
+      ],
+      "documentation": "<p>The severity level of an assessment finding.</p>"
     },
     "Firehose": {
       "type": "structure",
@@ -6481,6 +7402,115 @@
         "DEPRECATED"
       ]
     },
+    "ListAssessmentFindingsRequest": {
+      "type": "structure",
+      "members": {
+        "AssessmentArn": {
+          "shape": "__string",
+          "location": "uri",
+          "locationName": "assessmentArn",
+          "documentation": "<p>The Amazon Resource Name (ARN) of the assessment.</p>"
+        },
+        "Category": {
+          "shape": "__string",
+          "location": "querystring",
+          "locationName": "category",
+          "documentation": "<p>Optional filter. Only return findings matching this category.</p>"
+        },
+        "ClusterArn": {
+          "shape": "__string",
+          "location": "uri",
+          "locationName": "clusterArn",
+          "documentation": "<p>The Amazon Resource Name (ARN) of the cluster.</p>"
+        },
+        "MaxResults": {
+          "shape": "__integerMin1Max500",
+          "location": "querystring",
+          "locationName": "maxResults",
+          "documentation": "<p>Maximum number of findings to return. Default 100, maximum 500.</p>"
+        },
+        "NextToken": {
+          "shape": "__string",
+          "location": "querystring",
+          "locationName": "nextToken",
+          "documentation": "<p>If the response is truncated, it returns a nextToken. Send this in the subsequent request to get the remaining results.</p>"
+        },
+        "Severity": {
+          "shape": "__string",
+          "location": "querystring",
+          "locationName": "severity",
+          "documentation": "<p>Optional filter. Only return findings matching this severity.</p>"
+        }
+      },
+      "required": [
+        "ClusterArn",
+        "AssessmentArn"
+      ]
+    },
+    "ListAssessmentFindingsResponse": {
+      "type": "structure",
+      "members": {
+        "Findings": {
+          "shape": "__listOfAssessmentFinding",
+          "locationName": "findings",
+          "documentation": "<p>A list of findings from the assessment.</p>"
+        },
+        "NextToken": {
+          "shape": "__string",
+          "locationName": "nextToken",
+          "documentation": "<p>If the response is truncated, it returns a nextToken. Send this in the subsequent request to get the remaining results.</p>"
+        }
+      },
+      "documentation": "<p>Returns the findings for a completed assessment.</p>"
+    },
+    "ListAssessmentsRequest": {
+      "type": "structure",
+      "members": {
+        "AssessmentType": {
+          "shape": "__string",
+          "location": "querystring",
+          "locationName": "assessmentType",
+          "documentation": "<p>Optional filter. The type of assessment to filter by.</p>"
+        },
+        "ClusterArn": {
+          "shape": "__string",
+          "location": "uri",
+          "locationName": "clusterArn",
+          "documentation": "<p>The Amazon Resource Name (ARN) of the cluster to list assessments for.</p>"
+        },
+        "MaxResults": {
+          "shape": "MaxResults",
+          "location": "querystring",
+          "locationName": "maxResults",
+          "documentation": "<p>Maximum number of assessments to return. Default 25, maximum 100.</p>"
+        },
+        "NextToken": {
+          "shape": "__string",
+          "location": "querystring",
+          "locationName": "nextToken",
+          "documentation": "<p>If the response is truncated, it returns a nextToken. Send this in the subsequent request to get the remaining results.</p>"
+        }
+      },
+      "required": [
+        "ClusterArn"
+      ]
+    },
+    "ListAssessmentsResponse": {
+      "type": "structure",
+      "members": {
+        "Assessments": {
+          "shape": "__listOfAssessmentInfo",
+          "locationName": "assessments",
+          "documentation": "<p>A list of assessment summaries.</p>"
+        },
+        "NextToken": {
+          "shape": "__string",
+          "locationName": "nextToken",
+          "documentation": "<p>If the response is truncated, it returns a nextToken. Send this in the subsequent request to get the remaining results.</p>"
+        }
+      },
+      "documentation": "<p>Returns a list of assessments.</p>"
+    },
     "ListClusterOperationsRequest": {
       "type": "structure",
       "members": {
@@ -6981,6 +8011,54 @@
         }
       }
     },
+    "ListTopicReassignmentsRequest": {
+      "type": "structure",
+      "members": {
+        "ClusterArn": {
+          "shape": "__string",
+          "location": "uri",
+          "locationName": "clusterArn",
+          "documentation": "<p>The Amazon Resource Name (ARN) of the cluster.</p>"
+        },
+        "MaxResults": {
+          "shape": "MaxResults",
+          "location": "querystring",
+          "locationName": "maxResults",
+          "documentation": "<p>Maximum number of reassignment operations to return. Default 50, maximum 100.</p>"
+        },
+        "NextToken": {
+          "shape": "__string",
+          "location": "querystring",
+          "locationName": "nextToken",
+          "documentation": "<p>If the response is truncated, it returns a nextToken. Send this in the subsequent request to get the remaining results.</p>"
+        },
+        "StatusFilter": {
+          "shape": "__string",
+          "location": "querystring",
+          "locationName": "statusFilter",
+          "documentation": "<p>Optional filter. Only return reassignments matching these statuses.</p>"
+        }
+      },
+      "required": [
+        "ClusterArn"
+      ]
+    },
+    "ListTopicReassignmentsResponse": {
+      "type": "structure",
+      "members": {
+        "NextToken": {
+          "shape": "__string",
+          "locationName": "nextToken",
+          "documentation": "<p>If the response is truncated, it returns a nextToken. Send this in the subsequent request to get the remaining results.</p>"
+        },
+        "Reassignments": {
+          "shape": "__listOfTopicReassignmentInfo",
+          "locationName": "reassignments",
+          "documentation": "<p>A list of topic reassignment operation summaries.</p>"
+        }
+      },
+      "documentation": "<p>Returns a list of topic reassignment operations for a cluster.</p>"
+    },
     "ListTopicsRequest": {
       "type": "structure",
       "members": {
@@ -7265,7 +8343,7 @@
           "documentation": "\n            <p>You can configure your MSK cluster to send broker logs to different destination types. This is a container for the configuration details related to broker logs.</p>\n            "
         },
         "InstanceType": {
-          "shape": "__stringMin5Max32",
+          "shape": "__string",
           "locationName": "instanceType",
           "documentation": "\n            <p>Information about the Amazon MSK broker type.</p>\n            "
         },
@@ -8015,6 +9093,64 @@
         "httpStatusCode": 503
       }
     },
+    "StartTopicReassignmentRequest": {
+      "type": "structure",
+      "members": {
+        "ClientToken": {
+          "shape": "__stringMin1Max64",
+          "locationName": "clientToken",
+          "documentation": "<p>A unique, case-sensitive identifier that you provide to ensure the idempotency of the request. If you retry a request with the same client token within 24 hours, the API returns the original response without creating a duplicate operation.</p>"
+        },
+        "ClusterArn": {
+          "shape": "__string",
+          "location": "uri",
+          "locationName": "clusterArn",
+          "documentation": "<p>The Amazon Resource Name (ARN) of the cluster.</p>"
+        },
+        "TargetInstanceType": {
+          "shape": "__stringMin1Max256",
+          "locationName": "targetInstanceType",
+          "documentation": "<p>Instance type of the target brokers. Must exist in the cluster. Use Express instance type (e.g., express.m7g.large) for Standard-to-Express migration. Use Standard instance type (e.g., kafka.m7g.large) to move topics back to Standard.</p>"
+        },
+        "TopicsToExclude": {
+          "shape": "__listOf__stringMin1Max256",
+          "locationName": "topicsToExclude",
+          "documentation": "<p>Regex patterns for topics to exclude from reassignment. Evaluated after include patterns.</p>"
+        },
+        "TopicsToInclude": {
+          "shape": "__listOf__stringMin1Max256",
+          "locationName": "topicsToInclude",
+          "documentation": "<p>Regex patterns for topics to reassign. Use ['.*'] for all topics. Max 10 patterns.</p>"
+        }
+      },
+      "required": [
+        "ClusterArn",
+        "TopicsToInclude",
+        "TargetInstanceType"
+      ],
+      "documentation": "<p>Initiates topic partition reassignment between broker types in a mixed-mode cluster.</p>"
+    },
+    "StartTopicReassignmentResponse": {
+      "type": "structure",
+      "members": {
+        "ClusterArn": {
+          "shape": "__stringMax2048",
+          "locationName": "clusterArn",
+          "documentation": "<p>The Amazon Resource Name (ARN) of the cluster.</p>"
+        },
+        "Status": {
+          "shape": "TopicReassignmentStatus",
+          "locationName": "status",
+          "documentation": "<p>The current status of the reassignment operation.</p>"
+        },
+        "TopicReassignmentOperationArn": {
+          "shape": "__stringMax2048",
+          "locationName": "topicReassignmentOperationArn",
+          "documentation": "<p>The Amazon Resource Name (ARN) of the topic reassignment operation.</p>"
+        }
+      },
+      "documentation": "<p>Returns information about the initiated topic reassignment operation.</p>"
+    },
     "StateInfo": {
       "type": "structure",
       "members": {
@@ -8027,6 +9163,43 @@
           "locationName": "message"
         }
       }
+    },
+    "StopTopicReassignmentRequest": {
+      "type": "structure",
+      "members": {
+        "ClusterArn": {
+          "shape": "__string",
+          "location": "uri",
+          "locationName": "clusterArn",
+          "documentation": "<p>The Amazon Resource Name (ARN) of the cluster.</p>"
+        },
+        "TopicReassignmentOperationArn": {
+          "shape": "__string",
+          "location": "uri",
+          "locationName": "topicReassignmentOperationArn",
+          "documentation": "<p>The Amazon Resource Name (ARN) of the topic reassignment operation to stop.</p>"
+        }
+      },
+      "required": [
+        "TopicReassignmentOperationArn",
+        "ClusterArn"
+      ]
+    },
+    "StopTopicReassignmentResponse": {
+      "type": "structure",
+      "members": {
+        "Status": {
+          "shape": "TopicReassignmentStatus",
+          "locationName": "status",
+          "documentation": "<p>The current status of the operation. Will be STOPPING.</p>"
+        },
+        "TopicReassignmentOperationArn": {
+          "shape": "__stringMax2048",
+          "locationName": "topicReassignmentOperationArn",
+          "documentation": "<p>The Amazon Resource Name (ARN) of the topic reassignment operation.</p>"
+        }
+      },
+      "documentation": "<p>Returns the result of stopping a topic reassignment operation.</p>"
     },
     "StorageInfo": {
       "type": "structure",
@@ -8157,6 +9330,11 @@
           "shape": "__integer",
           "locationName": "outOfSyncReplicaCount",
           "documentation": "\n            <p>Number of out-of-sync replicas for a topic.</p>\n          "
+        },
+        "ReplicaIds": {
+          "shape": "__listOf__integer",
+          "locationName": "replicaIds",
+          "documentation": "\n            <p>The broker IDs hosting replicas of this topic's partitions.</p>\n          "
         }
       },
       "documentation": "\n            <p>Includes identification info about the topic.</p>\n         "
@@ -8191,6 +9369,70 @@
       "error": {
         "httpStatusCode": 429
       }
+    },
+    "TopicReassignment": {
+      "type": "string",
+      "documentation": "\n            <p>Controls automatic topic reassignment when entering mixed broker mode.</p>\n         ",
+      "enum": [
+        "AUTO",
+        "MANUAL"
+      ]
+    },
+    "TopicReassignmentInfo": {
+      "type": "structure",
+      "members": {
+        "CompletedTopics": {
+          "shape": "__integer",
+          "locationName": "completedTopics",
+          "documentation": "<p>Number of topics fully migrated.</p>"
+        },
+        "CreationTime": {
+          "shape": "__timestampIso8601",
+          "locationName": "creationTime",
+          "documentation": "<p>When the operation was created.</p>"
+        },
+        "Status": {
+          "shape": "TopicReassignmentStatus",
+          "locationName": "status",
+          "documentation": "<p>The current status of the reassignment operation.</p>"
+        },
+        "TargetInstanceType": {
+          "shape": "__string",
+          "locationName": "targetInstanceType",
+          "documentation": "<p>The target broker instance type for this reassignment.</p>"
+        },
+        "TopicReassignmentOperationArn": {
+          "shape": "__stringMax2048",
+          "locationName": "topicReassignmentOperationArn",
+          "documentation": "<p>The Amazon Resource Name (ARN) of the topic reassignment operation.</p>"
+        },
+        "TotalTopics": {
+          "shape": "__integer",
+          "locationName": "totalTopics",
+          "documentation": "<p>Total number of topics matching the selector.</p>"
+        }
+      },
+      "documentation": "<p>Summary information about a topic reassignment operation.</p>"
+    },
+    "TopicReassignmentMode": {
+      "type": "string",
+      "documentation": "<p>How topics are reassigned to the target broker type after an UpdateBrokerType operation adds brokers of that type. AUTO: Amazon MSK reassigns all topics. MANUAL: you reassign topics with the StartTopicReassignment operation.</p>",
+      "enum": [
+        "AUTO",
+        "MANUAL"
+      ]
+    },
+    "TopicReassignmentStatus": {
+      "type": "string",
+      "enum": [
+        "PENDING",
+        "IN_PROGRESS",
+        "STOPPING",
+        "COMPLETE",
+        "FAILED",
+        "STOPPED"
+      ],
+      "documentation": "<p>The lifecycle status of a topic reassignment operation.</p>"
     },
     "TopicReplication": {
       "type": "structure",
@@ -8404,7 +9646,12 @@
         "TargetInstanceType": {
           "shape": "__string",
           "locationName": "targetInstanceType",
-          "documentation": "\n            <p>The Amazon MSK broker type that you want all of the brokers in this cluster to be.</p>\n         "
+          "documentation": "\n            <p>The type of Amazon EC2 instances to use for Kafka brokers. For in-place upgrades to Express, use the composite format to initiate mixed mode, the Express instance type to complete the upgrade, or the Standard instance type to rollback.</p>\n         "
+        },
+        "TopicReassignment": {
+          "shape": "TopicReassignment",
+          "locationName": "topicReassignment",
+          "documentation": "\n            <p>Controls automatic topic reassignment when entering mixed broker mode. When set to AUTO, MSK automatically reassigns all topics to the target broker type after adding new brokers. When set to MANUAL (default), customers manage topic reassignment using the StartTopicReassignment API. Only valid when targetInstanceType is a composite mixed-mode value. Must be set to MANUAL before completing the upgrade or rolling back.</p>\n         "
         }
       },
       "required": [
@@ -9247,6 +10494,23 @@
       "type": "integer",
       "min": 1
     },
+    "__integerMin1Max500": {
+      "type": "integer",
+      "min": 1,
+      "max": 500
+    },
+    "__listOfAssessmentFinding": {
+      "type": "list",
+      "member": {
+        "shape": "AssessmentFinding"
+      }
+    },
+    "__listOfAssessmentInfo": {
+      "type": "list",
+      "member": {
+        "shape": "AssessmentInfo"
+      }
+    },
     "__listOfBrokerEBSVolumeInfo": {
       "type": "list",
       "member": {
@@ -9305,6 +10569,12 @@
       "type": "list",
       "member": {
         "shape": "TopicConfiguration"
+      }
+    },
+    "__listOfTopicReassignmentInfo": {
+      "type": "list",
+      "member": {
+        "shape": "TopicReassignmentInfo"
       }
     },
     "__listOfVpcConfig": {
@@ -9436,6 +10706,15 @@
     "__long": {
       "type": "long"
     },
+    "__mapOf__integer": {
+      "type": "map",
+      "key": {
+        "shape": "__string"
+      },
+      "value": {
+        "shape": "__integer"
+      }
+    },
     "__mapOf__string": {
       "type": "map",
       "key": {
@@ -9457,12 +10736,22 @@
         "shape": "__stringMax256"
       }
     },
+    "__listOf__stringMin1Max256": {
+      "type": "list",
+      "member": {
+        "shape": "__stringMin1Max256"
+      }
+    },
     "__string": {
       "type": "string"
     },
     "__stringMax1024": {
       "type": "string",
       "max": 1024
+    },
+    "__stringMax2048": {
+      "type": "string",
+      "max": 2048
     },
     "__stringMax249": {
       "type": "string",
@@ -9477,15 +10766,20 @@
       "min": 1,
       "max": 128
     },
+    "__stringMin1Max256": {
+      "type": "string",
+      "min": 1,
+      "max": 256
+    },
     "__stringMin1Max64": {
       "type": "string",
       "min": 1,
       "max": 64
     },
-    "__stringMin5Max32": {
+    "__stringMin5Max64": {
       "type": "string",
       "min": 5,
-      "max": 32
+      "max": 64
     },
     "__stringMin1Max128Pattern09AZaZ09AZaZ0": {
       "type": "string",

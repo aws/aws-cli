@@ -2051,6 +2051,63 @@
       },
       "documentation":"<p>The available spending limits for a payment session.</p>"
     },
+    "AwsBillingPaymentOptions":{
+      "type":"structure",
+      "members":{
+        "dpopJwk":{
+          "shape":"DpopJwk",
+          "documentation":"<p>The agent's public key for Demonstrating Proof of Possession (DPoP), as described in RFC 9449. If you specify a key, the payment token is bound to it, and the seller can verify that the token is presented by the holder of the matching private key. If you don't specify a key, the payment token isn't bound to a key.</p>"
+        }
+      },
+      "documentation":"<p>Optional settings for an AWS Billing payment.</p>"
+    },
+    "AwsBillingPaymentToken":{
+      "type":"string",
+      "documentation":"<p>A payment token for an AWS Billing payment.</p>",
+      "max":65536,
+      "min":1,
+      "sensitive":true
+    },
+    "AwsBillingX402PaymentInput":{
+      "type":"structure",
+      "required":[
+        "version",
+        "payload"
+      ],
+      "members":{
+        "version":{
+          "shape":"Version",
+          "documentation":"<p>The x402 protocol version of the seller's HTTP 402 response, from its <code>x402Version</code> field. For example, <code>2</code>.</p>"
+        },
+        "payload":{
+          "shape":"PaymentDocument",
+          "documentation":"<p>The seller's x402 payment requirement for AWS Billing, passed unchanged as a JSON object. The service reads the seller-signed quote token from <code>extra.quoteToken</code> and returns a <code>ValidationException</code> if it is missing or invalid. Any change to the quote token invalidates its signature.</p>"
+        },
+        "options":{
+          "shape":"AwsBillingPaymentOptions",
+          "documentation":"<p>Optional settings for the AWS Billing payment.</p>"
+        }
+      },
+      "documentation":"<p>The input for an AWS Billing x402 payment. The payment pays an AWS Marketplace seller's x402 (HTTP 402) payment requirement and is billed to the AWS account that owns the payment manager, through the payment manager's AWS Billing payment connector.</p>"
+    },
+    "AwsBillingX402PaymentOutput":{
+      "type":"structure",
+      "required":[
+        "version",
+        "paymentToken"
+      ],
+      "members":{
+        "version":{
+          "shape":"Version",
+          "documentation":"<p>The x402 protocol version. This is the same value as the <code>version</code> in the request.</p>"
+        },
+        "paymentToken":{
+          "shape":"AwsBillingPaymentToken",
+          "documentation":"<p>The payment token, a signed JSON Web Token (JWT). Include it when you retry your request to the seller. Treat the payment token as a credential: don't log or share it.</p>"
+        }
+      },
+      "documentation":"<p>The output of an AWS Billing x402 payment.</p>"
+    },
     "BasicAuth":{
       "type":"structure",
       "required":["secretArn"],
@@ -4264,6 +4321,44 @@
     "Double":{
       "type":"double",
       "box":true
+    },
+    "DpopJwk":{
+      "type":"structure",
+      "required":[
+        "kty",
+        "crv",
+        "x",
+        "y"
+      ],
+      "members":{
+        "kty":{
+          "shape":"JwkKeyType",
+          "documentation":"<p>The key type. The only valid value is <code>EC</code>.</p>"
+        },
+        "crv":{
+          "shape":"JwkEllipticCurve",
+          "documentation":"<p>The elliptic curve of the key.</p>"
+        },
+        "x":{
+          "shape":"DpopJwkXString",
+          "documentation":"<p>The x-coordinate of the elliptic curve point, base64url-encoded.</p>"
+        },
+        "y":{
+          "shape":"DpopJwkYString",
+          "documentation":"<p>The y-coordinate of the elliptic curve point, base64url-encoded.</p>"
+        }
+      },
+      "documentation":"<p>An elliptic curve public key in JSON Web Key (JWK) format, as described in RFC 7518 section 6.2, used to bind a payment token to the agent.</p>"
+    },
+    "DpopJwkXString":{
+      "type":"string",
+      "max":128,
+      "min":43
+    },
+    "DpopJwkYString":{
+      "type":"string",
+      "max":128,
+      "min":43
     },
     "DuplicateIdException":{
       "type":"structure",
@@ -8997,6 +9092,20 @@
       },
       "documentation":"<p>Response for the <code>InvokeWebSearch</code> operation.</p>"
     },
+    "JwkEllipticCurve":{
+      "type":"string",
+      "documentation":"<p>The elliptic curve of a JSON Web Key.</p>",
+      "enum":[
+        "P-256",
+        "P-384",
+        "P-521"
+      ]
+    },
+    "JwkKeyType":{
+      "type":"string",
+      "documentation":"<p>The JSON Web Key type.</p>",
+      "enum":["EC"]
+    },
     "JwtKeyId":{
       "type":"string",
       "documentation":"<p>JWT Key ID (kid) from the JWT header.</p>",
@@ -10962,7 +11071,11 @@
           "shape":"CryptoX402PaymentInput",
           "documentation":"<p>Input for a crypto X402 payment.</p>"
         },
-        "mpp":{"shape":"MppPaymentInput"}
+        "mpp":{"shape":"MppPaymentInput"},
+        "awsBillingX402":{
+          "shape":"AwsBillingX402PaymentInput",
+          "documentation":"<p>Input for an AWS Billing x402 payment, which pays an AWS Marketplace seller's quote and charges it to the AWS account that owns the payment manager.</p>"
+        }
       },
       "documentation":"<p>The payment input details, which vary by payment type.</p>",
       "union":true
@@ -11033,9 +11146,9 @@
     },
     "PaymentInstrumentId":{
       "type":"string",
-      "max":34,
+      "max":35,
       "min":34,
-      "pattern":"payment-instrument-[0-9a-zA-Z-]{15}"
+      "pattern":"(payment-instrument-[0-9a-zA-Z-]{15}|aws\\.agentcorepayments\\.awsbilling\\.v1)"
     },
     "PaymentInstrumentStatus":{
       "type":"string",
@@ -11118,7 +11231,11 @@
           "shape":"CryptoX402PaymentOutput",
           "documentation":"<p>Output from a crypto X402 payment.</p>"
         },
-        "mpp":{"shape":"MppPaymentOutput"}
+        "mpp":{"shape":"MppPaymentOutput"},
+        "awsBillingX402":{
+          "shape":"AwsBillingX402PaymentOutput",
+          "documentation":"<p>Output from an AWS Billing x402 payment.</p>"
+        }
       },
       "documentation":"<p>The payment output details, which vary by payment type.</p>",
       "union":true
@@ -11278,7 +11395,8 @@
       "documentation":"<p>Payment type enum.</p>",
       "enum":[
         "CRYPTO_X402",
-        "MPP"
+        "MPP",
+        "AWS_BILLING_X402"
       ]
     },
     "PerVariantOnlineEvaluationConfig":{
@@ -11358,7 +11476,7 @@
         },
         "paymentInstrumentId":{
           "shape":"PaymentInstrumentId",
-          "documentation":"<p>The ID of the payment instrument to use.</p>"
+          "documentation":"<p>The ID of the payment instrument to use. For the <code>CRYPTO_X402</code> and <code>MPP</code> payment types, specify the ID of a payment instrument that you created. For the <code>AWS_BILLING_X402</code> payment type, specify the service-managed instrument ID <code>aws.agentcorepayments.awsbilling.v1</code>. You don't create this instrument; it's available for any payment manager that has an AWS Billing payment connector.</p>"
         },
         "paymentType":{
           "shape":"PaymentType",
@@ -11404,7 +11522,7 @@
         },
         "paymentInstrumentId":{
           "shape":"PaymentInstrumentId",
-          "documentation":"<p>The ID of the payment instrument used.</p>"
+          "documentation":"<p>The ID of the payment instrument used. For the <code>AWS_BILLING_X402</code> payment type, this is the service-managed instrument ID <code>aws.agentcorepayments.awsbilling.v1</code>.</p>"
         },
         "paymentType":{
           "shape":"PaymentType",

@@ -263,6 +263,26 @@
       "documentation":"<p>Deletes the replication configuration for a specific table. After deletion, new updates to this table will no longer be replicated to destination tables, though existing replicated copies will remain in destination buckets.</p> <dl> <dt>Permissions</dt> <dd> <p>You must have the <code>s3tables:DeleteTableReplication</code> permission to use this operation.</p> </dd> </dl>",
       "idempotent":true
     },
+    "DisassociateTableReplication":{
+      "name":"DisassociateTableReplication",
+      "http":{
+        "method":"PUT",
+        "requestUri":"/table-replication/disassociate",
+        "responseCode":200
+      },
+      "input":{"shape":"DisassociateTableReplicationRequest"},
+      "output":{"shape":"DisassociateTableReplicationResponse"},
+      "errors":[
+        {"shape":"InternalServerErrorException"},
+        {"shape":"ForbiddenException"},
+        {"shape":"NotFoundException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"TooManyRequestsException"},
+        {"shape":"ConflictException"},
+        {"shape":"BadRequestException"}
+      ],
+      "documentation":"<p>Disassociates a replica table from replication, making it a standalone writable table. Any in-progress replication to the table stops, and in-flight commits fail without being committed to the table. Disassociating a table from replication is permanent and can't be reversed.</p> <p>You can only disassociate a replica table. If you call this operation on a table that isn't a replica table, including a table that you have already disassociated, the request fails.</p> <p>After you disassociate a table from replication, you can write to the table as you do any other table. <code>GetTable</code> no longer returns <code>managedByService</code> and <code>managedTableInformation</code> for the table, and <code>ListTables</code> no longer returns <code>managedByService</code> for it. On the source table, <code>GetTableReplicationStatus</code> reports a failure for this destination the next time replication to it is attempted.</p> <p>Disassociating a table from replication doesn't change its maintenance configuration. Review the maintenance settings of the table, such as compaction, after you disassociate it.</p> <dl> <dt>Permissions</dt> <dd> <p>You must have the <code>s3tables:DisassociateTableReplication</code> permission to use this operation.</p> </dd> </dl>"
+    },
     "GetNamespace":{
       "name":"GetNamespace",
       "http":{
@@ -1603,6 +1623,22 @@
         }
       },
       "documentation":"<p>The table that a migration creates in a table bucket and migrates the source into.</p>"
+    },
+    "DisassociateTableReplicationRequest":{
+      "type":"structure",
+      "required":["tableArn"],
+      "members":{
+        "tableArn":{
+          "shape":"TableARN",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the replica table to disassociate from replication.</p>",
+          "location":"querystring",
+          "locationName":"tableArn"
+        }
+      }
+    },
+    "DisassociateTableReplicationResponse":{
+      "type":"structure",
+      "members":{}
     },
     "Document":{
       "type":"structure",

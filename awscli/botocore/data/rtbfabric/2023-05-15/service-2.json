@@ -321,6 +321,44 @@
       "documentation":"<p>Removes a certificate association from a responder gateway.</p>",
       "idempotent":true
     },
+    "GetAvailableModule":{
+      "name":"GetAvailableModule",
+      "http":{
+        "method":"GET",
+        "requestUri":"/available-modules/{moduleId}",
+        "responseCode":200
+      },
+      "input":{"shape":"GetAvailableModuleRequest"},
+      "output":{"shape":"GetAvailableModuleResponse"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ValidationException"}
+      ],
+      "documentation":"<p>Returns a module that you can attach. If you can't attach the module, the operation returns ResourceNotFoundException, the same as for a missing one.</p>",
+      "readonly":true
+    },
+    "GetAvailableModuleVersion":{
+      "name":"GetAvailableModuleVersion",
+      "http":{
+        "method":"GET",
+        "requestUri":"/available-modules/{moduleId}/versions/{version}",
+        "responseCode":200
+      },
+      "input":{"shape":"GetAvailableModuleVersionRequest"},
+      "output":{"shape":"GetAvailableModuleVersionResponse"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ValidationException"}
+      ],
+      "documentation":"<p>Returns an ACTIVE or DEPRECATED version of a module that you can attach. If you can't attach the module, or the version is in another status, the operation returns ResourceNotFoundException, the same as for a missing one.</p>",
+      "readonly":true
+    },
     "GetCertificateAssociation":{
       "name":"GetCertificateAssociation",
       "http":{
@@ -455,6 +493,62 @@
       "documentation":"<p>Retrieves information about a responder gateway.</p>",
       "readonly":true
     },
+    "GetUpdate":{
+      "name":"GetUpdate",
+      "http":{
+        "method":"GET",
+        "requestUri":"/gateway/{gatewayId}/updates/{updateId}",
+        "responseCode":200
+      },
+      "input":{"shape":"GetUpdateRequest"},
+      "output":{"shape":"GetUpdateResponse"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ValidationException"}
+      ],
+      "documentation":"<p>Returns ResourceNotFoundException for an updateId past the 90-day retention window, indistinguishable in the response from an id that never existed.</p>",
+      "readonly":true
+    },
+    "ListAvailableModuleVersions":{
+      "name":"ListAvailableModuleVersions",
+      "http":{
+        "method":"GET",
+        "requestUri":"/available-modules/{moduleId}/versions",
+        "responseCode":200
+      },
+      "input":{"shape":"ListAvailableModuleVersionsRequest"},
+      "output":{"shape":"ListAvailableModuleVersionsResponse"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ValidationException"}
+      ],
+      "documentation":"<p>Lists the ACTIVE and DEPRECATED versions of a module that you can attach, highest version first (numerically by MAJOR, then MINOR, then PATCH). If you can't attach the module, the operation returns ResourceNotFoundException, the same as for a missing one. If the module has no ACTIVE or DEPRECATED versions, the operation returns an empty list. The operation lists DEPRECATED versions so that you can inspect one that you've attached, but you can't attach them. Results are paginated. Use <code>nextToken</code> to get the next page.</p>",
+      "readonly":true
+    },
+    "ListAvailableModules":{
+      "name":"ListAvailableModules",
+      "http":{
+        "method":"GET",
+        "requestUri":"/available-modules",
+        "responseCode":200
+      },
+      "input":{"shape":"ListAvailableModulesRequest"},
+      "output":{"shape":"ListAvailableModulesResponse"},
+      "errors":[
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ValidationException"}
+      ],
+      "documentation":"<p>Lists the modules that you can attach, newest first by <code>createdAt</code>. Results are paginated. Use <code>nextToken</code> to get the next page.</p>",
+      "readonly":true
+    },
     "ListCertificateAssociations":{
       "name":"ListCertificateAssociations",
       "http":{
@@ -562,6 +656,46 @@
       ],
       "documentation":"<p>Lists tags for a resource.</p>",
       "readonly":true
+    },
+    "ListUpdates":{
+      "name":"ListUpdates",
+      "http":{
+        "method":"GET",
+        "requestUri":"/gateway/{gatewayId}/updates",
+        "responseCode":200
+      },
+      "input":{"shape":"ListUpdatesRequest"},
+      "output":{"shape":"ListUpdatesResponse"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ValidationException"}
+      ],
+      "documentation":"<p>Lists the updates on a gateway. Results are paginated. Use <code>nextToken</code> to get the next page.</p>",
+      "readonly":true
+    },
+    "PutLinkFlows":{
+      "name":"PutLinkFlows",
+      "http":{
+        "method":"PUT",
+        "requestUri":"/gateway/{gatewayId}/link/{linkId}/flows",
+        "responseCode":200
+      },
+      "input":{"shape":"PutLinkFlowsRequest"},
+      "output":{"shape":"PutLinkFlowsResponse"},
+      "errors":[
+        {"shape":"ServiceQuotaExceededException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ConflictException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ValidationException"}
+      ],
+      "documentation":"<p>Replaces a link's flow configuration. The change applies asynchronously. The call returns once the change is accepted, and the link serves its prior flows until the update commits atomically. RTB Fabric validates the request before accepting it, and a request that fails validation changes nothing. After the call, use GetLink. Once the change completes, the link's status is ACTIVE again and its flows show the change.</p>",
+      "idempotent":true
     },
     "RejectLink":{
       "name":"RejectLink",
@@ -810,6 +944,10 @@
           "shape":"ConnectivityType",
           "documentation":"<p>The connectivity type of the link.</p>"
         },
+        "errorDetails":{
+          "shape":"ErrorDetails",
+          "documentation":"<p>The causes of the failure, such as a deleted subnet. Present only when the resource has failed.</p>"
+        },
         "linkId":{
           "shape":"LinkId",
           "documentation":"<p>The unique identifier of the link.</p>"
@@ -849,6 +987,12 @@
       },
       "documentation":"<p>Describes a bid action.</p>",
       "union":true
+    },
+    "ActivationPercentage":{
+      "type":"float",
+      "box":true,
+      "max":100,
+      "min":0
     },
     "AssociateCertificateRequest":{
       "type":"structure",
@@ -932,6 +1076,90 @@
       "type":"string",
       "pattern":"arn:aws:iam::[0-9]{12}:role/.{1,2048}"
     },
+    "AvailableModuleSummary":{
+      "type":"structure",
+      "required":[
+        "moduleId",
+        "moduleArn",
+        "moduleName",
+        "subscriptionType",
+        "subscriptionStatus"
+      ],
+      "members":{
+        "moduleId":{
+          "shape":"ModuleId",
+          "documentation":"<p>The module's ID.</p>"
+        },
+        "moduleArn":{
+          "shape":"ModuleArn",
+          "documentation":"<p>The module's ARN.</p>"
+        },
+        "moduleName":{
+          "shape":"ModuleName",
+          "documentation":"<p>A label, not unique: modules can share a name.</p>"
+        },
+        "subscriptionType":{
+          "shape":"SubscriptionType",
+          "documentation":"<p>The type of access that you have to the module.</p>"
+        },
+        "subscriptionStatus":{
+          "shape":"SubscriptionStatus",
+          "documentation":"<p>Specifies whether your access to the module is current.</p>"
+        },
+        "marketplaceProductId":{
+          "shape":"String",
+          "documentation":"<p>The Marketplace product the module is sold under. Present only when subscriptionType is MARKETPLACE.</p>"
+        }
+      },
+      "documentation":"<p>A module that you can attach, as ListAvailableModules returns it. ListAvailableModules and GetAvailableModule never return how a module is implemented.</p>"
+    },
+    "AvailableModuleSummaryList":{
+      "type":"list",
+      "member":{"shape":"AvailableModuleSummary"}
+    },
+    "AvailableModuleVersionSummary":{
+      "type":"structure",
+      "required":[
+        "version",
+        "moduleVersionArn",
+        "status",
+        "createdAt"
+      ],
+      "members":{
+        "version":{
+          "shape":"SemanticVersion",
+          "documentation":"<p>The version.</p>"
+        },
+        "moduleVersionArn":{
+          "shape":"ModuleVersionArn",
+          "documentation":"<p>The version's ARN.</p>"
+        },
+        "status":{
+          "shape":"ModuleVersionStatus",
+          "documentation":"<p>ACTIVE or DEPRECATED.</p>"
+        },
+        "createdAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The time when the version was created.</p>"
+        }
+      },
+      "documentation":"<p>A version of a module that you can attach, as ListAvailableModuleVersions returns it. ListAvailableModuleVersions and GetAvailableModuleVersion never return how a version is implemented.</p>"
+    },
+    "AvailableModuleVersionSummaryList":{
+      "type":"list",
+      "member":{"shape":"AvailableModuleVersionSummary"}
+    },
+    "AwsResourceId":{
+      "type":"string",
+      "max":64,
+      "min":1
+    },
+    "AwsResourceIdList":{
+      "type":"list",
+      "member":{"shape":"AwsResourceId"},
+      "max":10,
+      "min":0
+    },
     "Base64EncodedCertificateChain":{
       "type":"string",
       "max":2097152,
@@ -995,6 +1223,41 @@
         "AVAILABILITY_ZONE_AFFINITY",
         "ANY_AVAILABILITY_ZONE"
       ]
+    },
+    "ClientToken":{
+      "type":"string",
+      "documentation":"<p>An idempotency token of 1–64 printable ASCII characters. If you don't provide one, the SDK generates one.</p>",
+      "max":64,
+      "min":1,
+      "pattern":"[!-~]+"
+    },
+    "ConfigurableAction":{
+      "type":"string",
+      "documentation":"<p>A capability that you can turn on when you attach a version, such as FILTER or OBSERVE. Each capability needs a minimum permission.</p>",
+      "enum":[
+        "FILTER",
+        "ENRICH_REQUEST_EXT",
+        "ENRICH_REQUEST_HEADERS",
+        "OBSERVE"
+      ]
+    },
+    "ConfigurableActionList":{
+      "type":"list",
+      "member":{"shape":"ConfigurableAction"},
+      "max":16,
+      "min":1
+    },
+    "ConfigurationSchema":{
+      "type":"string",
+      "documentation":"<p>A JSON Schema (draft-07), as a string, for the parameters that you pass in <code>configurationValues</code>.</p>",
+      "max":32768,
+      "min":0
+    },
+    "ConfigurationValues":{
+      "type":"string",
+      "documentation":"<p>Module parameters as a JSON string, validated against the version's configurationSchema (JSON Schema draft-07).</p>",
+      "max":10240,
+      "min":1
     },
     "ConflictException":{
       "type":"structure",
@@ -1170,6 +1433,10 @@
         "connectivityType":{
           "shape":"ConnectivityType",
           "documentation":"<p>The connectivity type of the link.</p>"
+        },
+        "errorDetails":{
+          "shape":"ErrorDetails",
+          "documentation":"<p>The causes of the failure, such as a deleted subnet. Present only when the resource has failed.</p>"
         },
         "linkId":{
           "shape":"LinkId",
@@ -1814,6 +2081,59 @@
       "type":"string",
       "pattern":"arn:aws:iam::[0-9]{12}:role/.{1,2048}"
     },
+    "ErrorCode":{
+      "type":"string",
+      "documentation":"<p>Why a resource, or a change to it, failed.</p>",
+      "enum":[
+        "VPC_NOT_FOUND",
+        "EC2_SUBNET_NOT_FOUND",
+        "EC2_SECURITY_GROUP_NOT_FOUND",
+        "EC2_SUBNET_IP_EXHAUSTION",
+        "IAM_ASSUME_ROLE_ACCESS_DENIED",
+        "INTERNAL_ERROR"
+      ]
+    },
+    "ErrorDetail":{
+      "type":"structure",
+      "required":[
+        "code",
+        "message"
+      ],
+      "members":{
+        "code":{
+          "shape":"ErrorCode",
+          "documentation":"<p>The error code for what failed.</p>"
+        },
+        "message":{
+          "shape":"ErrorDetailMessageString",
+          "documentation":"<p>A description of the failure.</p>"
+        },
+        "resourceIds":{
+          "shape":"AwsResourceIdList",
+          "documentation":"<p>The IDs of the resources involved, such as a subnet or security group.</p>"
+        }
+      },
+      "documentation":"<p>Describes one cause of a failure of a resource or an update, with an error code, a description, and the IDs of the resources involved.</p>"
+    },
+    "ErrorDetailMessageString":{
+      "type":"string",
+      "max":1024,
+      "min":0
+    },
+    "ErrorDetails":{
+      "type":"list",
+      "member":{"shape":"ErrorDetail"},
+      "max":10,
+      "min":0
+    },
+    "FailureMode":{
+      "type":"string",
+      "documentation":"<p>What the flow does when the module fails or times out.</p>",
+      "enum":[
+        "OPEN",
+        "CLOSED"
+      ]
+    },
     "Filter":{
       "type":"structure",
       "required":["criteria"],
@@ -1867,6 +2187,71 @@
       "type":"float",
       "box":true
     },
+    "Flow":{
+      "type":"structure",
+      "required":[
+        "name",
+        "pipeline"
+      ],
+      "members":{
+        "name":{
+          "shape":"FlowName",
+          "documentation":"<p>The flow's name, unique within the link.</p>"
+        },
+        "pipeline":{
+          "shape":"FlowPipeline",
+          "documentation":"<p>The pipeline that the flow's modules run in. In a sequential pipeline, each module sees the previous module's output. In a phased pipeline, a phase's modules see the prior phase's output, not each other's.</p>"
+        }
+      },
+      "documentation":"<p>One flow on a link: a set of modules that runs on the link's bid requests.</p>"
+    },
+    "FlowList":{
+      "type":"list",
+      "member":{"shape":"Flow"},
+      "documentation":"<p>A link's flows: at most one.</p>",
+      "max":1,
+      "min":0
+    },
+    "FlowModule":{
+      "type":"structure",
+      "required":[
+        "name",
+        "moduleVersionArn"
+      ],
+      "members":{
+        "name":{
+          "shape":"ModuleName",
+          "documentation":"<p>The module's name, unique within the flow.</p>"
+        },
+        "moduleVersionArn":{
+          "shape":"ModuleVersionArn",
+          "documentation":"<p>The version to attach. It must be ACTIVE and available to you (see ListAvailableModuleVersions). You can keep a version that's already in the link's flows after it's deprecated, but you can't give it a higher share of traffic.</p>"
+        },
+        "selectedActions":{
+          "shape":"SelectedActionList",
+          "documentation":"<p>The capabilities to turn on, chosen from the version's <code>configurableActions</code>. If the version exposes one, it's the default. If the version exposes more than one, this field is required. If it exposes none, omit this field.</p>"
+        },
+        "failureMode":{
+          "shape":"FailureMode",
+          "documentation":"<p>Specifies what happens when the module fails – when its call fails or times out, or when an express module's dataset is stale. The default is OPEN.</p>"
+        },
+        "activationPercentage":{
+          "shape":"ActivationPercentage",
+          "documentation":"<p>The percentage of the flow's requests that the module runs on. The flow skips the module on the rest of the requests. The default is 100.</p>"
+        },
+        "configurationValues":{
+          "shape":"ConfigurationValues",
+          "documentation":"<p>RTB Fabric validates the value against the version's <code>configurationSchema</code> and rejects a value that fails with ValidationException. Omit it when the schema is empty or fully defaulted.</p>"
+        }
+      },
+      "documentation":"<p>A version attached to a flow, with its settings.</p>"
+    },
+    "FlowModuleList":{
+      "type":"list",
+      "member":{"shape":"FlowModule"},
+      "max":8,
+      "min":1
+    },
     "FlowModuleName":{
       "type":"string",
       "max":255,
@@ -1876,6 +2261,44 @@
     "FlowModuleNameList":{
       "type":"list",
       "member":{"shape":"FlowModuleName"}
+    },
+    "FlowName":{
+      "type":"string",
+      "max":64,
+      "min":1,
+      "pattern":"[A-Za-z0-9][A-Za-z0-9-]*"
+    },
+    "FlowPhase":{
+      "type":"structure",
+      "required":["modules"],
+      "members":{
+        "modules":{
+          "shape":"FlowModuleList",
+          "documentation":"<p>At most one MUTATE_REQUEST_BODY module.</p>"
+        }
+      },
+      "documentation":"<p>One phase of a phased pipeline. Its modules run concurrently on the previous phase's output.</p>"
+    },
+    "FlowPhaseList":{
+      "type":"list",
+      "member":{"shape":"FlowPhase"},
+      "max":8,
+      "min":1
+    },
+    "FlowPipeline":{
+      "type":"structure",
+      "members":{
+        "sequential":{
+          "shape":"SequentialPipeline",
+          "documentation":"<p>Modules run in list order. Use it when each module needs the previous module's output.</p>"
+        },
+        "phased":{
+          "shape":"PhasedPipeline",
+          "documentation":"<p>Phases run in order; a phase's modules run concurrently on the same input. Use it when a phase's modules don't depend on each other.</p>"
+        }
+      },
+      "documentation":"<p>How a flow's modules run. In <code>sequential</code>, each module sees the previous module's output; in <code>phased</code>, a phase's modules see the prior phase's output, not each other's. Set exactly one. New members can be added, so handle an unknown one.</p>",
+      "union":true
     },
     "GatewayId":{
       "type":"string",
@@ -1894,6 +2317,139 @@
         "EXTERNAL",
         "INTERNAL"
       ]
+    },
+    "GetAvailableModuleRequest":{
+      "type":"structure",
+      "required":["moduleId"],
+      "members":{
+        "moduleId":{
+          "shape":"ModuleId",
+          "documentation":"<p>The module's ID.</p>",
+          "location":"uri",
+          "locationName":"moduleId"
+        }
+      }
+    },
+    "GetAvailableModuleResponse":{
+      "type":"structure",
+      "required":[
+        "moduleId",
+        "moduleArn",
+        "moduleName",
+        "subscriptionType",
+        "subscriptionStatus",
+        "createdAt"
+      ],
+      "members":{
+        "moduleId":{
+          "shape":"ModuleId",
+          "documentation":"<p>The module's ID.</p>"
+        },
+        "moduleArn":{
+          "shape":"ModuleArn",
+          "documentation":"<p>The module's ARN.</p>"
+        },
+        "moduleName":{
+          "shape":"ModuleName",
+          "documentation":"<p>A label, not unique: modules can share a name.</p>"
+        },
+        "description":{
+          "shape":"ModuleDescription",
+          "documentation":"<p>The module's description.</p>"
+        },
+        "subscriptionType":{
+          "shape":"SubscriptionType",
+          "documentation":"<p>The type of access that you have to the module.</p>"
+        },
+        "subscriptionStatus":{
+          "shape":"SubscriptionStatus",
+          "documentation":"<p>Specifies whether your access to the module is current.</p>"
+        },
+        "marketplaceProductId":{
+          "shape":"String",
+          "documentation":"<p>The Marketplace product the module is sold under. Present only when subscriptionType is MARKETPLACE.</p>"
+        },
+        "createdAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The time when the module was created.</p>"
+        }
+      }
+    },
+    "GetAvailableModuleVersionRequest":{
+      "type":"structure",
+      "required":[
+        "moduleId",
+        "version"
+      ],
+      "members":{
+        "moduleId":{
+          "shape":"ModuleId",
+          "documentation":"<p>The module's ID.</p>",
+          "location":"uri",
+          "locationName":"moduleId"
+        },
+        "version":{
+          "shape":"SemanticVersion",
+          "documentation":"<p>The version.</p>",
+          "location":"uri",
+          "locationName":"version"
+        }
+      }
+    },
+    "GetAvailableModuleVersionResponse":{
+      "type":"structure",
+      "required":[
+        "moduleId",
+        "version",
+        "moduleVersionArn",
+        "status",
+        "permissions",
+        "configurableActions",
+        "createdAt",
+        "updatedAt"
+      ],
+      "members":{
+        "moduleId":{
+          "shape":"ModuleId",
+          "documentation":"<p>The module's ID.</p>"
+        },
+        "version":{
+          "shape":"SemanticVersion",
+          "documentation":"<p>The version.</p>"
+        },
+        "moduleVersionArn":{
+          "shape":"ModuleVersionArn",
+          "documentation":"<p>The version's ARN.</p>"
+        },
+        "status":{
+          "shape":"ModuleVersionStatus",
+          "documentation":"<p>ACTIVE or DEPRECATED.</p>"
+        },
+        "permissions":{
+          "shape":"ModulePermissionList",
+          "documentation":"<p>The data-access grants the version holds.</p>"
+        },
+        "configurableActions":{
+          "shape":"ConfigurableActionList",
+          "documentation":"<p>The capabilities that you can turn on when you attach the version.</p>"
+        },
+        "configurationSchema":{
+          "shape":"ConfigurationSchema",
+          "documentation":"<p>The JSON Schema for the parameters that you can set in <code>configurationValues</code> when you attach the version.</p>"
+        },
+        "releaseNotes":{
+          "shape":"ReleaseNotes",
+          "documentation":"<p>The vendor's release notes.</p>"
+        },
+        "createdAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The time when the version was created.</p>"
+        },
+        "updatedAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The time when the version last changed.</p>"
+        }
+      }
     },
     "GetCertificateAssociationRequest":{
       "type":"structure",
@@ -1943,6 +2499,10 @@
         "updatedAt":{
           "shape":"Timestamp",
           "documentation":"<p>The timestamp of when the certificate association was last updated.</p>"
+        },
+        "errorDetails":{
+          "shape":"ErrorDetails",
+          "documentation":"<p>The causes of the failure, such as a deleted subnet. Present only when the resource has failed.</p>"
         }
       }
     },
@@ -2023,6 +2583,18 @@
         "connectivityType":{
           "shape":"ConnectivityType",
           "documentation":"<p>The connectivity type of the link.</p>"
+        },
+        "errorDetails":{
+          "shape":"ErrorDetails",
+          "documentation":"<p>The causes of the failure, such as a deleted subnet. Present only when the resource has failed.</p>"
+        },
+        "lockToken":{
+          "shape":"LockToken",
+          "documentation":"<p>The link's concurrency token. Pass it to PutLinkFlows unchanged; it changes whenever the link does.</p>"
+        },
+        "flows":{
+          "shape":"FlowList",
+          "documentation":"<p>The link's active flows, in the form PutLinkFlows takes. Empty when the link has no modules, and absent when its modules were set with UpdateLinkModuleFlow.</p>"
         }
       }
     },
@@ -2102,6 +2674,10 @@
           "shape":"ConnectivityType",
           "documentation":"<p>The connectivity type of the link.</p>"
         },
+        "errorDetails":{
+          "shape":"ErrorDetails",
+          "documentation":"<p>The causes of the failure, such as a deleted subnet. Present only when the resource has failed.</p>"
+        },
         "linkId":{
           "shape":"LinkId",
           "documentation":"<p>The unique identifier of the link.</p>"
@@ -2117,6 +2693,14 @@
         "timeoutInMillis":{
           "shape":"LinkTimeoutInMillis",
           "documentation":"<p>The timeout value in milliseconds.</p>"
+        },
+        "lockToken":{
+          "shape":"LockToken",
+          "documentation":"<p>The link's concurrency token. Pass it to PutLinkFlows unchanged; it changes whenever the link does.</p>"
+        },
+        "flows":{
+          "shape":"FlowList",
+          "documentation":"<p>The link's active flows, in the form PutLinkFlows takes. Empty when the link has no modules, and absent when its modules were set with UpdateLinkModuleFlow.</p>"
         }
       }
     },
@@ -2196,6 +2780,10 @@
         "tags":{
           "shape":"TagsMap",
           "documentation":"<p>A map of the key-value pairs for the tag or tags assigned to the specified resource.</p>"
+        },
+        "errorDetails":{
+          "shape":"ErrorDetails",
+          "documentation":"<p>The causes of the failure, such as a deleted subnet. Present only when the resource has failed.</p>"
         }
       }
     },
@@ -2273,6 +2861,18 @@
         "connectivityType":{
           "shape":"ConnectivityType",
           "documentation":"<p>The connectivity type of the link.</p>"
+        },
+        "errorDetails":{
+          "shape":"ErrorDetails",
+          "documentation":"<p>The causes of the failure, such as a deleted subnet. Present only when the resource has failed.</p>"
+        },
+        "lockToken":{
+          "shape":"LockToken",
+          "documentation":"<p>The link's concurrency token. Pass it to PutLinkFlows unchanged; it changes whenever the link does.</p>"
+        },
+        "flows":{
+          "shape":"FlowList",
+          "documentation":"<p>The link's active flows, in the form PutLinkFlows takes. Empty when the link has no modules, and absent when its modules were set with UpdateLinkModuleFlow.</p>"
         }
       }
     },
@@ -2318,6 +2918,10 @@
         "updatedAt":{
           "shape":"Timestamp",
           "documentation":"<p>The timestamp of when the requester gateway was updated.</p>"
+        },
+        "errorDetails":{
+          "shape":"ErrorDetails",
+          "documentation":"<p>The causes of the failure, such as a deleted subnet. Present only when the resource has failed.</p>"
         },
         "vpcId":{
           "shape":"VpcId",
@@ -2415,6 +3019,10 @@
           "shape":"Timestamp",
           "documentation":"<p>The timestamp of when the responder gateway was updated.</p>"
         },
+        "errorDetails":{
+          "shape":"ErrorDetails",
+          "documentation":"<p>The causes of the failure, such as a deleted subnet. Present only when the resource has failed.</p>"
+        },
         "domainName":{
           "shape":"DomainName",
           "documentation":"<p>The domain name of the responder gateway.</p>"
@@ -2492,6 +3100,37 @@
       "type":"list",
       "member":{"shape":"SubnetId"},
       "min":1
+    },
+    "GetUpdateRequest":{
+      "type":"structure",
+      "required":[
+        "gatewayId",
+        "updateId"
+      ],
+      "members":{
+        "gatewayId":{
+          "shape":"GatewayId",
+          "documentation":"<p>The unique identifier of the gateway.</p>",
+          "location":"uri",
+          "locationName":"gatewayId"
+        },
+        "updateId":{
+          "shape":"UpdateId",
+          "documentation":"<p>The unique identifier of the update.</p>",
+          "location":"uri",
+          "locationName":"updateId"
+        }
+      }
+    },
+    "GetUpdateResponse":{
+      "type":"structure",
+      "required":["update"],
+      "members":{
+        "update":{
+          "shape":"Update",
+          "documentation":"<p>The update.</p>"
+        }
+      }
     },
     "HeaderTagAction":{
       "type":"structure",
@@ -2678,12 +3317,35 @@
       },
       "documentation":"<p>Describes the attributes of a link.</p>"
     },
+    "LinkConfigParameters":{
+      "type":"structure",
+      "members":{
+        "logSettings":{"shape":"LinkLogSettings"},
+        "timeoutInMillis":{
+          "shape":"LinkTimeoutInMillis",
+          "documentation":"<p>The timeout value in milliseconds.</p>"
+        }
+      },
+      "documentation":"<p>A requested link configuration.</p>"
+    },
     "LinkDirection":{
       "type":"string",
       "enum":[
         "RESPONSE",
         "REQUEST"
       ]
+    },
+    "LinkFlowParameters":{
+      "type":"structure",
+      "members":{
+        "modules":{
+          "shape":"ModuleConfigurationList",
+          "documentation":"<p>The requested modules.</p>"
+        },
+        "flows":{"shape":"FlowList"}
+      },
+      "documentation":"<p>A requested link flow.</p>",
+      "union":true
     },
     "LinkId":{
       "type":"string",
@@ -2744,6 +3406,10 @@
         "updatedAt":{
           "shape":"Timestamp",
           "documentation":"<p>The timestamp of when the routing rule was last updated.</p>"
+        },
+        "errorDetails":{
+          "shape":"ErrorDetails",
+          "documentation":"<p>The causes of the failure, such as a deleted subnet. Present only when the resource has failed.</p>"
         }
       },
       "documentation":"<p>A summary of a link routing rule.</p>"
@@ -2763,14 +3429,127 @@
         "PENDING_UPDATE",
         "PENDING_ISOLATION",
         "ISOLATED",
-        "PENDING_RESTORATION"
+        "PENDING_RESTORATION",
+        "CREATE_FAILED",
+        "DELETE_FAILED"
       ]
+    },
+    "LinkTarget":{
+      "type":"structure",
+      "required":["linkId"],
+      "members":{
+        "linkId":{
+          "shape":"LinkId",
+          "documentation":"<p>The unique identifier of the link.</p>"
+        }
+      },
+      "documentation":"<p>The link an update targeted.</p>"
     },
     "LinkTimeoutInMillis":{
       "type":"long",
       "box":true,
       "max":5000,
       "min":100
+    },
+    "ListAvailableModuleVersionsRequest":{
+      "type":"structure",
+      "required":["moduleId"],
+      "members":{
+        "moduleId":{
+          "shape":"ModuleId",
+          "documentation":"<p>The module's ID.</p>",
+          "location":"uri",
+          "locationName":"moduleId"
+        },
+        "status":{
+          "shape":"ModuleVersionStatus",
+          "documentation":"<p>Lists only versions in this status. Only ACTIVE and DEPRECATED versions are listed, so another value returns an empty list.</p>",
+          "location":"querystring",
+          "locationName":"status"
+        },
+        "maxResults":{
+          "shape":"ListAvailableModuleVersionsRequestMaxResultsInteger",
+          "documentation":"<p>The maximum number of results for each page, from 1 to 10. The default is 10.</p>",
+          "location":"querystring",
+          "locationName":"maxResults"
+        },
+        "nextToken":{
+          "shape":"String",
+          "documentation":"<p>If nextToken is returned, there are more results available. Make the call again using the returned token to retrieve the next page. Keep all other arguments unchanged. Each pagination token expires after 24 hours; using an expired token fails with ValidationException.</p>",
+          "location":"querystring",
+          "locationName":"nextToken"
+        }
+      }
+    },
+    "ListAvailableModuleVersionsRequestMaxResultsInteger":{
+      "type":"integer",
+      "box":true,
+      "max":10,
+      "min":1
+    },
+    "ListAvailableModuleVersionsResponse":{
+      "type":"structure",
+      "required":[
+        "moduleId",
+        "versions"
+      ],
+      "members":{
+        "moduleId":{
+          "shape":"ModuleId",
+          "documentation":"<p>The module's ID.</p>"
+        },
+        "versions":{
+          "shape":"AvailableModuleVersionSummaryList",
+          "documentation":"<p>The versions on this page, highest version first.</p>"
+        },
+        "nextToken":{
+          "shape":"String",
+          "documentation":"<p>If nextToken is returned, there are more results available. Make the call again using the returned token to retrieve the next page. Keep all other arguments unchanged. Each pagination token expires after 24 hours; using an expired token fails with ValidationException.</p>"
+        }
+      }
+    },
+    "ListAvailableModulesRequest":{
+      "type":"structure",
+      "members":{
+        "subscriptionType":{
+          "shape":"SubscriptionType",
+          "documentation":"<p>Lists only modules that you have access to this way.</p>",
+          "location":"querystring",
+          "locationName":"subscriptionType"
+        },
+        "maxResults":{
+          "shape":"ListAvailableModulesRequestMaxResultsInteger",
+          "documentation":"<p>The maximum number of results for each page, from 1 to 10. The default is 10.</p>",
+          "location":"querystring",
+          "locationName":"maxResults"
+        },
+        "nextToken":{
+          "shape":"String",
+          "documentation":"<p>If nextToken is returned, there are more results available. Make the call again using the returned token to retrieve the next page. Keep all other arguments unchanged. Each pagination token expires after 24 hours; using an expired token fails with ValidationException.</p>",
+          "location":"querystring",
+          "locationName":"nextToken"
+        }
+      }
+    },
+    "ListAvailableModulesRequestMaxResultsInteger":{
+      "type":"integer",
+      "box":true,
+      "max":10,
+      "min":1
+    },
+    "ListAvailableModulesResponse":{
+      "type":"structure",
+      "required":["modules"],
+      "members":{
+        "modules":{
+          "shape":"AvailableModuleSummaryList",
+          "documentation":"<p>The modules on this page, newest first.</p>"
+        },
+        "nextToken":{
+          "shape":"String",
+          "documentation":"<p>If nextToken is returned, there are more results available. Make the call again using the returned token to retrieve the next page. Keep all other arguments unchanged. Each pagination token expires after 24 hours; using an expired token fails with ValidationException.</p>"
+        }
+      }
     },
     "ListCertificateAssociationsRequest":{
       "type":"structure",
@@ -2957,6 +3736,10 @@
           "shape":"ConnectivityType",
           "documentation":"<p>The connectivity type of the link.</p>"
         },
+        "errorDetails":{
+          "shape":"ErrorDetails",
+          "documentation":"<p>The causes of the failure, such as a deleted subnet. Present only when the resource has failed.</p>"
+        },
         "linkId":{
           "shape":"LinkId",
           "documentation":"<p>The unique identifier of the link.</p>"
@@ -3065,6 +3848,84 @@
         }
       }
     },
+    "ListUpdatesRequest":{
+      "type":"structure",
+      "required":["gatewayId"],
+      "members":{
+        "gatewayId":{
+          "shape":"GatewayId",
+          "documentation":"<p>The unique identifier of the gateway.</p>",
+          "location":"uri",
+          "locationName":"gatewayId"
+        },
+        "linkId":{
+          "shape":"LinkId",
+          "documentation":"<p>The ID of a link on this gateway, to list only that link's updates. Omit both <code>linkId</code> and <code>ruleId</code> to list the gateway's own updates.</p>",
+          "location":"querystring",
+          "locationName":"linkId"
+        },
+        "ruleId":{
+          "shape":"RuleId",
+          "documentation":"<p>The ID of a routing rule, to list only that rule's updates. Requires <code>linkId</code>, because you address a rule through its link. A <code>ruleId</code> without <code>linkId</code> fails with ValidationException.</p>",
+          "location":"querystring",
+          "locationName":"ruleId"
+        },
+        "type":{
+          "shape":"UpdateType",
+          "documentation":"<p>Lists only updates of this type.</p>",
+          "location":"querystring",
+          "locationName":"type"
+        },
+        "status":{
+          "shape":"UpdateStatus",
+          "documentation":"<p>Lists only updates in this status.</p>",
+          "location":"querystring",
+          "locationName":"status"
+        },
+        "nextToken":{
+          "shape":"ListUpdatesRequestNextTokenString",
+          "documentation":"<p>If nextToken is returned, there are more results available. Make the call again using the returned token to retrieve the next page. Keep all other arguments unchanged.</p>",
+          "location":"querystring",
+          "locationName":"nextToken"
+        },
+        "maxResults":{
+          "shape":"ListUpdatesRequestMaxResultsInteger",
+          "documentation":"<p>The maximum number of results to return for each call.</p>",
+          "location":"querystring",
+          "locationName":"maxResults"
+        }
+      }
+    },
+    "ListUpdatesRequestMaxResultsInteger":{
+      "type":"integer",
+      "box":true,
+      "max":100,
+      "min":1
+    },
+    "ListUpdatesRequestNextTokenString":{
+      "type":"string",
+      "max":2048,
+      "min":0
+    },
+    "ListUpdatesResponse":{
+      "type":"structure",
+      "required":["updates"],
+      "members":{
+        "updates":{
+          "shape":"UpdateSummaryList",
+          "documentation":"<p>The updates on this page.</p>"
+        },
+        "nextToken":{
+          "shape":"ListUpdatesResponseNextTokenString",
+          "documentation":"<p>If nextToken is returned, there are more results available. Make the call again using the returned token to retrieve the next page.</p>"
+        }
+      }
+    },
+    "ListUpdatesResponseNextTokenString":{
+      "type":"string",
+      "max":2048,
+      "min":0
+    },
     "ListenerConfig":{
       "type":"structure",
       "required":["protocols"],
@@ -3075,6 +3936,12 @@
         }
       },
       "documentation":"<p>Listener configuration for the protocols (HTTP, HTTPS, or both) accepted by the gateway.</p>"
+    },
+    "LockToken":{
+      "type":"string",
+      "documentation":"<p>A concurrency precondition that you read from GetLink. It's opaque, so pass it back unchanged. It has no time limit. It goes stale only when a change to the link is accepted, by any operation, including a call made with this token. Until then, reads return the same token, so a failed call leaves it valid. A token is valid only for the link that it was read from.</p>",
+      "max":256,
+      "min":1
     },
     "ManagedEndpointConfiguration":{
       "type":"structure",
@@ -3090,6 +3957,13 @@
       },
       "documentation":"<p>Describes the configuration of a managed endpoint.</p>",
       "union":true
+    },
+    "ModuleArn":{
+      "type":"string",
+      "documentation":"<p>ARN of a module: arn:aws:rtbfabric:{region}::modules/{moduleId}. The account field is empty.</p>",
+      "max":1011,
+      "min":0,
+      "pattern":"arn:aws[a-zA-Z-]*:rtbfabric:[a-z0-9-]+::modules/module-[a-zA-Z0-9]{1,25}"
     },
     "ModuleConfiguration":{
       "type":"structure",
@@ -3118,6 +3992,23 @@
       "type":"list",
       "member":{"shape":"ModuleConfiguration"}
     },
+    "ModuleDescription":{
+      "type":"string",
+      "documentation":"<p>Description of a module</p>",
+      "max":1024,
+      "min":0
+    },
+    "ModuleId":{
+      "type":"string",
+      "documentation":"<p>The unique identifier of a module, for example <code>module-8kq2p9wx3fnv1c5htj7bd0ral</code> or <code>module-openrtbAttributeFilter</code>.</p>",
+      "pattern":"module-[a-zA-Z0-9]{1,25}"
+    },
+    "ModuleName":{
+      "type":"string",
+      "max":64,
+      "min":1,
+      "pattern":"[A-Za-z0-9][A-Za-z0-9-]*"
+    },
     "ModuleParameters":{
       "type":"structure",
       "members":{
@@ -3136,6 +4027,41 @@
       },
       "documentation":"<p>Describes the parameters of a module.</p>",
       "union":true
+    },
+    "ModulePermission":{
+      "type":"string",
+      "documentation":"<p>A data-access grant that a version holds.</p>",
+      "enum":[
+        "READ_REQUEST_BODY",
+        "READ_REQUEST_HEADERS",
+        "MUTATE_REQUEST_BODY",
+        "ENRICH_REQUEST_HEADERS",
+        "ENRICH_REQUEST_EXT",
+        "FILTER"
+      ]
+    },
+    "ModulePermissionList":{
+      "type":"list",
+      "member":{"shape":"ModulePermission"},
+      "max":16,
+      "min":1
+    },
+    "ModuleVersionArn":{
+      "type":"string",
+      "documentation":"<p>arn:aws:rtbfabric:{REGION}::modules/{MODULE_ID}/versions/{VERSION}. The account field is empty: a module's ARN doesn't carry its owner's account.</p>",
+      "max":1011,
+      "min":0,
+      "pattern":"arn:aws[a-zA-Z-]*:rtbfabric:[a-z0-9-]+::modules/module-[a-zA-Z0-9]{1,25}/versions/(0|[1-9]\\d{0,9})\\.(0|[1-9]\\d{0,9})\\.(0|[1-9]\\d{0,9})"
+    },
+    "ModuleVersionStatus":{
+      "type":"string",
+      "documentation":"<p>A version is CREATING while it is validated, then ACTIVE or CREATE_FAILED. An ACTIVE version becomes DEPRECATED at the time its vendor schedules.</p>",
+      "enum":[
+        "CREATING",
+        "CREATE_FAILED",
+        "ACTIVE",
+        "DEPRECATED"
+      ]
     },
     "NoBidAction":{
       "type":"structure",
@@ -3222,6 +4148,17 @@
       "max":100,
       "min":0
     },
+    "PhasedPipeline":{
+      "type":"structure",
+      "required":["phases"],
+      "members":{
+        "phases":{
+          "shape":"FlowPhaseList",
+          "documentation":"<p>At most 8 modules in total across the phases; more fails with ValidationException.</p>"
+        }
+      },
+      "documentation":"<p>Phases that run in order; each starts after the previous one completes.</p>"
+    },
     "Protocol":{
       "type":"string",
       "enum":[
@@ -3234,6 +4171,69 @@
       "member":{"shape":"Protocol"},
       "max":2,
       "min":1
+    },
+    "PutLinkFlowsRequest":{
+      "type":"structure",
+      "required":[
+        "gatewayId",
+        "linkId",
+        "lockToken",
+        "flows"
+      ],
+      "members":{
+        "gatewayId":{
+          "shape":"GatewayId",
+          "documentation":"<p>The unique identifier of the gateway.</p>",
+          "location":"uri",
+          "locationName":"gatewayId"
+        },
+        "linkId":{
+          "shape":"LinkId",
+          "documentation":"<p>The unique identifier of the link.</p>",
+          "location":"uri",
+          "locationName":"linkId"
+        },
+        "clientToken":{
+          "shape":"ClientToken",
+          "documentation":"<p>A unique, case-sensitive identifier that you provide to ensure that the operation completes no more than one time. If you retry with the same token and parameters, you get the original response without an error. If you retry with the same token but different parameters, the call fails with ValidationException. If you don't provide a token, the SDK generates one, and RTB Fabric remembers it for 8 hours. A retry returns the original <code>updateId</code> before <code>lockToken</code> is checked.</p>",
+          "idempotencyToken":true
+        },
+        "lockToken":{
+          "shape":"LockToken",
+          "documentation":"<p>The concurrency token that you read from GetLink. If the link changed since that read, by any operation, the call fails with ConflictException.</p>"
+        },
+        "flows":{
+          "shape":"FlowList",
+          "documentation":"<p>The link's flows, replacing the current ones. An empty list removes every flow.</p>"
+        }
+      }
+    },
+    "PutLinkFlowsResponse":{
+      "type":"structure",
+      "required":[
+        "gatewayId",
+        "linkId",
+        "status",
+        "updateId"
+      ],
+      "members":{
+        "gatewayId":{
+          "shape":"GatewayId",
+          "documentation":"<p>The unique identifier of the gateway.</p>"
+        },
+        "linkId":{
+          "shape":"LinkId",
+          "documentation":"<p>The unique identifier of the link.</p>"
+        },
+        "status":{
+          "shape":"LinkStatus",
+          "documentation":"<p>The link's status. A successful call returns PENDING_UPDATE, and the link serves its prior flows until the change completes.</p>"
+        },
+        "updateId":{
+          "shape":"UpdateId",
+          "documentation":"<p>The ID of the update this call started.</p>"
+        }
+      }
     },
     "QueryStringKeyValuePair":{
       "type":"structure",
@@ -3348,11 +4348,21 @@
           "shape":"ConnectivityType",
           "documentation":"<p>The connectivity type of the link.</p>"
         },
+        "errorDetails":{
+          "shape":"ErrorDetails",
+          "documentation":"<p>The causes of the failure, such as a deleted subnet. Present only when the resource has failed.</p>"
+        },
         "linkId":{
           "shape":"LinkId",
           "documentation":"<p>The unique identifier of the link.</p>"
         }
       }
+    },
+    "ReleaseNotes":{
+      "type":"string",
+      "documentation":"<p>The release notes for a version.</p>",
+      "max":4096,
+      "min":0
     },
     "RequesterGatewayStatus":{
       "type":"string",
@@ -3365,7 +4375,9 @@
         "PENDING_UPDATE",
         "ISOLATED",
         "PENDING_ISOLATION",
-        "PENDING_RESTORATION"
+        "PENDING_RESTORATION",
+        "CREATE_FAILED",
+        "DELETE_FAILED"
       ]
     },
     "ResourceNotFoundException":{
@@ -3447,6 +4459,39 @@
       "max":2,
       "min":1
     },
+    "ResponderGatewayConfigParameters":{
+      "type":"structure",
+      "required":[
+        "port",
+        "protocol"
+      ],
+      "members":{
+        "description":{
+          "shape":"String",
+          "documentation":"<p>The gateway's description.</p>"
+        },
+        "clientRoutingPolicy":{
+          "shape":"ClientRoutingPolicy",
+          "documentation":"<p>The gateway's client routing policy.</p>"
+        },
+        "domainName":{
+          "shape":"DomainName",
+          "documentation":"<p>The gateway's domain name.</p>"
+        },
+        "port":{
+          "shape":"Integer",
+          "documentation":"<p>The networking port.</p>"
+        },
+        "protocol":{
+          "shape":"Protocol",
+          "documentation":"<p>The networking protocol.</p>"
+        },
+        "listenerConfig":{"shape":"ListenerConfig"},
+        "trustStoreConfiguration":{"shape":"TrustStoreConfiguration"},
+        "managedEndpointConfiguration":{"shape":"ManagedEndpointConfiguration"}
+      },
+      "documentation":"<p>A requested responder gateway configuration.</p>"
+    },
     "ResponderGatewayStatus":{
       "type":"string",
       "enum":[
@@ -3458,8 +4503,37 @@
         "PENDING_UPDATE",
         "ISOLATED",
         "PENDING_ISOLATION",
-        "PENDING_RESTORATION"
+        "PENDING_RESTORATION",
+        "CREATE_FAILED",
+        "DELETE_FAILED"
       ]
+    },
+    "RoutingRuleParameters":{
+      "type":"structure",
+      "required":[
+        "priority",
+        "conditions"
+      ],
+      "members":{
+        "priority":{"shape":"RulePriority"},
+        "conditions":{"shape":"RuleCondition"}
+      },
+      "documentation":"<p>A requested routing rule.</p>"
+    },
+    "RoutingRuleTarget":{
+      "type":"structure",
+      "required":[
+        "linkId",
+        "ruleId"
+      ],
+      "members":{
+        "linkId":{
+          "shape":"LinkId",
+          "documentation":"<p>The unique identifier of the rule's link.</p>"
+        },
+        "ruleId":{"shape":"RuleId"}
+      },
+      "documentation":"<p>The routing rule an update targeted.</p>"
     },
     "RtbTaggableResourceArn":{
       "type":"string",
@@ -3550,7 +4624,9 @@
         "UPDATE_IN_PROGRESS",
         "DELETION_IN_PROGRESS",
         "DELETED",
-        "FAILED"
+        "FAILED",
+        "CREATE_FAILED",
+        "DELETE_FAILED"
       ]
     },
     "SecurityGroupId":{
@@ -3558,6 +4634,30 @@
       "max":43,
       "min":11,
       "pattern":"sg-[0-9a-f]{8,40}"
+    },
+    "SelectedActionList":{
+      "type":"list",
+      "member":{"shape":"ConfigurableAction"},
+      "max":16,
+      "min":1
+    },
+    "SemanticVersion":{
+      "type":"string",
+      "documentation":"<p>A three-part semantic version with no leading zeros, for example <code>1.0.0</code>. Each number is at most 2,147,483,647. The vendor sets it, and a version is never reused.</p>",
+      "max":64,
+      "min":0,
+      "pattern":"(0|[1-9]\\d{0,9})\\.(0|[1-9]\\d{0,9})\\.(0|[1-9]\\d{0,9})"
+    },
+    "SequentialPipeline":{
+      "type":"structure",
+      "required":["modules"],
+      "members":{
+        "modules":{
+          "shape":"FlowModuleList",
+          "documentation":"<p>In execution order.</p>"
+        }
+      },
+      "documentation":"<p>Modules that run one after another, each on the previous module's output.</p>"
     },
     "ServiceQuotaExceededException":{
       "type":"structure",
@@ -3583,6 +4683,23 @@
       "max":24,
       "min":15,
       "pattern":"subnet-\\w{8,17}"
+    },
+    "SubscriptionStatus":{
+      "type":"string",
+      "documentation":"<p>Specifies whether your access to the module is current.</p>",
+      "enum":[
+        "ACTIVE",
+        "EXPIRED"
+      ]
+    },
+    "SubscriptionType":{
+      "type":"string",
+      "documentation":"<p>Indicates the type of access that you have to a module, such as a subscription, a private share, or a built-in.</p>",
+      "enum":[
+        "MARKETPLACE",
+        "PRIVATE",
+        "AWS_BUILT_IN"
+      ]
     },
     "TagKey":{
       "type":"string",
@@ -3667,6 +4784,10 @@
       "min":0,
       "pattern":"(https|http)://.+"
     },
+    "Unit":{
+      "type":"structure",
+      "members":{}
+    },
     "UntagResourceRequest":{
       "type":"structure",
       "required":[
@@ -3691,6 +4812,53 @@
     "UntagResourceResponse":{
       "type":"structure",
       "members":{}
+    },
+    "Update":{
+      "type":"structure",
+      "required":[
+        "updateId",
+        "type",
+        "status",
+        "target",
+        "createdAt"
+      ],
+      "members":{
+        "updateId":{
+          "shape":"UpdateId",
+          "documentation":"<p>The unique identifier of the update.</p>"
+        },
+        "type":{
+          "shape":"UpdateType",
+          "documentation":"<p>The type of change.</p>"
+        },
+        "status":{
+          "shape":"UpdateStatus",
+          "documentation":"<p>The status of the update.</p>"
+        },
+        "target":{
+          "shape":"UpdateTarget",
+          "documentation":"<p>The resource that the update targeted.</p>"
+        },
+        "createdAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The timestamp of when the update was created.</p>"
+        },
+        "parameters":{
+          "shape":"UpdateParameters",
+          "documentation":"<p>The changes that the update requested.</p>"
+        },
+        "errorDetails":{
+          "shape":"ErrorDetails",
+          "documentation":"<p>The causes of the failure. Present only when the update has failed.</p>"
+        }
+      },
+      "documentation":"<p>An accepted configuration change and its status.</p>"
+    },
+    "UpdateId":{
+      "type":"string",
+      "max":64,
+      "min":8,
+      "pattern":"update-[a-z0-9]{1,57}"
     },
     "UpdateLinkModuleFlowRequest":{
       "type":"structure",
@@ -3729,7 +4897,8 @@
       "required":[
         "gatewayId",
         "linkId",
-        "status"
+        "status",
+        "updateId"
       ],
       "members":{
         "gatewayId":{
@@ -3743,6 +4912,10 @@
         "status":{
           "shape":"LinkStatus",
           "documentation":"<p>The status of the request.</p>"
+        },
+        "updateId":{
+          "shape":"UpdateId",
+          "documentation":"<p>The ID of the update this call started.</p>"
         }
       }
     },
@@ -3772,14 +4945,26 @@
         "timeoutInMillis":{
           "shape":"LinkTimeoutInMillis",
           "documentation":"<p>The timeout value in milliseconds.</p>"
+        },
+        "clientToken":{
+          "shape":"UpdateLinkRequestClientTokenString",
+          "documentation":"<p>A unique, case-sensitive identifier for the request. The SDK generates one when you don't.</p>",
+          "idempotencyToken":true
         }
       }
+    },
+    "UpdateLinkRequestClientTokenString":{
+      "type":"string",
+      "max":128,
+      "min":1,
+      "pattern":"[!-~]+"
     },
     "UpdateLinkResponse":{
       "type":"structure",
       "required":[
         "linkId",
-        "status"
+        "status",
+        "updateId"
       ],
       "members":{
         "linkId":{
@@ -3789,6 +4974,10 @@
         "status":{
           "shape":"LinkStatus",
           "documentation":"<p>The status of the request.</p>"
+        },
+        "updateId":{
+          "shape":"UpdateId",
+          "documentation":"<p>The ID of the update this call started.</p>"
         }
       }
     },
@@ -3827,15 +5016,27 @@
         "conditions":{
           "shape":"RuleCondition",
           "documentation":"<p>The updated conditions for the routing rule. All specified fields must match for the rule to apply. At least one condition field must be set.</p>"
+        },
+        "clientToken":{
+          "shape":"UpdateLinkRoutingRuleRequestClientTokenString",
+          "documentation":"<p>A unique, case-sensitive identifier for the request. The SDK generates one when you don't.</p>",
+          "idempotencyToken":true
         }
       }
+    },
+    "UpdateLinkRoutingRuleRequestClientTokenString":{
+      "type":"string",
+      "max":128,
+      "min":1,
+      "pattern":"[!-~]+"
     },
     "UpdateLinkRoutingRuleResponse":{
       "type":"structure",
       "required":[
         "ruleId",
         "status",
-        "updatedAt"
+        "updatedAt",
+        "updateId"
       ],
       "members":{
         "ruleId":{
@@ -3849,8 +5050,35 @@
         "updatedAt":{
           "shape":"Timestamp",
           "documentation":"<p>The timestamp of when the routing rule was last updated.</p>"
+        },
+        "updateId":{
+          "shape":"UpdateId",
+          "documentation":"<p>The ID of the update this call started.</p>"
         }
       }
+    },
+    "UpdateParameters":{
+      "type":"structure",
+      "members":{
+        "responderGatewayConfig":{
+          "shape":"ResponderGatewayConfigParameters",
+          "documentation":"<p>The requested responder gateway configuration.</p>"
+        },
+        "linkConfig":{
+          "shape":"LinkConfigParameters",
+          "documentation":"<p>The requested link configuration.</p>"
+        },
+        "linkFlow":{
+          "shape":"LinkFlowParameters",
+          "documentation":"<p>The requested link flow.</p>"
+        },
+        "routingRule":{
+          "shape":"RoutingRuleParameters",
+          "documentation":"<p>The requested routing rule.</p>"
+        }
+      },
+      "documentation":"<p>What an update requested.</p>",
+      "union":true
     },
     "UpdateRequesterGatewayRequest":{
       "type":"structure",
@@ -3965,7 +5193,8 @@
       "type":"structure",
       "required":[
         "gatewayId",
-        "status"
+        "status",
+        "updateId"
       ],
       "members":{
         "gatewayId":{
@@ -3979,8 +5208,80 @@
         "clientRoutingPolicy":{
           "shape":"ClientRoutingPolicy",
           "documentation":"<p>The client routing policy of the gateway. If the operation changed this policy, the gateway uses the new policy after its status returns to <code>ACTIVE</code>. For more information, see <a href=\"https://docs.aws.amazon.com/rtb-fabric/latest/userguide/working-with-responder-gateways.html#configuring-availability-zone-affinity\">Configuring Availability Zone affinity</a> in the <i>Amazon Web Services RTB Fabric User Guide</i>.</p>"
+        },
+        "updateId":{
+          "shape":"UpdateId",
+          "documentation":"<p>The ID of the update this call started.</p>"
         }
       }
+    },
+    "UpdateStatus":{
+      "type":"string",
+      "enum":[
+        "IN_PROGRESS",
+        "SUCCESSFUL",
+        "FAILED"
+      ]
+    },
+    "UpdateSummary":{
+      "type":"structure",
+      "required":[
+        "updateId",
+        "type",
+        "status",
+        "createdAt"
+      ],
+      "members":{
+        "updateId":{
+          "shape":"UpdateId",
+          "documentation":"<p>The unique identifier of the update.</p>"
+        },
+        "type":{
+          "shape":"UpdateType",
+          "documentation":"<p>The type of change.</p>"
+        },
+        "status":{
+          "shape":"UpdateStatus",
+          "documentation":"<p>The status of the update.</p>"
+        },
+        "createdAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The timestamp of when the update was created.</p>"
+        }
+      },
+      "documentation":"<p>A summary of an update.</p>"
+    },
+    "UpdateSummaryList":{
+      "type":"list",
+      "member":{"shape":"UpdateSummary"}
+    },
+    "UpdateTarget":{
+      "type":"structure",
+      "members":{
+        "gateway":{
+          "shape":"Unit",
+          "documentation":"<p>The gateway itself.</p>"
+        },
+        "link":{
+          "shape":"LinkTarget",
+          "documentation":"<p>A link on the gateway.</p>"
+        },
+        "routingRule":{
+          "shape":"RoutingRuleTarget",
+          "documentation":"<p>A routing rule on one of the gateway's links.</p>"
+        }
+      },
+      "documentation":"<p>What an update targeted.</p>",
+      "union":true
+    },
+    "UpdateType":{
+      "type":"string",
+      "enum":[
+        "GATEWAY_CONFIG_UPDATE",
+        "LINK_CONFIG_UPDATE",
+        "LINK_FLOW_UPDATE",
+        "ROUTING_RULE_UPDATE"
+      ]
     },
     "ValidationException":{
       "type":"structure",

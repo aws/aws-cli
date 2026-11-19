@@ -873,6 +873,27 @@
       "authtype":"none",
       "auth":["smithy.api#noAuth"]
     },
+    "CreateCIMDPolicy":{
+      "name":"CreateCIMDPolicy",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"CreateCIMDPolicyRequest"},
+      "output":{"shape":"CreateCIMDPolicyResponse"},
+      "errors":[
+        {"shape":"InvalidParameterException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ConcurrentModificationException"},
+        {"shape":"NotAuthorizedException"},
+        {"shape":"TooManyRequestsException"},
+        {"shape":"LimitExceededException"},
+        {"shape":"OperationNotEnabledException"},
+        {"shape":"InternalErrorException"},
+        {"shape":"FeatureUnavailableInTierException"}
+      ],
+      "documentation":"<p>Creates a Client ID Metadata Document (CIMD) policy for an app client. A CIMD policy lets OAuth clients identify themselves to your user pool with an HTTPS URL as their client ID. Amazon Cognito retrieves the client metadata document from that URL and accepts the client only when the URL matches one of the URL patterns in the policy.</p> <note> <p>Amazon Cognito evaluates Identity and Access Management (IAM) policies in requests for this API operation. For this operation, you must use IAM credentials to authorize requests, and you must grant yourself the corresponding IAM permission in a policy.</p> <p class=\"title\"> <b>Learn more</b> </p> <ul> <li> <p> <a href=\"https://docs.aws.amazon.com/IAM/latest/UserGuide/reference_aws-signing.html\">Signing Amazon Web Services API Requests</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/cognito/latest/developerguide/user-pools-API-operations.html\">Using the Amazon Cognito user pools API and user pool endpoints</a> </p> </li> </ul> </note>"
+    },
     "CreateGroup":{
       "name":"CreateGroup",
       "http":{
@@ -1078,6 +1099,25 @@
         {"shape":"FeatureUnavailableInTierException"}
       ],
       "documentation":"<p>Creates a replica of an existing user pool in a specified Amazon Web Services Region. The replica enables multi-region replication for high availability and disaster recovery. To create a replica, you must have permissions to create user pools in the target Region.</p> <note> <p>Amazon Cognito evaluates Identity and Access Management (IAM) policies in requests for this API operation. For this operation, you must use IAM credentials to authorize requests, and you must grant yourself the corresponding IAM permission in a policy.</p> <p class=\"title\"> <b>Learn more</b> </p> <ul> <li> <p> <a href=\"https://docs.aws.amazon.com/IAM/latest/UserGuide/reference_aws-signing.html\">Signing Amazon Web Services API Requests</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/cognito/latest/developerguide/user-pools-API-operations.html\">Using the Amazon Cognito user pools API and user pool endpoints</a> </p> </li> </ul> </note>"
+    },
+    "DeleteCIMDPolicy":{
+      "name":"DeleteCIMDPolicy",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"DeleteCIMDPolicyRequest"},
+      "output":{"shape":"DeleteCIMDPolicyResponse"},
+      "errors":[
+        {"shape":"InvalidParameterException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ConcurrentModificationException"},
+        {"shape":"TooManyRequestsException"},
+        {"shape":"NotAuthorizedException"},
+        {"shape":"OperationNotEnabledException"},
+        {"shape":"InternalErrorException"}
+      ],
+      "documentation":"<p>Deletes a Client ID Metadata Document (CIMD) policy.</p> <note> <p>Amazon Cognito evaluates Identity and Access Management (IAM) policies in requests for this API operation. For this operation, you must use IAM credentials to authorize requests, and you must grant yourself the corresponding IAM permission in a policy.</p> <p class=\"title\"> <b>Learn more</b> </p> <ul> <li> <p> <a href=\"https://docs.aws.amazon.com/IAM/latest/UserGuide/reference_aws-signing.html\">Signing Amazon Web Services API Requests</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/cognito/latest/developerguide/user-pools-API-operations.html\">Using the Amazon Cognito user pools API and user pool endpoints</a> </p> </li> </ul> </note>"
     },
     "DeleteGroup":{
       "name":"DeleteGroup",
@@ -1325,6 +1365,23 @@
       "documentation":"<p>Deletes a registered passkey, or WebAuthn, authenticator for the currently signed-in user.</p> <p>Authorize this action with a signed-in user's access token. It must include the scope <code>aws.cognito.signin.user.admin</code>.</p> <note> <p>Amazon Cognito doesn't evaluate Identity and Access Management (IAM) policies in requests for this API operation. For this operation, you can't use IAM credentials to authorize requests, and you can't grant IAM permissions in policies. For more information about authorization models in Amazon Cognito, see <a href=\"https://docs.aws.amazon.com/cognito/latest/developerguide/user-pools-API-operations.html\">Using the Amazon Cognito user pools API and user pool endpoints</a>.</p> </note>",
       "authtype":"none",
       "auth":["smithy.api#noAuth"]
+    },
+    "DescribeCIMDPolicy":{
+      "name":"DescribeCIMDPolicy",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"DescribeCIMDPolicyRequest"},
+      "output":{"shape":"DescribeCIMDPolicyResponse"},
+      "errors":[
+        {"shape":"InvalidParameterException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"NotAuthorizedException"},
+        {"shape":"TooManyRequestsException"},
+        {"shape":"InternalErrorException"}
+      ],
+      "documentation":"<p>Returns the configuration of a Client ID Metadata Document (CIMD) policy.</p> <note> <p>Amazon Cognito evaluates Identity and Access Management (IAM) policies in requests for this API operation. For this operation, you must use IAM credentials to authorize requests, and you must grant yourself the corresponding IAM permission in a policy.</p> <p class=\"title\"> <b>Learn more</b> </p> <ul> <li> <p> <a href=\"https://docs.aws.amazon.com/IAM/latest/UserGuide/reference_aws-signing.html\">Signing Amazon Web Services API Requests</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/cognito/latest/developerguide/user-pools-API-operations.html\">Using the Amazon Cognito user pools API and user pool endpoints</a> </p> </li> </ul> </note>"
     },
     "DescribeIdentityProvider":{
       "name":"DescribeIdentityProvider",
@@ -2021,7 +2078,41 @@
         {"shape":"OperationNotEnabledException"},
         {"shape":"InternalErrorException"}
       ],
-      "documentation":"<p>Initiates a point-in-time recovery of a user pool to a time in the past that you specify. This operation is the first step of a recovery and doesn't change your user pool data. Amazon Cognito pauses write operations in the user pool and generates a recovery preview when capacity is available in the Amazon Web Services Region, so the preview might not be available immediately. The preview shows the number of entities that the recovery creates, updates, and deletes. To check the status of the recovery and review the preview, make a request. When the status is <code>PREVIEW_GENERATED</code>, apply the recovery with a request or discard it with a request. The time that it takes to generate the recovery preview doesn't depend on the size of your user pool.</p> <important> <p>Point-in-time recovery is a disaster recovery feature. Use it to recover from accidental or unauthorized changes that affect your user data, for example the deletion or corruption of many users. Don't use point-in-time recovery to remove users that were created recently or to revert changes to individual users. To delete or update individual users, use operations like and .</p> </important> <p>While a recovery is in progress, Amazon Cognito blocks operations that write to the user pool, for example user sign-up, user creation, and attribute updates. Sign-in and read operations continue to work, with the following exceptions.</p> <ul> <li> <p>Users who must set a new password, set up MFA, or respond to a TOTP MFA challenge can't complete sign-in. Sign-in with the <code>NEW_PASSWORD_REQUIRED</code>, <code>MFA_SETUP</code>, and <code>SOFTWARE_TOKEN_MFA</code> challenges fails until the recovery ends.</p> </li> <li> <p>Federated users can sign in only if they have previously signed in to the user pool and their attributes from the external identity provider haven't changed.</p> </li> <li> <p>You can't create or start user import jobs. Start your import jobs after the recovery ends.</p> </li> </ul> <p>If you don't start or cancel the recovery within 24 hours after you initiate it, the recovery preview expires. Amazon Cognito then resumes write operations and doesn't change your user pool data. The 24-hour period includes the time that Amazon Cognito waits for available capacity.</p> <p>A point-in-time recovery restores user data, including user profiles and attributes, group memberships, passwords, MFA settings, and passkeys. It doesn't restore user pool configuration, for example app clients, the attribute schema, encryption settings, or multi-Region replication settings. Users who changed their password after the recovery point keep their current password.</p> <p>The following requirements and limits apply to point-in-time recovery.</p> <ul> <li> <p>Your user pool must be on the Essentials or Plus <a href=\"https://docs.aws.amazon.com/cognito/latest/developerguide/cognito-sign-in-feature-plans.html\">feature plan</a>. With the Essentials feature plan, you can recover your user pool to a point in time up to 1 day in the past. With the Plus feature plan, you can recover up to 14 days in the past. Your user pool must have been on the required feature plan at the recovery point. For example, to recover to a point in time 14 days ago, your user pool must have been on the Plus feature plan for the past 14 days.</p> </li> <li> <p>The recovery point must be at least 15 minutes in the past and can't be earlier than the creation time of the user pool.</p> </li> <li> <p>A user pool can have only one active recovery at a time.</p> </li> <li> <p>An Amazon Web Services account can have up to five active recoveries at a time across all of its user pools. An organization in Amazon Web Services Organizations can have up to ten active recoveries at a time across all of its accounts.</p> </li> <li> <p>You can complete one recovery of a user pool in a 24-hour period.</p> </li> <li> <p>You can create up to three recovery previews of a user pool, ten recovery previews in an Amazon Web Services account, and 15 recovery previews in an organization in Amazon Web Services Organizations in a 24-hour period. You can create up to ten recovery previews of a user pool in a 30-day period.</p> </li> <li> <p>You can't initiate a recovery while a user import job is in progress in your user pool. Wait for the import job to complete, or stop it with a request, and then initiate the recovery.</p> </li> <li> <p>In a user pool with multi-Region replication, you can initiate a recovery only in the primary Amazon Web Services Region, and only after replication is complete.</p> </li> <li> <p>If your user pool uses a customer managed key in KMS for encryption, the key must remain enabled and accessible to Amazon Cognito for the duration of the recovery.</p> </li> <li> <p>Some user pools don't support point-in-time recovery, for example some older user pools and user pools that contain user data with characters or formats that point-in-time recovery doesn't support. If your user pool doesn't support it, Amazon Cognito returns an error when you initiate a recovery. To get help with this limitation, contact Amazon Web Services Support.</p> </li> </ul> <note> <p>Amazon Cognito evaluates Identity and Access Management (IAM) policies in requests for this API operation. For this operation, you must use IAM credentials to authorize requests, and you must grant yourself the corresponding IAM permission in a policy.</p> <p class=\"title\"> <b>Learn more</b> </p> <ul> <li> <p> <a href=\"https://docs.aws.amazon.com/IAM/latest/UserGuide/reference_aws-signing.html\">Signing Amazon Web Services API Requests</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/cognito/latest/developerguide/user-pools-API-operations.html\">Using the Amazon Cognito user pools API and user pool endpoints</a> </p> </li> </ul> </note>"
+      "documentation":"<p>Initiates a point-in-time recovery of a user pool to a time in the past that you specify. This operation is the first step of a recovery and doesn't change your user pool data. Amazon Cognito pauses write operations in the user pool and generates a recovery preview, which might not be available immediately. The preview shows the number of entities that the recovery creates, updates, and deletes. To check the status of the recovery and review the preview, make a request. When the status is <code>PREVIEW_GENERATED</code>, apply the recovery with a request or discard it with a request. The time that it takes to generate the recovery preview doesn't depend on the size of your user pool.</p> <important> <p>Point-in-time recovery is a disaster recovery feature. Use it to recover from accidental or unauthorized changes that affect your user data, for example the deletion or corruption of many users. Don't use point-in-time recovery to remove users that were created recently or to revert changes to individual users. To delete or update individual users, use operations like and .</p> </important> <p>While a recovery is in progress, Amazon Cognito blocks operations that write to the user pool, for example user sign-up, user creation, and attribute updates. Sign-in and read operations continue to work, with the following exceptions:</p> <ul> <li> <p>Users who must set a new password, set up MFA, or respond to a TOTP MFA challenge can't complete sign-in. Sign-in with the <code>NEW_PASSWORD_REQUIRED</code>, <code>MFA_SETUP</code>, and <code>SOFTWARE_TOKEN_MFA</code> challenges fails until the recovery ends.</p> </li> <li> <p>Federated users can sign in only if they have previously signed in to the user pool and their attributes from the external identity provider haven't changed.</p> </li> <li> <p>You can't create or start user import jobs. Start your import jobs after the recovery ends.</p> </li> </ul> <p>If you don't start or cancel the recovery within 24 hours after you initiate it, the recovery preview expires. Amazon Cognito then resumes write operations and doesn't change your user pool data. The 24-hour period includes the time that Amazon Cognito takes to generate the recovery preview.</p> <p>A point-in-time recovery restores user data, including user profiles and attributes, group memberships, passwords, MFA settings, and passkeys. It doesn't restore user pool configuration, for example app clients, the attribute schema, encryption settings, or multi-Region replication settings. Users who changed their password after the recovery point keep their current password.</p> <p>The following requirements and limits apply to point-in-time recovery:</p> <ul> <li> <p>Your user pool must be on the Essentials or Plus <a href=\"https://docs.aws.amazon.com/cognito/latest/developerguide/cognito-sign-in-feature-plans.html\">feature plan</a>. With the Essentials feature plan, you can recover your user pool to a point in time up to 1 day in the past. With the Plus feature plan, you can recover up to 14 days in the past. Your user pool must have been on the required feature plan at the recovery point. For example, to recover to a point in time 14 days ago, your user pool must have been on the Plus feature plan for the past 14 days.</p> </li> <li> <p>The recovery point must be at least 15 minutes in the past and can't be earlier than the creation time of the user pool.</p> </li> <li> <p>A user pool can have only one active recovery at a time.</p> </li> <li> <p>An Amazon Web Services account can have up to five active recoveries at a time across all of its user pools. An organization in Amazon Web Services Organizations can have up to ten active recoveries at a time across all of its accounts.</p> </li> <li> <p>You can complete one recovery of a user pool in a 24-hour period.</p> </li> <li> <p>You can create up to three recovery previews of a user pool, ten recovery previews in an Amazon Web Services account, and 15 recovery previews in an organization in Amazon Web Services Organizations in a 24-hour period. You can create up to ten recovery previews of a user pool in a 30-day period.</p> </li> <li> <p>You can't initiate a recovery while a user import job is in progress in your user pool. Wait for the import job to complete, or stop it with a request, and then initiate the recovery.</p> </li> <li> <p>In a user pool with multi-Region replication, you can initiate a recovery only in the primary Amazon Web Services Region, and only after replication is complete.</p> </li> <li> <p>If your user pool uses a customer managed key in KMS for encryption, the key must remain enabled and accessible to Amazon Cognito for the duration of the recovery.</p> </li> <li> <p>Some user pools don't support point-in-time recovery, for example some older user pools and user pools that contain user data with characters or formats that point-in-time recovery doesn't support. If your user pool doesn't support it, Amazon Cognito returns an error when you initiate a recovery. To get help with this limitation, contact Amazon Web Services Support.</p> </li> </ul> <note> <p>Amazon Cognito evaluates Identity and Access Management (IAM) policies in requests for this API operation. For this operation, you must use IAM credentials to authorize requests, and you must grant yourself the corresponding IAM permission in a policy.</p> <p class=\"title\"> <b>Learn more</b> </p> <ul> <li> <p> <a href=\"https://docs.aws.amazon.com/IAM/latest/UserGuide/reference_aws-signing.html\">Signing Amazon Web Services API Requests</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/cognito/latest/developerguide/user-pools-API-operations.html\">Using the Amazon Cognito user pools API and user pool endpoints</a> </p> </li> </ul> </note>"
+    },
+    "ListCIMDPolicies":{
+      "name":"ListCIMDPolicies",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"ListCIMDPoliciesRequest"},
+      "output":{"shape":"ListCIMDPoliciesResponse"},
+      "errors":[
+        {"shape":"InvalidParameterException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"NotAuthorizedException"},
+        {"shape":"TooManyRequestsException"},
+        {"shape":"InternalErrorException"}
+      ],
+      "documentation":"<p>Lists the Client ID Metadata Document (CIMD) policies in a user pool.</p> <note> <p>Amazon Cognito evaluates Identity and Access Management (IAM) policies in requests for this API operation. For this operation, you must use IAM credentials to authorize requests, and you must grant yourself the corresponding IAM permission in a policy.</p> <p class=\"title\"> <b>Learn more</b> </p> <ul> <li> <p> <a href=\"https://docs.aws.amazon.com/IAM/latest/UserGuide/reference_aws-signing.html\">Signing Amazon Web Services API Requests</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/cognito/latest/developerguide/user-pools-API-operations.html\">Using the Amazon Cognito user pools API and user pool endpoints</a> </p> </li> </ul> </note>"
+    },
+    "ListClientMetadataURLs":{
+      "name":"ListClientMetadataURLs",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"ListClientMetadataURLsRequest"},
+      "output":{"shape":"ListClientMetadataURLsResponse"},
+      "errors":[
+        {"shape":"InvalidParameterException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"NotAuthorizedException"},
+        {"shape":"TooManyRequestsException"},
+        {"shape":"InternalErrorException"}
+      ],
+      "documentation":"<p>Lists the client ID metadata document URLs that Amazon Cognito has received for a Client ID Metadata Document (CIMD) policy, with the cache state of each URL.</p> <note> <p>Amazon Cognito evaluates Identity and Access Management (IAM) policies in requests for this API operation. For this operation, you must use IAM credentials to authorize requests, and you must grant yourself the corresponding IAM permission in a policy.</p> <p class=\"title\"> <b>Learn more</b> </p> <ul> <li> <p> <a href=\"https://docs.aws.amazon.com/IAM/latest/UserGuide/reference_aws-signing.html\">Signing Amazon Web Services API Requests</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/cognito/latest/developerguide/user-pools-API-operations.html\">Using the Amazon Cognito user pools API and user pool endpoints</a> </p> </li> </ul> </note>"
     },
     "ListDevices":{
       "name":"ListDevices",
@@ -2775,6 +2866,47 @@
       "documentation":"<p>Provides the feedback for an authentication event generated by threat protection features. The user's response indicates that you think that the event either was from a valid user or was an unwanted authentication attempt. This feedback improves the risk evaluation decision for the user pool as part of Amazon Cognito threat protection. To activate this setting, your user pool must be on the <a href=\"https://docs.aws.amazon.com/cognito/latest/developerguide/feature-plans-features-plus.html\"> Plus tier</a>.</p> <p>This operation requires a <code>FeedbackToken</code> that Amazon Cognito generates and adds to notification emails when users have potentially suspicious authentication events. Users invoke this operation when they select the link that corresponds to <code>{one-click-link-valid}</code> or <code>{one-click-link-invalid}</code> in your notification template. Because <code>FeedbackToken</code> is a required parameter, you can't make requests to <code>UpdateAuthEventFeedback</code> without the contents of the notification email message.</p> <note> <p>Amazon Cognito doesn't evaluate Identity and Access Management (IAM) policies in requests for this API operation. For this operation, you can't use IAM credentials to authorize requests, and you can't grant IAM permissions in policies. For more information about authorization models in Amazon Cognito, see <a href=\"https://docs.aws.amazon.com/cognito/latest/developerguide/user-pools-API-operations.html\">Using the Amazon Cognito user pools API and user pool endpoints</a>.</p> </note>",
       "authtype":"none",
       "auth":["smithy.api#noAuth"]
+    },
+    "UpdateCIMDPolicy":{
+      "name":"UpdateCIMDPolicy",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"UpdateCIMDPolicyRequest"},
+      "output":{"shape":"UpdateCIMDPolicyResponse"},
+      "errors":[
+        {"shape":"InvalidParameterException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ConcurrentModificationException"},
+        {"shape":"NotAuthorizedException"},
+        {"shape":"TooManyRequestsException"},
+        {"shape":"LimitExceededException"},
+        {"shape":"OperationNotEnabledException"},
+        {"shape":"InternalErrorException"},
+        {"shape":"FeatureUnavailableInTierException"}
+      ],
+      "documentation":"<p>Updates the configuration of a Client ID Metadata Document (CIMD) policy.</p> <note> <p>Amazon Cognito evaluates Identity and Access Management (IAM) policies in requests for this API operation. For this operation, you must use IAM credentials to authorize requests, and you must grant yourself the corresponding IAM permission in a policy.</p> <p class=\"title\"> <b>Learn more</b> </p> <ul> <li> <p> <a href=\"https://docs.aws.amazon.com/IAM/latest/UserGuide/reference_aws-signing.html\">Signing Amazon Web Services API Requests</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/cognito/latest/developerguide/user-pools-API-operations.html\">Using the Amazon Cognito user pools API and user pool endpoints</a> </p> </li> </ul> </note>"
+    },
+    "UpdateClientMetadataURLState":{
+      "name":"UpdateClientMetadataURLState",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"UpdateClientMetadataURLStateRequest"},
+      "output":{"shape":"UpdateClientMetadataURLStateResponse"},
+      "errors":[
+        {"shape":"InvalidParameterException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"CachedCIMDURLDoesNotExistException"},
+        {"shape":"NotAuthorizedException"},
+        {"shape":"TooManyRequestsException"},
+        {"shape":"OperationNotEnabledException"},
+        {"shape":"InternalErrorException"},
+        {"shape":"FeatureUnavailableInTierException"}
+      ],
+      "documentation":"<p>Changes the cache state of a client metadata document URL for a client ID metadata document (CIMD) policy. Refresh a URL to make Amazon Cognito retrieve the client metadata document again, or invalidate it to remove the cached document.</p> <note> <p>Amazon Cognito evaluates Identity and Access Management (IAM) policies in requests for this API operation. For this operation, you must use IAM credentials to authorize requests, and you must grant yourself the corresponding IAM permission in a policy.</p> <p class=\"title\"> <b>Learn more</b> </p> <ul> <li> <p> <a href=\"https://docs.aws.amazon.com/IAM/latest/UserGuide/reference_aws-signing.html\">Signing Amazon Web Services API Requests</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/cognito/latest/developerguide/user-pools-API-operations.html\">Using the Amazon Cognito user pools API and user pool endpoints</a> </p> </li> </ul> </note>"
     },
     "UpdateDeviceStatus":{
       "name":"UpdateDeviceStatus",
@@ -4680,12 +4812,125 @@
       "max":200
     },
     "BooleanType":{"type":"boolean"},
+    "CIMDCacheActionType":{
+      "type":"string",
+      "enum":[
+        "REFRESH",
+        "INVALIDATE"
+      ]
+    },
+    "CIMDPolicyIdType":{
+      "type":"string",
+      "max":64,
+      "min":1,
+      "pattern":"^[a-z0-9]+$"
+    },
+    "CIMDPolicyNameType":{
+      "type":"string",
+      "max":32,
+      "min":1,
+      "pattern":"[\\p{L}\\p{M}\\p{S}\\p{N}\\p{P}\\p{Z}]+"
+    },
+    "CIMDPolicySummaryListType":{
+      "type":"list",
+      "member":{"shape":"CIMDPolicySummaryType"}
+    },
+    "CIMDPolicySummaryType":{
+      "type":"structure",
+      "required":[
+        "CIMDPolicyId",
+        "PolicyName"
+      ],
+      "members":{
+        "CIMDPolicyId":{
+          "shape":"CIMDPolicyIdType",
+          "documentation":"<p>The ID of the CIMD policy.</p>"
+        },
+        "ClientId":{
+          "shape":"ClientIdType",
+          "documentation":"<p>The ID of the app client that the CIMD policy is associated with. Amazon Cognito omits this value when the app client no longer exists.</p>"
+        },
+        "PolicyName":{
+          "shape":"CIMDPolicyNameType",
+          "documentation":"<p>The friendly name of the CIMD policy.</p>"
+        },
+        "CacheDuration":{
+          "shape":"CacheDurationType",
+          "documentation":"<p>The length of time, in seconds, that Amazon Cognito caches a client metadata document that it retrieved from a URL that matches the policy.</p>"
+        },
+        "CreationDate":{
+          "shape":"DateType",
+          "documentation":"<p>The date and time when the CIMD policy was created.</p>"
+        },
+        "LastModifiedDate":{
+          "shape":"DateType",
+          "documentation":"<p>The date and time when the CIMD policy was last modified.</p>"
+        }
+      },
+      "documentation":"<p>A summary of a Client ID Metadata Document (CIMD) policy, returned by .</p>"
+    },
+    "CIMDPolicyType":{
+      "type":"structure",
+      "required":[
+        "UserPoolId",
+        "CIMDPolicyId",
+        "PolicyName"
+      ],
+      "members":{
+        "UserPoolId":{
+          "shape":"UserPoolIdType",
+          "documentation":"<p>The ID of the user pool that contains the CIMD policy.</p>"
+        },
+        "CIMDPolicyId":{
+          "shape":"CIMDPolicyIdType",
+          "documentation":"<p>The ID of the CIMD policy.</p>"
+        },
+        "ClientId":{
+          "shape":"ClientIdType",
+          "documentation":"<p>The ID of the app client that the CIMD policy is associated with. Amazon Cognito omits this value when the app client no longer exists.</p>"
+        },
+        "PolicyName":{
+          "shape":"CIMDPolicyNameType",
+          "documentation":"<p>The friendly name of the CIMD policy.</p>"
+        },
+        "CacheDuration":{
+          "shape":"CacheDurationType",
+          "documentation":"<p>The length of time, in seconds, that Amazon Cognito caches a client metadata document that it retrieved from a URL that matches the policy.</p>"
+        },
+        "URLPatterns":{
+          "shape":"URLPatternListType",
+          "documentation":"<p>The HTTPS URL patterns that a client ID metadata document URL must match.</p>"
+        },
+        "CreationDate":{
+          "shape":"DateType",
+          "documentation":"<p>The date and time when the CIMD policy was created.</p>"
+        },
+        "LastModifiedDate":{
+          "shape":"DateType",
+          "documentation":"<p>The date and time when the CIMD policy was last modified.</p>"
+        }
+      },
+      "documentation":"<p>The configuration of a Client ID Metadata Document (CIMD) policy.</p>"
+    },
     "CSSType":{
       "type":"string",
       "max":131072,
       "min":0
     },
     "CSSVersionType":{"type":"string"},
+    "CacheDurationType":{
+      "type":"integer",
+      "max":31556952,
+      "min":86400
+    },
+    "CachedCIMDURLDoesNotExistException":{
+      "type":"structure",
+      "members":{
+        "message":{"shape":"MessageType"}
+      },
+      "documentation":"<p>This exception is thrown when Amazon Cognito doesn't have a cached client metadata document for the URL in the request.</p>",
+      "exception":true
+    },
     "CallbackURLsListType":{
       "type":"list",
       "member":{"shape":"RedirectUrlType"},
@@ -4839,6 +5084,31 @@
       "key":{"shape":"StringType"},
       "value":{"shape":"StringType"}
     },
+    "ClientMetadataURLListType":{
+      "type":"list",
+      "member":{"shape":"ClientMetadataURLType"},
+      "max":60,
+      "min":0
+    },
+    "ClientMetadataURLType":{
+      "type":"structure",
+      "required":["URL"],
+      "members":{
+        "URL":{
+          "shape":"MetadataURLType",
+          "documentation":"<p>The client metadata document URL.</p>"
+        },
+        "CachedDate":{
+          "shape":"DateType",
+          "documentation":"<p>The date and time when Amazon Cognito cached the client metadata document from this URL.</p>"
+        },
+        "ExpirationDate":{
+          "shape":"DateType",
+          "documentation":"<p>The date and time when the cached client metadata document expires.</p>"
+        }
+      },
+      "documentation":"<p>A client metadata document URL that Amazon Cognito has received for a Client ID Metadata Document (CIMD) policy, with its cache state.</p>"
+    },
     "ClientNameType":{
       "type":"string",
       "max":128,
@@ -4864,6 +5134,12 @@
         }
       },
       "documentation":"<p>The SSO session settings for a user pool app client.</p>"
+    },
+    "ClientSecretArnType":{
+      "type":"string",
+      "max":2048,
+      "min":20,
+      "pattern":"^arn\\:(aws|aws-us-gov|aws-eusc)\\:secretsmanager\\:([\\d\\w\\-]+):(\\d{12})\\:secret\\/[\\w+=\\/,.@\\-]+$"
     },
     "ClientSecretDescriptorListType":{
       "type":"list",
@@ -5226,6 +5502,47 @@
       },
       "documentation":"<p>Contextual user data used for evaluating the risk of an authentication event by user pool threat protection.</p>"
     },
+    "CreateCIMDPolicyRequest":{
+      "type":"structure",
+      "required":[
+        "UserPoolId",
+        "ClientId",
+        "PolicyName",
+        "URLPatterns"
+      ],
+      "members":{
+        "UserPoolId":{
+          "shape":"UserPoolIdType",
+          "documentation":"<p>The ID of the user pool where you want to create the CIMD policy.</p>"
+        },
+        "ClientId":{
+          "shape":"ClientIdType",
+          "documentation":"<p>The ID of the app client that you want to associate with the CIMD policy.</p>"
+        },
+        "PolicyName":{
+          "shape":"CIMDPolicyNameType",
+          "documentation":"<p>A friendly name for the CIMD policy.</p>"
+        },
+        "CacheDuration":{
+          "shape":"CacheDurationType",
+          "documentation":"<p>The length of time, in seconds, that Amazon Cognito caches a client metadata document that it retrieved from a URL that matches the policy. The value must be between 86,400 seconds (one day) and 31,556,952 seconds (one year).</p>"
+        },
+        "URLPatterns":{
+          "shape":"URLPatternListType",
+          "documentation":"<p>One to five HTTPS URL patterns. Amazon Cognito accepts a client ID metadata document URL only when it matches one of these patterns. Patterns can contain the <code>*</code> wildcard character.</p>"
+        }
+      }
+    },
+    "CreateCIMDPolicyResponse":{
+      "type":"structure",
+      "required":["CIMDPolicy"],
+      "members":{
+        "CIMDPolicy":{
+          "shape":"CIMDPolicyType",
+          "documentation":"<p>The CIMD policy that you created.</p>"
+        }
+      }
+    },
     "CreateGroupRequest":{
       "type":"structure",
       "required":[
@@ -5571,6 +5888,10 @@
         "RefreshTokenRotation":{
           "shape":"RefreshTokenRotationType",
           "documentation":"<p>The configuration of your app client for refresh token rotation. When enabled, your app client issues new ID, access, and refresh tokens when users renew their sessions with refresh tokens. When disabled, token refresh issues only ID and access tokens.</p>"
+        },
+        "PublishSecretsInAWSSecretsManager":{
+          "shape":"WrappedBooleanType",
+          "documentation":"<p>Specifies whether Amazon Cognito stores and manages this app client's secret in <a href=\"https://docs.aws.amazon.com/secretsmanager/latest/userguide/intro.html\">Amazon Web Services Secrets Manager</a> instead of returning the plaintext value. Applies only when <code>GenerateSecret</code> is <code>true</code>. When you set this parameter to <code>true</code>, the response returns <code>ClientSecretArn</code> instead of <code>ClientSecret</code>. Amazon Cognito starts the first rotation of the secret right away, and then rotates the secret every 7 days by default. You can change the rotation schedule in Secrets Manager.</p> <p>Defaults to <code>false</code>. If you don't set this parameter, Amazon Cognito doesn't manage the secret in Secrets Manager and returns the plaintext <code>ClientSecret</code> value. The Amazon Cognito console turns on this option by default when it creates an app client with a generated client secret.</p>"
         }
       },
       "documentation":"<p>Represents the request to create a user pool client.</p>"
@@ -5895,6 +6216,27 @@
         "CONFIRM_WITH_CODE"
       ]
     },
+    "DeleteCIMDPolicyRequest":{
+      "type":"structure",
+      "required":[
+        "UserPoolId",
+        "CIMDPolicyId"
+      ],
+      "members":{
+        "UserPoolId":{
+          "shape":"UserPoolIdType",
+          "documentation":"<p>The ID of the user pool that contains the CIMD policy.</p>"
+        },
+        "CIMDPolicyId":{
+          "shape":"CIMDPolicyIdType",
+          "documentation":"<p>The ID of the CIMD policy that you want to delete.</p>"
+        }
+      }
+    },
+    "DeleteCIMDPolicyResponse":{
+      "type":"structure",
+      "members":{}
+    },
     "DeleteGroupRequest":{
       "type":"structure",
       "required":[
@@ -6156,6 +6498,33 @@
         "SMS",
         "EMAIL"
       ]
+    },
+    "DescribeCIMDPolicyRequest":{
+      "type":"structure",
+      "required":[
+        "UserPoolId",
+        "CIMDPolicyId"
+      ],
+      "members":{
+        "UserPoolId":{
+          "shape":"UserPoolIdType",
+          "documentation":"<p>The ID of the user pool that contains the CIMD policy.</p>"
+        },
+        "CIMDPolicyId":{
+          "shape":"CIMDPolicyIdType",
+          "documentation":"<p>The ID of the CIMD policy that you want to describe.</p>"
+        }
+      }
+    },
+    "DescribeCIMDPolicyResponse":{
+      "type":"structure",
+      "required":["CIMDPolicy"],
+      "members":{
+        "CIMDPolicy":{
+          "shape":"CIMDPolicyType",
+          "documentation":"<p>The configuration of the requested CIMD policy.</p>"
+        }
+      }
     },
     "DescribeIdentityProviderRequest":{
       "type":"structure",
@@ -8203,6 +8572,77 @@
       "max":13,
       "min":1
     },
+    "ListCIMDPoliciesRequest":{
+      "type":"structure",
+      "required":["UserPoolId"],
+      "members":{
+        "UserPoolId":{
+          "shape":"UserPoolIdType",
+          "documentation":"<p>The ID of the user pool whose CIMD policies you want to list.</p>"
+        },
+        "NextToken":{
+          "shape":"PaginationKeyType",
+          "documentation":"<p>This API operation returns a limited number of results. The pagination token is an identifier that you can present in an additional API request with the same parameters. When you include the pagination token, Amazon Cognito returns the next set of items after the current list. Subsequent requests return a new pagination token. By use of this token, you can paginate through the full list of items.</p>"
+        },
+        "MaxResults":{
+          "shape":"PoolQueryLimitType",
+          "documentation":"<p>The maximum number of CIMD policies that you want Amazon Cognito to return in the response.</p>"
+        }
+      }
+    },
+    "ListCIMDPoliciesResponse":{
+      "type":"structure",
+      "required":["CIMDPolicies"],
+      "members":{
+        "NextToken":{
+          "shape":"PaginationKeyType",
+          "documentation":"<p>The identifier that Amazon Cognito returned with the previous request to this operation. When you include a pagination token in your request, Amazon Cognito returns the next set of items in the list. By use of this token, you can paginate through the full list of items.</p>"
+        },
+        "CIMDPolicies":{
+          "shape":"CIMDPolicySummaryListType",
+          "documentation":"<p>A summary of each CIMD policy in the user pool.</p>"
+        }
+      }
+    },
+    "ListClientMetadataURLsRequest":{
+      "type":"structure",
+      "required":[
+        "UserPoolId",
+        "CIMDPolicyId"
+      ],
+      "members":{
+        "UserPoolId":{
+          "shape":"UserPoolIdType",
+          "documentation":"<p>The ID of the user pool that contains the CIMD policy.</p>"
+        },
+        "CIMDPolicyId":{
+          "shape":"CIMDPolicyIdType",
+          "documentation":"<p>The ID of the CIMD policy whose client metadata document URLs you want to list.</p>"
+        },
+        "NextToken":{
+          "shape":"PaginationKeyType",
+          "documentation":"<p>This API operation returns a limited number of results. The pagination token is an identifier that you can present in an additional API request with the same parameters. When you include the pagination token, Amazon Cognito returns the next set of items after the current list. Subsequent requests return a new pagination token. By use of this token, you can paginate through the full list of items.</p>"
+        },
+        "MaxResults":{
+          "shape":"PoolQueryLimitType",
+          "documentation":"<p>The maximum number of URLs that you want Amazon Cognito to return in the response.</p>"
+        }
+      }
+    },
+    "ListClientMetadataURLsResponse":{
+      "type":"structure",
+      "required":["ClientMetadataURLs"],
+      "members":{
+        "NextToken":{
+          "shape":"PaginationKeyType",
+          "documentation":"<p>The identifier that Amazon Cognito returned with the previous request to this operation. When you include a pagination token in your request, Amazon Cognito returns the next set of items in the list. By use of this token, you can paginate through the full list of items.</p>"
+        },
+        "ClientMetadataURLs":{
+          "shape":"ClientMetadataURLListType",
+          "documentation":"<p>The client metadata document URLs for the CIMD policy, with the cache state of each URL.</p>"
+        }
+      }
+    },
     "ListDevicesRequest":{
       "type":"structure",
       "required":["AccessToken"],
@@ -8909,6 +9349,12 @@
       "documentation":"<p>The message template structure.</p>"
     },
     "MessageType":{"type":"string"},
+    "MetadataURLType":{
+      "type":"string",
+      "max":256,
+      "min":12,
+      "pattern":"^https://[^\\s]+$"
+    },
     "NewDeviceMetadataType":{
       "type":"structure",
       "members":{
@@ -9601,7 +10047,7 @@
         },
         "RestoreStatus":{
           "shape":"RestoreStatusType",
-          "documentation":"<p>The status of the recovery. Can be one of the following values.</p> <dl> <dt>PREVIEW_GENERATING</dt> <dd> <p>Amazon Cognito is waiting for available capacity in the Amazon Web Services Region or is generating the recovery preview. Write operations in the user pool are paused.</p> </dd> <dt>PREVIEW_GENERATED</dt> <dd> <p>The recovery preview is ready for review. Write operations in the user pool are paused. Within 24 hours after you initiate the recovery, apply it with a <code>StartPointInTimeRecovery</code> request or discard it with a <code>CancelPointInTimeRecovery</code> request.</p> </dd> <dt>PREVIEW_CANCELLED</dt> <dd> <p>You canceled the recovery. Amazon Cognito resumed write operations and didn't change your user pool data.</p> </dd> <dt>PREVIEW_GENERATION_FAILED</dt> <dd> <p>Amazon Cognito couldn't generate the recovery preview. Amazon Cognito resumed write operations and didn't change your user pool data. You can initiate a new recovery.</p> </dd> <dt>PREVIEW_EXPIRED</dt> <dd> <p>You didn't start or cancel the recovery within 24 hours after you initiated it. Amazon Cognito resumed write operations and didn't change your user pool data.</p> </dd> <dt>RESTORING</dt> <dd> <p>Amazon Cognito is restoring user data in the user pool to its state at the recovery point. Write operations in the user pool are paused.</p> </dd> <dt>RESTORE_COMPLETED</dt> <dd> <p>Amazon Cognito restored your user pool to its state at the recovery point and resumed write operations.</p> </dd> <dt>TEMPORARY_INTERNAL_ERROR_SEE_SUPPORT_CASE</dt> <dd> <p>The recovery encountered an internal error. Write operations in the user pool remain paused. Amazon Web Services Support contacts you through a support case to resolve the issue.</p> </dd> <dt>AWS_ABORTED</dt> <dd> <p>Amazon Cognito stopped the recovery because of an internal failure. Write operations in the user pool remain paused, and you can't cancel or retry the recovery. Amazon Web Services Support contacts you through a support case to resolve the issue.</p> </dd> </dl>"
+          "documentation":"<p>The status of the recovery. Can be one of the following values.</p> <dl> <dt>PREVIEW_GENERATING</dt> <dd> <p>Amazon Cognito is generating the recovery preview, which might not be available immediately. Write operations in the user pool are paused.</p> </dd> <dt>PREVIEW_GENERATED</dt> <dd> <p>The recovery preview is ready for review. Write operations in the user pool are paused. Within 24 hours after you initiate the recovery, apply it with a <code>StartPointInTimeRecovery</code> request or discard it with a <code>CancelPointInTimeRecovery</code> request.</p> </dd> <dt>PREVIEW_CANCELLED</dt> <dd> <p>You canceled the recovery. Amazon Cognito resumed write operations and didn't change your user pool data.</p> </dd> <dt>PREVIEW_GENERATION_FAILED</dt> <dd> <p>Amazon Cognito couldn't generate the recovery preview. Amazon Cognito resumed write operations and didn't change your user pool data. You can initiate a new recovery.</p> </dd> <dt>PREVIEW_EXPIRED</dt> <dd> <p>You didn't start or cancel the recovery within 24 hours after you initiated it. Amazon Cognito resumed write operations and didn't change your user pool data.</p> </dd> <dt>RESTORING</dt> <dd> <p>Amazon Cognito is restoring user data in the user pool to its state at the recovery point. Write operations in the user pool are paused.</p> </dd> <dt>RESTORE_COMPLETED</dt> <dd> <p>Amazon Cognito restored your user pool to its state at the recovery point and resumed write operations.</p> </dd> <dt>TEMPORARY_INTERNAL_ERROR_SEE_SUPPORT_CASE</dt> <dd> <p>The recovery encountered an internal error. Write operations in the user pool remain paused. Amazon Web Services Support contacts you through a support case to resolve the issue.</p> </dd> <dt>AWS_ABORTED</dt> <dd> <p>Amazon Cognito stopped the recovery because of an internal failure. Write operations in the user pool remain paused, and you can't cancel or retry the recovery. Amazon Web Services Support contacts you through a support case to resolve the issue.</p> </dd> </dl>"
         },
         "RestoreTimestamp":{
           "shape":"DateType",
@@ -10900,6 +11346,18 @@
       },
       "documentation":"<p>A container for the UI customization information for the hosted UI in a user pool.</p>"
     },
+    "URLPatternListType":{
+      "type":"list",
+      "member":{"shape":"URLPatternType"},
+      "max":5,
+      "min":1
+    },
+    "URLPatternType":{
+      "type":"string",
+      "max":256,
+      "min":12,
+      "pattern":"^https://[!$-;=@-\\[\\]_a-z~]+$"
+    },
     "UnauthorizedException":{
       "type":"structure",
       "members":{
@@ -11008,6 +11466,82 @@
       }
     },
     "UpdateAuthEventFeedbackResponse":{
+      "type":"structure",
+      "members":{}
+    },
+    "UpdateCIMDPolicyRequest":{
+      "type":"structure",
+      "required":[
+        "UserPoolId",
+        "CIMDPolicyId",
+        "ClientId",
+        "URLPatterns"
+      ],
+      "members":{
+        "UserPoolId":{
+          "shape":"UserPoolIdType",
+          "documentation":"<p>The ID of the user pool that contains the CIMD policy.</p>"
+        },
+        "CIMDPolicyId":{
+          "shape":"CIMDPolicyIdType",
+          "documentation":"<p>The ID of the CIMD policy that you want to update.</p>"
+        },
+        "ClientId":{
+          "shape":"ClientIdType",
+          "documentation":"<p>The ID of the app client that you want to associate with the CIMD policy.</p>"
+        },
+        "PolicyName":{
+          "shape":"CIMDPolicyNameType",
+          "documentation":"<p>A friendly name for the CIMD policy.</p>"
+        },
+        "CacheDuration":{
+          "shape":"CacheDurationType",
+          "documentation":"<p>The length of time, in seconds, that Amazon Cognito caches a client metadata document that it retrieved from a URL that matches the policy. The value must be between 86,400 seconds (one day) and 31,556,952 seconds (one year).</p>"
+        },
+        "URLPatterns":{
+          "shape":"URLPatternListType",
+          "documentation":"<p>One to five HTTPS URL patterns. Amazon Cognito accepts a client ID metadata document URL only when it matches one of these patterns. Patterns can contain the <code>*</code> wildcard character.</p>"
+        }
+      }
+    },
+    "UpdateCIMDPolicyResponse":{
+      "type":"structure",
+      "required":["CIMDPolicy"],
+      "members":{
+        "CIMDPolicy":{
+          "shape":"CIMDPolicyType",
+          "documentation":"<p>The updated CIMD policy.</p>"
+        }
+      }
+    },
+    "UpdateClientMetadataURLStateRequest":{
+      "type":"structure",
+      "required":[
+        "UserPoolId",
+        "CIMDPolicyId",
+        "URL",
+        "Action"
+      ],
+      "members":{
+        "UserPoolId":{
+          "shape":"UserPoolIdType",
+          "documentation":"<p>The ID of the user pool that contains the CIMD policy.</p>"
+        },
+        "CIMDPolicyId":{
+          "shape":"CIMDPolicyIdType",
+          "documentation":"<p>The ID of the CIMD policy that the URL belongs to.</p>"
+        },
+        "URL":{
+          "shape":"MetadataURLType",
+          "documentation":"<p>The client metadata document URL whose cache state you want to change.</p>"
+        },
+        "Action":{
+          "shape":"CIMDCacheActionType",
+          "documentation":"<p>The action to take on the cached client metadata document. <code>REFRESH</code> retrieves the document from the URL again. <code>INVALIDATE</code> removes the cached document.</p>"
+        }
+      }
+    },
+    "UpdateClientMetadataURLStateResponse":{
       "type":"structure",
       "members":{}
     },
@@ -11395,6 +11929,10 @@
         "RefreshTokenRotation":{
           "shape":"RefreshTokenRotationType",
           "documentation":"<p>The configuration of your app client for refresh token rotation. When enabled, your app client issues new ID, access, and refresh tokens when users renew their sessions with refresh tokens. When disabled, token refresh issues only ID and access tokens.</p>"
+        },
+        "PublishSecretsInAWSSecretsManager":{
+          "shape":"WrappedBooleanType",
+          "documentation":"<p>Specifies whether Amazon Cognito stores and manages this app client's secret in <a href=\"https://docs.aws.amazon.com/secretsmanager/latest/userguide/intro.html\">Amazon Web Services Secrets Manager</a> instead of returning the plaintext value. When you set this parameter to <code>true</code>, the response returns <code>ClientSecretArn</code> instead of <code>ClientSecret</code>. By default, Amazon Cognito rotates the secret every 7 days. You can change the rotation schedule in Secrets Manager.</p> <p>Set to <code>true</code> to migrate an existing generated secret into Secrets Manager, or <code>false</code> to move it back to Amazon Cognito and delete the Secrets Manager secret. If you omit this parameter, Amazon Cognito doesn't change how it manages the existing secret. Applies only to app clients that already have a generated secret.</p> <p>When you set it to <code>true</code>, Amazon Cognito starts managing the app client's secret in Secrets Manager and rotates it right away. If the app client has two secrets, that first rotation deletes the older one.</p> <important> <p>When you set this parameter to <code>false</code>, Amazon Cognito immediately and permanently deletes the Secrets Manager secret. There's no recovery window. Applications that read the secret from Secrets Manager can no longer get it.</p> </important>"
         }
       },
       "documentation":"<p>Represents the request to update the user pool client.</p>"
@@ -11833,6 +12371,10 @@
         "ClientSecret":{
           "shape":"ClientSecretType",
           "documentation":"<p>The app client secret.</p>"
+        },
+        "ClientSecretArn":{
+          "shape":"ClientSecretArnType",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the <a href=\"https://docs.aws.amazon.com/secretsmanager/latest/userguide/intro.html\">Amazon Web Services Secrets Manager</a> secret that stores this app client's secret, when Amazon Cognito manages the secret in Secrets Manager. Retrieve the secret from Secrets Manager by this ARN. The <code>SecretString</code> value is a JSON object with <code>userPoolId</code>, <code>userPoolClientId</code>, and <code>clientSecretValue</code> fields. Use <code>clientSecretValue</code> as the app client secret. Amazon Cognito returns this ARN instead of <code>ClientSecret</code> for app clients whose secret it manages in Secrets Manager.</p>"
         },
         "LastModifiedDate":{
           "shape":"DateType",

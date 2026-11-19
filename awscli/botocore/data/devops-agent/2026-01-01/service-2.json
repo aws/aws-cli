@@ -3144,6 +3144,10 @@
         "agentElevatedRoleArnStatus": {
           "shape": "ValidationStatus",
           "documentation": "<p>Validation status of the agentElevatedRoleArn. Updated asynchronously after the customer registers an elevated role. Possible values: PENDING_CONFIRMATION (validation in progress), VALID (role validated), INVALID (validation failed).</p>"
+        },
+        "serviceManagementRoleArn": {
+          "shape": "RoleArn",
+          "documentation": "<p>The Amazon Resource Name (ARN) of the Organizations service-managed role that AIDevOps uses to deploy and manage resources across the accounts in your Amazon Web Services Organization.</p>"
         }
       },
       "documentation": "<p>Configuration for AWS monitor account integration, allowing AIDevOps to monitor AWS resources.</p>"
@@ -3169,6 +3173,14 @@
         "senderFault": true
       },
       "exception": true
+    },
+    "AccountIdList": {
+      "type": "list",
+      "member": {
+        "shape": "AwsAccountId"
+      },
+      "max": 1000,
+      "min": 1
     },
     "AdditionalServiceDetails": {
       "type": "structure",
@@ -3288,6 +3300,10 @@
         "preferences": {
           "shape": "AgentSpacePreferences",
           "documentation": "<p>The preferences configured on the agent space. Preferences that are not set take their default values.</p>"
+        },
+        "awsSourceMode": {
+          "shape": "AwsSourceMode",
+          "documentation": "<p>The Amazon Web Services source mode for the AgentSpace, indicating whether its Amazon Web Services source configuration targets an individual Amazon Web Services account or an Amazon Web Services Organization.</p>"
         }
       },
       "documentation": "<p>Represents a complete AgentSpace with all its properties, timestamps, encryption settings, and unique identifier.</p>"
@@ -3888,6 +3904,17 @@
         "idp"
       ]
     },
+    "AwsAccountId": {
+      "type": "string",
+      "pattern": "\\d{12}"
+    },
+    "AwsSourceMode": {
+      "type": "string",
+      "enum": [
+        "standalone",
+        "organization"
+      ]
+    },
     "AzureConfiguration": {
       "type": "structure",
       "required": [
@@ -4126,6 +4153,10 @@
         "preferences": {
           "shape": "AgentSpacePreferences",
           "documentation": "<p>The preferences to configure on the agent space. Preferences not provided take their default values.</p>"
+        },
+        "awsSourceMode": {
+          "shape": "AwsSourceMode",
+          "documentation": "<p>Specifies whether the AgentSpace's Amazon Web Services source configuration targets an individual Amazon Web Services account or an Amazon Web Services Organization.</p>"
         }
       },
       "documentation": "<p>Input for creating a new AgentSpace.</p>"
@@ -8093,6 +8124,91 @@
         "DESC"
       ]
     },
+    "OrgSourceAccountReasonCode": {
+      "type": "string",
+      "enum": [
+        "accountSuspended",
+        "accountNotInScope",
+        "managementAccountNotSupported",
+        "stackInstanceInoperable",
+        "accessDenied",
+        "deploymentFailed",
+        "secondaryAccountLimitExceeded"
+      ]
+    },
+    "OrgSourceDeploymentState": {
+      "type": "structure",
+      "members": {
+        "deployedAccountCount": {
+          "shape": "OrgSourceDeploymentStateDeployedAccountCountInteger",
+          "documentation": "<p>The number of accounts in the targeted Amazon Web Services Organization or organizational unit that have successfully been deployed to.</p>"
+        },
+        "issues": {
+          "shape": "OrgSourceIssueList",
+          "documentation": "<p>The issues encountered while deploying the source configuration across the accounts in the Amazon Web Services Organization.</p>"
+        },
+        "lastEvaluatedAt": {
+          "shape": "SyntheticTimestamp_date_time",
+          "documentation": "<p>The timestamp of the most recent evaluation of the organization-wide deployment state.</p>"
+        }
+      },
+      "documentation": "<p>Describes the current rollout state of an Amazon Web Services Organization source configuration, including the number of accounts that have been deployed to and any issues encountered during deployment.</p>"
+    },
+    "OrgSourceDeploymentStateDeployedAccountCountInteger": {
+      "type": "integer",
+      "box": true,
+      "min": 0
+    },
+    "OrgSourceIssue": {
+      "type": "structure",
+      "required": [
+        "reasonCode",
+        "accountCount",
+        "accountIds"
+      ],
+      "members": {
+        "reasonCode": {
+          "shape": "OrgSourceAccountReasonCode",
+          "documentation": "<p>A code that identifies the reason for the issue.</p>"
+        },
+        "accountCount": {
+          "shape": "OrgSourceIssueAccountCountInteger",
+          "documentation": "<p>The number of accounts affected by this issue.</p>"
+        },
+        "accountIds": {
+          "shape": "AccountIdList",
+          "documentation": "<p>The Amazon Web Services account IDs affected by this issue.</p>"
+        },
+        "message": {
+          "shape": "OrgSourceIssueMessage",
+          "documentation": "<p>A description of the issue.</p>"
+        }
+      },
+      "documentation": "<p>Describes an issue encountered while deploying or evaluating an Amazon Web Services Organization source configuration.</p>"
+    },
+    "OrgSourceIssueAccountCountInteger": {
+      "type": "integer",
+      "box": true,
+      "min": 1
+    },
+    "OrgSourceIssueList": {
+      "type": "list",
+      "member": {
+        "shape": "OrgSourceIssue"
+      },
+      "max": 20,
+      "min": 0
+    },
+    "OrgSourceIssueMessage": {
+      "type": "string",
+      "max": 1024,
+      "min": 1,
+      "sensitive": true
+    },
+    "OrgUnitId": {
+      "type": "string",
+      "pattern": "(r-[0-9a-z]{4,32}|ou-[0-9a-z]{4,32}-[a-z0-9]{8,32})"
+    },
     "PagerDutyAuthorizationConfig": {
       "type": "structure",
       "members": {
@@ -9868,6 +9984,10 @@
           "shape": "SourceAwsConfiguration",
           "documentation": "<p>AWS source account configuration for monitoring resources.</p>"
         },
+        "sourceAwsOrg": {
+          "shape": "SourceAwsOrgConfiguration",
+          "documentation": "<p>The Amazon Web Services Organization source configuration used to monitor resources across an entire Amazon Web Services Organization or specified organizational units.</p>"
+        },
         "aws": {
           "shape": "AWSConfiguration",
           "documentation": "<p>AWS monitor account configuration.</p>"
@@ -10328,6 +10448,45 @@
     "SourceAwsConfigurationAccountIdString": {
       "type": "string",
       "pattern": "\\d{12}"
+    },
+    "SourceAwsOrgConfiguration": {
+      "type": "structure",
+      "required": [
+        "accountType",
+        "organizationalUnit"
+      ],
+      "members": {
+        "accountType": {
+          "shape": "SourceAccountType",
+          "documentation": "<p>The account type for this configuration. For Amazon Web Services Organization-level configurations, this value is <code>source</code>.</p>"
+        },
+        "organizationalUnit": {
+          "shape": "SourceAwsOrgUnit",
+          "documentation": "<p>The organizational units within the Amazon Web Services Organization that are targeted for source monitoring.</p>"
+        },
+        "deploymentState": {
+          "shape": "OrgSourceDeploymentState",
+          "documentation": "<p>The current deployment state of the Amazon Web Services Organization-wide source configuration.</p>"
+        }
+      },
+      "documentation": "<p>Configuration for Amazon Web Services Organization-wide source account integration. Use this configuration to monitor Amazon Web Services resources across multiple accounts within an organization or within targeted organizational units.</p>"
+    },
+    "SourceAwsOrgUnit": {
+      "type": "structure",
+      "required": [
+        "organizationalUnitId"
+      ],
+      "members": {
+        "organizationalUnitId": {
+          "shape": "OrgUnitId",
+          "documentation": "<p>The identifier of the Organizations organizational unit.</p>"
+        },
+        "accountIds": {
+          "shape": "AccountIdList",
+          "documentation": "<p>The Amazon Web Services account IDs that belong to this organizational unit and are targeted for source monitoring.</p>"
+        }
+      },
+      "documentation": "<p>Identifies an Organizations organizational unit and its member accounts that are targeted for source monitoring.</p>"
     },
     "String": {
       "type": "string"
@@ -10864,6 +11023,10 @@
         "preferences": {
           "shape": "AgentSpacePreferences",
           "documentation": "<p>The preferences to configure on the agent space. When provided, this replaces the full set of configured preferences; preferences not included revert to their default values. When omitted, the current preferences are left unchanged.</p>"
+        },
+        "awsSourceMode": {
+          "shape": "AwsSourceMode",
+          "documentation": "<p>Specifies whether the AgentSpace's Amazon Web Services source configuration targets an individual Amazon Web Services account or an Amazon Web Services Organization. Use this parameter to switch an existing AgentSpace between source modes.</p>"
         }
       },
       "documentation": "<p>Input for updating an existing AgentSpace's properties. All fields except agentSpaceId are optional for partial updates.</p>"

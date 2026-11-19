@@ -114,11 +114,12 @@
       "errors":[
         {"shape":"InvalidInput"},
         {"shape":"NoSuchHealthCheck"},
+        {"shape":"NoSuchHealthCheckSource"},
         {"shape":"NoSuchHostedZone"},
         {"shape":"PriorRequestNotComplete"},
         {"shape":"ThrottlingException"}
       ],
-      "documentation":"<p>Adds, edits, or deletes tags for a health check or a hosted zone.</p> <p>For information about using tags for cost allocation, see <a href=\"https://docs.aws.amazon.com/awsaccountbilling/latest/aboutv2/cost-alloc-tags.html\">Using Cost Allocation Tags</a> in the <i>Billing and Cost Management User Guide</i>.</p>"
+      "documentation":"<p>Adds, edits, or deletes tags for a health check, a health check source, or a hosted zone.</p> <p>For information about using tags for cost allocation, see <a href=\"https://docs.aws.amazon.com/awsaccountbilling/latest/aboutv2/cost-alloc-tags.html\">Using Cost Allocation Tags</a> in the <i>Billing and Cost Management User Guide</i>.</p>"
     },
     "CreateCidrCollection":{
       "name":"CreateCidrCollection",
@@ -159,7 +160,28 @@
         {"shape":"HealthCheckAlreadyExists"},
         {"shape":"InvalidInput"}
       ],
-      "documentation":"<p>Creates a new health check.</p> <p>For information about adding health checks to resource record sets, see <a href=\"https://docs.aws.amazon.com/Route53/latest/APIReference/API_ResourceRecordSet.html#Route53-Type-ResourceRecordSet-HealthCheckId\">HealthCheckId</a> in <a href=\"https://docs.aws.amazon.com/Route53/latest/APIReference/API_ChangeResourceRecordSets.html\">ChangeResourceRecordSets</a>. </p> <p> <b>ELB Load Balancers</b> </p> <p>If you're registering EC2 instances with an Elastic Load Balancing (ELB) load balancer, do not create Amazon Route 53 health checks for the EC2 instances. When you register an EC2 instance with a load balancer, you configure settings for an ELB health check, which performs a similar function to a Route 53 health check.</p> <p> <b>Private Hosted Zones</b> </p> <p>You can associate health checks with failover resource record sets in a private hosted zone. Note the following:</p> <ul> <li> <p>Route 53 health checkers are outside the VPC. To check the health of an endpoint within a VPC by IP address, you must assign a public IP address to the instance in the VPC.</p> </li> <li> <p>You can configure a health checker to check the health of an external resource that the instance relies on, such as a database server.</p> </li> <li> <p>You can create a CloudWatch metric, associate an alarm with the metric, and then create a health check that is based on the state of the alarm. For example, you might create a CloudWatch metric that checks the status of the Amazon EC2 <code>StatusCheckFailed</code> metric, add an alarm to the metric, and then create a health check that is based on the state of the alarm. For information about creating CloudWatch metrics and alarms by using the CloudWatch console, see the <a href=\"https://docs.aws.amazon.com/AmazonCloudWatch/latest/DeveloperGuide/WhatIsCloudWatch.html\">Amazon CloudWatch User Guide</a>.</p> </li> </ul>"
+      "documentation":"<p>Creates a new health check.</p> <p>For information about adding health checks to resource record sets, see <a href=\"https://docs.aws.amazon.com/Route53/latest/APIReference/API_ResourceRecordSet.html#Route53-Type-ResourceRecordSet-HealthCheckId\">HealthCheckId</a> in <a href=\"https://docs.aws.amazon.com/Route53/latest/APIReference/API_ChangeResourceRecordSets.html\">ChangeResourceRecordSets</a>. </p> <p> <b>ELB Load Balancers</b> </p> <p>If you're registering EC2 instances with an Elastic Load Balancing (ELB) load balancer, do not create Amazon Route 53 health checks for the EC2 instances. When you register an EC2 instance with a load balancer, you configure settings for an ELB health check, which performs a similar function to a Route 53 health check.</p> <p> <b>Private Hosted Zones</b> </p> <p>You can associate health checks with failover resource record sets in a private hosted zone. Note the following:</p> <ul> <li> <p>For a public health check, Route 53 health checkers are outside the VPC. To check the health of an endpoint within a VPC by IP address, you must assign a public IP address to the instance in the VPC.</p> </li> <li> <p>To check the health of an endpoint within a VPC by using a private IP address, use a private endpoint health check (<code>EndpointType</code> of <code>PRIVATE</code>). For more information, see <code>CreateHealthCheckSource</code>.</p> </li> <li> <p>You can configure a health checker to check the health of an external resource that the instance relies on, such as a database server.</p> </li> <li> <p>You can create a CloudWatch metric, associate an alarm with the metric, and then create a health check that is based on the state of the alarm. For example, you might create a CloudWatch metric that checks the status of the Amazon EC2 <code>StatusCheckFailed</code> metric, add an alarm to the metric, and then create a health check that is based on the state of the alarm. For information about creating CloudWatch metrics and alarms by using the CloudWatch console, see the <a href=\"https://docs.aws.amazon.com/AmazonCloudWatch/latest/DeveloperGuide/WhatIsCloudWatch.html\">Amazon CloudWatch User Guide</a>.</p> </li> </ul>"
+    },
+    "CreateHealthCheckSource":{
+      "name":"CreateHealthCheckSource",
+      "http":{
+        "method":"POST",
+        "requestUri":"/2013-04-01/healthchecksource",
+        "responseCode":201
+      },
+      "input":{
+        "shape":"CreateHealthCheckSourceRequest",
+        "locationName":"CreateHealthCheckSourceRequest",
+        "xmlNamespace":{"uri":"https://route53.amazonaws.com/doc/2013-04-01/"}
+      },
+      "output":{"shape":"CreateHealthCheckSourceResponse"},
+      "errors":[
+        {"shape":"HealthCheckSourceAlreadyExists"},
+        {"shape":"InvalidInput"},
+        {"shape":"InvalidVPCId"},
+        {"shape":"TooManyHealthCheckSources"}
+      ],
+      "documentation":"<p>Creates a health check source, which defines the virtual private cloud (VPC), subnets, and security groups from which Route 53 sends private endpoint health check requests. To use this operation, you must have the <code>route53:CreateHealthCheckSource</code> permission. You must also have permission to create a service-linked role.</p> <p>Specify a VPC, one subnet in each Availability Zone that Route 53 uses for private endpoint health checks in the Amazon Web Services Region, and one or more security groups for each subnet. The security groups must allow outbound traffic to the endpoints that you want to check.</p> <p>Route 53 creates a health check source asynchronously, and the initial <code>HealthCheckSourceStatus</code> is <code>CREATE_PENDING</code>. Call <code>GetHealthCheckSource</code> until the status is <code>CREATE_COMPLETED</code> before you create health checks that use the source. You can't change the configuration of a health check source after you create it.</p> <p>If AWS Identity and Access Management (IAM) is still deleting the Route 53 service-linked role for your account, the request fails with <code>InvalidInput</code>. Retry after the deletion completes.</p>"
     },
     "CreateHostedZone":{
       "name":"CreateHostedZone",
@@ -418,6 +440,21 @@
         {"shape":"InvalidInput"}
       ],
       "documentation":"<p>Deletes a health check.</p> <important> <p>Amazon Route 53 does not prevent you from deleting a health check even if the health check is associated with one or more resource record sets. If you delete a health check and you don't update the associated resource record sets, the future status of the health check can't be predicted and may change. This will affect the routing of DNS queries for your DNS failover configuration. For more information, see <a href=\"https://docs.aws.amazon.com/Route53/latest/DeveloperGuide/health-checks-creating-deleting.html#health-checks-deleting.html\">Replacing and Deleting Health Checks</a> in the <i>Amazon Route 53 Developer Guide</i>.</p> </important> <p>If you're using Cloud Map and you configured Cloud Map to create a Route 53 health check when you register an instance, you can't use the Route 53 <code>DeleteHealthCheck</code> command to delete the health check. The health check is deleted automatically when you deregister the instance; there can be a delay of several hours before the health check is deleted from Route 53. </p>"
+    },
+    "DeleteHealthCheckSource":{
+      "name":"DeleteHealthCheckSource",
+      "http":{
+        "method":"DELETE",
+        "requestUri":"/2013-04-01/healthchecksource/{HealthCheckSourceId}"
+      },
+      "input":{"shape":"DeleteHealthCheckSourceRequest"},
+      "output":{"shape":"DeleteHealthCheckSourceResponse"},
+      "errors":[
+        {"shape":"NoSuchHealthCheckSource"},
+        {"shape":"InvalidInput"},
+        {"shape":"PriorRequestNotComplete"}
+      ],
+      "documentation":"<p>Deletes a health check source. Before you delete a health check source, delete or update any health checks that reference it. Otherwise, the request fails with <code>InvalidInput</code>. The request also fails with <code>InvalidInput</code> if the status of the health check source is <code>CREATE_PENDING</code> or <code>CREATE_IN_PROGRESS</code>. Wait until the status is <code>CREATE_COMPLETED</code> or <code>CREATE_FAILED</code>, and then try again.</p> <p>Route 53 deletes a health check source asynchronously, and the initial <code>HealthCheckSourceStatus</code> is <code>DELETE_PENDING</code>. Call <code>GetHealthCheckSource</code> to track progress. After the deletion completes, <code>GetHealthCheckSource</code> returns <code>NoSuchHealthCheckSource</code> and the health check source no longer appears in the results of <code>ListHealthCheckSources</code>. If you delete a health check source that is already deleted, the request fails with <code>NoSuchHealthCheckSource</code>.</p> <p>To use this operation, you must have the <code>route53:DeleteHealthCheckSource</code> permission. You must also have permission to create a service-linked role.</p>"
     },
     "DeleteHostedZone":{
       "name":"DeleteHostedZone",
@@ -724,6 +761,20 @@
       ],
       "documentation":"<p>Gets the reason that a specified health check failed most recently.</p>"
     },
+    "GetHealthCheckSource":{
+      "name":"GetHealthCheckSource",
+      "http":{
+        "method":"GET",
+        "requestUri":"/2013-04-01/healthchecksource/{HealthCheckSourceId}"
+      },
+      "input":{"shape":"GetHealthCheckSourceRequest"},
+      "output":{"shape":"GetHealthCheckSourceResponse"},
+      "errors":[
+        {"shape":"NoSuchHealthCheckSource"},
+        {"shape":"InvalidInput"}
+      ],
+      "documentation":"<p>Gets information about a specified health check source, including its status and the virtual private cloud (VPC), subnets, and security groups that it uses.</p>"
+    },
     "GetHealthCheckStatus":{
       "name":"GetHealthCheckStatus",
       "http":{
@@ -916,6 +967,19 @@
       ],
       "documentation":"<p>Retrieves a list of supported geographic locations.</p> <p>Countries are listed first, and continents are listed last. If Amazon Route 53 supports subdivisions for a country (for example, states or provinces), the subdivisions for that country are listed in alphabetical order immediately after the corresponding country.</p> <p>Route 53 does not perform authorization for this API because it retrieves information that is already available to the public.</p> <p>For a list of supported geolocation codes, see the <a href=\"https://docs.aws.amazon.com/Route53/latest/APIReference/API_GeoLocation.html\">GeoLocation</a> data type.</p>"
     },
+    "ListHealthCheckSources":{
+      "name":"ListHealthCheckSources",
+      "http":{
+        "method":"GET",
+        "requestUri":"/2013-04-01/healthchecksource"
+      },
+      "input":{"shape":"ListHealthCheckSourcesRequest"},
+      "output":{"shape":"ListHealthCheckSourcesResponse"},
+      "errors":[
+        {"shape":"InvalidInput"}
+      ],
+      "documentation":"<p>Retrieves a list of the health check sources that are associated with the current Amazon Web Services account.</p> <p>Results are paginated. To get more results, specify the <code>NextToken</code> value from the previous response for <code>NextToken</code>.</p>"
+    },
     "ListHealthChecks":{
       "name":"ListHealthChecks",
       "http":{
@@ -929,6 +993,20 @@
         {"shape":"IncompatibleVersion"}
       ],
       "documentation":"<p>Retrieve a list of the health checks that are associated with the current Amazon Web Services account. </p>"
+    },
+    "ListHealthChecksBySource":{
+      "name":"ListHealthChecksBySource",
+      "http":{
+        "method":"GET",
+        "requestUri":"/2013-04-01/healthchecks/source/{HealthCheckSourceId}"
+      },
+      "input":{"shape":"ListHealthChecksBySourceRequest"},
+      "output":{"shape":"ListHealthChecksBySourceResponse"},
+      "errors":[
+        {"shape":"InvalidInput"},
+        {"shape":"NoSuchHealthCheckSource"}
+      ],
+      "documentation":"<p>Retrieves a list of the health checks that use a specified health check source.</p> <p>Results are paginated. If <code>IsTruncated</code> is <code>true</code>, specify the <code>NextMarker</code> value for <code>marker</code> to get more results.</p>"
     },
     "ListHostedZones":{
       "name":"ListHostedZones",
@@ -1041,6 +1119,7 @@
       "errors":[
         {"shape":"InvalidInput"},
         {"shape":"NoSuchHealthCheck"},
+        {"shape":"NoSuchHealthCheckSource"},
         {"shape":"NoSuchHostedZone"},
         {"shape":"PriorRequestNotComplete"},
         {"shape":"ThrottlingException"}
@@ -1062,6 +1141,7 @@
       "errors":[
         {"shape":"InvalidInput"},
         {"shape":"NoSuchHealthCheck"},
+        {"shape":"NoSuchHealthCheckSource"},
         {"shape":"NoSuchHostedZone"},
         {"shape":"PriorRequestNotComplete"},
         {"shape":"ThrottlingException"}
@@ -1303,7 +1383,7 @@
       "members":{
         "Type":{
           "shape":"AccountLimitType",
-          "documentation":"<p>The limit that you requested. Valid values include the following:</p> <ul> <li> <p> <b>MAX_HEALTH_CHECKS_BY_OWNER</b>: The maximum number of health checks that you can create using the current account.</p> </li> <li> <p> <b>MAX_HOSTED_ZONES_BY_OWNER</b>: The maximum number of hosted zones that you can create using the current account.</p> </li> <li> <p> <b>MAX_REUSABLE_DELEGATION_SETS_BY_OWNER</b>: The maximum number of reusable delegation sets that you can create using the current account.</p> </li> <li> <p> <b>MAX_TRAFFIC_POLICIES_BY_OWNER</b>: The maximum number of traffic policies that you can create using the current account.</p> </li> <li> <p> <b>MAX_TRAFFIC_POLICY_INSTANCES_BY_OWNER</b>: The maximum number of traffic policy instances that you can create using the current account. (Traffic policy instances are referred to as traffic flow policy records in the Amazon Route 53 console.)</p> </li> </ul>"
+          "documentation":"<p>The limit that you requested. Valid values include the following:</p> <ul> <li> <p> <b>MAX_HEALTH_CHECKS_BY_OWNER</b>: The maximum number of health checks that you can create using the current account.</p> </li> <li> <p> <b>MAX_HEALTH_CHECK_SOURCES_BY_OWNER</b> The maximum number of health check sources that you can create using the current account.</p> </li> <li> <p> <b>MAX_HOSTED_ZONES_BY_OWNER</b>: The maximum number of hosted zones that you can create using the current account.</p> </li> <li> <p> <b>MAX_REUSABLE_DELEGATION_SETS_BY_OWNER</b>: The maximum number of reusable delegation sets that you can create using the current account.</p> </li> <li> <p> <b>MAX_TRAFFIC_POLICIES_BY_OWNER</b>: The maximum number of traffic policies that you can create using the current account.</p> </li> <li> <p> <b>MAX_TRAFFIC_POLICY_INSTANCES_BY_OWNER</b>: The maximum number of traffic policy instances that you can create using the current account. (Traffic policy instances are referred to as traffic flow policy records in the Amazon Route 53 console.)</p> </li> </ul>"
         },
         "Value":{
           "shape":"LimitValue",
@@ -1319,7 +1399,8 @@
         "MAX_HOSTED_ZONES_BY_OWNER",
         "MAX_TRAFFIC_POLICY_INSTANCES_BY_OWNER",
         "MAX_REUSABLE_DELEGATION_SETS_BY_OWNER",
-        "MAX_TRAFFIC_POLICIES_BY_OWNER"
+        "MAX_TRAFFIC_POLICIES_BY_OWNER",
+        "MAX_HEALTH_CHECK_SOURCES_BY_OWNER"
       ]
     },
     "ActivateKeySigningKeyRequest":{
@@ -1432,6 +1513,11 @@
         }
       },
       "documentation":"<p>A complex type that contains the response information for the <code>AssociateVPCWithHostedZone</code> request.</p>"
+    },
+    "AvailabilityZoneId":{
+      "type":"string",
+      "max":64,
+      "min":1
     },
     "Bias":{
       "type":"integer",
@@ -1591,7 +1677,7 @@
       "members":{
         "ResourceType":{
           "shape":"TagResourceType",
-          "documentation":"<p>The type of the resource.</p> <ul> <li> <p>The resource type for health checks is <code>healthcheck</code>.</p> </li> <li> <p>The resource type for hosted zones is <code>hostedzone</code>.</p> </li> </ul>",
+          "documentation":"<p>The type of the resource.</p> <ul> <li> <p>The resource type for health checks is <code>healthcheck</code>.</p> </li> <li> <p>The resource type for health check sources is <code>healthchecksource</code>.</p> </li> <li> <p>The resource type for hosted zones is <code>hostedzone</code>.</p> </li> </ul>",
           "location":"uri",
           "locationName":"ResourceType"
         },
@@ -1603,7 +1689,7 @@
         },
         "AddTags":{
           "shape":"TagList",
-          "documentation":"<p>A complex type that contains a list of the tags that you want to add to the specified health check or hosted zone and/or the tags that you want to edit <code>Value</code> for.</p> <p>You can add a maximum of 10 tags to a health check or a hosted zone.</p>"
+          "documentation":"<p>A complex type that contains a list of the tags that you want to add to the specified health check or hosted zone and/or the tags that you want to edit <code>Value</code> for.</p> <p>You can add a maximum of 10 tags to a health check, a health check source, or a hosted zone.</p>"
         },
         "RemoveTagKeys":{
           "shape":"TagKeyList",
@@ -2064,6 +2150,51 @@
         }
       },
       "documentation":"<p>A complex type containing the response information for the new health check.</p>"
+    },
+    "CreateHealthCheckSourceRequest":{
+      "type":"structure",
+      "required":["HealthCheckSourceConfig"],
+      "members":{
+        "CallerReference":{
+          "shape":"HealthCheckNonce",
+          "documentation":"<p>A unique, case-sensitive identifier that ensures that the operation completes no more than one time. If you retry a <code>CreateHealthCheckSource</code> request with the same <code>CallerReference</code> and the same settings as a previous request, Route 53 returns the existing health check source without creating a duplicate. If that health check source has a status of <code>CREATE_FAILED</code>, Route 53 tries to create it again. To create a new health check source after a failure, specify a new value for <code>CallerReference</code>. If a health check source with the same <code>CallerReference</code> already exists and the settings differ, Route 53 returns a <code>HealthCheckSourceAlreadyExists</code> error.</p>",
+          "idempotencyToken":true
+        },
+        "HealthCheckSourceConfig":{
+          "shape":"HealthCheckSourceConfig",
+          "documentation":"<p>A complex type that contains the virtual private cloud (VPC), subnets, and security groups for the health check source.</p>"
+        },
+        "Tags":{
+          "shape":"TagList",
+          "documentation":"<p>A complex type that contains a list of the tags that you want to apply to the health check source when you create it.</p>"
+        }
+      },
+      "documentation":"<p>Contains the virtual private cloud (VPC), subnets, and security groups that are required to create a health check source, and a caller reference that identifies the request.</p>"
+    },
+    "CreateHealthCheckSourceResponse":{
+      "type":"structure",
+      "required":[
+        "HealthCheckSourceId",
+        "HealthCheckSourceStatus",
+        "Location"
+      ],
+      "members":{
+        "HealthCheckSourceId":{
+          "shape":"HealthCheckSourceId",
+          "documentation":"<p>The ID of the new health check source. Route 53 assigns this ID when it creates the source.</p>"
+        },
+        "HealthCheckSourceStatus":{
+          "shape":"HealthCheckSourceStatus",
+          "documentation":"<p>The current status of the health check source. Immediately after you create a health check source, the status is <code>CREATE_PENDING</code>. If the request is a retry with the same <code>CallerReference</code>, the status is the current status of the existing health check source.</p>"
+        },
+        "Location":{
+          "shape":"ResourceURI",
+          "documentation":"<p>The unique URL representing the new health check source.</p>",
+          "location":"header",
+          "locationName":"Location"
+        }
+      },
+      "documentation":"<p>Returns the ID, status, and location URL of the new health check source.</p>"
     },
     "CreateHostedZoneRequest":{
       "type":"structure",
@@ -2630,6 +2761,37 @@
       "members":{},
       "documentation":"<p>An empty element.</p>"
     },
+    "DeleteHealthCheckSourceRequest":{
+      "type":"structure",
+      "required":["HealthCheckSourceId"],
+      "members":{
+        "HealthCheckSourceId":{
+          "shape":"HealthCheckSourceId",
+          "documentation":"<p>The ID of the health check source that you want to delete.</p>",
+          "location":"uri",
+          "locationName":"HealthCheckSourceId"
+        }
+      },
+      "documentation":"<p>Contains the ID of the health check source that you want to delete.</p>"
+    },
+    "DeleteHealthCheckSourceResponse":{
+      "type":"structure",
+      "required":[
+        "HealthCheckSourceId",
+        "HealthCheckSourceStatus"
+      ],
+      "members":{
+        "HealthCheckSourceId":{
+          "shape":"HealthCheckSourceId",
+          "documentation":"<p>The ID of the health check source that is being deleted.</p>"
+        },
+        "HealthCheckSourceStatus":{
+          "shape":"HealthCheckSourceStatus",
+          "documentation":"<p>The status of the health check source after Route 53 accepts the delete request. The value is <code>DELETE_PENDING</code>, or the current status if deletion of the health check source was already in progress.</p>"
+        }
+      },
+      "documentation":"<p>Contains the ID and status of the health check source that <code>DeleteHealthCheckSource</code> deletes.</p>"
+    },
     "DeleteHostedZoneRequest":{
       "type":"structure",
       "required":["Id"],
@@ -2916,6 +3078,13 @@
       }
     },
     "EnableSNI":{"type":"boolean"},
+    "EndpointType":{
+      "type":"string",
+      "enum":[
+        "PUBLIC",
+        "PRIVATE"
+      ]
+    },
     "ErrorMessage":{"type":"string"},
     "ErrorMessages":{
       "type":"list",
@@ -3051,7 +3220,7 @@
       "members":{
         "Type":{
           "shape":"AccountLimitType",
-          "documentation":"<p>The limit that you want to get. Valid values include the following:</p> <ul> <li> <p> <b>MAX_HEALTH_CHECKS_BY_OWNER</b>: The maximum number of health checks that you can create using the current account.</p> </li> <li> <p> <b>MAX_HOSTED_ZONES_BY_OWNER</b>: The maximum number of hosted zones that you can create using the current account.</p> </li> <li> <p> <b>MAX_REUSABLE_DELEGATION_SETS_BY_OWNER</b>: The maximum number of reusable delegation sets that you can create using the current account.</p> </li> <li> <p> <b>MAX_TRAFFIC_POLICIES_BY_OWNER</b>: The maximum number of traffic policies that you can create using the current account.</p> </li> <li> <p> <b>MAX_TRAFFIC_POLICY_INSTANCES_BY_OWNER</b>: The maximum number of traffic policy instances that you can create using the current account. (Traffic policy instances are referred to as traffic flow policy records in the Amazon Route 53 console.)</p> </li> </ul>",
+          "documentation":"<p>The limit that you want to get. Valid values include the following:</p> <ul> <li> <p> <b>MAX_HEALTH_CHECKS_BY_OWNER</b>: The maximum number of health checks that you can create using the current account.</p> </li> <li> <p> <b>MAX_HEALTH_CHECK_SOURCES_BY_OWNER</b> The maximum number of health check sources that you can create using the current account.</p> </li> <li> <p> <b>MAX_HOSTED_ZONES_BY_OWNER</b>: The maximum number of hosted zones that you can create using the current account.</p> </li> <li> <p> <b>MAX_REUSABLE_DELEGATION_SETS_BY_OWNER</b>: The maximum number of reusable delegation sets that you can create using the current account.</p> </li> <li> <p> <b>MAX_TRAFFIC_POLICIES_BY_OWNER</b>: The maximum number of traffic policies that you can create using the current account.</p> </li> <li> <p> <b>MAX_TRAFFIC_POLICY_INSTANCES_BY_OWNER</b>: The maximum number of traffic policy instances that you can create using the current account. (Traffic policy instances are referred to as traffic flow policy records in the Amazon Route 53 console.)</p> </li> </ul>",
           "location":"uri",
           "locationName":"Type"
         }
@@ -3243,6 +3412,30 @@
         }
       },
       "documentation":"<p>A complex type that contains the response to a <code>GetHealthCheck</code> request.</p>"
+    },
+    "GetHealthCheckSourceRequest":{
+      "type":"structure",
+      "required":["HealthCheckSourceId"],
+      "members":{
+        "HealthCheckSourceId":{
+          "shape":"HealthCheckSourceId",
+          "documentation":"<p>The ID of the health check source that you want to get information about.</p>",
+          "location":"uri",
+          "locationName":"HealthCheckSourceId"
+        }
+      },
+      "documentation":"<p>Contains the ID of the health check source that you want to get information about.</p>"
+    },
+    "GetHealthCheckSourceResponse":{
+      "type":"structure",
+      "required":["HealthCheckSource"],
+      "members":{
+        "HealthCheckSource":{
+          "shape":"HealthCheckSource",
+          "documentation":"<p>A complex type that contains information about the specified health check source.</p>"
+        }
+      },
+      "documentation":"<p>Contains the health check source that <code>GetHealthCheckSource</code> returns.</p>"
     },
     "GetHealthCheckStatusRequest":{
       "type":"structure",
@@ -3569,7 +3762,7 @@
       "members":{
         "IPAddress":{
           "shape":"IPAddress",
-          "documentation":"<p>The IPv4 or IPv6 IP address of the endpoint that you want Amazon Route 53 to perform health checks on. If you don't specify a value for <code>IPAddress</code>, Route 53 sends a DNS request to resolve the domain name that you specify in <code>FullyQualifiedDomainName</code> at the interval that you specify in <code>RequestInterval</code>. Using an IP address returned by DNS, Route 53 then checks the health of the endpoint.</p> <p>Use one of the following formats for the value of <code>IPAddress</code>: </p> <ul> <li> <p> <b>IPv4 address</b>: four values between 0 and 255, separated by periods (.), for example, <code>192.0.2.44</code>.</p> </li> <li> <p> <b>IPv6 address</b>: eight groups of four hexadecimal values, separated by colons (:), for example, <code>2001:0db8:85a3:0000:0000:abcd:0001:2345</code>. You can also shorten IPv6 addresses as described in RFC 5952, for example, <code>2001:db8:85a3::abcd:1:2345</code>.</p> </li> </ul> <p>If the endpoint is an EC2 instance, we recommend that you create an Elastic IP address, associate it with your EC2 instance, and specify the Elastic IP address for <code>IPAddress</code>. This ensures that the IP address of your instance will never change.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/Route53/latest/APIReference/API_UpdateHealthCheck.html#Route53-UpdateHealthCheck-request-FullyQualifiedDomainName\">FullyQualifiedDomainName</a>. </p> <p>Constraints: Route 53 can't check the health of endpoints for which the IP address is in local, private, non-routable, or multicast ranges. For more information about IP addresses for which you can't create health checks, see the following documents:</p> <ul> <li> <p> <a href=\"https://tools.ietf.org/html/rfc5735\">RFC 5735, Special Use IPv4 Addresses</a> </p> </li> <li> <p> <a href=\"https://tools.ietf.org/html/rfc6598\">RFC 6598, IANA-Reserved IPv4 Prefix for Shared Address Space</a> </p> </li> <li> <p> <a href=\"https://tools.ietf.org/html/rfc5156\">RFC 5156, Special-Use IPv6 Addresses</a> </p> </li> </ul> <p>When the value of <code>Type</code> is <code>CALCULATED</code> or <code>CLOUDWATCH_METRIC</code>, omit <code>IPAddress</code>.</p>"
+          "documentation":"<p>The IPv4 or IPv6 IP address of the endpoint that you want Amazon Route 53 to perform health checks on. If you don't specify a value for <code>IPAddress</code>, Route 53 sends a DNS request to resolve the domain name that you specify in <code>FullyQualifiedDomainName</code> at the interval that you specify in <code>RequestInterval</code>. Using an IP address returned by DNS, Route 53 then checks the health of the endpoint.</p> <p>Use one of the following formats for the value of <code>IPAddress</code>: </p> <ul> <li> <p> <b>IPv4 address</b>: four values between 0 and 255, separated by periods (.), for example, <code>192.0.2.44</code>.</p> </li> <li> <p> <b>IPv6 address</b>: eight groups of four hexadecimal values, separated by colons (:), for example, <code>2001:0db8:85a3:0000:0000:abcd:0001:2345</code>. You can also shorten IPv6 addresses as described in RFC 5952, for example, <code>2001:db8:85a3::abcd:1:2345</code>.</p> </li> </ul> <p>For a public health check, if the endpoint is an EC2 instance, we recommend that you create an Elastic IP address, associate it with your EC2 instance, and specify the Elastic IP address for <code>IPAddress</code>. This ensures that the IP address of your instance will never change.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/Route53/latest/APIReference/API_UpdateHealthCheck.html#Route53-UpdateHealthCheck-request-FullyQualifiedDomainName\">FullyQualifiedDomainName</a>. </p> <p>Constraints: For a public health check (<code>EndpointType</code> of <code>PUBLIC</code>, the default), Route 53 can't check the health of endpoints for which the IP address is in local, private, non-routable, or multicast ranges. For more information about IP addresses for which you can't create public health checks, see the following documents:</p> <ul> <li> <p> <a href=\"https://tools.ietf.org/html/rfc5735\">RFC 5735, Special Use IPv4 Addresses</a> </p> </li> <li> <p> <a href=\"https://tools.ietf.org/html/rfc6598\">RFC 6598, IANA-Reserved IPv4 Prefix for Shared Address Space</a> </p> </li> <li> <p> <a href=\"https://tools.ietf.org/html/rfc5156\">RFC 5156, Special-Use IPv6 Addresses</a> </p> </li> </ul> <p>For a private endpoint health check (<code>EndpointType</code> of <code>PRIVATE</code>), if you specify <code>IPAddress</code>, it must be a private IPv4 or IPv6 address. Route 53 sends health checks to it from the health check source that you specify in <code>HealthCheckSourceId</code>.</p> <p>When the value of <code>Type</code> is <code>CALCULATED</code> or <code>CLOUDWATCH_METRIC</code>, omit <code>IPAddress</code>.</p>"
         },
         "Port":{
           "shape":"Port",
@@ -3638,6 +3831,14 @@
         "RoutingControlArn":{
           "shape":"RoutingControlArn",
           "documentation":"<p>The Amazon Resource Name (ARN) for the Route 53 Application Recovery Controller routing control.</p> <p>For more information about Route 53 Application Recovery Controller, see <a href=\"https://docs.aws.amazon.com/r53recovery/latest/dg/what-is-route-53-recovery.html\">Route 53 Application Recovery Controller Developer Guide.</a>.</p>"
+        },
+        "EndpointType":{
+          "shape":"EndpointType",
+          "documentation":"<p>Specifies whether the health check targets a public endpoint or a private endpoint in a virtual private cloud (VPC). Valid values:</p> <ul> <li> <p> <code>PUBLIC</code>: The health check targets an endpoint that is reachable over the internet. This is the default.</p> </li> <li> <p> <code>PRIVATE</code>: The health check targets a private endpoint in your virtual private cloud. You must also specify <code>HealthCheckSourceId</code>. <code>PRIVATE</code> isn't supported for health checks with a <code>Type</code> of <code>CALCULATED</code>, <code>CLOUDWATCH_METRIC</code>, or <code>RECOVERY_CONTROL</code>.</p> </li> </ul> <important> <p>You can't change the value of <code>EndpointType</code> after you create a health check.</p> </important>"
+        },
+        "HealthCheckSourceId":{
+          "shape":"HealthCheckSourceId",
+          "documentation":"<p>The ID of the health check source that Route 53 uses to send health checks to a private endpoint. Required when <code>EndpointType</code> is <code>PRIVATE</code>.</p> <p>You can change <code>HealthCheckSourceId</code> on an existing private health check. You can't add it to a public health check.</p> <p>Each health check source supports a limited number of active health checks. If you reach that limit, specify a different health check source.</p>"
         }
       },
       "documentation":"<p>A complex type that contains information about the health check.</p>"
@@ -3713,6 +3914,102 @@
       },
       "max":64,
       "min":3
+    },
+    "HealthCheckSource":{
+      "type":"structure",
+      "required":[
+        "HealthCheckSourceId",
+        "HealthCheckSourceStatus",
+        "HealthCheckSourceConfig"
+      ],
+      "members":{
+        "HealthCheckSourceId":{
+          "shape":"HealthCheckSourceId",
+          "documentation":"<p>The ID of the health check source. Route 53 assigns this ID when it creates the source.</p>"
+        },
+        "HealthCheckSourceStatus":{
+          "shape":"HealthCheckSourceStatus",
+          "documentation":"<p>The current status of the health check source. The health check source status can have one of the following values:</p> <ul> <li> <p> <code>CREATE_PENDING</code> - Route 53 accepted the request to create the source and hasn't started creating it. You can't use the source in a health check until its status is <code>CREATE_COMPLETED</code>.</p> </li> <li> <p> <code>CREATE_IN_PROGRESS</code> - Route 53 is creating the source. You can't use the source in a health check until its status is <code>CREATE_COMPLETED</code>.</p> </li> <li> <p> <code>CREATE_COMPLETED</code> - The source is ready to use.</p> </li> <li> <p> <code>CREATE_FAILED</code> - Route 53 couldn't create the source. <code>StatusReasonCode</code> and <code>StatusReason</code> explain why.</p> </li> <li> <p> <code>DELETE_PENDING</code> - Route 53 accepted the request to delete the source and hasn't started deleting it.</p> </li> <li> <p> <code>DELETE_IN_PROGRESS</code> - Route 53 is deleting the source.</p> </li> <li> <p> <code>DELETE_COMPLETED</code> - Route 53 has deleted the source. You can't retrieve a health check source in this status: <code>GetHealthCheckSource</code> returns <code>NoSuchHealthCheckSource</code>.</p> </li> <li> <p> <code>DELETE_FAILED</code> - Route 53 couldn't delete the source. <code>StatusReasonCode</code> and <code>StatusReason</code> explain why.</p> </li> </ul> <p>If the status is <code>CREATE_FAILED</code>, fix the cause that <code>StatusReasonCode</code> indicates, and then either retry <code>CreateHealthCheckSource</code> with the same <code>CallerReference</code> and settings, or delete the source and create a new one. If the status is <code>DELETE_FAILED</code>, retry the <code>DeleteHealthCheckSource</code> request.</p>"
+        },
+        "HealthCheckSourceConfig":{
+          "shape":"HealthCheckSourceConfig",
+          "documentation":"<p>The virtual private cloud (VPC), subnets, and security groups for the health check source.</p>"
+        },
+        "StatusReasonCode":{
+          "shape":"HealthCheckSourceStatusReasonCode",
+          "documentation":"<p>A code that indicates why the health check source has a status of <code>CREATE_FAILED</code> or <code>DELETE_FAILED</code>. Route 53 returns this member only when the status is one of those values. The code can have one of the following values:</p> <ul> <li> <p> <code>INSUFFICIENT_SUBNET_IPS</code> - One of the specified subnets doesn't have enough free private IP addresses. Check the available IP addresses in each subnet, and delete network interfaces that you don't need.</p> </li> <li> <p> <code>EC2_LIMIT_EXCEEDED</code> - Your account reached an Amazon virtual private cloud (VPC) quota for network interfaces or security groups. Delete network interfaces that you don't need, specify fewer security groups, or request a quota increase.</p> </li> <li> <p> <code>INVALID_SUBNET</code> - One of the specified subnets doesn't exist or isn't valid, or an <code>AvailabilityZoneId</code> doesn't match the Availability Zone of its subnet. Check that each subnet ID is correct, that the subnet exists, and that each <code>AvailabilityZoneId</code> matches its subnet.</p> </li> <li> <p> <code>INVALID_SECURITY_GROUP</code> - One of the specified security groups doesn't exist or isn't valid. Check that each security group ID is correct and that the security group exists.</p> </li> <li> <p> <code>INVALID_CONFIGURATION</code> - The combination of VPC, subnets, and security groups isn't valid. Check that <code>VpcId</code> is correct and exists, that each subnet is in that VPC, and that the security groups for each subnet are in the same VPC as that subnet.</p> </li> <li> <p> <code>SLR_MISSING_OR_NOT_ASSUMABLE</code> - Route 53 couldn't assume its service-linked role in your account. In IAM, check that the service-linked role for Route 53 private endpoint health checks exists and that no deletion task for it is in progress.</p> </li> <li> <p> <code>INTERNAL_ERROR</code> - Route 53 encountered an internal error. Contact Amazon Web Services Support and provide the health check source ID.</p> </li> </ul>"
+        },
+        "StatusReason":{
+          "shape":"HealthCheckSourceStatusReason",
+          "documentation":"<p>A description of why the health check source has a status of <code>CREATE_FAILED</code> or <code>DELETE_FAILED</code>, and what you can do about it. The text corresponds to the value of <code>StatusReasonCode</code>. Route 53 returns this member only when <code>StatusReasonCode</code> is present.</p>"
+        }
+      },
+      "documentation":"<p>A complex type that contains information about a health check source: its ID, its status, and the virtual private cloud (VPC), subnets, and security groups from which Route 53 sends health check requests to private endpoints.</p>"
+    },
+    "HealthCheckSourceAlreadyExists":{
+      "type":"structure",
+      "members":{
+        "message":{"shape":"ErrorMessage"}
+      },
+      "documentation":"<p>The health check source that you're attempting to create already exists. Route 53 returns this error when you submit a request that has the same value for <code>CallerReference</code> as an existing health check source and one or more values that differ from the existing health check source. To create another health check source, specify a new value for <code>CallerReference</code>. To find the existing health check source, call <code>ListHealthCheckSources</code>.</p>",
+      "error":{"httpStatusCode":409},
+      "exception":true
+    },
+    "HealthCheckSourceConfig":{
+      "type":"structure",
+      "required":[
+        "VpcId",
+        "SubnetConfigurationList"
+      ],
+      "members":{
+        "VpcId":{
+          "shape":"VPCId",
+          "documentation":"<p>The ID of the virtual private cloud (VPC) that contains the subnets for the health check source. All subnets in <code>SubnetConfigurationList</code> must belong to this VPC.</p>"
+        },
+        "SubnetConfigurationList":{
+          "shape":"SubnetConfigurationList",
+          "documentation":"<p>A complex type that contains two or three <code>SubnetConfiguration</code> elements, one in each Availability Zone that Route 53 uses for private endpoint health checks in the Amazon Web Services Region. The Availability Zones must be distinct. Route 53 creates network interfaces in each subnet and sends health check requests from all of them.</p>"
+        }
+      },
+      "documentation":"<p>A complex type that contains the virtual private cloud (VPC), subnets, and security groups for a health check source. You can't change these values after you create the source.</p>"
+    },
+    "HealthCheckSourceId":{
+      "type":"string",
+      "max":64,
+      "min":1
+    },
+    "HealthCheckSourceStatus":{
+      "type":"string",
+      "enum":[
+        "CREATE_PENDING",
+        "CREATE_IN_PROGRESS",
+        "CREATE_COMPLETED",
+        "CREATE_FAILED",
+        "DELETE_PENDING",
+        "DELETE_IN_PROGRESS",
+        "DELETE_COMPLETED",
+        "DELETE_FAILED"
+      ]
+    },
+    "HealthCheckSourceStatusReason":{"type":"string"},
+    "HealthCheckSourceStatusReasonCode":{
+      "type":"string",
+      "enum":[
+        "INSUFFICIENT_SUBNET_IPS",
+        "EC2_LIMIT_EXCEEDED",
+        "INVALID_SUBNET",
+        "INVALID_SECURITY_GROUP",
+        "INVALID_CONFIGURATION",
+        "SLR_MISSING_OR_NOT_ASSUMABLE",
+        "INTERNAL_ERROR"
+      ]
+    },
+    "HealthCheckSources":{
+      "type":"list",
+      "member":{
+        "shape":"HealthCheckSource",
+        "locationName":"HealthCheckSource"
+      }
     },
     "HealthCheckType":{
       "type":"string",
@@ -4464,6 +4761,95 @@
       },
       "documentation":"<p>A complex type containing the response information for the request.</p>"
     },
+    "ListHealthCheckSourcesRequest":{
+      "type":"structure",
+      "members":{
+        "NextToken":{
+          "shape":"PageMarker",
+          "documentation":"<p>The <code>NextToken</code> value from the previous response, if it included one. Specify it to get the next group of health check sources.</p>",
+          "location":"querystring",
+          "locationName":"nexttoken"
+        },
+        "MaxResults":{
+          "shape":"MaxResults",
+          "documentation":"<p>The maximum number of health check sources that you want <code>ListHealthCheckSources</code> to return. Route 53 returns a maximum of 100 health check sources. If you specify a value greater than 100, Route 53 returns only the first 100.</p>",
+          "location":"querystring",
+          "locationName":"maxresults"
+        }
+      },
+      "documentation":"<p>Contains the parameters for retrieving a list of the health check sources that are associated with the current Amazon Web Services account.</p>"
+    },
+    "ListHealthCheckSourcesResponse":{
+      "type":"structure",
+      "required":["HealthCheckSources"],
+      "members":{
+        "HealthCheckSources":{
+          "shape":"HealthCheckSources",
+          "documentation":"<p>A complex type that contains one <code>HealthCheckSource</code> element for each health check source that is associated with the current Amazon Web Services account.</p>"
+        },
+        "NextToken":{
+          "shape":"PageMarker",
+          "documentation":"<p>A pagination token. If there are more health check sources to list, specify this value for <code>NextToken</code> in the next request.</p>"
+        }
+      },
+      "documentation":"<p>Contains the health check sources and pagination information that <code>ListHealthCheckSources</code> returns.</p>"
+    },
+    "ListHealthChecksBySourceRequest":{
+      "type":"structure",
+      "required":["HealthCheckSourceId"],
+      "members":{
+        "HealthCheckSourceId":{
+          "shape":"HealthCheckSourceId",
+          "documentation":"<p>The ID of the health check source whose health checks you want to list.</p>",
+          "location":"uri",
+          "locationName":"HealthCheckSourceId"
+        },
+        "Marker":{
+          "shape":"PageMarker",
+          "documentation":"<p>The <code>NextMarker</code> value from the previous response, if the value of <code>IsTruncated</code> was <code>true</code>. Specify it to get the next group of health checks. If <code>IsTruncated</code> was <code>false</code>, there are no more health checks to get.</p>",
+          "location":"querystring",
+          "locationName":"marker"
+        },
+        "MaxItems":{
+          "shape":"PageMaxItems",
+          "documentation":"<p>The maximum number of health checks that you want <code>ListHealthChecksBySource</code> to return. Route 53 returns a maximum of 1000 health checks. If you specify a value greater than 1000, Route 53 returns only the first 1000.</p>",
+          "location":"querystring",
+          "locationName":"maxitems"
+        }
+      },
+      "documentation":"<p>Contains the parameters for retrieving a list of the health checks that use a specified health check source.</p>"
+    },
+    "ListHealthChecksBySourceResponse":{
+      "type":"structure",
+      "required":[
+        "HealthChecks",
+        "IsTruncated",
+        "MaxItems"
+      ],
+      "members":{
+        "HealthChecks":{
+          "shape":"HealthChecks",
+          "documentation":"<p>A complex type that contains one <code>HealthCheck</code> element for each health check that uses the specified health check source.</p>"
+        },
+        "Marker":{
+          "shape":"PageMarker",
+          "documentation":"<p>The value that you specified for the <code>marker</code> parameter in the call to <code>ListHealthChecksBySource</code> that produced the current response. This value is present for the second and subsequent calls to <code>ListHealthChecksBySource</code>.</p>"
+        },
+        "IsTruncated":{
+          "shape":"PageTruncated",
+          "documentation":"<p>Specifies whether there are more health checks to list. If the value is <code>true</code>, specify the <code>NextMarker</code> value for <code>marker</code> to get the next group of health checks.</p>"
+        },
+        "NextMarker":{
+          "shape":"PageMarker",
+          "documentation":"<p>The identifier of the first health check in the next group of health checks. If <code>IsTruncated</code> is <code>true</code>, specify this value in the <code>marker</code> parameter of another <code>ListHealthChecksBySource</code> request.</p>"
+        },
+        "MaxItems":{
+          "shape":"PageMaxItems",
+          "documentation":"<p>The value that you specified for the <code>maxitems</code> parameter in the call to <code>ListHealthChecksBySource</code> that produced the current response.</p>"
+        }
+      },
+      "documentation":"<p>Contains the health checks and pagination information that <code>ListHealthChecksBySource</code> returns.</p>"
+    },
     "ListHealthChecksRequest":{
       "type":"structure",
       "members":{
@@ -4911,7 +5297,7 @@
       "members":{
         "ResourceType":{
           "shape":"TagResourceType",
-          "documentation":"<p>The type of the resource.</p> <ul> <li> <p>The resource type for health checks is <code>healthcheck</code>.</p> </li> <li> <p>The resource type for hosted zones is <code>hostedzone</code>.</p> </li> </ul>",
+          "documentation":"<p>The type of the resource.</p> <ul> <li> <p>The resource type for health checks is <code>healthcheck</code>.</p> </li> <li> <p>The resource type for health check sources is <code>healthchecksource</code>.</p> </li> <li> <p>The resource type for hosted zones is <code>hostedzone</code>.</p> </li> </ul>",
           "location":"uri",
           "locationName":"ResourceType"
         },
@@ -4944,7 +5330,7 @@
       "members":{
         "ResourceType":{
           "shape":"TagResourceType",
-          "documentation":"<p>The type of the resources.</p> <ul> <li> <p>The resource type for health checks is <code>healthcheck</code>.</p> </li> <li> <p>The resource type for hosted zones is <code>hostedzone</code>.</p> </li> </ul>",
+          "documentation":"<p>The type of the resources.</p> <ul> <li> <p>The resource type for health checks is <code>healthcheck</code>.</p> </li> <li> <p>The resource type for health check sources is <code>healthchecksource</code>.</p> </li> <li> <p>The resource type for hosted zones is <code>hostedzone</code>.</p> </li> </ul>",
           "location":"uri",
           "locationName":"ResourceType"
         },
@@ -5434,6 +5820,15 @@
         }
       },
       "documentation":"<p>No health check exists with the specified ID.</p>",
+      "error":{"httpStatusCode":404},
+      "exception":true
+    },
+    "NoSuchHealthCheckSource":{
+      "type":"structure",
+      "members":{
+        "message":{"shape":"ErrorMessage"}
+      },
+      "documentation":"<p>No health check source exists with the specified ID. Verify that the ID is correct and that the health check source hasn't been deleted.</p>",
       "error":{"httpStatusCode":404},
       "exception":true
     },
@@ -5967,7 +6362,7 @@
       "members":{
         "ResourceType":{
           "shape":"TagResourceType",
-          "documentation":"<p>The type of the resource.</p> <ul> <li> <p>The resource type for health checks is <code>healthcheck</code>.</p> </li> <li> <p>The resource type for hosted zones is <code>hostedzone</code>.</p> </li> </ul>"
+          "documentation":"<p>The type of the resource.</p> <ul> <li> <p>The resource type for health checks is <code>healthcheck</code>.</p> </li> <li> <p>The resource type for health check sources is <code>healthchecksource</code>.</p> </li> <li> <p>The resource type for hosted zones is <code>hostedzone</code>.</p> </li> </ul>"
         },
         "ResourceId":{
           "shape":"TagResourceId",
@@ -6021,6 +6416,20 @@
     "SearchString":{
       "type":"string",
       "max":255
+    },
+    "SecurityGroupId":{
+      "type":"string",
+      "max":64,
+      "min":1
+    },
+    "SecurityGroupIdList":{
+      "type":"list",
+      "member":{
+        "shape":"SecurityGroupId",
+        "locationName":"SecurityGroupId"
+      },
+      "max":10,
+      "min":1
     },
     "ServeSignature":{
       "type":"string",
@@ -6077,6 +6486,43 @@
         }
       },
       "documentation":"<p>A complex type that contains the status that one Amazon Route 53 health checker reports and the time of the health check.</p>"
+    },
+    "SubnetConfiguration":{
+      "type":"structure",
+      "required":[
+        "SubnetId",
+        "AvailabilityZoneId",
+        "SecurityGroupIdList"
+      ],
+      "members":{
+        "SubnetId":{
+          "shape":"SubnetId",
+          "documentation":"<p>The ID of the subnet that Route 53 uses to send health check requests.</p>"
+        },
+        "AvailabilityZoneId":{
+          "shape":"AvailabilityZoneId",
+          "documentation":"<p>The ID of the Availability Zone that contains the subnet, for example <code>use1-az1</code>. Specify the Availability Zone ID, not the Availability Zone name.</p>"
+        },
+        "SecurityGroupIdList":{
+          "shape":"SecurityGroupIdList",
+          "documentation":"<p>The IDs of the security groups in the same virtual private cloud (VPC) to associate with the network interfaces that Route 53 creates in this subnet. The security groups must allow outbound traffic to the endpoints that the health checks monitor.</p>"
+        }
+      },
+      "documentation":"<p>A complex type that identifies one subnet for a health check source and the security groups that Route 53 associates with the network interfaces that it creates in that subnet.</p>"
+    },
+    "SubnetConfigurationList":{
+      "type":"list",
+      "member":{
+        "shape":"SubnetConfiguration",
+        "locationName":"SubnetConfiguration"
+      },
+      "max":3,
+      "min":2
+    },
+    "SubnetId":{
+      "type":"string",
+      "max":64,
+      "min":1
     },
     "SubnetMask":{
       "type":"string",
@@ -6141,7 +6587,8 @@
       "type":"string",
       "enum":[
         "healthcheck",
-        "hostedzone"
+        "hostedzone",
+        "healthchecksource"
       ]
     },
     "TagValue":{
@@ -6244,12 +6691,20 @@
       "exception":true
     },
     "TimeStamp":{"type":"timestamp"},
+    "TooManyHealthCheckSources":{
+      "type":"structure",
+      "members":{
+        "message":{"shape":"ErrorMessage"}
+      },
+      "documentation":"<p>You can't create this health check source because the current account has reached its maximum number of health check sources. The maximum includes every health check source that hasn't reached <code>DELETE_COMPLETED</code> status, including a health check source with a status of <code>CREATE_FAILED</code>.</p> <p>For information about default limits, see <a href=\"https://docs.aws.amazon.com/Route53/latest/DeveloperGuide/DNSLimitations.html\">Limits</a> in the <i>Amazon Route 53 Developer Guide</i>.</p> <p>For information about how to get the current limit for an account, see <a href=\"https://docs.aws.amazon.com/Route53/latest/APIReference/API_GetAccountLimit.html\">GetAccountLimit</a>. To request a higher limit, <a href=\"http://aws.amazon.com/route53-request\">create a case</a> with the Amazon Web Services Support Center.</p>",
+      "exception":true
+    },
     "TooManyHealthChecks":{
       "type":"structure",
       "members":{
         "message":{"shape":"ErrorMessage"}
       },
-      "documentation":"<p>This health check can't be created because the current account has reached the limit on the number of active health checks.</p> <p>For information about default limits, see <a href=\"https://docs.aws.amazon.com/Route53/latest/DeveloperGuide/DNSLimitations.html\">Limits</a> in the <i>Amazon Route 53 Developer Guide</i>.</p> <p>For information about how to get the current limit for an account, see <a href=\"https://docs.aws.amazon.com/Route53/latest/APIReference/API_GetAccountLimit.html\">GetAccountLimit</a>. To request a higher limit, <a href=\"http://aws.amazon.com/route53-request\">create a case</a> with the Amazon Web Services Support Center.</p> <p>You have reached the maximum number of active health checks for an Amazon Web Services account. To request a higher limit, <a href=\"http://aws.amazon.com/route53-request\">create a case</a> with the Amazon Web Services Support Center.</p>",
+      "documentation":"<p>This health check can't be created because the current account has reached the limit on the number of active health checks, or because the health check source for a private health check has reached its limit on active health checks. In the second case, specify a different health check source.</p> <p>For information about default limits, see <a href=\"https://docs.aws.amazon.com/Route53/latest/DeveloperGuide/DNSLimitations.html\">Limits</a> in the <i>Amazon Route 53 Developer Guide</i>.</p> <p>For information about how to get the current limit for an account, see <a href=\"https://docs.aws.amazon.com/Route53/latest/APIReference/API_GetAccountLimit.html\">GetAccountLimit</a>. To request a higher limit, <a href=\"http://aws.amazon.com/route53-request\">create a case</a> with the Amazon Web Services Support Center.</p> <p>You have reached the maximum number of active health checks for an Amazon Web Services account. To request a higher limit, <a href=\"http://aws.amazon.com/route53-request\">create a case</a> with the Amazon Web Services Support Center.</p>",
       "exception":true
     },
     "TooManyHostedZones":{
@@ -6554,7 +7009,7 @@
         },
         "IPAddress":{
           "shape":"IPAddress",
-          "documentation":"<p>The IPv4 or IPv6 IP address for the endpoint that you want Amazon Route 53 to perform health checks on. If you don't specify a value for <code>IPAddress</code>, Route 53 sends a DNS request to resolve the domain name that you specify in <code>FullyQualifiedDomainName</code> at the interval that you specify in <code>RequestInterval</code>. Using an IP address that is returned by DNS, Route 53 then checks the health of the endpoint.</p> <p>Use one of the following formats for the value of <code>IPAddress</code>: </p> <ul> <li> <p> <b>IPv4 address</b>: four values between 0 and 255, separated by periods (.), for example, <code>192.0.2.44</code>.</p> </li> <li> <p> <b>IPv6 address</b>: eight groups of four hexadecimal values, separated by colons (:), for example, <code>2001:0db8:85a3:0000:0000:abcd:0001:2345</code>. You can also shorten IPv6 addresses as described in RFC 5952, for example, <code>2001:db8:85a3::abcd:1:2345</code>.</p> </li> </ul> <p>If the endpoint is an EC2 instance, we recommend that you create an Elastic IP address, associate it with your EC2 instance, and specify the Elastic IP address for <code>IPAddress</code>. This ensures that the IP address of your instance never changes. For more information, see the applicable documentation:</p> <ul> <li> <p>Linux: <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/elastic-ip-addresses-eip.html\">Elastic IP Addresses (EIP)</a> in the <i>Amazon EC2 User Guide for Linux Instances</i> </p> </li> <li> <p>Windows: <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/WindowsGuide/elastic-ip-addresses-eip.html\">Elastic IP Addresses (EIP)</a> in the <i>Amazon EC2 User Guide for Windows Instances</i> </p> </li> </ul> <note> <p>If a health check already has a value for <code>IPAddress</code>, you can change the value. However, you can't update an existing health check to add or remove the value of <code>IPAddress</code>. </p> </note> <p>For more information, see <a href=\"https://docs.aws.amazon.com/Route53/latest/APIReference/API_UpdateHealthCheck.html#Route53-UpdateHealthCheck-request-FullyQualifiedDomainName\">FullyQualifiedDomainName</a>. </p> <p>Constraints: Route 53 can't check the health of endpoints for which the IP address is in local, private, non-routable, or multicast ranges. For more information about IP addresses for which you can't create health checks, see the following documents:</p> <ul> <li> <p> <a href=\"https://tools.ietf.org/html/rfc5735\">RFC 5735, Special Use IPv4 Addresses</a> </p> </li> <li> <p> <a href=\"https://tools.ietf.org/html/rfc6598\">RFC 6598, IANA-Reserved IPv4 Prefix for Shared Address Space</a> </p> </li> <li> <p> <a href=\"https://tools.ietf.org/html/rfc5156\">RFC 5156, Special-Use IPv6 Addresses</a> </p> </li> </ul>"
+          "documentation":"<p>The IPv4 or IPv6 IP address for the endpoint that you want Amazon Route 53 to perform health checks on. If you don't specify a value for <code>IPAddress</code>, Route 53 sends a DNS request to resolve the domain name that you specify in <code>FullyQualifiedDomainName</code> at the interval that you specify in <code>RequestInterval</code>. Using an IP address that is returned by DNS, Route 53 then checks the health of the endpoint.</p> <p>Use one of the following formats for the value of <code>IPAddress</code>: </p> <ul> <li> <p> <b>IPv4 address</b>: four values between 0 and 255, separated by periods (.), for example, <code>192.0.2.44</code>.</p> </li> <li> <p> <b>IPv6 address</b>: eight groups of four hexadecimal values, separated by colons (:), for example, <code>2001:0db8:85a3:0000:0000:abcd:0001:2345</code>. You can also shorten IPv6 addresses as described in RFC 5952, for example, <code>2001:db8:85a3::abcd:1:2345</code>.</p> </li> </ul> <p>For a public health check, if the endpoint is an EC2 instance, we recommend that you create an Elastic IP address, associate it with your EC2 instance, and specify the Elastic IP address for <code>IPAddress</code>. This ensures that the IP address of your instance never changes. For more information, see the applicable documentation:</p> <ul> <li> <p>Linux: <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/elastic-ip-addresses-eip.html\">Elastic IP Addresses (EIP)</a> in the <i>Amazon EC2 User Guide for Linux Instances</i> </p> </li> <li> <p>Windows: <a href=\"https://docs.aws.amazon.com/AWSEC2/latest/WindowsGuide/elastic-ip-addresses-eip.html\">Elastic IP Addresses (EIP)</a> in the <i>Amazon EC2 User Guide for Windows Instances</i> </p> </li> </ul> <note> <p>If a health check already has a value for <code>IPAddress</code>, you can change the value. However, you can't update an existing health check to add or remove the value of <code>IPAddress</code>. </p> </note> <p>For more information, see <a href=\"https://docs.aws.amazon.com/Route53/latest/APIReference/API_UpdateHealthCheck.html#Route53-UpdateHealthCheck-request-FullyQualifiedDomainName\">FullyQualifiedDomainName</a>. </p> <p>Constraints: For a public health check (<code>EndpointType</code> of <code>PUBLIC</code>, the default), Route 53 can't check the health of endpoints for which the IP address is in local, private, non-routable, or multicast ranges. For more information about IP addresses for which you can't create public health checks, see the following documents:</p> <ul> <li> <p> <a href=\"https://tools.ietf.org/html/rfc5735\">RFC 5735, Special Use IPv4 Addresses</a> </p> </li> <li> <p> <a href=\"https://tools.ietf.org/html/rfc6598\">RFC 6598, IANA-Reserved IPv4 Prefix for Shared Address Space</a> </p> </li> <li> <p> <a href=\"https://tools.ietf.org/html/rfc5156\">RFC 5156, Special-Use IPv6 Addresses</a> </p> </li> </ul> <p>For a private endpoint health check (<code>EndpointType</code> of <code>PRIVATE</code>), if you specify <code>IPAddress</code>, it must be a private IPv4 or IPv6 address. Route 53 sends health checks to it from the health check source that you specify in <code>HealthCheckSourceId</code>.</p>"
         },
         "Port":{
           "shape":"Port",
@@ -6611,6 +7066,10 @@
         "ResetElements":{
           "shape":"ResettableElementNameList",
           "documentation":"<p>A complex type that contains one <code>ResettableElementName</code> element for each element that you want to reset to the default value. Valid values for <code>ResettableElementName</code> include the following:</p> <ul> <li> <p> <code>ChildHealthChecks</code>: Amazon Route 53 resets <a href=\"https://docs.aws.amazon.com/Route53/latest/APIReference/API_HealthCheckConfig.html#Route53-Type-HealthCheckConfig-ChildHealthChecks\">ChildHealthChecks</a> to null.</p> </li> <li> <p> <code>FullyQualifiedDomainName</code>: Route 53 resets <a href=\"https://docs.aws.amazon.com/Route53/latest/APIReference/API_UpdateHealthCheck.html#Route53-UpdateHealthCheck-request-FullyQualifiedDomainName\">FullyQualifiedDomainName</a>. to null.</p> </li> <li> <p> <code>Regions</code>: Route 53 resets the <a href=\"https://docs.aws.amazon.com/Route53/latest/APIReference/API_HealthCheckConfig.html#Route53-Type-HealthCheckConfig-Regions\">Regions</a> list to the default set of regions. </p> </li> <li> <p> <code>ResourcePath</code>: Route 53 resets <a href=\"https://docs.aws.amazon.com/Route53/latest/APIReference/API_HealthCheckConfig.html#Route53-Type-HealthCheckConfig-ResourcePath\">ResourcePath</a> to null.</p> </li> </ul>"
+        },
+        "HealthCheckSourceId":{
+          "shape":"HealthCheckSourceId",
+          "documentation":"<p>The ID of the health check source from which Route 53 sends requests to the endpoint. Applies only to health checks that have an <code>EndpointType</code> of <code>PRIVATE</code>. The health check source must be in the same account and have a status of <code>CREATE_COMPLETED</code>.</p> <p>Each health check source supports a limited number of active health checks. If you reach that limit, specify a different health check source.</p>"
         }
       },
       "documentation":"<p>A complex type that contains information about a request to update a health check.</p>"

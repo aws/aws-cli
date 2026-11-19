@@ -94,7 +94,7 @@
         {"shape":"AccessDeniedException"},
         {"shape":"ThrottlingException"}
       ],
-      "documentation":"<p> Delete commitment that you have created in a Bill Scenario. You can only delete a commitment that you had added and cannot model deletion (or removal) of a existing commitment. If you want model deletion of an existing commitment, see the negate <a href=\"https://docs.aws.amazon.com/aws-cost-management/latest/APIReference/API_AWSBCMPricingCalculator_BillScenarioCommitmentModificationAction.html\"> BillScenarioCommitmentModificationAction</a> of <a href=\"https://docs.aws.amazon.com/aws-cost-management/latest/APIReference/API_AWSBCMPricingCalculator_BatchCreateBillScenarioUsageModification.html\"> BatchCreateBillScenarioCommitmentModification</a> operation. </p> <note> <p>The <code>BatchDeleteBillScenarioCommitmentModification</code> operation doesn't have its own IAM permission. To authorize this operation for Amazon Web Services principals, include the permission <code>bcm-pricing-calculator:DeleteBillScenarioCommitmentModification</code> in your policies.</p> </note>",
+      "documentation":"<p> Delete commitment that you have created in a Bill Scenario. You can only delete a commitment that you had added and can't model deletion (or removal) of a existing commitment. If you want model deletion of an existing commitment, see the negate <a href=\"https://docs.aws.amazon.com/aws-cost-management/latest/APIReference/API_AWSBCMPricingCalculator_BillScenarioCommitmentModificationAction.html\"> BillScenarioCommitmentModificationAction</a> of <a href=\"https://docs.aws.amazon.com/aws-cost-management/latest/APIReference/API_AWSBCMPricingCalculator_BatchCreateBillScenarioUsageModification.html\"> BatchCreateBillScenarioCommitmentModification</a> operation. </p> <note> <p>The <code>BatchDeleteBillScenarioCommitmentModification</code> operation doesn't have its own IAM permission. To authorize this operation for Amazon Web Services principals, include the permission <code>bcm-pricing-calculator:DeleteBillScenarioCommitmentModification</code> in your policies.</p> </note>",
       "idempotent":true
     },
     "BatchDeleteBillScenarioUsageModification":{
@@ -115,7 +115,7 @@
         {"shape":"AccessDeniedException"},
         {"shape":"ThrottlingException"}
       ],
-      "documentation":"<p> Delete usage that you have created in a Bill Scenario. You can only delete usage that you had added and cannot model deletion (or removal) of a existing usage. If you want model removal of an existing usage, see <a href=\"https://docs.aws.amazon.com/aws-cost-management/latest/APIReference/API_AWSBCMPricingCalculator_BatchUpdateBillScenarioUsageModification.html\"> BatchUpdateBillScenarioUsageModification</a>. </p> <note> <p>The <code>BatchDeleteBillScenarioUsageModification</code> operation doesn't have its own IAM permission. To authorize this operation for Amazon Web Services principals, include the permission <code>bcm-pricing-calculator:DeleteBillScenarioUsageModification</code> in your policies.</p> </note>",
+      "documentation":"<p> Delete usage that you have created in a Bill Scenario. You can only delete usage that you had added and can't model deletion (or removal) of a existing usage. If you want model removal of an existing usage, see <a href=\"https://docs.aws.amazon.com/aws-cost-management/latest/APIReference/API_AWSBCMPricingCalculator_BatchUpdateBillScenarioUsageModification.html\"> BatchUpdateBillScenarioUsageModification</a>. </p> <note> <p>The <code>BatchDeleteBillScenarioUsageModification</code> operation doesn't have its own IAM permission. To authorize this operation for Amazon Web Services principals, include the permission <code>bcm-pricing-calculator:DeleteBillScenarioUsageModification</code> in your policies.</p> </note>",
       "idempotent":true
     },
     "BatchDeleteWorkloadEstimateUsage":{
@@ -135,7 +135,7 @@
         {"shape":"AccessDeniedException"},
         {"shape":"ThrottlingException"}
       ],
-      "documentation":"<p> Delete usage that you have created in a Workload estimate. You can only delete usage that you had added and cannot model deletion (or removal) of a existing usage. If you want model removal of an existing usage, see <a href=\"https://docs.aws.amazon.com/aws-cost-management/latest/APIReference/API_AWSBCMPricingCalculator_BatchUpdateWorkloadEstimateUsage.html\"> BatchUpdateWorkloadEstimateUsage</a>. </p> <note> <p>The <code>BatchDeleteWorkloadEstimateUsage</code> operation doesn't have its own IAM permission. To authorize this operation for Amazon Web Services principals, include the permission <code>bcm-pricing-calculator:DeleteWorkloadEstimateUsage</code> in your policies.</p> </note>",
+      "documentation":"<p> Delete usage that you have created in a Workload estimate. You can only delete usage that you had added and can't model deletion (or removal) of a existing usage. If you want model removal of an existing usage, see <a href=\"https://docs.aws.amazon.com/aws-cost-management/latest/APIReference/API_AWSBCMPricingCalculator_BatchUpdateWorkloadEstimateUsage.html\"> BatchUpdateWorkloadEstimateUsage</a>. </p> <note> <p>The <code>BatchDeleteWorkloadEstimateUsage</code> operation doesn't have its own IAM permission. To authorize this operation for Amazon Web Services principals, include the permission <code>bcm-pricing-calculator:DeleteWorkloadEstimateUsage</code> in your policies.</p> </note>",
       "idempotent":true
     },
     "BatchUpdateBillScenarioCommitmentModification":{
@@ -369,6 +369,24 @@
         {"shape":"ThrottlingException"}
       ],
       "documentation":"<p> Retrieves the current preferences for Pricing Calculator. </p>",
+      "readonly":true
+    },
+    "GetUsageLinesEstimatedCost":{
+      "name":"GetUsageLinesEstimatedCost",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"GetUsageLinesEstimatedCostRequest"},
+      "output":{"shape":"GetUsageLinesEstimatedCostResponse"},
+      "errors":[
+        {"shape":"ValidationException"},
+        {"shape":"DataUnavailableException"},
+        {"shape":"InternalServerException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ThrottlingException"}
+      ],
+      "documentation":"<p> Retrieves the estimated cost of a list of usage lines. Each usage line identifies a billing line by its service code, usage type, and operation, and includes the usage amount to price. The estimate is based on Amazon Web Services pricing data and the rate type you choose. It doesn't include taxes, and your actual charges depend on your usage. </p> <p> The response includes the estimated cost of each usage line that was priced. It also includes each usage line that couldn't be priced, and the reason it couldn't be priced. </p>",
       "readonly":true
     },
     "GetWorkloadEstimate":{
@@ -717,7 +735,7 @@
       "members":{
         "message":{"shape":"String"}
       },
-      "documentation":"<p> You do not have sufficient access to perform this action. </p>",
+      "documentation":"<p> The request is denied because you don't have sufficient permissions to perform this operation. Verify that you have the required permissions and try again. </p>",
       "exception":true
     },
     "AccountId":{
@@ -749,7 +767,7 @@
         },
         "commitment":{
           "shape":"SavingsPlanCommitment",
-          "documentation":"<p> The hourly commitment, in the same currency of the <code>savingsPlanOfferingId</code>. This is a value between 0.001 and 1 million. You cannot specify more than five digits after the decimal point. </p>"
+          "documentation":"<p> The hourly commitment, in the same currency of the <code>savingsPlanOfferingId</code>. This is a value between 0.001 and 1 million. You can't specify more than five digits after the decimal point. </p>"
         }
       },
       "documentation":"<p> Represents an action to add a Savings Plan to a bill scenario. </p>"
@@ -890,7 +908,7 @@
         },
         "errors":{
           "shape":"BatchCreateBillScenarioCommitmentModificationErrors",
-          "documentation":"<p> Returns the list of errors reason and the commitment item keys that cannot be created in the Bill Scenario. </p>"
+          "documentation":"<p> Returns the list of errors reason and the commitment item keys that can't be created in the Bill Scenario. </p>"
         }
       }
     },
@@ -1070,7 +1088,7 @@
         },
         "errors":{
           "shape":"BatchCreateBillScenarioUsageModificationErrors",
-          "documentation":"<p> Returns the list of errors reason and the usage item keys that cannot be created in the Bill Scenario. </p>"
+          "documentation":"<p> Returns the list of errors reason and the usage item keys that can't be created in the Bill Scenario. </p>"
         }
       }
     },
@@ -1255,7 +1273,7 @@
         },
         "errors":{
           "shape":"BatchCreateWorkloadEstimateUsageErrors",
-          "documentation":"<p> Returns the list of errors reason and the usage item keys that cannot be created in the Workload estimate. </p>"
+          "documentation":"<p> Returns the list of errors reason and the usage item keys that can't be created in the Workload estimate. </p>"
         }
       }
     },
@@ -1317,7 +1335,7 @@
       "members":{
         "errors":{
           "shape":"BatchDeleteBillScenarioCommitmentModificationErrors",
-          "documentation":"<p> Returns the list of errors reason and the commitment item keys that cannot be deleted from the Bill Scenario. </p>"
+          "documentation":"<p> Returns the list of errors reason and the commitment item keys that can't be deleted from the Bill Scenario. </p>"
         }
       }
     },
@@ -1379,7 +1397,7 @@
       "members":{
         "errors":{
           "shape":"BatchDeleteBillScenarioUsageModificationErrors",
-          "documentation":"<p> Returns the list of errors reason and the usage item keys that cannot be deleted from the Bill Scenario. </p>"
+          "documentation":"<p> Returns the list of errors reason and the usage item keys that can't be deleted from the Bill Scenario. </p>"
         }
       }
     },
@@ -1433,7 +1451,7 @@
       "members":{
         "errors":{
           "shape":"BatchDeleteWorkloadEstimateUsageErrors",
-          "documentation":"<p> Returns the list of errors reason and the usage item keys that cannot be deleted from the Workload estimate. </p>"
+          "documentation":"<p> Returns the list of errors reason and the usage item keys that can't be deleted from the Workload estimate. </p>"
         }
       }
     },
@@ -1515,7 +1533,7 @@
         },
         "errors":{
           "shape":"BatchUpdateBillScenarioCommitmentModificationErrors",
-          "documentation":"<p> Returns the list of error reasons and commitment line item IDs that could not be updated for the Bill Scenario. </p>"
+          "documentation":"<p> Returns the list of error reasons and commitment line item IDs that couldn't be updated for the Bill Scenario. </p>"
         }
       }
     },
@@ -1601,7 +1619,7 @@
         },
         "errors":{
           "shape":"BatchUpdateBillScenarioUsageModificationErrors",
-          "documentation":"<p> Returns the list of error reasons and usage line item IDs that could not be updated for the Bill Scenario. </p>"
+          "documentation":"<p> Returns the list of error reasons and usage line item IDs that couldn't be updated for the Bill Scenario. </p>"
         }
       }
     },
@@ -1678,7 +1696,7 @@
         },
         "errors":{
           "shape":"BatchUpdateWorkloadEstimateUsageErrors",
-          "documentation":"<p> Returns the list of error reasons and usage line item IDs that could not be updated for the Workload estimate. </p>"
+          "documentation":"<p> Returns the list of error reasons and usage line item IDs that couldn't be updated for the Workload estimate. </p>"
         }
       }
     },
@@ -2144,14 +2162,14 @@
         "message":{"shape":"String"},
         "resourceId":{
           "shape":"String",
-          "documentation":"<p> The identifier of the resource that was not found. </p>"
+          "documentation":"<p> The identifier of the resource that is in a conflicting state. </p>"
         },
         "resourceType":{
           "shape":"String",
-          "documentation":"<p> The type of the resource that was not found. </p>"
+          "documentation":"<p> The type of the resource that is in a conflicting state. </p>"
         }
       },
-      "documentation":"<p> The request could not be processed because of conflict in the current state of the resource. </p>",
+      "documentation":"<p> The request couldn't be processed because the resource is in a conflicting state. Verify the resource's current state and retry the request. </p>",
       "exception":true
     },
     "CostAmount":{
@@ -2252,7 +2270,7 @@
         },
         "groupSharingPreference":{
           "shape":"GroupSharingPreferenceEnum",
-          "documentation":"<p>The setting for the reserved instance and savings plan group sharing used in this estimate.</p>"
+          "documentation":"<p>The setting for the reserved instance and savings plans group sharing used in this estimate.</p>"
         },
         "costCategoryGroupSharingPreferenceArn":{
           "shape":"CostCategoryArn",
@@ -2283,7 +2301,7 @@
         },
         "groupSharingPreference":{
           "shape":"GroupSharingPreferenceEnum",
-          "documentation":"<p>The setting for the reserved instance and savings plan group sharing used in this estimate.</p>"
+          "documentation":"<p>The setting for the reserved instance and savings plans group sharing used in this estimate.</p>"
         },
         "costCategoryGroupSharingPreferenceArn":{
           "shape":"CostCategoryArn",
@@ -2325,7 +2343,7 @@
         },
         "groupSharingPreference":{
           "shape":"GroupSharingPreferenceEnum",
-          "documentation":"<p>The setting for the reserved instance and savings plan group sharing used in this estimate.</p>"
+          "documentation":"<p>The setting for the reserved instance and savings plans group sharing used in this estimate.</p>"
         },
         "costCategoryGroupSharingPreferenceArn":{
           "shape":"CostCategoryArn",
@@ -2348,7 +2366,7 @@
         },
         "rateType":{
           "shape":"WorkloadEstimateRateType",
-          "documentation":"<p> The type of pricing rates to use for the estimate. </p>"
+          "documentation":"<p> The type of pricing rates for the estimate. You can only use a rate type that your Pricing Calculator rate preferences allow. If you use billing transfer as a bill source account, you can only use BEFORE_DISCOUNTS. </p>"
         },
         "tags":{
           "shape":"Tags",
@@ -2576,7 +2594,7 @@
         },
         "groupSharingPreference":{
           "shape":"GroupSharingPreferenceEnum",
-          "documentation":"<p>The setting for the reserved instance and savings plan group sharing used in this estimate.</p>"
+          "documentation":"<p>The setting for the reserved instance and savings plans group sharing used in this estimate.</p>"
         },
         "costCategoryGroupSharingPreferenceArn":{
           "shape":"CostCategoryArn",
@@ -2632,7 +2650,7 @@
         },
         "groupSharingPreference":{
           "shape":"GroupSharingPreferenceEnum",
-          "documentation":"<p>The setting for the reserved instance and savings plan group sharing used in this estimate.</p>"
+          "documentation":"<p>The setting for the reserved instance and savings plans group sharing used in this estimate.</p>"
         },
         "costCategoryGroupSharingPreferenceArn":{
           "shape":"CostCategoryArn",
@@ -2658,6 +2676,196 @@
         "standaloneAccountRateTypeSelections":{
           "shape":"RateTypes",
           "documentation":"<p> The preferred rate types for a standalone account. </p>"
+        }
+      }
+    },
+    "GetUsageLinesEstimatedCostAmount":{
+      "type":"double",
+      "box":true,
+      "min":0.0
+    },
+    "GetUsageLinesEstimatedCostError":{
+      "type":"structure",
+      "required":[
+        "key",
+        "serviceCode",
+        "usageType",
+        "operation",
+        "errorCode",
+        "errorMessage"
+      ],
+      "members":{
+        "key":{
+          "shape":"Key",
+          "documentation":"<p> The key of the usage line in the request that couldn't be priced. </p>"
+        },
+        "serviceCode":{
+          "shape":"ServiceCode",
+          "documentation":"<p> The Amazon Web Services service code of the usage line that couldn't be priced. </p>"
+        },
+        "usageType":{
+          "shape":"UsageType",
+          "documentation":"<p> The usage type of the usage line that couldn't be priced. </p>"
+        },
+        "operation":{
+          "shape":"Operation",
+          "documentation":"<p> The operation of the usage line that couldn't be priced. </p>"
+        },
+        "errorCode":{
+          "shape":"GetUsageLinesEstimatedCostErrorCode",
+          "documentation":"<p> The code associated with the error. </p>"
+        },
+        "errorMessage":{
+          "shape":"String",
+          "documentation":"<p> The message that describes the error. </p>"
+        }
+      },
+      "documentation":"<p> Represents a usage line that couldn't be priced. </p>"
+    },
+    "GetUsageLinesEstimatedCostErrorCode":{
+      "type":"string",
+      "enum":[
+        "BAD_REQUEST",
+        "NOT_FOUND",
+        "CONFLICT",
+        "INTERNAL_SERVER_ERROR"
+      ]
+    },
+    "GetUsageLinesEstimatedCostErrors":{
+      "type":"list",
+      "member":{"shape":"GetUsageLinesEstimatedCostError"}
+    },
+    "GetUsageLinesEstimatedCostEstimatedCost":{
+      "type":"structure",
+      "members":{
+        "usageAmount":{
+          "shape":"Double",
+          "documentation":"<p> The usage amount that was priced. </p>"
+        },
+        "usageUnit":{
+          "shape":"String",
+          "documentation":"<p> The unit of the usage amount, for example <code>Hrs</code> or <code>GB-Mo</code>. </p>"
+        },
+        "cost":{
+          "shape":"Double",
+          "documentation":"<p> The estimated cost for the given usage amount. </p>"
+        },
+        "currency":{
+          "shape":"CurrencyCode",
+          "documentation":"<p> The currency of the estimated cost. </p>"
+        }
+      },
+      "documentation":"<p> Represents the estimated cost of the usage amount for a usage line. </p>"
+    },
+    "GetUsageLinesEstimatedCostInput":{
+      "type":"structure",
+      "required":[
+        "serviceCode",
+        "usageType",
+        "operation",
+        "key",
+        "amount"
+      ],
+      "members":{
+        "serviceCode":{
+          "shape":"ServiceCode",
+          "documentation":"<p> The Amazon Web Services service code of the usage line, for example <code>AmazonEC2</code>. </p>"
+        },
+        "usageType":{
+          "shape":"UsageType",
+          "documentation":"<p> The usage type of the usage line, for example <code>BoxUsage:t3.micro</code>. </p>"
+        },
+        "operation":{
+          "shape":"Operation",
+          "documentation":"<p> The operation of the usage line, for example <code>RunInstances</code>. </p>"
+        },
+        "key":{
+          "shape":"Key",
+          "documentation":"<p> A unique identifier for the usage line in the request. Use the key to match the usage line with its result in <code>lineItems</code> or <code>errors</code> in the response. </p>"
+        },
+        "amount":{
+          "shape":"GetUsageLinesEstimatedCostAmount",
+          "documentation":"<p> The usage amount to price for the usage line in the usage type's pricing unit. This value must be 0 or greater. </p>"
+        }
+      },
+      "documentation":"<p> Represents a usage line that you want to estimate. </p>"
+    },
+    "GetUsageLinesEstimatedCostLineItem":{
+      "type":"structure",
+      "required":["key"],
+      "members":{
+        "key":{
+          "shape":"Key",
+          "documentation":"<p> The key of the usage line in the request. </p>"
+        },
+        "serviceCode":{
+          "shape":"ServiceCode",
+          "documentation":"<p> The Amazon Web Services service code of the usage line. </p>"
+        },
+        "usageType":{
+          "shape":"UsageType",
+          "documentation":"<p> The usage type of the usage line. </p>"
+        },
+        "operation":{
+          "shape":"Operation",
+          "documentation":"<p> The operation of the usage line. </p>"
+        },
+        "estimatedCost":{
+          "shape":"GetUsageLinesEstimatedCostEstimatedCost",
+          "documentation":"<p> The estimated cost of the usage amount in the request. </p>"
+        }
+      },
+      "documentation":"<p> Represents the estimated cost of a usage line that was priced. </p>"
+    },
+    "GetUsageLinesEstimatedCostLineItemList":{
+      "type":"list",
+      "member":{"shape":"GetUsageLinesEstimatedCostLineItem"}
+    },
+    "GetUsageLinesEstimatedCostRequest":{
+      "type":"structure",
+      "required":[
+        "usage",
+        "rateType"
+      ],
+      "members":{
+        "usage":{
+          "shape":"GetUsageLinesEstimatedCostRequestUsageList",
+          "documentation":"<p> The usage lines that you want to estimate. You can include up to 500 usage lines in a request. </p>"
+        },
+        "rateType":{
+          "shape":"RateType",
+          "documentation":"<p> The type of pricing rates to use to estimate the cost of the usage lines. You can only use a rate type that your Pricing Calculator rate preferences allow. If you use billing transfer as a bill source account, you can only use BEFORE_DISCOUNTS </p>"
+        }
+      }
+    },
+    "GetUsageLinesEstimatedCostRequestUsageList":{
+      "type":"list",
+      "member":{"shape":"GetUsageLinesEstimatedCostInput"},
+      "max":500,
+      "min":1
+    },
+    "GetUsageLinesEstimatedCostResponse":{
+      "type":"structure",
+      "members":{
+        "rateType":{
+          "shape":"RateType",
+          "documentation":"<p> The type of pricing rates used to estimate the cost of the usage lines. </p>"
+        },
+        "totalCost":{
+          "shape":"Double",
+          "documentation":"<p> The sum of the estimated costs of all usage lines that were priced. Usage lines returned in <code>errors</code> aren't included. </p>"
+        },
+        "currency":{
+          "shape":"CurrencyCode",
+          "documentation":"<p> The currency of the costs in the response. </p>"
+        },
+        "lineItems":{
+          "shape":"GetUsageLinesEstimatedCostLineItemList",
+          "documentation":"<p> The estimated cost of each usage line that was priced. </p>"
+        },
+        "errors":{
+          "shape":"GetUsageLinesEstimatedCostErrors",
+          "documentation":"<p> The usage lines that couldn't be priced, and the reason that each one couldn't be priced. </p>"
         }
       }
     },
@@ -3447,14 +3655,14 @@
         "message":{"shape":"String"},
         "resourceId":{
           "shape":"String",
-          "documentation":"<p> The identifier of the resource that was not found. </p>"
+          "documentation":"<p> The identifier of the resource that wasn't found. </p>"
         },
         "resourceType":{
           "shape":"String",
-          "documentation":"<p> The type of the resource that was not found. </p>"
+          "documentation":"<p> The type of the resource that wasn't found. </p>"
         }
       },
-      "documentation":"<p> The specified resource was not found. </p>",
+      "documentation":"<p> The specified resource wasn't found. </p>",
       "exception":true
     },
     "ResourceTagKey":{
@@ -3657,7 +3865,7 @@
         },
         "groupSharingPreference":{
           "shape":"GroupSharingPreferenceEnum",
-          "documentation":"<p>The setting for the reserved instance and savings plan group sharing used in this estimate.</p>"
+          "documentation":"<p>The setting for the reserved instance and savings plans group sharing used in this estimate.</p>"
         },
         "costCategoryGroupSharingPreferenceArn":{
           "shape":"CostCategoryArn",
@@ -3687,7 +3895,7 @@
         },
         "groupSharingPreference":{
           "shape":"GroupSharingPreferenceEnum",
-          "documentation":"<p>The setting for the reserved instance and savings plan group sharing used in this estimate.</p>"
+          "documentation":"<p>The setting for the reserved instance and savings plans group sharing used in this estimate.</p>"
         },
         "costCategoryGroupSharingPreferenceArn":{
           "shape":"CostCategoryArn",
@@ -3729,7 +3937,7 @@
         },
         "groupSharingPreference":{
           "shape":"GroupSharingPreferenceEnum",
-          "documentation":"<p>The setting for the reserved instance and savings plan group sharing used in this estimate.</p>"
+          "documentation":"<p>The setting for the reserved instance and savings plans group sharing used in this estimate.</p>"
         },
         "costCategoryGroupSharingPreferenceArn":{
           "shape":"CostCategoryArn",

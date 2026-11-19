@@ -2,18 +2,73 @@
   "version":"2.0",
   "metadata":{
     "apiVersion":"2023-01-25",
+    "auth":["aws.auth#sigv4"],
     "endpointPrefix":"deployment-marketplace",
-    "jsonVersion":"1.1",
     "protocol":"rest-json",
     "protocols":["rest-json"],
     "serviceFullName":"AWS Marketplace Deployment Service",
     "serviceId":"Marketplace Deployment",
     "signatureVersion":"v4",
     "signingName":"aws-marketplace",
-    "uid":"marketplace-deployment-2023-01-25",
-    "auth":["aws.auth#sigv4"]
+    "uid":"marketplace-deployment-2023-01-25"
   },
   "operations":{
+    "GetDeploymentConfiguration":{
+      "name":"GetDeploymentConfiguration",
+      "http":{
+        "method":"GET",
+        "requestUri":"/catalogs/{catalog}/products/{productId}/delivery-options/{deliveryOptionType}/deployment-configuration",
+        "responseCode":200
+      },
+      "input":{"shape":"GetDeploymentConfigurationRequest"},
+      "output":{"shape":"GetDeploymentConfigurationResponse"},
+      "errors":[
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ValidationException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Returns the active deployment configuration for a product and delivery option. The active deployment configuration is the configuration from the most recent successful deployment configuration job. The seller that owns the product and buyers entitled to the product can call this operation.</p> <p>If the product and delivery option have no active deployment configuration, the operation returns a <code>ResourceNotFoundException</code>.</p>",
+      "readonly":true
+    },
+    "GetDeploymentConfigurationJob":{
+      "name":"GetDeploymentConfigurationJob",
+      "http":{
+        "method":"GET",
+        "requestUri":"/catalogs/{catalog}/products/{productId}/delivery-options/{deliveryOptionType}/deployment-configuration/jobs/{jobId}",
+        "responseCode":200
+      },
+      "input":{"shape":"GetDeploymentConfigurationJobRequest"},
+      "output":{"shape":"GetDeploymentConfigurationJobResponse"},
+      "errors":[
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ValidationException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Returns the details of a deployment configuration job. Only the seller that started the job can call this operation.</p> <p>If the job doesn't belong to the product and delivery option in the request path, the operation returns a <code>ResourceNotFoundException</code>.</p>",
+      "readonly":true
+    },
+    "ListDeploymentConfigurationJobs":{
+      "name":"ListDeploymentConfigurationJobs",
+      "http":{
+        "method":"GET",
+        "requestUri":"/catalogs/{catalog}/products/{productId}/delivery-options/{deliveryOptionType}/deployment-configuration/jobs",
+        "responseCode":200
+      },
+      "input":{"shape":"ListDeploymentConfigurationJobsRequest"},
+      "output":{"shape":"ListDeploymentConfigurationJobsResponse"},
+      "errors":[
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ValidationException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Lists the deployment configuration jobs that you started for a product and delivery option, ordered from newest to oldest. Results are paginated. Use the <code>nextToken</code> parameter to retrieve additional results.</p> <p>If you haven't started any jobs for the product and delivery option, the operation returns an empty <code>jobs</code> list.</p>",
+      "readonly":true
+    },
     "ListTagsForResource":{
       "name":"ListTagsForResource",
       "http":{
@@ -30,7 +85,8 @@
         {"shape":"ValidationException"},
         {"shape":"InternalServerException"}
       ],
-      "documentation":"<p>Lists all tags that have been added to a deployment parameter resource.</p>"
+      "documentation":"<p>Lists all tags that have been added to a resource.</p>",
+      "readonly":true
     },
     "PutDeploymentParameter":{
       "name":"PutDeploymentParameter",
@@ -46,12 +102,31 @@
         {"shape":"AccessDeniedException"},
         {"shape":"ResourceNotFoundException"},
         {"shape":"ServiceQuotaExceededException"},
-        {"shape":"ConflictException"},
         {"shape":"ValidationException"},
+        {"shape":"ConflictException"},
         {"shape":"InternalServerException"}
       ],
       "documentation":"<p>Creates or updates a deployment parameter and is targeted by <code>catalog</code> and <code>agreementId</code>.</p>",
       "idempotent":true
+    },
+    "StartDeploymentConfigurationJob":{
+      "name":"StartDeploymentConfigurationJob",
+      "http":{
+        "method":"POST",
+        "requestUri":"/catalogs/{catalog}/products/{productId}/delivery-options/{deliveryOptionType}/deployment-configuration/jobs",
+        "responseCode":200
+      },
+      "input":{"shape":"StartDeploymentConfigurationJobRequest"},
+      "output":{"shape":"StartDeploymentConfigurationJobResponse"},
+      "errors":[
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ValidationException"},
+        {"shape":"ConflictException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Starts a job that publishes a deployment configuration for a product and delivery option. The job runs asynchronously. Use <code>GetDeploymentConfigurationJob</code> to track its status. When the job reaches the <code>SUCCEEDED</code> status, its configuration becomes the active deployment configuration for the product and delivery option.</p> <p>The populated member of <code>configuration</code> must match the <code>deliveryOptionType</code> in the request path.</p>"
     },
     "TagResource":{
       "name":"TagResource",
@@ -111,13 +186,13 @@
       "type":"string",
       "max":64,
       "min":1,
-      "pattern":"^[a-zA-Z_-]+$"
+      "pattern":"[a-zA-Z_-]+"
     },
     "ClientToken":{
       "type":"string",
       "max":64,
       "min":32,
-      "pattern":"^[a-zA-Z0-9/_+=.:@-]+$"
+      "pattern":"[a-zA-Z0-9/_+=.:@-]+"
     },
     "ConflictException":{
       "type":"structure",
@@ -139,6 +214,106 @@
       },
       "exception":true
     },
+    "DataAsAServiceConfigurationDetail":{
+      "type":"structure",
+      "required":["fulfillmentUrl"],
+      "members":{
+        "fulfillmentUrl":{
+          "shape":"DeploymentConfigurationFulfillmentUrl",
+          "documentation":"<p>The HTTPS URL that AWS Marketplace redirects buyers to after they subscribe to the product. The value must be a valid URI that uses the HTTPS scheme. Maximum length: 2,048 characters.</p>"
+        }
+      },
+      "documentation":"<p>Contains the deployment configuration settings for the Data as a Service delivery option, including the fulfillment URL that AWS Marketplace redirects buyers to after they subscribe.</p>"
+    },
+    "DeliveryOptionType":{
+      "type":"string",
+      "documentation":"<p>The delivery option type of a deployment configuration.</p>",
+      "enum":["data-as-a-service"]
+    },
+    "DeploymentConfigurationDetail":{
+      "type":"structure",
+      "members":{
+        "dataAsAService":{
+          "shape":"DataAsAServiceConfigurationDetail",
+          "documentation":"<p>The deployment configuration settings for the Data as a Service delivery option, including the fulfillment URL that AWS Marketplace redirects buyers to after they subscribe.</p>"
+        }
+      },
+      "documentation":"<p>The deployment configuration. Exactly one member must be set, and it must match the delivery option type.</p>",
+      "union":true
+    },
+    "DeploymentConfigurationFulfillmentUrl":{
+      "type":"string",
+      "documentation":"<p>An HTTPS URL that conforms to RFC 3986.</p>",
+      "max":2048,
+      "min":1
+    },
+    "DeploymentConfigurationJobErrorCode":{
+      "type":"string",
+      "documentation":"<p>The error code that describes why a deployment configuration job failed.</p>",
+      "enum":[
+        "FULFILLMENT_URL_UNREACHABLE",
+        "INTERNAL_ERROR",
+        "ENDPOINT_INVALID"
+      ]
+    },
+    "DeploymentConfigurationJobId":{
+      "type":"string",
+      "max":64,
+      "min":1,
+      "pattern":"[a-z0-9]+"
+    },
+    "DeploymentConfigurationJobStatus":{
+      "type":"string",
+      "documentation":"<p>The status of a deployment configuration job.</p>",
+      "enum":[
+        "IN_PROGRESS",
+        "SUCCEEDED",
+        "FAILED"
+      ]
+    },
+    "DeploymentConfigurationJobSummaries":{
+      "type":"list",
+      "member":{"shape":"DeploymentConfigurationJobSummary"}
+    },
+    "DeploymentConfigurationJobSummary":{
+      "type":"structure",
+      "required":[
+        "jobId",
+        "status",
+        "configuration",
+        "createdAt"
+      ],
+      "members":{
+        "jobId":{
+          "shape":"DeploymentConfigurationJobId",
+          "documentation":"<p>The unique identifier of the deployment configuration job.</p>"
+        },
+        "status":{
+          "shape":"DeploymentConfigurationJobStatus",
+          "documentation":"<p>The status of the deployment configuration job.</p>"
+        },
+        "configuration":{
+          "shape":"DeploymentConfigurationDetail",
+          "documentation":"<p>The deployment configuration submitted with the job.</p>"
+        },
+        "createdAt":{
+          "shape":"SyntheticTimestamp_date_time",
+          "documentation":"<p>The date and time when the job was created.</p>"
+        }
+      },
+      "documentation":"<p>Contains summary information about a deployment configuration job, including its identifier, status, configuration, and creation time.</p>"
+    },
+    "DeploymentConfigurationMaxResults":{
+      "type":"integer",
+      "box":true,
+      "max":100,
+      "min":1
+    },
+    "DeploymentConfigurationNextToken":{
+      "type":"string",
+      "max":2048,
+      "min":1
+    },
     "DeploymentParameterInput":{
       "type":"structure",
       "required":[
@@ -155,19 +330,135 @@
           "documentation":"<p>The text to encrypt and store in the secret.</p>"
         }
       },
-      "documentation":"<p>The shape containing the requested deployment parameter name and secretString.</p> <note> <p>To support AWS CloudFormation dynamic references to this resource using Quick Launch, this value must match a parameter defined in the CloudFormation templated provided to buyers.</p> </note>"
+      "documentation":"<p>The shape containing the requested deployment parameter name and secretString.</p> <note> <p>To support AWS CloudFormation dynamic references to this resource using Quick Launch, this value must match a parameter defined in the CloudFormation template provided to buyers.</p> </note>"
     },
     "DeploymentParameterName":{
       "type":"string",
       "max":400,
       "min":1,
-      "pattern":"^[a-zA-Z0-9/_+=.@-]+$"
+      "pattern":"[a-zA-Z0-9/_+=.@-]+"
     },
     "DeploymentParameterResourceIdentifier":{
       "type":"string",
       "max":32,
       "min":1,
-      "pattern":"^dp-[a-zA-Z0-9]+$"
+      "pattern":"dp-[a-zA-Z0-9]+"
+    },
+    "GetDeploymentConfigurationJobRequest":{
+      "type":"structure",
+      "required":[
+        "catalog",
+        "productId",
+        "deliveryOptionType",
+        "jobId"
+      ],
+      "members":{
+        "catalog":{
+          "shape":"Catalog",
+          "documentation":"<p>The catalog related to the request. Fixed value: <code>AWSMarketplace</code> </p>",
+          "location":"uri",
+          "locationName":"catalog"
+        },
+        "productId":{
+          "shape":"ResourceId",
+          "documentation":"<p>The ID of the AWS Marketplace product, for example <code>prod-1234567890abc</code>.</p>",
+          "location":"uri",
+          "locationName":"productId"
+        },
+        "deliveryOptionType":{
+          "shape":"DeliveryOptionType",
+          "documentation":"<p>The delivery option type of the deployment configuration.</p>",
+          "location":"uri",
+          "locationName":"deliveryOptionType"
+        },
+        "jobId":{
+          "shape":"DeploymentConfigurationJobId",
+          "documentation":"<p>The unique identifier of the deployment configuration job.</p>",
+          "location":"uri",
+          "locationName":"jobId"
+        }
+      }
+    },
+    "GetDeploymentConfigurationJobResponse":{
+      "type":"structure",
+      "required":[
+        "jobId",
+        "configuration",
+        "status",
+        "createdAt"
+      ],
+      "members":{
+        "jobId":{
+          "shape":"DeploymentConfigurationJobId",
+          "documentation":"<p>The unique identifier of the deployment configuration job.</p>"
+        },
+        "configuration":{
+          "shape":"DeploymentConfigurationDetail",
+          "documentation":"<p>The deployment configuration submitted with the job.</p>"
+        },
+        "status":{
+          "shape":"DeploymentConfigurationJobStatus",
+          "documentation":"<p>The status of the deployment configuration job.</p>"
+        },
+        "createdAt":{
+          "shape":"SyntheticTimestamp_date_time",
+          "documentation":"<p>The date and time when the job was created.</p>"
+        },
+        "configurationArn":{
+          "shape":"ResourceArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the deployment configuration. This field is present only when the job status is <code>SUCCEEDED</code>.</p>"
+        },
+        "endedAt":{
+          "shape":"SyntheticTimestamp_date_time",
+          "documentation":"<p>The date and time when the job reached the <code>SUCCEEDED</code> or <code>FAILED</code> status.</p>"
+        },
+        "errorCode":{
+          "shape":"DeploymentConfigurationJobErrorCode",
+          "documentation":"<p>The error code that describes why the job failed. This field is present only when the job status is <code>FAILED</code>.</p>"
+        },
+        "message":{
+          "shape":"String",
+          "documentation":"<p>A message that describes why the job failed. This field is present only when the job status is <code>FAILED</code>.</p>"
+        }
+      }
+    },
+    "GetDeploymentConfigurationRequest":{
+      "type":"structure",
+      "required":[
+        "catalog",
+        "productId",
+        "deliveryOptionType"
+      ],
+      "members":{
+        "catalog":{
+          "shape":"Catalog",
+          "documentation":"<p>The catalog related to the request. Fixed value: <code>AWSMarketplace</code> </p>",
+          "location":"uri",
+          "locationName":"catalog"
+        },
+        "productId":{
+          "shape":"ResourceId",
+          "documentation":"<p>The ID of the AWS Marketplace product, for example <code>prod-1234567890abc</code>.</p>",
+          "location":"uri",
+          "locationName":"productId"
+        },
+        "deliveryOptionType":{
+          "shape":"DeliveryOptionType",
+          "documentation":"<p>The delivery option type of the deployment configuration.</p>",
+          "location":"uri",
+          "locationName":"deliveryOptionType"
+        }
+      }
+    },
+    "GetDeploymentConfigurationResponse":{
+      "type":"structure",
+      "required":["configuration"],
+      "members":{
+        "configuration":{
+          "shape":"DeploymentConfigurationDetail",
+          "documentation":"<p>The active deployment configuration.</p>"
+        }
+      }
     },
     "InternalServerException":{
       "type":"structure",
@@ -181,13 +472,67 @@
       "fault":true,
       "retryable":{"throttling":false}
     },
+    "ListDeploymentConfigurationJobsRequest":{
+      "type":"structure",
+      "required":[
+        "catalog",
+        "productId",
+        "deliveryOptionType"
+      ],
+      "members":{
+        "catalog":{
+          "shape":"Catalog",
+          "documentation":"<p>The catalog related to the request. Fixed value: <code>AWSMarketplace</code> </p>",
+          "location":"uri",
+          "locationName":"catalog"
+        },
+        "productId":{
+          "shape":"ResourceId",
+          "documentation":"<p>The ID of the AWS Marketplace product, for example <code>prod-1234567890abc</code>.</p>",
+          "location":"uri",
+          "locationName":"productId"
+        },
+        "deliveryOptionType":{
+          "shape":"DeliveryOptionType",
+          "documentation":"<p>The delivery option type of the deployment configuration.</p>",
+          "location":"uri",
+          "locationName":"deliveryOptionType"
+        },
+        "maxResults":{
+          "shape":"DeploymentConfigurationMaxResults",
+          "documentation":"<p>The maximum number of jobs to return in a single page. Valid values are 1 through 100. The default is 20.</p>",
+          "location":"querystring",
+          "locationName":"maxResults"
+        },
+        "nextToken":{
+          "shape":"DeploymentConfigurationNextToken",
+          "documentation":"<p>The token for the next page of results. Use the value returned in the previous response.</p>",
+          "location":"querystring",
+          "locationName":"nextToken"
+        }
+      }
+    },
+    "ListDeploymentConfigurationJobsResponse":{
+      "type":"structure",
+      "required":["jobs"],
+      "members":{
+        "jobs":{
+          "shape":"DeploymentConfigurationJobSummaries",
+          "documentation":"<p>A list of deployment configuration job summaries, ordered from newest to oldest.</p>"
+        },
+        "nextToken":{
+          "shape":"DeploymentConfigurationNextToken",
+          "documentation":"<p>The token for the next page of results. This value is absent when there are no more results.</p>"
+        }
+      }
+    },
     "ListTagsForResourceRequest":{
       "type":"structure",
       "required":["resourceArn"],
       "members":{
         "resourceArn":{
           "shape":"String",
-          "documentation":"<p>The Amazon Resource Name (ARN) associated with the deployment parameter resource you want to list tags on.</p>",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the resource you want to list tags on.</p>",
           "location":"uri",
           "locationName":"resourceArn"
         }
@@ -205,34 +550,17 @@
     "PutDeploymentParameterRequest":{
       "type":"structure",
       "required":[
-        "agreementId",
         "catalog",
-        "deploymentParameter",
-        "productId"
+        "productId",
+        "agreementId",
+        "deploymentParameter"
       ],
       "members":{
-        "agreementId":{
-          "shape":"ResourceId",
-          "documentation":"<p>The unique identifier of the agreement.</p>"
-        },
         "catalog":{
           "shape":"Catalog",
           "documentation":"<p>The catalog related to the request. Fixed value: <code>AWSMarketplace</code> </p>",
           "location":"uri",
           "locationName":"catalog"
-        },
-        "clientToken":{
-          "shape":"ClientToken",
-          "documentation":"<p>The idempotency token for deployment parameters. A unique identifier for the new version.</p> <note> <p>This field is not required if you're calling using an AWS SDK. Otherwise, a <code>clientToken</code> must be provided with the request.</p> </note>",
-          "idempotencyToken":true
-        },
-        "deploymentParameter":{
-          "shape":"DeploymentParameterInput",
-          "documentation":"<p>The deployment parameter targeted to the acceptor of an agreement for which to create the AWS Secret Manager resource.</p>"
-        },
-        "expirationDate":{
-          "shape":"SyntheticTimestamp_date_time",
-          "documentation":"<p>The date when deployment parameters expire and are scheduled for deletion.</p>"
         },
         "productId":{
           "shape":"ResourceId",
@@ -240,20 +568,41 @@
           "location":"uri",
           "locationName":"productId"
         },
+        "agreementId":{
+          "shape":"ResourceId",
+          "documentation":"<p>The unique identifier of the agreement.</p>"
+        },
+        "deploymentParameter":{
+          "shape":"DeploymentParameterInput",
+          "documentation":"<p>The deployment parameter targeted to the acceptor of an agreement for which to create the AWS Secrets Manager resource.</p>"
+        },
         "tags":{
           "shape":"TagsMap",
           "documentation":"<p>A map of key-value pairs, where each pair represents a tag saved to the resource. Tags will only be applied for create operations, and they'll be ignored if the resource already exists.</p>"
+        },
+        "expirationDate":{
+          "shape":"SyntheticTimestamp_date_time",
+          "documentation":"<p>The date when deployment parameters expire and are scheduled for deletion.</p>"
+        },
+        "clientToken":{
+          "shape":"ClientToken",
+          "documentation":"<p>The idempotency token for deployment parameters. A unique identifier for the new version.</p> <note> <p>This field is not required if you're calling using an AWS SDK. Otherwise, a <code>clientToken</code> must be provided with the request.</p> </note>",
+          "idempotencyToken":true
         }
       }
     },
     "PutDeploymentParameterResponse":{
       "type":"structure",
       "required":[
+        "resourceArn",
         "agreementId",
-        "deploymentParameterId",
-        "resourceArn"
+        "deploymentParameterId"
       ],
       "members":{
+        "resourceArn":{
+          "shape":"ResourceArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) associated with the deployment parameter resource you want to create or update.</p>"
+        },
         "agreementId":{
           "shape":"ResourceId",
           "documentation":"<p>The unique identifier of the agreement.</p>"
@@ -261,10 +610,6 @@
         "deploymentParameterId":{
           "shape":"DeploymentParameterResourceIdentifier",
           "documentation":"<p>The unique identifier of the deployment parameter.</p>"
-        },
-        "resourceArn":{
-          "shape":"ResourceArn",
-          "documentation":"<p>The Amazon Resource Name (ARN) associated with the deployment parameter resource you want to create or update.</p>"
         },
         "tags":{
           "shape":"TagsMap",
@@ -276,13 +621,13 @@
       "type":"string",
       "max":2048,
       "min":1,
-      "pattern":"^[a-zA-Z0-9:*/-]+$"
+      "pattern":"[a-zA-Z0-9:*/-]+"
     },
     "ResourceId":{
       "type":"string",
       "max":64,
       "min":1,
-      "pattern":"^[A-Za-z0-9_/-]+$"
+      "pattern":"[A-Za-z0-9_/-]+"
     },
     "ResourceNotFoundException":{
       "type":"structure",
@@ -316,6 +661,75 @@
       },
       "exception":true
     },
+    "StartDeploymentConfigurationJobRequest":{
+      "type":"structure",
+      "required":[
+        "catalog",
+        "productId",
+        "deliveryOptionType",
+        "configuration"
+      ],
+      "members":{
+        "catalog":{
+          "shape":"Catalog",
+          "documentation":"<p>The catalog related to the request. Fixed value: <code>AWSMarketplace</code> </p>",
+          "location":"uri",
+          "locationName":"catalog"
+        },
+        "productId":{
+          "shape":"ResourceId",
+          "documentation":"<p>The ID of the AWS Marketplace product, for example <code>prod-1234567890abc</code>.</p>",
+          "location":"uri",
+          "locationName":"productId"
+        },
+        "deliveryOptionType":{
+          "shape":"DeliveryOptionType",
+          "documentation":"<p>The delivery option type of the deployment configuration.</p>",
+          "location":"uri",
+          "locationName":"deliveryOptionType"
+        },
+        "configuration":{
+          "shape":"DeploymentConfigurationDetail",
+          "documentation":"<p>The deployment configuration to publish.</p>"
+        },
+        "tags":{
+          "shape":"TagsMap",
+          "documentation":"<p>A map of key-value pairs, where each pair represents a tag to apply to the deployment configuration. Only the request that creates the deployment configuration can apply tags. If the deployment configuration already exists, a request that includes one or more tags fails with a <code>ValidationException</code>. To change tags on an existing deployment configuration, use <code>TagResource</code> and <code>UntagResource</code>.</p>"
+        },
+        "clientToken":{
+          "shape":"ClientToken",
+          "documentation":"<p>A unique, case-sensitive identifier that you provide to ensure that the operation completes no more than one time. If you retry a request with the same token and the same input, the service returns the original job instead of starting a new one. If you reuse a token with different input, the request fails with a <code>ConflictException</code>.</p> <note> <p>This field is not required if you're calling using an AWS SDK. Otherwise, a <code>clientToken</code> must be provided with the request.</p> </note>",
+          "idempotencyToken":true
+        }
+      }
+    },
+    "StartDeploymentConfigurationJobResponse":{
+      "type":"structure",
+      "required":[
+        "jobId",
+        "configuration",
+        "status",
+        "createdAt"
+      ],
+      "members":{
+        "jobId":{
+          "shape":"DeploymentConfigurationJobId",
+          "documentation":"<p>The unique identifier of the deployment configuration job.</p>"
+        },
+        "configuration":{
+          "shape":"DeploymentConfigurationDetail",
+          "documentation":"<p>The deployment configuration submitted with the job.</p>"
+        },
+        "status":{
+          "shape":"DeploymentConfigurationJobStatus",
+          "documentation":"<p>The status of the deployment configuration job. The value is <code>IN_PROGRESS</code>.</p>"
+        },
+        "createdAt":{
+          "shape":"SyntheticTimestamp_date_time",
+          "documentation":"<p>The date and time when the job was created.</p>"
+        }
+      }
+    },
     "String":{"type":"string"},
     "StringList":{
       "type":"list",
@@ -329,7 +743,7 @@
       "type":"string",
       "max":128,
       "min":1,
-      "pattern":"^[a-zA-Z0-9/_+=.:@-]+$"
+      "pattern":"[a-zA-Z0-9/_+=.:@-]+"
     },
     "TagResourceRequest":{
       "type":"structure",
@@ -349,14 +763,13 @@
     },
     "TagResourceResponse":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "TagValue":{
       "type":"string",
       "max":256,
       "min":1,
-      "pattern":"^[a-zA-Z0-9/_+=.:@-]+$"
+      "pattern":"[a-zA-Z0-9/_+=.:@-]+"
     },
     "Tags":{
       "type":"map",
@@ -407,21 +820,20 @@
     },
     "UntagResourceResponse":{
       "type":"structure",
-      "members":{
-      }
+      "members":{}
     },
     "ValidationException":{
       "type":"structure",
       "required":[
-        "fieldName",
-        "message"
+        "message",
+        "fieldName"
       ],
       "members":{
+        "message":{"shape":"String"},
         "fieldName":{
           "shape":"String",
           "documentation":"<p>The field name associated with the error.</p>"
-        },
-        "message":{"shape":"String"}
+        }
       },
       "documentation":"<p>An error occurred during validation.</p>",
       "error":{
@@ -431,5 +843,5 @@
       "exception":true
     }
   },
-  "documentation":"<p>The AWS Marketplace Deployment Service supports the Quick Launch experience, which is a deployment option for software as a service (SaaS) products. Quick Launch simplifies and reduces the time, resources, and steps required to configure, deploy, and launch a products. The AWS Marketplace Deployment Service provides sellers with a secure method for passing deployment parameters, such as API keys and external IDs, to buyers during the Quick Launch experience.</p>"
+  "documentation":"<p>The AWS Marketplace Deployment Service supports the Quick Launch experience, which is a deployment option for software as a service (SaaS) products. Quick Launch simplifies and reduces the time, resources, and steps required to configure, deploy, and launch a product. The AWS Marketplace Deployment Service provides sellers with a secure method for passing deployment parameters, such as API keys and external IDs, to buyers during the Quick Launch experience.</p> <p>You can also use the AWS Marketplace Deployment Service to publish deployment configurations. A deployment configuration defines how buyers access a product's delivery option after they subscribe. For example, for the Data as a Service delivery option, it specifies the seller's fulfillment URL.</p>"
 }

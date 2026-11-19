@@ -4361,6 +4361,17 @@
       "type":"string",
       "pattern":"[0-9]{12}"
     },
+    "AwsBillingConnectorConfiguration":{
+      "type":"structure",
+      "required":["iamRoleArn"],
+      "members":{
+        "iamRoleArn":{
+          "shape":"RoleArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the AWS Marketplace service-linked role in the account that owns the payment manager. The service sets this value when it creates the connector.</p>"
+        }
+      },
+      "documentation":"<p>The configuration for an AWS Billing payment connector. Payments made through an AWS Billing payment connector are charged to the AWS account that owns the payment manager, and appear on that account's AWS bill as AWS Marketplace charges.</p>"
+    },
     "BatchPutGatewayRateLimitsRequest":{
       "type":"structure",
       "required":[
@@ -5900,6 +5911,16 @@
     "ContentType":{
       "type":"string",
       "enum":["MEMORY_RECORDS"]
+    },
+    "CpuOptions":{
+      "type":"structure",
+      "members":{
+        "nestedVirtualization":{
+          "shape":"NestedVirtualization",
+          "documentation":"<p>Specifies whether your agents can use hardware virtualization on their instances. The following values are possible:</p> <ul> <li> <p> <code>ENABLED</code> – Your agents can use hardware virtualization on their instances. To use this value, choose the <code>LINUX_X86_64</code> operating system and instance types that support nested virtualization.</p> </li> <li> <p> <code>DISABLED</code> – Your agents can't use hardware virtualization on their instances. This is the default.</p> </li> </ul>"
+        }
+      },
+      "documentation":"<p>The CPU configuration for capacity provider instances, including nested virtualization.</p>"
     },
     "CreateAgentRuntimeEndpointRequest":{
       "type":"structure",
@@ -7625,8 +7646,7 @@
       "required":[
         "paymentManagerId",
         "name",
-        "type",
-        "credentialProviderConfigurations"
+        "type"
       ],
       "members":{
         "paymentManagerId":{
@@ -7649,7 +7669,7 @@
         },
         "credentialProviderConfigurations":{
           "shape":"CredentialsProviderConfigurations",
-          "documentation":"<p>The credential provider configurations for the payment connector. These configurations specify how the connector authenticates with the payment provider.</p>"
+          "documentation":"<p>The credential provider configurations for the payment connector. These configurations specify how the connector authenticates with the payment provider.</p> <p>For an <code>AwsBilling</code> payment connector, omit this parameter or specify an empty list. The service uses the AWS Marketplace service-linked role in your account, which must exist before you create the connector, and you must have permission to call <code>iam:GetRole</code> on it.</p>"
         },
         "provisionMode":{
           "shape":"PaymentConnectorProvisionMode",
@@ -8297,9 +8317,13 @@
         "stripePrivy":{
           "shape":"PaymentCredentialProviderConfiguration",
           "documentation":"<p>The credential provider configuration for a Stripe Privy payment connector.</p>"
+        },
+        "awsBilling":{
+          "shape":"AwsBillingConnectorConfiguration",
+          "documentation":"<p>The configuration for an AWS Billing payment connector. The service sets this configuration when it creates the connector and returns it in responses. Don't specify it when you create an AWS Billing payment connector.</p>"
         }
       },
-      "documentation":"<p>The credential provider configuration for a payment connector. Specifies the payment provider type and its associated credential provider.</p>",
+      "documentation":"<p>The configuration for a payment connector. Specifies the payment provider type and either its associated credential provider or, for an AWS Billing payment connector, its billing configuration.</p>",
       "union":true
     },
     "CredentialsProviderConfigurations":{
@@ -16435,6 +16459,10 @@
         "propagatedTags":{
           "shape":"TagsMap",
           "documentation":"<p>The tags to propagate to all Amazon EC2 resources (instances, volumes, and network interfaces) that the capacity provider creates.</p>"
+        },
+        "cpuOptions":{
+          "shape":"CpuOptions",
+          "documentation":"<p>The central processing unit (CPU) options for the instances that the capacity provider launches.</p>"
         }
       },
       "documentation":"<p>The parameters for launching Amazon EC2 instances in a capacity provider.</p>"
@@ -19302,6 +19330,13 @@
       "max":2000,
       "min":1
     },
+    "NestedVirtualization":{
+      "type":"string",
+      "enum":[
+        "ENABLED",
+        "DISABLED"
+      ]
+    },
     "NetworkConfiguration":{
       "type":"structure",
       "required":["networkMode"],
@@ -20019,7 +20054,8 @@
       "type":"string",
       "enum":[
         "CoinbaseCDP",
-        "StripePrivy"
+        "StripePrivy",
+        "AwsBilling"
       ]
     },
     "PaymentCredentialProviderArn":{

@@ -2,6 +2,55 @@
 CHANGELOG
 =========
 
+2.41.2
+======
+
+* api-change:``agent-registry``: BatchGetDiscoverableRegistryRecord returns a short-lived download URL and SHA-256 checksum for approved skill packages. SearchDiscoverableRegistryRecords adds searchType (KEYWORD, SEMANTIC, HYBRID) and pagination. Adds bearer token authentication for registries that use JWT authorization.
+* api-change:``medialive``: This feature adds a new codec "JPEGXS" to the Input Specification Codec field. It adds a new "MAX 500 MBPS" maximum bitrate to the maximum bitrate Input Specification field. These input spec changes are used to enable TR-07 inputs and are also tied to metering of JPEGXS inputs.
+* api-change:``connect``: Amazon Connect adds voicemail support, with new reference types, file use case types, contact details, and a voicemail task contact subtype for managing voicemail recordings and transcripts.
+* api-change:``route53``: Route 53 Private Endpoint Health Checks support
+* api-change:``partnercentral-selling``: Adds the Leads APIs (SearchEngagements, ListEngagementGroups), customer account APIs with statistics and bulk jobs, SearchOpportunities, opportunity bulk jobs, account planning invitations, co-sell motion reason on AWS opportunity summaries, and channel recommendations on lead insights.
+* api-change:``route53resolver``: Route 53 Resolver DNS Firewall adds the AutoAllowlist firewall rule type, which observes the domains your VPCs resolve and allows the ones you approve, and the ListFirewallRuleDomains API.
+* api-change:``partnercentral-marketing``: Initial release of AWS Partner Central Marketing, which AWS Partners use to create co-branded marketing campaigns from AWS-authored templates, tailor and activate their emails, landing pages, documents and social posts, and export campaign assets.
+* enhancement:agent-registry: Add ``list-skills``, which lists a registry's skills with the name in each one's ``SKILL.md`` and the AI coding agents each is installed for, ``install-skill`` and ``uninstall-skill``, which install or update a skill, given by record ID or by record name with ``--record-name``, for detected AI coding agents (or one chosen with ``--agent``), in a folder named after its ``SKILL.md`` name and from the record's ``SKILL.md`` text when it has no package, and uninstall it again, and ``sign-out``, which revokes and deletes cached sign-ins, with browser sign-in to ``CUSTOM_JWT`` registries through ``--authorizer JWT`` on ``list-skills`` and ``install-skill``.
+* api-change:``polly``: Adds voice cloning to Amazon Polly. The new CreateVoice, GetVoice and DeleteVoice operations create and manage a custom voice from a speaker's recording, usable with the generative engine in all synthesis operations.
+* api-change:``elbv2``: Network Load Balancer now supports mutual TLS (mTLS), letting you authenticate client certificates before granting access. You can configure a trust store of certificate authorities on your Network Load Balancer, which will then verify the client certificate on each inbound connection.
+* api-change:``bcm-pricing-calculator``: Adding new API, GetUsageLinesEstimatedCost which can be used to estimate the cost of usage lines.
+* api-change:``lambda``: Increase function timeout limit to 30 minutes for Lambda Event Functions.
+* api-change:``acm``: AWS Certificate Manager now supports the ability to issue certificates from the Amazon N2 certificate authorities (CAs), an Amazon-operated CA hierarchy.
+* api-change:``rds``: Adds the PrimaryEndpoint structure to DBInstance. It returns the connection endpoint for the current primary instance, so no need to reconnect to a different DNS name after the switchover. Create Aurora clusters with express configuration in a VPC, and move clusters into, out of, or between VPCs.
+* api-change:``bedrock-agentcore-control``: Adds AWS Billing payments to ProcessPayment. Agents can pay x402 sellers that accept AWS Marketplace billing, and the charge goes on the buyer's AWS bill. Adds support for nested virtualization in Runtime Instances. When you turn on nested virtualization, Runtime launches instances with KVM enabled.
+* api-change:``connectcases``: This release adds support for SLAs that track any single-select field, including custom fields, and for updating the target duration of an SLA with the UpdateRelatedItem API.
+* api-change:``rtbfabric``: AWS RTB Fabric now lets you discover modules and attach them to your links. Find modules and their versions with ListAvailableModules, GetAvailableModule, ListAvailableModuleVersions and GetAvailableModuleVersion, attach them with PutLinkFlows and track each change with GetUpdate and ListUpdates.
+* api-change:``rolesanywhere``: Adds the tipConfiguration field to profiles to turn on trusted identity propagation, which adds the identity from an X.509 certificate to sessions as origin identity condition keys.
+* api-change:``pcs``: Added support for Job Submit Plugins in AWS PCS.
+* api-change:``securityagent``: This release exposes additional per-job metadata within code remediation tasks.
+* api-change:``marketplace-deployment``: Add support for deployment configurations for Data as a Service products in AWS Marketplace
+* api-change:``kafka``: Amazon MSK now supports in-place migration of provisioned clusters from Standard to Express brokers. This release adds APIs to assess a cluster before migration and to reassign topics, and returns broker type upgrade details in cluster operations.
+* enhancement:crt: Support ``max_attempts`` values above 64 in the CRT transfer client.
+* enhancement:Python: Upgraded the Python interpreter that is bundled with AWS CLI v2 installers to version ``3.14.10``.
+* api-change:``bedrock-agentcore``: Adds the AWS Billing x402 payment type to ProcessPayment. Agents can purchase x402-enabled AWS Marketplace products and have the charges billed to the AWS account, without a wallet. Requests use the service-managed payment instrument ID aws.agentcorepayments.awsbilling.v1.
+* bugfix:Serializers: Validate that hostLabel parameter values contain only letters, digits, hyphens, or periods.
+* api-change:``codeconnections``: AWS CodeConnections now supports GitHub Enterprise Cloud with data residency (GHEC-DR) via the new GitHubEnterpriseCloudDataResidency provider type and ProviderEndpoint parameter in CreateConnection. This release also tightens connection ARN validation to enforce the expected ARN format.
+* api-change:``iam``: This release adds API support for configuring trusted identity propagation for IAM SAML and OpenIDConnect providers.
+* api-change:``inspector2``: Amazon Inspector Code Security now supports GitHub Enterprise Server integrations. For GitHub Enterprise Server and GitLab Self-Managed, you can connect over a private network by adding a VPC configuration when you create an integration.
+* api-change:``marketplace-catalog``: AI Listing Experience that provides listing quality, content and feature recommendations through ListAssessments and DescribeAssessment APIs. Adds a new API StartAssessment to trigger Seller testing for Metering and Entitlement integration for products.
+* api-change:``cognito-idp``: Adds support for storing user pool app client secrets in AWS Secrets Manager and adds support OAuth Client ID Metadata Document (CIMD) which lets a client use an HTTPS URL as its client ID instead of registering in advance.
+* api-change:``appstream``: Enable stack-level WebAuthn redirection to relay passkey and security-key authentication from a WorkSpaces Applications streaming session to the user's local device.
+* api-change:``ce``: This release adds five standardized cost metrics to the Cost Explorer API BilledCost, ListCost, ContractedCost, PublicEquivalentBilledCost and PublicOnDemandCost. Use these metrics with GetCostAndUsage and GetCostAndUsageWithResources. The metrics return values for usage from November 2026 onwards.
+* api-change:``devops-agent``: AWS DevOps Agent adds AWS Organizations support so that agent spaces can monitor member accounts across an organizational unit.
+* api-change:``partnercentral-revenue-measurement``: Marketplace revenue shares are now identified by a marketplace revenue share ID. Adds the UpdateMarketplaceRevenueShare API, optional grouping of AWS Marketplace products that run on the same backend AWS infrastructure, and context attributes for revenue attributions.
+* api-change:``s3tables``: Adds support for disassociating replica tables in S3 Tables replication with the new DisassociateTableReplication API, which promotes a read-only replica table to a standalone table.
+* enhancement:crt: Support ``max_attempts = 1`` in the CRT transfer client.
+* enhancement:crt: Support ``retry_mode = adaptive`` in the CRT transfer client.
+* api-change:``lakeformation``: Adds Status and StatusReason to RLSPolicy in GetRLSPolicy and ListRLSPolicies, indicating whether a row-level security policy is valid or references a deleted lookup table or user-defined function
+* api-change:``sts``: AWS STS adds GetScopedCredentials and expands Trusted Identity Propagation (TIP) to IAM federation and IAM Roles Anywhere. GetScopedCredentials reduces an existing session's permissions and duration. TIP carries verified user or workload identity for authorization and CloudTrail auditing.
+* api-change:``agent-registry-control``: Adds skill packages and skill source sync for agent skill records. Upload a skill package (ZIP) or sync SKILL.md or the full package from Amazon S3 or GitHub. GetRegistryRecord returns a short-lived download URL and SHA-256 checksum. GitHub sources use OAuth 2.0 user authorization.
+* api-change:``eventbridgev2``: This release adds Webhook event sources, which receive events from third-party providers over HTTPS and authenticate them with a static token, HTTP Basic authentication, or an HMAC signature, and Amazon MSK subscribers, which deliver events to a topic in an Amazon MSK and MSK Serverless cluster.
+* api-change:``cloudformation``: Adds parameters to support custom execution roles for service-managed stack sets to CreateStackSet, UpdateStackSet, and DescribeStackSet, enabling the use of Macros, Transforms, and Nested Stacks.
+* api-change:``cloudfront``: Amazon CloudFront adds configuration for SNI-less clients on Anycast static IPs, introduces Anycast IP based domain routing for Distribution Tenants, provides automatic domain ownership validation when creating or updating Distribution Tenants, and enables HTTP traffic via DNS validation.
+
+
 2.41.1
 ======
 

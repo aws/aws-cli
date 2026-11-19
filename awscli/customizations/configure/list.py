@@ -10,6 +10,7 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
+import os
 import sys
 
 from awscli.customizations.commands import BasicCommand
@@ -68,11 +69,15 @@ class ConfigureListCommand(BasicCommand):
             profile = self._lookup_config('profile')
         self._display_config_value(profile, 'profile')
 
+        # Resolve region before credential resolution. Fetching credentials can
+        # trigger provider side effects (for example, source profile
+        # resolution), which can affect later config lookups.
+        region = self._lookup_config('region')
+
         access_key, secret_key = self._lookup_credentials()
         self._display_config_value(access_key, 'access_key')
         self._display_config_value(secret_key, 'secret_key')
 
-        region = self._lookup_config('region')
         self._display_config_value(region, 'region')
         return 0
 
@@ -117,7 +122,7 @@ class ConfigureListCommand(BasicCommand):
         # First try to look up the variable in the env.
         value = self._session.get_config_variable(name, methods=('env',))
         if value is not None:
-            return ConfigValue(value, 'env', self._session.session_var_map[name][1])
+            return ConfigValue(value, 'env', self._get_env_var_name(name))
         # Then try to look up the variable in the config file.
         value = self._session.get_config_variable(name, methods=('config',))
         if value is not None:
@@ -125,3 +130,19 @@ class ConfigureListCommand(BasicCommand):
                                self._session.get_config_variable('config_file'))
         else:
             return ConfigValue(NOT_SET, None, None)
+
+    def _get_env_var_name(self, name):
+        env_var_names = self._session.session_var_map[name][1]
+        if isinstance(env_var_names, str):
+            return env_var_names
+        if isinstance(env_var_names, (list, tuple)):
+            environment = os.environ
+            for env_var_name in env_var_names:
+                if env_var_name in environment:
+                    return env_var_name
+            # AWS_REGION is a supported alias for region and may not always
+            # be included in session_var_map.
+            if name == 'region' and 'AWS_REGION' in environment:
+                return 'AWS_REGION'
+            return env_var_names[0]
+        return env_var_names

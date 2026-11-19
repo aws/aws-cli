@@ -547,10 +547,14 @@ METADATA_EXPORT_LIST = [
 
 
 def include_transform_export_handler(template_dict, uploader, parent_dir):
-    if template_dict.get("Name", None) != "AWS::Include":
+    if not isinstance(template_dict, dict) \
+            or template_dict.get("Name", None) != "AWS::Include":
         return template_dict
 
-    include_location = template_dict.get("Parameters", {}).get("Location", None)
+    parameters = template_dict.get("Parameters", {}) or {}
+    if not isinstance(parameters, dict):
+        return template_dict
+    include_location = parameters.get("Location", None)
     if not include_location \
             or not is_path_value_valid(include_location) \
             or is_s3_url(include_location):
@@ -611,6 +615,8 @@ class Template(object):
         here we iterate through the template dict and export params with a
         handler defined in GLOBAL_EXPORT_DICT
         """
+        if not isinstance(template_dict, dict):
+            return template_dict
         for key, val in template_dict.items():
             if key in GLOBAL_EXPORT_DICT:
                 template_dict[key] = GLOBAL_EXPORT_DICT[key](val, self.uploader, self.template_dir)
@@ -630,10 +636,18 @@ class Template(object):
         :return: The template with references to artifacts that have been
         exported to s3.
         """
-        if "Metadata" not in template_dict:
+        if not isinstance(template_dict, dict) \
+                or "Metadata" not in template_dict:
             return template_dict
 
-        for metadata_type, metadata_dict in template_dict["Metadata"].items():
+        metadata = template_dict["Metadata"]
+        if metadata is None:
+            return template_dict
+        if not isinstance(metadata, dict):
+            raise exceptions.InvalidTemplateError(
+                message='"Metadata" section must be a mapping')
+
+        for metadata_type, metadata_dict in metadata.items():
             for exporter_class in self.metadata_to_export:
                 if exporter_class.RESOURCE_TYPE != metadata_type:
                     continue
@@ -651,6 +665,13 @@ class Template(object):
         :return: The template with references to artifacts that have been
         exported to s3.
         """
+        if self.template_dict is None:
+            raise exceptions.InvalidTemplateError(
+                message="template body is empty")
+        if not isinstance(self.template_dict, dict):
+            raise exceptions.InvalidTemplateError(
+                message="top-level template body must be a mapping")
+
         self.template_dict = self.export_metadata(self.template_dict)
 
         if "Resources" not in self.template_dict:
@@ -658,11 +679,26 @@ class Template(object):
 
         self.template_dict = self.export_global_artifacts(self.template_dict)
 
-        self.export_resources(self.template_dict["Resources"])
+        resources = self.template_dict["Resources"]
+        if resources is None:
+            raise exceptions.InvalidTemplateError(
+                message='"Resources" section is empty; check '
+                        "that resource entries are indented under "
+                        '"Resources:"')
+        if not isinstance(resources, dict):
+            raise exceptions.InvalidTemplateError(
+                message='"Resources" section must be a mapping of '
+                        "resource ids to resource definitions")
+
+        self.export_resources(resources)
 
         return self.template_dict
 
     def export_resources(self, resource_dict):
+        if not isinstance(resource_dict, dict):
+            raise exceptions.InvalidTemplateError(
+                message="resource group must be a mapping of "
+                        "resource ids to resource definitions")
         for resource_id, resource in resource_dict.items():
 
             if resource_id.startswith("Fn::ForEach::"):
@@ -670,6 +706,17 @@ class Template(object):
                     raise exceptions.InvalidForEachIntrinsicFunctionError(resource_id=resource_id)
                 self.export_resources(resource[2])
                 continue
+
+            if resource is None:
+                raise exceptions.InvalidTemplateError(
+                    message='resource "{0}" has no body; check '
+                            'indentation under the resource id'
+                            .format(resource_id))
+            if not isinstance(resource, dict):
+                raise exceptions.InvalidTemplateError(
+                    message='resource "{0}" must be a mapping with '
+                            '"Type" and "Properties" keys'
+                            .format(resource_id))
 
             resource_type = resource.get("Type", None)
             resource_dict = resource.get("Properties", None)

@@ -57,3 +57,9 @@ class DeployBucketRequiredError(CloudFormationCommandError):
 
 class InvalidForEachIntrinsicFunctionError(CloudFormationCommandError):
     fmt = 'The value of {resource_id} has an invalid "Fn::ForEach::" format: Must be a list of three entries'
+
+
+class InvalidTemplateError(CloudFormationCommandError):
+    fmt = ("Cannot parse CloudFormation template: {message}. "
+           "The template may be malformed (for example, inconsistent "
+           "indentation or a missing value).")

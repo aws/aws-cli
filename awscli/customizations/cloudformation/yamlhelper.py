@@ -68,6 +68,7 @@ def yaml_dump(dict_to_dump):
     return yaml.dump(
         dict_to_dump,
         default_flow_style=False,
+        allow_unicode=False,
         Dumper=FlattenAliasDumper,
     )
 

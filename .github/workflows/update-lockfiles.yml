@@ -34,7 +34,10 @@ jobs:
         os: [macOS-latest, windows-latest]
 
     steps:
-      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd
+      # Credentials are intentionally persisted: the final step pushes the
+      # regenerated lockfiles back to the branch. This workflow is manually
+      # triggered and uploads no artifacts.
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # zizmor: ignore[artipacked]
         with:
           ref: ${{ github.event.inputs.ref }}
       - name: Set up Python ${{ matrix.python-version }}
@@ -81,11 +84,14 @@ jobs:
           echo "PLATFORMS=macOS and Linux" >> $GITHUB_ENV
       - name: git commit and push updated lock files
         if: github.event.inputs.dry-run == 'no' && env.CHANGES
+        # Use bash on every OS so $PLATFORMS is read from the environment
+        # rather than expanded into the script via ${{ }}.
+        shell: bash
         run: |
           git config --global user.name "Github Actions"
           git config --global user.email "<>"
           git fetch
           git add requirements*
-          git commit -m "Regenerate lock files for ${{ env.PLATFORMS }}"
+          git commit -m "Regenerate lock files for $PLATFORMS"
           git pull --rebase
           git push

@@ -10,10 +10,12 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
+import copy
 import os
 import shutil
 import tempfile
 
+from awscli.botocore.configloader import raw_config_parse
 from awscli.customizations.configure.writer import ConfigFileWriter
 from awscli.testutils import mock, skip_if_windows, unittest
 
@@ -41,9 +43,9 @@ class TestConfigFileWriter(unittest.TestCase):
             self.fail(
                 "Config file contents do not match.\n"
                 "Expected contents:\n"
-                "%s\n\n"
+                f"{updated_config_contents}\n\n"
                 "Actual Contents:\n"
-                "%s\n" % (updated_config_contents, new_contents)
+                f"{new_contents}\n"
             )
 
     def test_update_single_existing_value(self):
@@ -304,6 +306,152 @@ class TestConfigFileWriter(unittest.TestCase):
             '[default]\n' 'region = us-west-2\n',
         )
 
+    def test_scalar_update_does_not_match_nested_child(self):
+        self.assert_update_config(
+            '[default]\ns3 =\n    use_dualstack_endpoint = true\n'
+            'use_dualstack_endpoint = true\n',
+            {'use_dualstack_endpoint': 'false'},
+            '[default]\ns3 =\n    use_dualstack_endpoint = true\n'
+            'use_dualstack_endpoint = false\n',
+        )
+
+    def test_scalar_update_after_comment_and_indented_options(self):
+        for marker in ('#', ';'):
+            with self.subTest(marker=marker):
+                comments = (
+                    f'{marker} [profile other]\n'
+                    f'{marker} region = example\n'
+                )
+                self.assert_update_config(
+                    '[default]\n'
+                    + comments
+                    + '  s3 =\n      addressing_style = path\n'
+                    '  region = us-east-1\n',
+                    {'region': 'us-west-2'},
+                    '[default]\n'
+                    + comments
+                    + '  s3 =\n      addressing_style = path\n'
+                    'region = us-west-2\n',
+                )
+
+    def test_new_scalar_after_nested_block_is_not_nested(self):
+        original = '[default]\ns3 =\n    addressing_style = path\n'
+        for ending in ('', '\n[profile other]\nregion = us-east-1\n'):
+            with self.subTest(ending=ending):
+                with open(self.config_filename, 'w') as f:
+                    f.write(original + ending)
+                self.writer.update_config(
+                    {'region': 'us-west-2'}, self.config_filename
+                )
+                config = raw_config_parse(self.config_filename)
+                self.assertEqual(config['default']['region'], 'us-west-2')
+                self.assertEqual(
+                    config['default']['s3'], {'addressing_style': 'path'}
+                )
+                if ending:
+                    self.assertEqual(
+                        config['profile other'], {'region': 'us-east-1'}
+                    )
+
+    def test_nested_insert_preserves_last_line_without_newline(self):
+        self.assert_update_config(
+            '[default]\ns3 =\n    addressing_style = path',
+            {'s3': {'max_concurrent_requests': '20'}},
+            '[default]\ns3 =\n    addressing_style = path\n'
+            '    max_concurrent_requests = 20\n',
+        )
+
+    def test_scalar_insert_preserves_section_without_newline(self):
+        self.assert_update_config(
+            '[default]',
+            {'region': 'us-west-2'},
+            '[default]\nregion = us-west-2\n',
+        )
+
+    def test_update_does_not_mutate_input(self):
+        for original in (
+            '',
+            '[default]\n',
+            '[profile target]\ns3 =\n    addressing_style = virtual\n',
+        ):
+            with self.subTest(original=original):
+                with open(self.config_filename, 'w') as f:
+                    f.write(original)
+                updates = {
+                    '__section__': 'profile target',
+                    's3': {'addressing_style': 'path'},
+                    'region': 'us-west-2',
+                }
+                expected = copy.deepcopy(updates)
+                self.writer.update_config(updates, self.config_filename)
+                self.assertEqual(updates, expected)
+
+    def test_repeating_update_preserves_target_profile(self):
+        updates = {
+            '__section__': 'profile target',
+            's3': {'addressing_style': 'path'},
+        }
+        self.writer.update_config(updates, self.config_filename)
+        with open(self.config_filename) as f:
+            expected = f.read()
+        self.writer.update_config(updates, self.config_filename)
+        with open(self.config_filename) as f:
+            self.assertEqual(f.read(), expected)
+
+    def test_update_existing_quoted_profile_name(self):
+        for header, section_name in (
+            ('profile "two spaces"', "profile 'two spaces'"),
+            ("profile 'two spaces'", 'profile "two spaces"'),
+            ("profile 'foobar'", 'profile foobar'),
+            ('profile "two  spaces"', "profile 'two  spaces'"),
+            (
+                'profile "team\'s development"',
+                'profile \'team\'"\'"\'s development\'',
+            ),
+        ):
+            with self.subTest(header=header, section_name=section_name):
+                self.assert_update_config(
+                    f'[{header}]\nregion = us-east-1\n',
+                    {'__section__': section_name, 'region': 'us-west-2'},
+                    f'[{header}]\nregion = us-west-2\n',
+                )
+
+    def test_quoted_profile_does_not_match_different_name(self):
+        original = '[profile "team development"]\nregion = us-east-1\n'
+        self.assert_update_config(
+            original,
+            {
+                '__section__': "profile 'team  development'",
+                'region': 'us-west-2',
+            },
+            original + "[profile 'team  development']\nregion = us-west-2\n",
+        )
+
+    def test_malformed_quoted_section_is_not_a_match(self):
+        original = '[profile "unfinished]\nregion = us-east-1\n'
+        self.assert_update_config(
+            original,
+            {'__section__': 'profile target', 'region': 'us-west-2'},
+            original + '[profile target]\nregion = us-west-2\n',
+        )
+
+    def test_update_existing_indented_section(self):
+        self.assert_update_config(
+            '  [default]\nregion = us-east-1\n',
+            {'region': 'us-west-2'},
+            '  [default]\nregion = us-west-2\n',
+        )
+
+    def test_config_file_without_parent_directory(self):
+        original_directory = os.getcwd()
+        try:
+            os.chdir(self.dirname)
+            self.writer.update_config({'region': 'us-west-2'}, 'config')
+            with open('config') as f:
+                self.assertEqual(f.read(), '[default]\nregion = us-west-2\n')
+        finally:
+            os.chdir(original_directory)
+
     def test_appends_newline_on_new_section(self):
         original = '[preview]\n' 'cloudfront = true'
         self.assert_update_config(
@@ -319,19 +467,25 @@ class TestConfigFileWriter(unittest.TestCase):
         with open(self.config_filename, 'w') as f:
             f.write('[default]\nfoo = bar\n')
         with self.assertRaises(ValueError):
-            self.writer.update_config({'foo': 'bad\nvalue'}, self.config_filename)
+            self.writer.update_config(
+                {'foo': 'bad\nvalue'}, self.config_filename
+            )
 
     def test_carriage_return_in_value_raises(self):
         with open(self.config_filename, 'w') as f:
             f.write('[default]\nfoo = bar\n')
         with self.assertRaises(ValueError):
-            self.writer.update_config({'foo': 'bad\rvalue'}, self.config_filename)
+            self.writer.update_config(
+                {'foo': 'bad\rvalue'}, self.config_filename
+            )
 
     def test_newline_in_key_raises(self):
         with open(self.config_filename, 'w') as f:
             f.write('[default]\nfoo = bar\n')
         with self.assertRaises(ValueError):
-            self.writer.update_config({'bad\nkey': 'value'}, self.config_filename)
+            self.writer.update_config(
+                {'bad\nkey': 'value'}, self.config_filename
+            )
 
     def test_newline_in_section_name_raises(self):
         with open(self.config_filename, 'w') as f:
@@ -339,7 +493,7 @@ class TestConfigFileWriter(unittest.TestCase):
         with self.assertRaises(ValueError):
             self.writer.update_config(
                 {'foo': 'value', '__section__': 'bad\nsection'},
-                self.config_filename
+                self.config_filename,
             )
 
     def test_newline_in_nested_value_raises(self):
@@ -348,7 +502,7 @@ class TestConfigFileWriter(unittest.TestCase):
         with self.assertRaises(ValueError):
             self.writer.update_config(
                 {'__section__': 'default', 's3': {'key': 'bad\nvalue'}},
-                self.config_filename
+                self.config_filename,
             )
 
     @mock.patch('awscli.customizations.configure.writer.warn_if_permissive')

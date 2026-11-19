@@ -71,6 +71,8 @@ class RecordingSubscriber(BaseSubscriber):
         self.bytes_transferred = 0
         self.on_queued_future = None
         self.on_done_future = None
+        # A transfer future can complete before its subscriber callback runs.
+        self._on_done_event = threading.Event()
 
     def on_queued(self, future, **kwargs):
         self.on_queued_called = True
@@ -81,6 +83,11 @@ class RecordingSubscriber(BaseSubscriber):
         self.on_done_called = True
         self.on_done_calls += 1
         self.on_done_future = future
+        self._on_done_event.set()
+
+    def wait_until_done(self, timeout=None):
+        """Wait until on_done has finished updating this subscriber."""
+        return self._on_done_event.wait(timeout)
 
 
 class FullObjectChecksumUnavailableMarker(BaseSubscriber):
@@ -649,6 +656,7 @@ class TestCRTTransferManager(unittest.TestCase):
             [first_subscriber],
         )
         first_future.result()
+        self.assertTrue(first_subscriber.wait_until_done(RESULT_TIMEOUT))
 
         self.assertEqual(self.initial_client.make_request.call_count, 1)
         self.assertEqual(self.redirected_client.make_request.call_count, 1)
@@ -697,6 +705,7 @@ class TestCRTTransferManager(unittest.TestCase):
             [second_subscriber],
         )
         second_future.result()
+        self.assertTrue(second_subscriber.wait_until_done(RESULT_TIMEOUT))
 
         self.assertEqual(self.initial_client.make_request.call_count, 1)
         self.assertEqual(self.redirected_client.make_request.call_count, 2)

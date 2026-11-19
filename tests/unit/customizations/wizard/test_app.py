@@ -89,10 +89,9 @@ def patch_path_completer():
 class FakePathCompleter(PathCompleter):
     def get_completions(self, document, complete_event):
         prefix_len = len(document.text)
-        yield from [
-            Completion('file1'[prefix_len:], 0, display='file1'),
-            Completion('file2'[prefix_len:], 0, display='file2'),
-        ]
+        for filename in ('file1', 'file2'):
+            if filename.startswith(document.text):
+                yield Completion(filename[prefix_len:], 0, display=filename)
 
 
 @pytest.fixture
@@ -523,7 +522,7 @@ class BaseWizardApplicationTest:
         assert buffer.document.text == expected_text
 
     def assert_current_buffer(self, app, buffer_name):
-        assert app.layout.current_buffer.name, buffer_name
+        assert app.layout.current_buffer.name == buffer_name
 
     def assert_expected_buffer_completions(
         self, app, buffer_name, expected_completions
@@ -1756,6 +1755,23 @@ class TestPromptCompletionWizardApplication(BaseWizardApplicationTest):
             app_runner.feed_input(Keys.Down, Keys.Enter)
             app_runner.feed_input(Keys.Enter)
             self.assert_current_buffer(app_runner.app, 'second_prompt')
+
+    def test_enter_without_selected_completion_moves_to_next_prompt(
+        self,
+        make_stubbed_wizard_runner,
+        file_prompt_definition,
+        patch_path_completer,
+    ):
+        app_runner = make_stubbed_wizard_runner(file_prompt_definition)
+        with app_runner.run_app_in_thread() as ctx:
+            app_runner.feed_input('fi')
+            app_runner.wait_for_completions_on_current_buffer()
+            buffer = app_runner.app.layout.get_buffer_by_name('choose_file')
+            assert buffer.complete_state is not None
+            assert buffer.complete_state.current_completion is None
+            app_runner.feed_input(Keys.Enter)
+            self.assert_current_buffer(app_runner.app, 'second_prompt')
+        assert ctx.raised_exception is None
 
     def test_switch_completions_on_tab(
         self,

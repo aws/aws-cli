@@ -538,6 +538,15 @@ PLUGIN_REGISTRY = {
         ('awscli.customizations.waiters', 'register_add_waiters'),
         ('awscli.alias', 'register_alias_commands'),
     ],
+    'building-command-table.agent-registry': [
+        ('awscli.customizations.agentregistry', 'initialize')
+    ],
+    'building-argument-table.agent-registry': [
+        ('awscli.customizations.agentregistry', 'initialize')
+    ],
+    'calling-command.agent-registry': [
+        ('awscli.customizations.agentregistry', 'initialize')
+    ],
     'building-command-table.agent-toolkit': [
         (
             'awscli.customizations.agenttoolkit',

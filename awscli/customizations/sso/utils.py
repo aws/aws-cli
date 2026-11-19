@@ -16,6 +16,7 @@ import json
 import logging
 import os
 import socket
+import threading
 import time
 import webbrowser
 from functools import partial
@@ -227,12 +228,18 @@ class OpenBrowserHandler(BaseAuthorizationhandler):
                 f'request, open the following URL:\n'
                 f'\n{verificationUri}\n'
             )
-        else:
+        elif cross_device_flag:
             opening_msg = (
                 f'Attempting to open your default browser. '
                 f'If the browser does not open, open the following URL.\n'
                 f'If you are unable to open the URL on this device, '
                 f'run this command again with the \'{cross_device_flag}\' option.\n'
+                f'\n{verificationUri}\n\n'
+            )
+        else:  # the caller has no cross-device option to suggest
+            opening_msg = (
+                f'Attempting to open your default browser. '
+                f'If the browser does not open, open the following URL.\n'
                 f'\n{verificationUri}\n\n'
             )
 
@@ -297,26 +304,38 @@ class AuthCodeFetcher:
             return None
         return dict(self._error)
 
+    @property
+    def overall_timeout(self):
+        """How many seconds get_auth_code_and_state waits for the callback."""
+        return self._OVERALL_TIMEOUT
+
     def get_auth_code_and_state(self, expected_state=None):
         """Blocks until the expected redirect request with either the
         authorization code/state or and error is handled
 
         When ``expected_state`` (a string) is given, only a GET on the
         redirect URI's path whose ``state`` matches it ends the wait, and
-        each connection gets ``_REQUEST_TIMEOUT`` to send its request.
-        Anything else is rejected and the wait continues.
+        each connection gets at most ``_REQUEST_TIMEOUT`` in total, and no
+        more than the wait has left, so that no client can hold the wait
+        past ``_OVERALL_TIMEOUT``. Anything else is rejected and the wait
+        continues.
         """
+        start = time.time()
+        deadline = start + self._OVERALL_TIMEOUT
         if expected_state is not None:
             self.http_server.RequestHandlerClass = partial(
-                OAuthCallbackHandler,
+                _DeadlineOAuthCallbackHandler,
                 self,
                 expected_state=expected_state,
+                deadline=deadline,
             )
         LOG.debug(f'Waiting for auth code at {self.redirect_uri_with_port()}')
-        start = time.time()
-        while (
-            not self._is_done and time.time() < start + self._OVERALL_TIMEOUT
-        ):
+        while not self._is_done and time.time() < deadline:
+            if expected_state is not None:
+                # Wait for a connection no longer than the wait has left
+                self.http_server.timeout = max(
+                    0, min(self._REQUEST_TIMEOUT, deadline - time.time())
+                )
             self.http_server.handle_request()
         self.http_server.server_close()
 
@@ -454,6 +473,72 @@ class OAuthCallbackHandler(BaseHTTPRequestHandler):
         self.send_header('Content-Length', str(len(body)))
         self.end_headers()
         self.wfile.write(body)
+
+
+# The shortest per-read timeout a strict callback connection gets, in seconds
+_MIN_READ_TIMEOUT = 0.01
+
+
+class _DeadlineOAuthCallbackHandler(OAuthCallbackHandler):
+    """The ``expected_state`` handler, with a limit on each connection's
+    total time.
+
+    The per-read timeout alone would let a client that sends a byte at a time
+    keep the connection, and the wait, going indefinitely. The connection is
+    shut down once it has had ``_REQUEST_TIMEOUT`` in total, or whatever is
+    left before ``deadline`` if that is less.
+    """
+
+    def __init__(self, auth_code_fetcher, *args, deadline, **kwargs):
+        self._time_allowed = max(
+            0, min(auth_code_fetcher._REQUEST_TIMEOUT, deadline - time.time())
+        )
+        self._cut_off_lock = threading.Lock()
+        self._finished = False
+        self._cut_off = False
+        self._cut_off_timer = None
+        super().__init__(auth_code_fetcher, *args, **kwargs)
+
+    def setup(self):
+        # Cap the per-read timeout by the allowance too, in case shutting the
+        # socket down does not end a blocked read. A timeout of 0 would make
+        # the socket non-blocking, hence the floor.
+        self.timeout = max(_MIN_READ_TIMEOUT, self._time_allowed)
+        super().setup()
+        self._cut_off_timer = threading.Timer(
+            self._time_allowed, self._cut_off_connection
+        )
+        self._cut_off_timer.daemon = True
+        self._cut_off_timer.start()
+
+    def _cut_off_connection(self):
+        # Runs on the timer's thread. Shutting the socket down ends a read
+        # or write that is blocked on it.
+        with self._cut_off_lock:
+            if self._finished:
+                return
+            self._cut_off = True
+            try:
+                self.connection.shutdown(socket.SHUT_RDWR)
+            except OSError:
+                pass
+
+    def handle(self):
+        try:
+            super().handle()
+        except OSError:
+            # Reading from or writing to a connection that was cut off
+            if not self._cut_off:
+                raise
+        if self._cut_off:
+            LOG.debug('Closed an OAuth callback connection that took too long')
+
+    def finish(self):
+        with self._cut_off_lock:
+            self._finished = True
+        if self._cut_off_timer is not None:
+            self._cut_off_timer.cancel()
+        super().finish()
 
 
 class InvalidSSOConfigError(ConfigurationError):

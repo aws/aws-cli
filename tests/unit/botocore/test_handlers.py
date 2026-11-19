@@ -1578,6 +1578,32 @@ class TestParameterAlias(unittest.TestCase):
         self.assertNotIn(self.original_name + '=', contents)
 
 
+class TestDocumentCopySourceForm(unittest.TestCase):
+    def setUp(self):
+        self.section = DocumentStructure('')
+        # CopySource has no documentation, so the request params documenter
+        # has no doc string to write for it.
+        self.input_shape = (
+            DenormalizedStructureBuilder()
+            .with_members({'CopySource': {'type': 'string'}})
+            .build_model()
+        )
+
+    def test_copy_source_form_for_undocumented_request_param(self):
+        RequestParamsDocumenter(
+            's3', 'CopyObject', HierarchicalEmitter()
+        ).document_params(self.section, self.input_shape)
+        handlers.document_copy_source_form(
+            self.section, 'docs.request-params.s3.CopyObject.complete-section'
+        )
+        contents = self.section.flush_structure().decode('utf-8')
+        self.assertIn(':type CopySource: str or dict', contents)
+        self.assertNotIn(':type CopySource: string', contents)
+        self.assertIn(
+            'You can also provide this value as a dictionary', contents
+        )
+
+
 class TestCommandAlias(unittest.TestCase):
     def test_command_alias(self):
         alias = handlers.ClientMethodAlias('foo')

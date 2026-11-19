@@ -1381,6 +1381,17 @@ class TestWriteGetObjectResponse(BaseS3ClientConfigurationTest):
                 RequestToken='SecretToken',
             )
 
+    def test_invalid_request_route_raises(self):
+        self.client, self.http_stubber = self.create_stubbed_s3_client(
+            region_name="us-west-2"
+        )
+        self.http_stubber.add_response()
+        with self.assertRaises(ParamValidationError):
+            self.client.write_get_object_response(
+                RequestRoute="my-route/",
+                RequestToken="SecretToken",
+            )
+
 
 class TestS3SigV4(BaseS3OperationTest):
     def setUp(self):

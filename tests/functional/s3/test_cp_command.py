@@ -121,6 +121,43 @@ class TestCPCommand(BaseCPCommandTest):
         self.assertEqual(args['Bucket'], 'bucket')
         self.assertEqual(args['StorageClass'], 'STANDARD_IA')
 
+    def test_upload_with_tagging(self):
+        full_path = self.files.create_file('foo.txt', 'mycontent')
+        cmdline = (
+            '%s %s s3://bucket/key.txt --tags key1 value1 --tags key2 value2' %
+            (self.prefix, full_path))
+        self.parsed_responses = \
+            [{'ETag': '"c8afdb36c52cf4727836669019e69222"'}]
+        self.run_cmd(cmdline, expected_rc=0)
+        self.assertEqual(len(self.operations_called), 1,
+                         self.operations_called)
+        self.assertEqual(self.operations_called[0][0].name, 'PutObject')
+        self.assertEqual(self.operations_called[0][1]['Tagging'],
+                         'key1=value1&key2=value2')
+
+    def test_multipart_upload_with_tagging(self):
+        # The tag set must be applied once, on CreateMultipartUpload, and must
+        # not leak onto the individual UploadPart requests (S3 rejects it
+        # there).
+        full_path = self.files.create_file('foo.txt', 'a' * 10 * (1024 ** 2))
+        self.parsed_responses = [
+            {'UploadId': 'foo'},
+            {'ETag': '"foo-1"'},
+            {'ETag': '"foo-2"'},
+            {}
+        ]
+        cmdline = ('%s %s s3://bucket/key.txt'
+                   ' --tags key1 value1' % (self.prefix, full_path))
+        self.run_cmd(cmdline, expected_rc=0)
+        operations = [op[0].name for op in self.operations_called]
+        self.assertEqual(
+            operations,
+            ['CreateMultipartUpload', 'UploadPart', 'UploadPart',
+             'CompleteMultipartUpload'])
+        self.assertEqual(self.operations_called[0][1]['Tagging'],
+                         'key1=value1')
+        self.assertNotIn('Tagging', self.operations_called[1][1])
+
     def test_upload_onezone_ia(self):
         full_path = self.files.create_file('foo.txt', 'mycontent')
         cmdline = ('%s %s s3://bucket/key.txt --storage-class ONEZONE_IA' %

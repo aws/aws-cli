@@ -704,6 +704,33 @@ class TestRequestParamsMapperSSE(unittest.TestCase):
              'SSECustomerKey': 'my-sse-c-key'})
 
 
+class TestRequestParamsMapperTagging(unittest.TestCase):
+    def setUp(self):
+        self.cli_params = {'tags': [['key1', 'value1'], ['key2', 'value2']]}
+
+    def test_put_object(self):
+        params = {}
+        RequestParamsMapper.map_put_object_params(params, self.cli_params)
+        self.assertEqual(params, {'Tagging': 'key1=value1&key2=value2'})
+
+    def test_create_multipart_upload(self):
+        params = {}
+        RequestParamsMapper.map_create_multipart_upload_params(
+            params, self.cli_params)
+        self.assertEqual(params, {'Tagging': 'key1=value1&key2=value2'})
+
+    def test_tag_values_are_url_encoded(self):
+        params = {}
+        cli_params = {'tags': [['key', 'a value/with=specials']]}
+        RequestParamsMapper.map_put_object_params(params, cli_params)
+        self.assertEqual(params, {'Tagging': 'key=a+value%2Fwith%3Dspecials'})
+
+    def test_no_tags_param_is_a_noop(self):
+        params = {}
+        RequestParamsMapper.map_put_object_params(params, {})
+        self.assertEqual(params, {})
+
+
 class TestRequestParamsMapperChecksumAlgorithm:
     @pytest.fixture
     def cli_params(self):

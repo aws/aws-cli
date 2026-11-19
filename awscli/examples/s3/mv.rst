@@ -113,3 +113,16 @@ The following ``mv`` command moves a single file named ``mydoc.txt`` to the acce
 Output::
 
     move: mydoc.txt to s3://arn:aws:s3:us-west-2:123456789012:accesspoint/myaccesspoint/mykey
+
+**Example 11: Move a file to S3 and apply tags**
+
+The following ``mv`` command moves a single file to a specified bucket and key and applies two tags to the object as it
+is uploaded::
+
+    aws s3 mv file.txt s3://amzn-s3-demo-bucket/file.txt \
+        --tags Key1 Value1 \
+        --tags Key2 Value2
+
+Output::
+
+    move: file.txt to s3://amzn-s3-demo-bucket/file.txt

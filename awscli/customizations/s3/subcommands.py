@@ -328,6 +328,25 @@ METADATA = {
 }
 
 
+OBJECT_TAGS = {
+    'name': 'tags',
+    'synopsis': '--tags <key> <value>',
+    'action': 'append',
+    'nargs': 2,
+    'help_text': (
+        'Tags to apply to objects uploaded to S3 by this operation, in '
+        'the format ``--tags key value``. Specify this parameter multiple '
+        'times, once for each tag. The tags are applied as the objects are '
+        'created, so no separate ``put-object-tagging`` call is made. They '
+        'are applied to every object which is part of this request. In a '
+        "sync, this means that files which haven't changed won't receive "
+        'the tags. This only affects objects uploaded to S3; it has no '
+        'effect on downloads, and copies between two S3 locations are '
+        'governed by ``--copy-props`` instead.'
+    )
+}
+
+
 METADATA_DIRECTIVE = {
     'name': 'metadata-directive', 'choices': ['COPY', 'REPLACE'],
     'help_text': (
@@ -528,9 +547,10 @@ TRANSFER_ARGS = [DRYRUN, QUIET, INCLUDE, EXCLUDE, ACL,
                  SSE_C_COPY_SOURCE_KEY, STORAGE_CLASS, GRANTS,
                  WEBSITE_REDIRECT, CONTENT_TYPE, CACHE_CONTROL,
                  CONTENT_DISPOSITION, CONTENT_ENCODING, CONTENT_LANGUAGE,
-                 EXPIRES, SOURCE_REGION, ONLY_SHOW_ERRORS, NO_PROGRESS,
-                 PAGE_SIZE, IGNORE_GLACIER_WARNINGS, FORCE_GLACIER_TRANSFER,
-                 REQUEST_PAYER, CHECKSUM_MODE, CHECKSUM_ALGORITHM]
+                 EXPIRES, OBJECT_TAGS, SOURCE_REGION, ONLY_SHOW_ERRORS,
+                 NO_PROGRESS, PAGE_SIZE, IGNORE_GLACIER_WARNINGS,
+                 FORCE_GLACIER_TRANSFER, REQUEST_PAYER, CHECKSUM_MODE,
+                 CHECKSUM_ALGORITHM]
 
 
 def get_client(session, region, endpoint_url, verify, config=None):

@@ -97,6 +97,8 @@ ARGUMENT_RENAMES = {
     'sagemaker.describe-image-version.version': 'version-number',
     'sagemaker.list-aliases.version': 'version-number',
     'sagemaker.update-image-version.version': 'version-number',
+    'wait.image-version-created.version': 'version-number',
+    'wait.image-version-deleted.version': 'version-number',
     'iotwireless.*.lo-ra-wan': 'lorawan',
     'codepipeline.get-action-type.version': 'action-version',
     'ecs.*.no-enable-execute-command': 'disable-execute-command',

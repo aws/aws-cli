@@ -12,6 +12,7 @@
 # language governing permissions and limitations under the License.
 import dataclasses
 import os
+import typing
 
 from awscli.customizations.lambdaweb.exceptions import InvalidSourceError
 
@@ -27,9 +28,9 @@ class EntrySelection:
     """
 
     display: str
-    bundle_path: str = None
-    wrapper: tuple = None
-    env: dict = None
+    bundle_path: typing.Optional[str] = None
+    wrapper: typing.Optional[tuple] = None
+    env: typing.Optional[dict] = None
 
 
 @dataclasses.dataclass(frozen=True)
@@ -78,6 +79,9 @@ class Runtime:
     entry_point_uses_env = False
     exclude_patterns = ()
     docs = None
+    # Appended to the bundler's skipped-symlink warning; says how this
+    # language's tooling materializes dependency links as real files.
+    symlink_hint = None
 
     @property
     def latest(self):
@@ -102,7 +106,8 @@ class Runtime:
         raise NotImplementedError
 
     def inspect_dependencies(self, source_dir, runtime_id):
-        """Warn about dependency problems the service would not report."""
+        """Warn about dependency problems that only surface when the
+        function runs."""
 
     def scaffold_files(self, function_name):
         """Return ``{relative_path: content}`` for the starter application."""

@@ -134,7 +134,13 @@ def _split_regions(value):
     )
 
 
-def entrypoint_conflict_error(env_var):
+def entrypoint_conflict_error(env_var, inherited=False):
+    if inherited:
+        return InvalidArgumentValueError(
+            f'The deployed revision sets the {env_var} environment '
+            'variable, which selects the entry point. Remove it with '
+            f'--unset-env {env_var}, or omit --entry-point to keep it.'
+        )
     return InvalidArgumentValueError(
         f'Use either --entry-point or the {env_var} environment variable, '
         'not both. Remove one of them and retry.'

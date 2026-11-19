@@ -126,12 +126,12 @@ def test_explicit_package_module_resolves_to_init(tmp_path):
     )
 
 
-def test_explicit_namespace_package_has_no_bundle_path(tmp_path):
+def test_explicit_namespace_package_is_rejected(tmp_path):
     src = str(tmp_path)
     _write(src, 'api/routes.py', '')
-    selection = RUNTIME.resolve_entry(src, 'api:app')
-    assert selection.bundle_path is None
-    assert selection.env == {ENV_VAR: 'api:app'}
+    with pytest.raises(InvalidSourceError) as excinfo:
+        RUNTIME.resolve_entry(src, 'api:app')
+    assert '__init__.py' in str(excinfo.value)
 
 
 def test_explicit_missing_module_errors(tmp_path):
@@ -250,10 +250,48 @@ def test_resolve_entry_point_django_from_manage_py(tmp_path):
 def test_resolve_entry_point_django_without_settings_hint(tmp_path):
     src = str(tmp_path)
     _write(src, 'manage.py', 'print("custom")\n')
+    _write(src, 'shop/asgi.py', '')
+    _write(src, 'shop/settings.py', '')
+    # A directory without Django settings never qualifies, so an installed
+    # dependency such as asgiref is not chosen.
+    _write(src, 'asgiref/wsgi.py', '')
+    assert python.resolve_entry_point(src) == 'shop.asgi:application'
+
+
+def test_resolve_entry_point_django_split_settings_package(tmp_path):
+    src = str(tmp_path)
+    _write(
+        src,
+        'manage.py',
+        "os.environ.setdefault('DJANGO_SETTINGS_MODULE', "
+        "'config.settings.local')\n",
+    )
+    _write(src, 'config/wsgi.py', '')
+    _write(src, 'config/settings/base.py', '')
+    _write(src, 'asgiref/wsgi.py', '')
+    assert python.resolve_entry_point(src) == 'config.wsgi:application'
+
+
+def test_resolve_entry_point_django_project_beats_dependency_asgi(tmp_path):
+    src = str(tmp_path)
+    _write(
+        src,
+        'manage.py',
+        "os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'mysite.settings')\n",
+    )
+    _write(src, 'mysite/wsgi.py', '')
+    _write(src, 'mysite/settings.py', '')
+    _write(src, 'somedep/asgi.py', '')
+    assert python.resolve_entry_point(src) == 'mysite.wsgi:application'
+
+
+def test_resolve_entry_point_django_without_settings_anywhere_errors(tmp_path):
+    src = str(tmp_path)
+    _write(src, 'manage.py', 'print("custom")\n')
     _write(src, 'blog/wsgi.py', '')
     _write(src, 'shop/asgi.py', '')
-    # asgi is preferred over wsgi across all project directories.
-    assert python.resolve_entry_point(src) == 'shop.asgi:application'
+    with pytest.raises(EntryPointNotFoundError):
+        python.resolve_entry_point(src)
 
 
 def test_resolve_entry_point_not_found(tmp_path):
@@ -351,7 +389,9 @@ def test_inspect_dependencies_warns_when_not_installed_with_pip(
     assert 'python3.14 runtime' in warning
     assert (
         'pip install -r requirements.txt --target . --only-binary=:all: '
-        '--platform manylinux2014_aarch64 --implementation cp '
+        '--platform manylinux2014_aarch64 '
+        '--platform manylinux_2_28_aarch64 '
+        '--platform manylinux_2_34_aarch64 --implementation cp '
         '--python-version 3.14'
     ) in warning
     assert 'uv ' not in warning
@@ -364,7 +404,7 @@ def test_inspect_dependencies_prefers_uv_when_on_path(tmp_path, capsys):
         RUNTIME.inspect_dependencies(src, 'python3.14')
     assert (
         'uv pip install -r requirements.txt --target . --python-platform '
-        'aarch64-manylinux2014 --python-version 3.14'
+        'aarch64-manylinux_2_34 --python-version 3.14'
     ) in _warning(capsys)
 
 
@@ -480,6 +520,7 @@ def test_django_detection_handles_glob_metacharacters(tmp_path):
     src = os.path.join(str(tmp_path), 'proj[2024]')
     _write(src, 'manage.py', '')
     _write(src, 'shop/asgi.py', '')
+    _write(src, 'shop/settings.py', '')
     assert python.resolve_entry_point(src) == 'shop.asgi:application'
 
 
@@ -489,3 +530,145 @@ def test_customer_entry_missing_module_names_the_variable(tmp_path):
     message = str(excinfo.value)
     assert ENV_VAR in message
     assert '--entry-point' not in message
+
+
+def test_explicit_path_form_infers_object_name(tmp_path):
+    src = str(tmp_path)
+    _write(src, 'app.py', 'application = object()\n')
+    selection = RUNTIME.resolve_entry(src, 'app.py')
+    assert selection.display == 'app:application'
+    # An explicit object always wins over the module's assignments.
+    selection = RUNTIME.resolve_entry(src, 'app.py:app')
+    assert selection.display == 'app:app'
+
+
+def test_inspect_dependencies_quiet_for_option_only_requirements(
+    tmp_path, capsys
+):
+    _write(
+        str(tmp_path),
+        'requirements.txt',
+        '--index-url https://example.com/simple\n--pre\n',
+    )
+    RUNTIME.inspect_dependencies(str(tmp_path), 'python3.15')
+    assert capsys.readouterr().err == ''
+
+
+def test_inspect_dependencies_warns_for_requirements_reference(
+    tmp_path, capsys
+):
+    _write(str(tmp_path), 'requirements.txt', '-r requirements/prod.txt\n')
+    with mock.patch.object(python.shutil, 'which', return_value=None):
+        RUNTIME.inspect_dependencies(str(tmp_path), 'python3.15')
+    assert 'declares dependencies' in capsys.readouterr().err
+
+
+def test_install_command_lock_file_without_installable_source(tmp_path):
+    src = str(tmp_path)
+    _write(src, 'Pipfile.lock', '')
+    with mock.patch.object(python.shutil, 'which', return_value='/bin/uv'):
+        command = python.install_command(src, 'python3.15')
+    assert command.startswith('export the dependencies to requirements.txt')
+    assert '-r requirements.txt' in command
+    assert 'pyproject.toml' not in command
+
+
+def test_inspect_dependencies_warns_for_wrong_python_version_wheel(
+    tmp_path, capsys
+):
+    src = str(tmp_path)
+    _write(src, 'requirements.txt', 'pkg\n')
+    _dist_info(src, 'pkg-1.0', 'cp313-cp313-manylinux_2_17_aarch64')
+    _dist_info(src, 'freethreaded-1.0', 'cp315-cp315t-manylinux_2_28_aarch64')
+    _dist_info(src, 'futureabi-1.0', 'cp316-abi3-manylinux2014_aarch64')
+    _dist_info(src, 'stable-1.0', 'cp39-abi3-manylinux2014_aarch64')
+    _dist_info(src, 'current-1.0', 'cp315-cp315-manylinux_2_28_aarch64')
+    with mock.patch.object(python.shutil, 'which', return_value=None):
+        RUNTIME.inspect_dependencies(src, 'python3.15')
+    warning = capsys.readouterr().err
+    assert 'another platform or Python version' in warning
+    assert 'pkg-1.0 (cp313-cp313)' in warning
+    assert 'freethreaded-1.0 (cp315-cp315t)' in warning
+    assert 'futureabi-1.0 (cp316-abi3)' in warning
+    assert 'stable-1.0' not in warning
+    assert 'current-1.0' not in warning
+
+
+def test_factory_module_warns_about_unresolvable_object(tmp_path, capsys):
+    src = str(tmp_path)
+    _write(src, 'main.py', 'def create_app():\n    return object()\n')
+    assert python.resolve_entry_point(src) == 'main:app'
+    warning = capsys.readouterr().err
+    assert "does not define 'app' or 'application'" in warning
+    assert '--entry-point module:object' in warning
+
+
+def test_reexported_object_counts_as_evidence(tmp_path, capsys):
+    src = str(tmp_path)
+    _write(src, 'main.py', 'from myproj.wsgi import application\n')
+    assert python.resolve_entry_point(src) == 'main:application'
+    assert capsys.readouterr().err == ''
+
+
+def test_def_based_object_counts_as_evidence(tmp_path, capsys):
+    src = str(tmp_path)
+    _write(src, 'main.py', 'def app(environ, start_response):\n    pass\n')
+    assert python.resolve_entry_point(src) == 'main:app'
+    assert capsys.readouterr().err == ''
+
+
+def test_runtime_symlink_hints_are_language_specific():
+    from awscli.customizations.lambdaweb.runtimes import nodejs
+
+    assert 'pip' in python.RUNTIME.symlink_hint
+    assert 'npm' not in python.RUNTIME.symlink_hint
+    assert 'npm install' in nodejs.RUNTIME.symlink_hint
+
+
+def test_explicit_prefixed_path_form_errors_clearly(tmp_path):
+    src = str(tmp_path)
+    _write(src, 'main.py', 'app = 1\n')
+    with pytest.raises(InvalidSourceError) as excinfo:
+        RUNTIME.resolve_entry(src, 'wsgi:main.py')
+    message = str(excinfo.value)
+    assert 'interface prefix' in message
+    assert 'wsgi:main:app' in message
+    with pytest.raises(InvalidSourceError) as excinfo:
+        RUNTIME.resolve_entry(src, 'asgi:main.py:app')
+    assert 'asgi:main:app' in str(excinfo.value)
+
+
+def test_explicit_path_not_found_names_the_flag(tmp_path):
+    with pytest.raises(EntryPointNotFoundError) as excinfo:
+        RUNTIME.resolve_entry(str(tmp_path), 'missing.py')
+    assert "--entry-point 'missing.py'" in str(excinfo.value)
+
+
+def test_declared_dependencies_pipfile_and_poetry(tmp_path):
+    src = str(tmp_path)
+    _write(src, 'Pipfile', '[packages]\nflask = "*"\n')
+    assert python._declared_dependencies(src) == 'Pipfile'
+    os.remove(os.path.join(src, 'Pipfile'))
+    _write(
+        src,
+        'pyproject.toml',
+        '[tool.poetry.dependencies]\npython = "^3.12"\nflask = "*"\n',
+    )
+    assert python._declared_dependencies(src) == 'pyproject.toml'
+    _write(
+        src,
+        'pyproject.toml',
+        '[tool.poetry.dependencies]\npython = "^3.12"\n',
+    )
+    assert python._declared_dependencies(src) is None
+
+
+def test_inspect_dependencies_tolerates_unversioned_runtime_id(
+    tmp_path, capsys
+):
+    src = str(tmp_path)
+    _write(src, 'requirements.txt', 'cryptography\n')
+    _dist_info(src, 'cryptography-43', 'cp39-abi3-manylinux2014_aarch64')
+    _dist_info(src, 'pydantic_core-2.0', 'cp315-cp315-manylinux_2_28_aarch64')
+    RUNTIME.inspect_dependencies(src, 'python3')
+    assert capsys.readouterr().err == ''

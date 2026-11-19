@@ -339,6 +339,13 @@ class NodeRuntime(Runtime):
     entry_env_var = constants.ENTRYPOINT_ENV_VAR
     default_entry = constants.RUNTIME_ENTRY_FILE
     docs = _DOCS
+    symlink_hint = (
+        'If these are dependencies (for example, pnpm or workspace '
+        'node_modules symlinks), the bundle may be missing modules; '
+        'install with a layout that writes real files (for example, '
+        '"npm install", or pnpm with "node-linker=hoisted") before '
+        'deploying.'
+    )
 
     def detect(self, source_dir):
         candidates = ('package.json',) + constants.ENTRY_POINT_CANDIDATES

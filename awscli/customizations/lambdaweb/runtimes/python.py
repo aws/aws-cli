@@ -35,8 +35,19 @@ ENTRYPOINT_ENV_VAR = 'AWS_LAMBDA_PYTHON_ENTRYPOINT'
 DEFAULT_ENTRY = 'main:app'
 SCAFFOLD_ENTRY = 'main.py'
 INTERFACES = ('asgi', 'wsgi')
-WHEEL_PLATFORM = 'manylinux2014_aarch64'
-UV_PLATFORM = 'aarch64-manylinux2014'
+# The runtime OS runs glibc 2.34, so wheels tagged up to manylinux_2_34 are
+# compatible. pip matches --platform values against wheel tags literally
+# (no glibc ceiling), so each tag family in common use needs its own flag.
+WHEEL_PLATFORMS = (
+    'manylinux2014_aarch64',
+    'manylinux_2_28_aarch64',
+    'manylinux_2_34_aarch64',
+)
+PIP_PLATFORM_FLAGS = ' '.join(
+    f'--platform {platform}' for platform in WHEEL_PLATFORMS
+)
+# uv applies a real glibc ceiling, so one value accepts every older tag.
+UV_PLATFORM = 'aarch64-manylinux_2_34'
 
 # Files that identify a Python project when --runtime is omitted.
 MARKER_FILES = (
@@ -61,6 +72,8 @@ ENTRY_CANDIDATES = (
     'app/main.py',
 )
 
+# The generated AGENTS.md paraphrases this list in its packaging
+# section; update both together.
 EXCLUDE_PATTERNS = (
     'venv/',
     '.venv/',
@@ -76,15 +89,38 @@ EXCLUDE_PATTERNS = (
     '*.pyo',
 )
 
+# A top-level ``app = ...`` or ``application = ...``, type hint allowed.
 _OBJECT_ASSIGNMENT = re.compile(
     r'^(app|application)\s*(?::[^=\n]+)?=', re.MULTILINE
 )
-_DJANGO_SETTINGS = re.compile(
-    r"""DJANGO_SETTINGS_MODULE['"]\s*,\s*['"]([\w.]+)\.settings['"]"""
+# A top-level ``def app(...)``, ``async def app``, or ``class application``.
+_OBJECT_DEF = re.compile(
+    r'^(?:async\s+def|def|class)\s+(app|application)\b', re.MULTILINE
 )
+# An import line that binds the name ``app`` or ``application``.
+_OBJECT_IMPORT = re.compile(
+    r'^(?:from\s+\S+\s+)?import\s+[^\n]*\b(app|application)\b',
+    re.MULTILINE,
+)
+# Pulls the value out of ``os.environ.setdefault('DJANGO_SETTINGS_MODULE',
+# ...)`` in manage.py. The first segment names the project package, for
+# both ``mysite.settings`` and split layouts like ``config.settings.local``.
+_DJANGO_SETTINGS = re.compile(
+    r"""DJANGO_SETTINGS_MODULE['"]\s*,\s*['"](\w+)[\w.]*['"]"""
+)
+# A ``Tag: cp315-cp315-manylinux_2_28_aarch64`` line in a wheel's
+# WHEEL metadata file.
 _WHEEL_TAG = re.compile(r'^Tag:\s*(\S+)', re.MULTILINE)
+# Pure-Python wheels say ``Root-Is-Purelib: true`` and run anywhere.
 _PURELIB = re.compile(r'^Root-Is-Purelib:\s*true', re.MULTILINE | re.I)
-_LINUX_ARM64 = re.compile(r'^(manylinux[\w.]*|linux)_aarch64$')
+# Any arm64 Linux platform tag: bare ``linux_aarch64`` or any
+# ``manylinux*`` flavor.
+_LINUX_ARM64 = re.compile(r'^(?:manylinux[\w.]*|linux)_aarch64$')
+
+
+def _platform_runs_on_runtime(platform):
+    """Return True when a wheel platform tag targets arm64 Linux."""
+    return _LINUX_ARM64.match(platform) is not None
 
 
 def _invalid_entry(value):
@@ -125,18 +161,23 @@ def format_entry(interface, module, obj):
 
 
 def module_file(source_dir, module):
-    """Return the module's file relative to ``source_dir``, or ``None``.
+    """Return the module's file relative to ``source_dir``.
 
-    A package directory without ``__init__.py`` is importable but has no
-    single file, so it resolves to ``None`` without being an error. A module
-    that does not exist at all raises ``EntryPointNotFoundError``.
+    A module that does not exist raises ``EntryPointNotFoundError``. A
+    namespace package (a directory without ``__init__.py``) is importable
+    but cannot define an application object, so it is rejected.
     """
     base = os.path.join(source_dir, *module.split('.'))
     for candidate in (f'{base}.py', os.path.join(base, '__init__.py')):
         if os.path.isfile(candidate):
             return posix_relpath(os.path.relpath(candidate, source_dir))
     if os.path.isdir(base):
-        return None
+        raise InvalidSourceError(
+            f"Python module '{module}' is a directory without __init__.py "
+            f"under '{source_dir}', so it cannot define an application "
+            'object. Add an __init__.py that defines it, or use a module '
+            'file.'
+        )
     raise EntryPointNotFoundError(
         f"Python module '{module}' was not found under '{source_dir}'. The "
         f"command looked for {posix_relpath(os.path.relpath(base, source_dir))}"
@@ -147,15 +188,23 @@ def module_file(source_dir, module):
 
 def _entry_from_path(source_dir, value):
     """Translate ``pkg/module.py[:object]`` into ``(module, obj)``."""
-    path, obj = value, 'app'
+    path, obj = value, None
     if not value.endswith('.py'):
         path, sep, obj = value.rpartition(':')
         if not sep or not path.endswith('.py'):
             raise _invalid_entry(value)
     normalized = validate_relative_entry(source_dir, path)
     if not os.path.isfile(os.path.join(source_dir, normalized)):
+        head = path.split(':', 1)[0]
+        if ':' in path and head in INTERFACES:
+            raise InvalidSourceError(
+                f"--entry-point '{value}' combines an interface prefix "
+                'with a file path. Use the prefix with module:object '
+                f'(for example, {head}:main:app), or the file path '
+                'without a prefix.'
+            ) from None
         raise EntryPointNotFoundError(
-            f"entry point '{path}' not found under {source_dir}"
+            f"--entry-point '{path}' was not found under '{source_dir}'."
         )
     parts = posix_relpath(normalized)[: -len('.py')].split('/')
     if parts[-1] == '__init__':
@@ -169,18 +218,37 @@ def _entry_from_path(source_dir, value):
             'Rename the path, or pass --entry-point module:object for an '
             'importable module.'
         )
+    if obj is None:
+        # Match auto-detection: pick ``app`` or ``application`` from the
+        # module's assignments when the path names no object.
+        obj = _object_name(source_dir, normalized)
     _check_dotted(obj, value)
     return '.'.join(parts), obj
 
 
 def _object_name(source_dir, relpath):
-    """Pick ``app`` or ``application`` from the module's assignments."""
+    """Pick ``app`` or ``application`` from the module's definitions."""
     try:
         with open(os.path.join(source_dir, relpath), encoding='utf-8') as f:
-            names = set(_OBJECT_ASSIGNMENT.findall(f.read()))
+            text = f.read()
     except (OSError, UnicodeDecodeError):
         return 'app'
-    if 'app' not in names and 'application' in names:
+    names = set()
+    for pattern in (_OBJECT_ASSIGNMENT, _OBJECT_DEF, _OBJECT_IMPORT):
+        names.update(pattern.findall(text))
+    if not names:
+        # A factory layout (``def create_app():``) defines neither name;
+        # the runtime would import the module and fail to resolve the
+        # object, so say so now instead of deploying a broken revision.
+        output.progress(
+            f"Warning: {posix_relpath(relpath)} does not define 'app' or "
+            "'application' at the top level, so the entry point may not "
+            'resolve. Define the application object at module level (for '
+            'example app = create_app()), or pass --entry-point '
+            'module:object.'
+        )
+        return 'app'
+    if 'app' not in names:
         return 'application'
     return 'app'
 
@@ -190,24 +258,28 @@ def _django_entry(source_dir):
     manage = os.path.join(source_dir, 'manage.py')
     if not os.path.isfile(manage):
         return None
-    projects = []
     try:
         with open(manage, encoding='utf-8') as f:
             match = _DJANGO_SETTINGS.search(f.read())
     except (OSError, UnicodeDecodeError):
         match = None
-    if match:
+    projects = []
+    if match and match.group(1).isidentifier():
         projects.append(match.group(1))
-    for name in ('asgi', 'wsgi'):
-        for project in projects:
+    # Dependencies installed with ``--target .`` sit next to the project and
+    # can contain asgi.py or wsgi.py (asgiref does), so only directories that
+    # carry Django settings qualify as fallback projects.
+    for entry in sorted(os.listdir(source_dir)):
+        if entry in projects or not entry.isidentifier():
+            continue
+        base = os.path.join(source_dir, entry)
+        if os.path.isfile(os.path.join(base, 'settings.py')) or os.path.isdir(
+            os.path.join(base, 'settings')
+        ):
+            projects.append(entry)
+    for project in projects:
+        for name in ('asgi', 'wsgi'):
             if os.path.isfile(os.path.join(source_dir, project, f'{name}.py')):
-                return f'{project}.{name}:application'
-        found = sorted(
-            glob.glob(os.path.join(glob.escape(source_dir), '*', f'{name}.py'))
-        )
-        if found:
-            project = os.path.basename(os.path.dirname(found[0]))
-            if project.isidentifier():
                 return f'{project}.{name}:application'
     return None
 
@@ -225,6 +297,17 @@ def resolve_entry_point(source_dir, explicit=None):
             module, obj = _entry_from_path(source_dir, explicit)
             return format_entry(None, module, obj)
         interface, module, obj = parse_entry(explicit)
+        if module.endswith('.py'):
+            example = (
+                f"{interface or 'asgi'}:"
+                f"{module[: -len('.py')].replace('/', '.')}:{obj}"
+            )
+            raise InvalidSourceError(
+                f"--entry-point '{explicit}' names module '{module}', "
+                'which looks like a file path. Use module:object '
+                f'without the .py suffix (for example, {example}), or '
+                'the file form without an interface prefix.'
+            )
         module_file(source_dir, module)
         return format_entry(interface, module, obj)
 
@@ -268,6 +351,26 @@ def _dist_info_dirs(source_dir):
     )
 
 
+def _poetry_declares(text):
+    """Return True when [tool.poetry.dependencies] lists a package.
+
+    The ``python`` entry is the interpreter constraint that ``poetry``
+    always writes, not a package, so it alone does not count.
+    """
+    in_section = False
+    for line in text.splitlines():
+        stripped = line.strip()
+        if stripped.startswith('['):
+            in_section = stripped == '[tool.poetry.dependencies]'
+            continue
+        if not in_section or not stripped or stripped.startswith('#'):
+            continue
+        key = stripped.split('=', 1)[0].strip().strip('"').strip("'")
+        if key != 'python':
+            return True
+    return False
+
+
 def _declared_dependencies(source_dir):
     """Return the manifest that declares dependencies, or ``None``."""
     requirements = os.path.join(source_dir, 'requirements.txt')
@@ -277,9 +380,25 @@ def _declared_dependencies(source_dir):
                 lines = [line.strip() for line in f]
         except (OSError, UnicodeDecodeError):
             lines = []
-        if any(line and not line.startswith('#') for line in lines):
+        for line in lines:
+            if not line or line.startswith('#'):
+                continue
+            if line.startswith('-'):
+                # Option lines such as --index-url configure pip without
+                # declaring a package. Lines that pull in requirements
+                # (-r/-c) or an editable install (-e) still count.
+                head = line.split('=', 1)[0].split()[0]
+                if head not in (
+                    '-r',
+                    '--requirement',
+                    '-c',
+                    '--constraint',
+                    '-e',
+                    '--editable',
+                ):
+                    continue
             return 'requirements.txt'
-    for name in ('uv.lock', 'poetry.lock', 'Pipfile.lock'):
+    for name in ('uv.lock', 'poetry.lock', 'Pipfile.lock', 'Pipfile'):
         if os.path.isfile(os.path.join(source_dir, name)):
             return name
     pyproject = os.path.join(source_dir, 'pyproject.toml')
@@ -290,6 +409,8 @@ def _declared_dependencies(source_dir):
         except (OSError, UnicodeDecodeError):
             text = ''
         if re.search(r'^\s*dependencies\s*=\s*\[\s*["\']', text, re.M):
+            return 'pyproject.toml'
+        if _poetry_declares(text):
             return 'pyproject.toml'
     return None
 
@@ -304,14 +425,26 @@ def install_command(source_dir, runtime_id):
         shutil.which('uv')
     )
     if use_uv:
+        has_pyproject = os.path.isfile(
+            os.path.join(source_dir, 'pyproject.toml')
+        )
         source = 'requirements.txt' if has_requirements else 'pyproject.toml'
-        return (
+        command = (
             f'uv pip install -r {source} --target . --python-platform '
             f'{UV_PLATFORM} --python-version {version}'
         )
+        if not has_requirements and not has_pyproject:
+            # A lock file alone (for example Pipfile.lock) names no file
+            # that uv can install from directly.
+            command = (
+                'export the dependencies to requirements.txt, then '
+                'uv pip install -r requirements.txt --target . '
+                f'--python-platform {UV_PLATFORM} --python-version {version}'
+            )
+        return command
     command = (
         'pip install -r requirements.txt --target . --only-binary=:all: '
-        f'--platform {WHEEL_PLATFORM} --implementation cp '
+        f'{PIP_PLATFORM_FLAGS} --implementation cp '
         f'--python-version {version}'
     )
     if not has_requirements:
@@ -321,8 +454,33 @@ def install_command(source_dir, runtime_id):
     return command
 
 
-def _foreign_wheels(dist_info_dirs):
-    """Return package names whose wheel tags cannot run on arm64 Linux."""
+def _tag_runs_on_runtime(tag, version):
+    """Return True when a full wheel tag can load on the runtime."""
+    parts = tag.split('-')
+    if len(parts) != 3:
+        return True
+    interpreter, abi, platform = parts
+    # A runtime id without a usable version (for example a bare
+    # 'python3' sent through for the service to validate) gives no
+    # interpreter to compare against, so only the platform is checked.
+    if re.fullmatch(r'\d+\.\d+', version):
+        if abi == 'abi3':
+            # Stable-ABI wheels load on every version at or above
+            # their floor.
+            floor = re.match(r'^cp3(\d+)$', interpreter)
+            if floor is not None and int(floor.group(1)) > int(
+                version.split('.')[1]
+            ):
+                return False
+        elif abi not in ('none', 'cp' + version.replace('.', '')):
+            # Covers wheels built for another version (cp313) and for
+            # a free-threaded interpreter (cp315t).
+            return False
+    return platform == 'any' or _platform_runs_on_runtime(platform)
+
+
+def _foreign_wheels(dist_info_dirs, version):
+    """Return package names whose wheels cannot load on the runtime."""
     foreign = []
     for path in dist_info_dirs:
         try:
@@ -335,18 +493,25 @@ def _foreign_wheels(dist_info_dirs):
         tags = _WHEEL_TAG.findall(text)
         if not tags:
             continue
-        platforms = {tag.rsplit('-', 1)[-1] for tag in tags}
-        if 'any' in platforms or any(
-            _LINUX_ARM64.match(platform) for platform in platforms
-        ):
+        if any(_tag_runs_on_runtime(tag, version) for tag in tags):
             continue
+        reasons = set()
+        for tag in tags:
+            parts = tag.split('-')
+            if len(parts) != 3:
+                continue
+            interpreter, abi, platform = parts
+            if platform != 'any' and not _platform_runs_on_runtime(platform):
+                reasons.add(platform)
+            else:
+                reasons.add(f'{interpreter}-{abi}')
         name = os.path.basename(path)[: -len('.dist-info')]
-        foreign.append((name, sorted(platforms)[0]))
+        foreign.append((name, sorted(reasons)[0]))
     return foreign
 
 
 def inspect_dependencies(source_dir, runtime_id):
-    """Warn when dependencies are missing or built for another platform."""
+    """Warn when dependencies are missing or cannot load on the runtime."""
     installed = _dist_info_dirs(source_dir)
     if not installed:
         manifest = _declared_dependencies(source_dir)
@@ -360,7 +525,7 @@ def inspect_dependencies(source_dir, runtime_id):
             f'{runtime_id} runtime, run: {command}'
         )
         return
-    foreign = _foreign_wheels(installed)
+    foreign = _foreign_wheels(installed, python_version(runtime_id))
     if not foreign:
         return
     command = install_command(source_dir, runtime_id)
@@ -371,7 +536,7 @@ def inspect_dependencies(source_dir, runtime_id):
         sample += f', and {len(foreign) - 5} more'
     output.progress(
         f'Warning: {len(foreign)} installed package(s) were built for '
-        f'another platform: {sample}. Web Functions run on '
+        f'another platform or Python version: {sample}. Web Functions run on '
         f'{constants.RUNTIME_ARCHITECTURE} Linux, so these imports will fail. '
         f'Reinstall them for the {runtime_id} runtime with: {command}'
     )
@@ -393,7 +558,8 @@ def app(environ, start_response):
 
 
 if __name__ == "__main__":
-    # Lambda serves ``app`` on port {runtime_port}. Set {local_port_env_var} for local development.
+    # Lambda runs ``app`` behind a managed server; this block is for
+    # local development only. {local_port_env_var} changes the local port.
     import os
     from wsgiref.simple_server import make_server
 
@@ -411,7 +577,8 @@ def _install_commands_markdown():
       --python-platform {UV_PLATFORM} --python-version {version}
   # or
   pip install -r requirements.txt --target . --only-binary=:all: \\
-      --platform {WHEEL_PLATFORM} --implementation cp --python-version {version}
+      {PIP_PLATFORM_FLAGS} \\
+      --implementation cp --python-version {version}
   ```"""
 
 
@@ -432,17 +599,17 @@ _DOCS = ScaffoldDocs(
     how_it_works=f"""\
 `{SCAFFOLD_ENTRY}` exposes a WSGI application object named `app`. AWS Lambda \
 imports
-`{DEFAULT_ENTRY}` and serves it on port {constants.RUNTIME_HTTP_PORT} with a \
-managed server, so there is
-no server to run, handler to export, or adapter to install. FastAPI,
+`{DEFAULT_ENTRY}` and serves it with a managed HTTP server, so there is
+no server to run, port to bind, handler to export, or adapter to
+install. FastAPI,
 Starlette, Flask, and Django applications expose the same kind of object:
 `app = FastAPI()`, `app = Flask(__name__)`, or Django's
 `mysite.asgi:application`.""",
     runtime_contract=f"""\
 - Expose a WSGI or ASGI application object. The runtime imports \
 `{DEFAULT_ENTRY}`
-  by default and serves it on port {constants.RUNTIME_HTTP_PORT}. It selects \
-ASGI for a coroutine
+  by default and serves it with a managed server; the application
+  never binds a port. The runtime selects ASGI for a coroutine
   callable and WSGI otherwise.
 - Do not start a server at import time. Keep `uvicorn.run(...)`,
   `app.run(...)`, and `serve_forever()` under `if __name__ == "__main__":`
@@ -472,7 +639,7 @@ The architecture
 - `deploy` packages the `--code` directory. It does not run `pip` or `uv`, so
   install dependencies into the directory first. It warns when a manifest
   declares dependencies that are not installed, or when installed wheels
-  target another platform.
+  target another platform or Python version.
 {HIDDEN_FILES_BULLET}
 - `deploy` excludes `__pycache__`, `*.pyc`, `venv`, `.venv`, and test caches.
 - The runtime imports `{DEFAULT_ENTRY}` by default. For another module or \
@@ -495,6 +662,11 @@ class PythonRuntime(Runtime):
     entry_point_uses_env = True
     exclude_patterns = EXCLUDE_PATTERNS
     docs = _DOCS
+    symlink_hint = (
+        'If these are dependencies, the bundle may be missing modules; '
+        'reinstall them into the --code directory with pip or uv, which '
+        'write real files, before deploying.'
+    )
 
     def detect(self, source_dir):
         return any(

@@ -58,7 +58,7 @@ def test_resolve_requested(value, expected_id, expected_runtime):
 
 
 def test_resolve_requested_passes_unknown_identifier_through():
-    # A runtime newer than this CLI is sent as given and packaged with the
+    # A runtime the CLI does not recognize yet is sent as given and packaged
     # default family's rules; the service validates the identifier.
     assert runtimes.resolve_requested('ruby3.4') == ('ruby3.4', nodejs.RUNTIME)
     assert not nodejs.RUNTIME.matches('ruby3.4')

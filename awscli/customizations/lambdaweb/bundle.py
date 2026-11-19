@@ -109,14 +109,14 @@ _SYMLINK_WARN_SAMPLE = 5
 _HIDDEN_WARN_SAMPLE = 5
 
 
-def _warn_skipped_symlinks(skipped_links):
+def _warn_skipped_symlinks(skipped_links, symlink_hint=None):
     """Emit ONE consolidated warning naming symlinks left out of the bundle.
 
     Kept separate from the walk so ``build_zip`` reads cleanly and this stays
     unit-testable. No-op when nothing was skipped. Names up to
-    :data:`_SYMLINK_WARN_SAMPLE` paths and calls out ``node_modules`` links
-    specifically, since a pnpm / workspace layout is the usual reason deps go
-    missing.
+    :data:`_SYMLINK_WARN_SAMPLE` paths and appends the runtime's
+    ``symlink_hint`` sentence, which says how to materialize dependency
+    links for that language.
     """
     if not skipped_links:
         return
@@ -124,15 +124,14 @@ def _warn_skipped_symlinks(skipped_links):
     listed = ', '.join(sample)
     if len(skipped_links) > _SYMLINK_WARN_SAMPLE:
         listed += f', ... and {len(skipped_links) - _SYMLINK_WARN_SAMPLE} more'
-    output.progress(
+    message = (
         f'Warning: skipped {len(skipped_links)} symlink(s) not followed into '
         f'the bundle: {listed}. Symlinks are never followed (they can escape '
-        'the source directory or form cycles). If these are dependencies '
-        '(for example, pnpm or workspace node_modules symlinks), '
-        'the bundle may be missing modules; install with a layout that '
-        'writes real files (for example, "npm install", or pnpm with '
-        '"node-linker=hoisted") before deploying.'
+        'the source directory or form cycles).'
     )
+    if symlink_hint:
+        message = f'{message} {symlink_hint}'
+    output.progress(message)
 
 
 def _warn_skipped_hidden_paths(skipped_paths):
@@ -199,7 +198,12 @@ def _keep_dir(
 
 
 def build_zip(
-    source_dir, selection, exclude_patterns, include_hidden, force_include=None
+    source_dir,
+    selection,
+    exclude_patterns,
+    include_hidden,
+    force_include=None,
+    symlink_hint=None,
 ):
     """Build a zip from ``source_dir`` and return ``(temp_path, size)``.
 
@@ -225,6 +229,7 @@ def build_zip(
             exclude_patterns,
             include_hidden,
             forced_files,
+            symlink_hint,
         )
     except BaseException:
         remove_bundle(temp_path)
@@ -247,6 +252,7 @@ def _write_zip(
     exclude_patterns,
     include_hidden,
     forced_files,
+    symlink_hint=None,
 ):
     # Collect skipped symlinks; _warn_skipped_symlinks emits a summary after the walk.
     skipped_links = []
@@ -309,7 +315,7 @@ def _write_zip(
                 "can't be included."
             )
         _warn_skipped_hidden_paths(skipped_hidden_paths)
-        _warn_skipped_symlinks(skipped_links)
+        _warn_skipped_symlinks(skipped_links, symlink_hint)
         entry = selection.bundle_path if selection is not None else None
         if entry is not None and posix_relpath(entry) not in bundled_paths:
             raise InvalidSourceError(

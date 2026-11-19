@@ -247,6 +247,7 @@ class LambdaWebDeploy(BasicCommand):
                 ),
                 include_hidden=parsed_args.include_hidden_files,
                 force_include=parsed_args.force_include,
+                symlink_hint=runtime.symlink_hint,
             )
 
         try:
@@ -380,13 +381,13 @@ class LambdaWebDeploy(BasicCommand):
 
     @staticmethod
     def _note_unrecognized_runtime(resolved, packaging):
-        """Explain how code is packaged for a runtime this CLI predates."""
+        """Explain packaging for a runtime the AWS CLI does not recognize yet."""
         runtime_id, runtime = resolved
         if packaging and not runtime.matches(runtime_id):
             output.progress(
                 f"Runtime '{runtime_id}' isn't recognized by this version of "
                 'the AWS CLI. The command packages the code with its '
-                f'{runtime.display_name} rules and lets the service validate '
+                f'{runtime.display_name} rules and lets AWS Lambda validate '
                 'the runtime.'
             )
         return resolved
@@ -416,13 +417,27 @@ class LambdaWebDeploy(BasicCommand):
             # --entry-point replaces an inherited value only when the runtime
             # applies it through the same variable.
             if not (inherited and runtime.entry_point_uses_env):
-                raise validation.entrypoint_conflict_error(env_var)
+                raise validation.entrypoint_conflict_error(
+                    env_var, inherited=inherited
+                )
             value = None
             replaced_inherited = True
         if value is not None:
-            selection = runtime.customer_entry(value, parsed_args.code)
+            try:
+                selection = runtime.customer_entry(value, parsed_args.code)
+            except LambdaWebError as e:
+                if not inherited:
+                    raise
+                raise type(e)(
+                    f'{e} The variable was inherited from the deployed '
+                    'revision. Pass --entry-point module:object to '
+                    f'replace it, or --unset-env {env_var} to remove it.'
+                ) from None
+            source = (
+                f'{env_var} on the deployed revision' if inherited else env_var
+            )
             output.progress(
-                f"Using entry point '{selection.display}' from {env_var}."
+                f"Using entry point '{selection.display}' from {source}."
             )
         else:
             selection = runtime.resolve_entry(
@@ -809,6 +824,11 @@ class LambdaWebDeploy(BasicCommand):
         if not parsed_args.no_wait:
             output.report_regional_urls(endpoint)
             result.update(output.endpoint_url_fields(endpoint))
+        elif (endpoint_plan.target or {}).get('domainName'):
+            # --no-wait skips polling, but an existing endpoint's domain
+            # is immutable, so its URL is already known.
+            output.report_regional_urls(endpoint_plan.target)
+            result.update(output.endpoint_url_fields(endpoint_plan.target))
         self._emit(parsed_globals, result, console)
         return 0
 

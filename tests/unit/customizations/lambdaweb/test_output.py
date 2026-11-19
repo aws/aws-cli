@@ -29,7 +29,7 @@ from awscli.customizations.lambdaweb.output import (
 
 _FULL_PAYLOAD = {
     'functionArn': 'arn:aws:lambda:us-east-1:123456789012:function:my-app',
-    'endpointUrl': 'https://abc123.lambda-url.us-east-1.on.aws',
+    'endpointUrl': 'https://abc123.x9y.lambda-web.us-east-1.on.aws',
     'roleArn': 'arn:aws:iam::123456789012:role/awscli-lambdaweb-my-app',
     'bucketName': 'awscli-lambdaweb-123456789012-us-east-1',
     'objectKey': 'my-app/deploy-abc123.zip',
@@ -38,14 +38,14 @@ _FULL_PAYLOAD = {
 
 
 def test_format_url_only_trailing_newline():
-    result = format_url_only('abc123.lambda-url.us-east-1.on.aws')
-    assert result == 'https://abc123.lambda-url.us-east-1.on.aws\n'
+    result = format_url_only('abc123.x9y.lambda-web.us-east-1.on.aws')
+    assert result == 'https://abc123.x9y.lambda-web.us-east-1.on.aws\n'
     assert result.endswith('\n')
 
 
 def test_format_url_only_does_not_duplicate_scheme():
-    result = format_url_only('https://abc123.lambda-url.us-east-1.on.aws')
-    assert result == 'https://abc123.lambda-url.us-east-1.on.aws\n'
+    result = format_url_only('https://abc123.x9y.lambda-web.us-east-1.on.aws')
+    assert result == 'https://abc123.x9y.lambda-web.us-east-1.on.aws\n'
 
 
 def _globals(output=None, query=None, color='off'):
@@ -58,7 +58,9 @@ def test_emit_result_default_prints_url_only():
     # default (not a JSON blob).
     stdout = io.StringIO()
     emit_result(_globals(), _FULL_PAYLOAD, stdout=stdout)
-    assert stdout.getvalue() == 'https://abc123.lambda-url.us-east-1.on.aws\n'
+    assert (
+        stdout.getvalue() == 'https://abc123.x9y.lambda-web.us-east-1.on.aws\n'
+    )
 
 
 def test_emit_result_json_mode_writes_json():
@@ -91,7 +93,9 @@ def test_emit_result_query_honored_in_text():
     stdout = io.StringIO()
     pg = _globals(output='text', query=jmespath.compile('endpointUrl'))
     emit_result(pg, _FULL_PAYLOAD, stdout=stdout)
-    assert stdout.getvalue() == 'https://abc123.lambda-url.us-east-1.on.aws\n'
+    assert (
+        stdout.getvalue() == 'https://abc123.x9y.lambda-web.us-east-1.on.aws\n'
+    )
 
 
 def test_emit_result_query_defaults_output_to_json():
@@ -268,7 +272,9 @@ def test_emit_result_single_url_unchanged_without_regional():
     """Endpoint types with one domain keep the exact previous output."""
     stdout = io.StringIO()
     emit_result(_globals(), _FULL_PAYLOAD, stdout=stdout)
-    assert stdout.getvalue() == 'https://abc123.lambda-url.us-east-1.on.aws\n'
+    assert (
+        stdout.getvalue() == 'https://abc123.x9y.lambda-web.us-east-1.on.aws\n'
+    )
 
 
 def test_emit_result_no_wait_still_prints_nothing():

@@ -195,7 +195,7 @@ detects a Python project from files such as ``requirements.txt`` or
 ``main.py``. ::
 
     uv pip install -r requirements.txt --target . \
-        --python-platform aarch64-manylinux2014 --python-version 3.15
+        --python-platform aarch64-manylinux_2_34 --python-version 3.15
     aws lambda-web deploy \
         --name my-api \
         --code . \
@@ -216,7 +216,9 @@ object is ``application`` in ``mysite/asgi.py``. Specify the entry point as
 ``module:object``, as you would for uvicorn or gunicorn. The command sets
 ``AWS_LAMBDA_PYTHON_ENTRYPOINT`` on the revision. To require a specific
 interface, set ``--env AWS_LAMBDA_PYTHON_ENTRYPOINT=wsgi:mysite.wsgi:application``
-instead of ``--entry-point``. ::
+instead of ``--entry-point``. Add the endpoint domain to ``ALLOWED_HOSTS`` in
+the Django settings, and to ``CSRF_TRUSTED_ORIGINS`` if forms post to the
+application. Otherwise, Django returns HTTP 400 responses. ::
 
     aws lambda-web deploy \
         --name my-site \

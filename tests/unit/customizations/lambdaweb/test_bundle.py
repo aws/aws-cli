@@ -929,3 +929,25 @@ def test_build_zip_wrapper_conflict_names_wrapper_file(tmp_path):
             src, selection, exclude_patterns=(), include_hidden=False
         )
     assert 'rename your entry point to main.py' in str(excinfo.value)
+
+
+@pytest.mark.skipif(
+    sys.platform == 'win32',
+    reason='symlinks need elevation on Windows',
+)
+def test_build_zip_appends_runtime_symlink_hint(tmp_path, capsys):
+    src = str(tmp_path)
+    _write(os.path.join(src, 'main.py'), 'app = 1')
+    _write(os.path.join(src, 'real.py'), '')
+    os.symlink(os.path.join(src, 'real.py'), os.path.join(src, 'link.py'))
+    path, _ = bundle.build_zip(
+        src,
+        None,
+        exclude_patterns=(),
+        include_hidden=False,
+        symlink_hint='Reinstall with pip.',
+    )
+    os.unlink(path)
+    err = capsys.readouterr().err
+    assert 'Reinstall with pip.' in err
+    assert 'npm' not in err

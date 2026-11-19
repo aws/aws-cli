@@ -28,8 +28,8 @@ def resolve_requested(value):
     """Return ``(runtime_id, runtime)`` for a ``--runtime`` value.
 
     Returns ``None`` when the option was omitted. An alias selects the newest
-    version of its family; any other identifier is sent to the service as
-    given, so a runtime newer than this CLI still deploys.
+    version of its family; any other identifier is sent to AWS Lambda as
+    given, so a runtime the AWS CLI does not recognize yet still deploys.
     """
     if not value:
         return None

@@ -94,7 +94,7 @@ def _endpoint_response(
         'endpointArn': f'{FUNCTION_ARN}:endpoint/{ENDPOINT_NAME}',
         'endpointName': ENDPOINT_NAME,
         'endpointType': 'HomeRegion',
-        'domainName': 'abc123.lambda-url.us-east-1.on.aws',
+        'domainName': 'abc123.x9y.lambda-web.us-east-1.on.aws',
         'authType': 'ApplicationManaged',
         'autoDeploymentMode': 'LatestRevision',
         'regions': [REGION],
@@ -440,7 +440,7 @@ def test_create_happy_path_prints_url(harness, source_dir, capsys):
 
     assert rc == 0
     captured = capsys.readouterr()
-    assert captured.out == 'https://abc123.lambda-url.us-east-1.on.aws\n'
+    assert captured.out == 'https://abc123.x9y.lambda-web.us-east-1.on.aws\n'
     assert 'Console:' in captured.err
     harness.lambda_web.assert_no_pending_responses()
     harness.s3_stub.assert_no_pending_responses()
@@ -465,7 +465,8 @@ def test_create_json_output_includes_fields(harness, source_dir, capsys):
     payload = json.loads(capsys.readouterr().out)
     assert payload['functionArn'] == FUNCTION_ARN
     assert (
-        payload['endpointUrl'] == 'https://abc123.lambda-url.us-east-1.on.aws'
+        payload['endpointUrl']
+        == 'https://abc123.x9y.lambda-web.us-east-1.on.aws'
     )
     assert payload['roleArn'] == ROLE_ARN
     assert payload['bucketName'] == BUCKET_NAME
@@ -1266,7 +1267,7 @@ def _endpoint_summary(auto_mode='LatestRevision'):
         'endpointArn': f'{FUNCTION_ARN}:endpoint/{ENDPOINT_NAME}',
         'endpointName': ENDPOINT_NAME,
         'endpointType': 'HomeRegion',
-        'domainName': 'abc123.lambda-url.us-east-1.on.aws',
+        'domainName': 'abc123.x9y.lambda-web.us-east-1.on.aws',
         'authType': 'ApplicationManaged',
         'autoDeploymentMode': auto_mode,
         'revisionWeights': [{'revisionId': REVISION_ID, 'weight': 100}],
@@ -1341,7 +1342,8 @@ def test_update_happy_path_deploys_revision(harness, source_dir, capsys):
     payload = json.loads(capsys.readouterr().out)
     assert payload['revisionId'] == 'rev-002'
     assert (
-        payload['endpointUrl'] == 'https://abc123.lambda-url.us-east-1.on.aws'
+        payload['endpointUrl']
+        == 'https://abc123.x9y.lambda-web.us-east-1.on.aws'
     )
     harness.lambda_web.assert_no_pending_responses()
     harness.iam_stub.assert_no_pending_responses()
@@ -1721,7 +1723,8 @@ def test_tag_failure_warns_and_continues_update(harness, source_dir, capsys):
     payload = json.loads(captured.out)
     assert payload['revisionId'] == 'rev-002'
     assert (
-        payload['endpointUrl'] == 'https://abc123.lambda-url.us-east-1.on.aws'
+        payload['endpointUrl']
+        == 'https://abc123.x9y.lambda-web.us-east-1.on.aws'
     )
     error = captured.err
     assert 'Warning:' in error
@@ -2052,7 +2055,10 @@ def test_no_wait_returns_after_revision_create(harness, source_dir, capsys):
     captured = capsys.readouterr()
     payload = json.loads(captured.out)
     assert payload['revisionId'] == 'rev-002'
-    assert 'endpointUrl' not in payload
+    assert (
+        payload['endpointUrl']
+        == 'https://abc123.x9y.lambda-web.us-east-1.on.aws'
+    )
     assert '--no-wait' in captured.err
     harness.lambda_web.assert_no_pending_responses()
 
@@ -2088,7 +2094,10 @@ def test_no_wait_submits_endpoint_update_without_waiting_for_endpoint(
     )
     captured = capsys.readouterr()
     assert 'before submitting endpoint changes' in captured.err
-    assert 'endpointUrl' not in json.loads(captured.out)
+    assert (
+        json.loads(captured.out)['endpointUrl']
+        == 'https://abc123.x9y.lambda-web.us-east-1.on.aws'
+    )
     harness.lambda_web.assert_no_pending_responses()
 
 
@@ -2768,7 +2777,9 @@ def test_update_python_entry_point_replaces_inherited_env(harness, tmp_path):
     }
 
 
-def test_update_python_inherited_env_entry_is_honored(harness, tmp_path):
+def test_update_python_inherited_env_entry_is_honored(
+    harness, tmp_path, capsys
+):
     (tmp_path / 'svc').mkdir()
     (tmp_path / 'svc' / 'api.py').write_text('app = object()\n')
     _stub_update_prelude(
@@ -2790,6 +2801,10 @@ def test_update_python_inherited_env_entry_is_honored(harness, tmp_path):
     selection = deploy.bundle.build_zip.call_args[0][1]
     assert selection.display == 'svc.api:app'
     assert selection.bundle_path == 'svc/api.py'
+    assert (
+        "from AWS_LAMBDA_PYTHON_ENTRYPOINT on the deployed revision."
+        in capsys.readouterr().err
+    )
 
 
 def test_update_node_entry_point_still_conflicts_with_inherited_env(
@@ -2808,7 +2823,9 @@ def test_update_node_entry_point_still_conflicts_with_inherited_env(
     rc = _run(harness, args, _make_globals())
 
     assert rc == 252
-    assert 'AWS_LAMBDA_NODEJS_ENTRYPOINT' in capsys.readouterr().err
+    error = capsys.readouterr().err
+    assert 'AWS_LAMBDA_NODEJS_ENTRYPOINT' in error
+    assert '--unset-env AWS_LAMBDA_NODEJS_ENTRYPOINT' in error
     assert _mutating_calls(harness) == []
 
 
@@ -2988,3 +3005,53 @@ def test_update_python_default_entry_point_clears_inherited_env(
     assert rc == 0
     request = _request_for(harness, 'create_web_function_revision')
     assert request['serviceConfig']['environmentVariables'] == {'KEEP': '1'}
+
+
+def test_update_inherited_entry_env_error_names_the_source(
+    harness, tmp_path, capsys
+):
+    (tmp_path / 'main.py').write_text('app = object()\n')
+    _stub_update_prelude(
+        harness,
+        existing=_existing_python_revision(
+            env_vars={'AWS_LAMBDA_PYTHON_ENTRYPOINT': 'missing.mod:app'}
+        ),
+    )
+
+    rc = _run(
+        harness,
+        _make_args(str(tmp_path), execution_role_arn=None),
+        _make_globals(),
+    )
+
+    assert rc == 252
+    error = capsys.readouterr().err
+    assert 'inherited from the deployed revision' in error
+    assert '--unset-env AWS_LAMBDA_PYTHON_ENTRYPOINT' in error
+
+
+def test_update_no_wait_reports_known_endpoint_url(harness, tmp_path, capsys):
+    _stub_update_prelude(harness)
+    harness.lambda_web.add_response(
+        'create_web_function_revision',
+        {
+            'functionArn': FUNCTION_ARN,
+            'revisionArn': REVISION_ARN,
+            'revisionId': REVISION_ID,
+        },
+    )
+
+    args = _make_args(
+        None,
+        code=None,
+        bucket_name=None,
+        execution_role_arn=None,
+        env=['K=1'],
+        no_wait=True,
+    )
+    rc = _run(harness, args, _make_globals())
+
+    assert rc == 0
+    assert 'https://abc123.x9y.lambda-web.us-east-1.on.aws' in (
+        capsys.readouterr().out
+    )

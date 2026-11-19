@@ -299,6 +299,24 @@ class TestRunInstances(BaseAWSCommandParamsTest):
         }
         self.assert_run_instances_call(args, result)
 
+    def test_network_interfaces_with_associate_public_ip_address_errors(self):
+        args = ' --image-id ami-foobar --count 1 '
+        args += '--network-interfaces DeviceIndex=0 '
+        args += '--associate-public-ip-address'
+        self.run_cmd(self.prefix + args, expected_rc=252)
+
+    def test_network_interfaces_with_no_associate_public_ip_address_errors(self):
+        # Regression test: --no-associate-public-ip-address is a separate
+        # argparse dest (no_associate_public_ip_address) from
+        # --associate-public-ip-address (associate_public_ip_address), so
+        # it must be checked on its own. Previously this silently
+        # overwrote AssociatePublicIpAddress inside the user-supplied
+        # --network-interfaces structure instead of raising.
+        args = ' --image-id ami-foobar --count 1 '
+        args += '--network-interfaces DeviceIndex=0 '
+        args += '--no-associate-public-ip-address'
+        self.run_cmd(self.prefix + args, expected_rc=252)
+
     def test_ipv6_address_count_and_associate_public_ip_address(self):
         args = ' --associate-public-ip-address'
         args += ' --ipv6-address-count 5 --image-id ami-foobar --count 1'

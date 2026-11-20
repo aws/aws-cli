@@ -11,7 +11,7 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
-from dateutil import parser, tz
+from dateutil import parser
 
 from tests.functional.s3 import BaseS3TransferCommandTest
 
@@ -42,7 +42,7 @@ class TestLSCommand(BaseS3TransferCommandTest):
         self.assertNotIn('delimiter', call_args)
         # Time is stored in UTC timezone, but the actual time displayed
         # is specific to your tzinfo, so shift the timezone to your local's.
-        time_local = parser.parse(time_utc).astimezone(tz.tzlocal())
+        time_local = parser.parse(time_utc).astimezone()
         self.assertEqual(
             stdout,
             '%s        100 foo/bar.txt\n'
@@ -238,7 +238,7 @@ class TestLSCommand(BaseS3TransferCommandTest):
         call_args = self.operations_called[0][1]
         # Time is stored in UTC timezone, but the actual time displayed
         # is specific to your tzinfo, so shift the timezone to your local's.
-        time_local = parser.parse(time_utc).astimezone(tz.tzlocal())
+        time_local = parser.parse(time_utc).astimezone()
         time_fmt = time_local.strftime('%Y-%m-%d %H:%M:%S')
         self.assertIn('%s     1 Byte onebyte.txt\n' % time_fmt, stdout)
         self.assertIn('%s    1.0 KiB onekilobyte.txt\n' % time_fmt, stdout)
@@ -292,7 +292,7 @@ class TestLSCommand(BaseS3TransferCommandTest):
         call_args = self.operations_called[0][1]
         # Time is stored in UTC timezone, but the actual time displayed
         # is specific to your tzinfo, so shift the timezone to your local's.
-        time_local = parser.parse(time_utc).astimezone(tz.tzlocal())
+        time_local = parser.parse(time_utc).astimezone()
         time_fmt = time_local.strftime('%Y-%m-%d %H:%M:%S')
         self.assertIn('Total Objects: 6\n', stdout)
         self.assertIn('Total Size: 1127000493261825\n', stdout)
@@ -342,7 +342,7 @@ class TestLSCommand(BaseS3TransferCommandTest):
         call_args = self.operations_called[0][1]
         # Time is stored in UTC timezone, but the actual time displayed
         # is specific to your tzinfo, so shift the timezone to your local's.
-        time_local = parser.parse(time_utc).astimezone(tz.tzlocal())
+        time_local = parser.parse(time_utc).astimezone()
         time_fmt = time_local.strftime('%Y-%m-%d %H:%M:%S')
         self.assertIn('Total Objects: 6\n', stdout)
         self.assertIn('Total Size: 1.0 PiB\n', stdout)

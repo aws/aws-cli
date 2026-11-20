@@ -32,6 +32,7 @@ from awscli.customizations.s3.utils import (
     SetFileUtimeError,
     StablePriorityQueue,
     StdoutBytesWriter,
+    _date_parser,
     block_unsupported_resources,
     create_warning,
     find_bucket_key,
@@ -581,6 +582,18 @@ class TestBucketList(unittest.TestCase):
             PaginationConfig={'PageSize': None},
             RequestPayer='requester',
         )
+
+    def test_date_parser_uses_utc_offset_at_that_time(self):
+        expected = datetime.datetime(
+            2026, 11, 4, 18, 0, 0, tzinfo=datetime.timezone.utc
+        )
+        expected_offset = expected.astimezone().utcoffset()
+        stale_offset = int(-expected_offset.total_seconds()) + 3600
+        with mock.patch('time.timezone', stale_offset):
+            with mock.patch('time.daylight', 0):
+                parsed = _date_parser('2026-11-04T23:00:00+05:00')
+        self.assertEqual(parsed, expected)
+        self.assertEqual(parsed.utcoffset(), expected_offset)
 
 
 class TestGetFileStat(unittest.TestCase):

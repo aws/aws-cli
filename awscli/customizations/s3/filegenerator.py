@@ -16,7 +16,6 @@ import sys
 
 from botocore.exceptions import ClientError
 from dateutil.parser import parse
-from dateutil.tz import tzlocal
 
 from awscli.compat import queue
 from awscli.customizations.s3.utils import (
@@ -412,6 +411,6 @@ class FileGenerator:
             raise ClientError(response, 'HeadObject')
         response['Size'] = int(response.pop('ContentLength'))
         last_update = parse(response['LastModified'])
-        response['LastModified'] = last_update.astimezone(tzlocal())
+        response['LastModified'] = last_update.astimezone()
         response['ETag'] = response.pop('ETag', None)
         return s3_path, response

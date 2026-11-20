@@ -34,9 +34,12 @@ Behaviour contract:
   ``GetMetricData`` all follow ``NextToken`` under a ``--max-pages`` cap; a
   partial read degrades ``is_exhaustive`` instead of failing.
 * **Period / time-window** -- by default the window ends at the alarm's
-  ``StateUpdatedTimestamp`` (or now for INSUFFICIENT_DATA), spans 3x the alarm's
-  evaluation window, and uses the alarm's own ``Period``; it is aligned to the
-  period, which is raised for retention and the 1,440-points-per-series budget.
+  ``StateTransitionedTimestamp`` (falling back to ``StateUpdatedTimestamp``;
+  extended to now while the alarm is still in ALARM, and now for
+  INSUFFICIENT_DATA), looks back ``(EvaluationPeriods + ceil(240 / Period) + 1)
+  * Period`` from the state change, and uses the alarm's own ``Period``; it is
+  aligned to the period, which is raised for retention and the
+  1,440-points-per-series budget.
   Every adjustment is reported in ``guidance``.
 * **Output capping** -- series are capped by ``--max-series`` and per-series
   datapoints by ``--max-datapoints`` (keeping the most recent points); a global
@@ -105,24 +108,101 @@ _SIB_RE = re.compile(
     re.IGNORECASE,
 )
 # Composite-alarm child extraction: a small scanner (not a regex) so a child
-# name containing ')' inside quotes, or a full ARN, survives intact. Scan for
-# ALARM(/OK(/INSUFFICIENT_DATA(, then read a quoted name to its closing quote or
-# an unquoted name to the matching ')'.
+# name containing ')' or an escaped quote inside quotes, or a full ARN, survives
+# intact. Scan for ALARM(/OK(/INSUFFICIENT_DATA(, then read a quoted name to its
+# closing (unescaped) quote or an unquoted name to the matching ')'. Also parse
+# the AT_LEAST(N, STATE, (child1, child2, ...)) form, whose children sit in an
+# inner parenthesised, comma-separated list.
 _CHILD_TOKENS = ("ALARM(", "OK(", "INSUFFICIENT_DATA(")
+_AT_LEAST_TOKEN = "AT_LEAST("
+
+
+def _read_quoted(rule: str, j: int) -> tuple[str, int]:
+    """Read a quoted name starting at the opening quote ``rule[j]``.
+
+    Stops only at an unescaped ``"``; ``\\"`` and ``\\\\`` are unescaped in the
+    returned name. Returns ``(name, index just past the closing quote)``.
+    """
+    n = len(rule)
+    j += 1  # skip the opening quote
+    buf: list[str] = []
+    while j < n and rule[j] != '"':
+        if rule[j] == "\\" and j + 1 < n and rule[j + 1] in ('"', "\\"):
+            buf.append(rule[j + 1])
+            j += 2
+            continue
+        buf.append(rule[j])
+        j += 1
+    return "".join(buf), j + 1  # skip the closing quote
+
+
+def _at_least_children(rule: str, j: int) -> tuple[list[str], int]:
+    """Parse the child list of ``AT_LEAST(N, STATE, (c1, c2, ...))``.
+
+    ``j`` points just past ``AT_LEAST(``. Skips ``N, STATE,`` up to the inner
+    ``(``, then reads comma-separated (optionally quoted) names to the inner
+    ``)``. Returns ``(names, index just past the inner list)``; a malformed
+    expression with no inner list yields no names.
+    """
+    n = len(rule)
+    while j < n and rule[j] not in "()":
+        j += 1
+    if j >= n or rule[j] != "(":
+        return [], j
+    j += 1
+    names: list[str] = []
+    while j < n:
+        while j < n and (rule[j].isspace() or rule[j] == ","):
+            j += 1
+        if j >= n or rule[j] == ")":
+            break
+        if rule[j] == '"':
+            name, j = _read_quoted(rule, j)
+        else:
+            start = j
+            while j < n and rule[j] not in ",)":
+                j += 1
+            name = rule[start:j].strip().strip('"')
+        if name:
+            names.append(name)
+    return names, j + 1
 
 
 def _composite_children(rule: str) -> list[str]:
     """Extract child alarm names/ARNs from a composite alarm rule expression.
 
-    Handles quoted names (read between quotes, so an embedded ``)`` is kept),
-    bare unquoted names (read to the closing ``)``), and ARN references
-    (preserved whole). Nested composites are not recursed into; only directly
-    referenced children are returned, de-duplicated in first-seen order.
+    Handles quoted names (read between quotes, so an embedded ``)`` or an
+    escaped ``\\"`` is kept), bare unquoted names (read to the closing ``)``),
+    ARN references (preserved whole) and the ``AT_LEAST(N, STATE, (...))``
+    form. Nested composites are not recursed into; only directly referenced
+    children are returned, de-duplicated in first-seen order.
     """
     out: list[str] = []
-    i, n = 0, len(rule or "")
+    rule = rule or ""
+    i, n = 0, len(rule)
+
+    def add(name: str) -> None:
+        if name and name not in out:
+            out.append(name)
+
     while i < n:
-        tok = next((t for t in _CHILD_TOKENS if rule.startswith(t, i)), None)
+        if rule[i] == '"':
+            # A stray quoted string outside a state function: skip it whole so
+            # a token-like substring inside a name is never parsed as a call.
+            _, i = _read_quoted(rule, i)
+            continue
+        # Token match only at an identifier boundary (so NOT_OK( is not OK().
+        boundary = i == 0 or not (rule[i - 1].isalnum() or rule[i - 1] == "_")
+        if boundary and rule.startswith(_AT_LEAST_TOKEN, i):
+            names, i = _at_least_children(rule, i + len(_AT_LEAST_TOKEN))
+            for name in names:
+                add(name)
+            continue
+        tok = (
+            next((t for t in _CHILD_TOKENS if rule.startswith(t, i)), None)
+            if boundary
+            else None
+        )
         if tok is None:
             i += 1
             continue
@@ -130,20 +210,15 @@ def _composite_children(rule: str) -> list[str]:
         while j < n and rule[j].isspace():
             j += 1
         if j < n and rule[j] == '"':
-            j += 1
-            start = j
-            while j < n and rule[j] != '"':
-                j += 1
-            name = rule[start:j]
-            j += 1  # skip the closing quote
+            name, j = _read_quoted(rule, j)
         else:
             start = j
             while j < n and rule[j] != ")":
                 j += 1
             name = rule[start:j].strip()
-        if name and name not in out:
-            out.append(name)
-        i = j + 1
+            j += 1  # skip the closing paren
+        add(name)
+        i = j
     return out
 
 
@@ -164,6 +239,7 @@ _ALARM_FIELDS = (
     "StateValue",
     "StateReason",
     "StateUpdatedTimestamp",
+    "StateTransitionedTimestamp",
     "Namespace",
     "MetricName",
     "Dimensions",
@@ -178,6 +254,7 @@ _ALARM_FIELDS = (
     "TreatMissingData",
     "Metrics",
     "AlarmRule",
+    "EvaluationCriteria",
 )
 
 CallFn = Callable[[str, dict[str, Any]], dict[str, Any]]
@@ -462,7 +539,9 @@ def _window(
     now: float,
     *,
     anchor_end: float | None = None,
-    eval_span: int | None = None,
+    anchor_field: str = "StateTransitionedTimestamp",
+    extend_to_now: bool = False,
+    lookback_s: int | None = None,
 ) -> dict[str, Any] | list[str]:
     """Resolve/validate the time window and period, returning errors as a list.
 
@@ -497,28 +576,44 @@ def _window(
         return errs
     now_dt = datetime.fromtimestamp(now, UTC)
     notes: list[str] = []
+    # The look-back is measured back from the state change (``base``), even
+    # when the end is extended to now for a still-firing alarm.
+    base = e
     if e is None:
         if anchor_end is not None:
-            e = datetime.fromtimestamp(anchor_end, UTC)
-            notes.append(
-                "end_time defaulted to the alarm's StateUpdatedTimestamp "
-                f"({_iso(anchor_end)})."
-            )
+            base = datetime.fromtimestamp(anchor_end, UTC)
+            if extend_to_now:
+                e = now_dt
+                notes.append(
+                    f"end_time defaulted to now ({_iso(now)}): the alarm is "
+                    f"still in ALARM; the look-back is measured from its "
+                    f"{anchor_field} ({_iso(anchor_end)})."
+                )
+            else:
+                e = base
+                notes.append(
+                    f"end_time defaulted to the alarm's {anchor_field} "
+                    f"({_iso(anchor_end)})."
+                )
         else:
-            e = now_dt
+            e = base = now_dt
             notes.append(f"end_time defaulted to now ({_iso(now)}).")
     if s is None:
-        if eval_span:
-            # 3x the alarm's evaluation window (Period * EvaluationPeriods) so
-            # the sweep brackets the state change with context on either side.
-            s = e - timedelta(seconds=eval_span)
+        if lookback_s:
+            # (EvaluationPeriods + ceil(240 / Period) + 1) * Period: covers the
+            # alarm's sliding evaluation range (CloudWatch evaluates a few
+            # extra periods back) plus one period of context.
+            s = base - timedelta(seconds=lookback_s)
             notes.append(
-                f"start_time defaulted to end_time - {eval_span}s "
-                "(3x the alarm's Period * EvaluationPeriods)."
+                f"start_time defaulted to {_iso(base.timestamp())} - "
+                f"{lookback_s}s ((EvaluationPeriods + ceil(240 / Period) + 1) "
+                "* Period)."
             )
         else:
-            s = e - timedelta(hours=3)
-            notes.append("start_time defaulted to end_time - 3h.")
+            s = base - timedelta(hours=3)
+            notes.append(
+                f"start_time defaulted to {_iso(base.timestamp())} - 3h."
+            )
     if s >= e:
         return [
             f"start_time ({_iso(s.timestamp())}) must be before end_time "
@@ -637,25 +732,34 @@ def _validate_window_inputs(
     return errs
 
 
-def _anchor(
-    alarm: dict[str, Any], period_s: Any
-) -> tuple[float | None, int | None, int]:
-    """Derive (anchor_end, eval_span, period) window defaults from the alarm.
+def _anchor(alarm: dict[str, Any], period_s: Any) -> dict[str, Any]:
+    """Derive the default window anchor, look-back and period from the alarm.
 
-    * ``anchor_end`` -- the alarm's ``StateUpdatedTimestamp`` when it is in
-      ALARM/OK (so the window ends at the state change); ``None`` for
-      INSUFFICIENT_DATA or a missing timestamp, which defers to ``now``.
-    * ``eval_span`` -- ``Period * EvaluationPeriods * 3`` seconds, the default
-      look-back, or ``None`` when the alarm carries neither.
+    Returns a dict with:
+
+    * ``anchor_end`` / ``anchor_field`` -- the alarm's
+      ``StateTransitionedTimestamp`` (when it last changed state; falls back to
+      ``StateUpdatedTimestamp`` on old alarms that lack it) when it is in
+      ALARM/OK; ``None`` for INSUFFICIENT_DATA or no timestamp, which defers
+      to ``now``. ``StateUpdatedTimestamp`` alone is a poor anchor: it moves on
+      every evaluation, not only on a state change.
+    * ``extend_to_now`` -- True while the alarm is still in ALARM, so the
+      window ends at now (the most recent data is still relevant) while the
+      look-back stays measured from the transition.
+    * ``lookback_s`` -- ``(EvaluationPeriods + ceil(240 / Period) + 1) *
+      Period`` seconds, or ``None`` when the alarm carries neither.
     * ``period`` -- the explicit ``period_s`` when given, else the alarm's own
       ``Period``, else 300s.
     """
-    sut = _dt(alarm.get("StateUpdatedTimestamp"))
-    anchor_end = (
-        sut.timestamp()
-        if alarm.get("StateValue") in ("ALARM", "OK") and sut is not None
-        else None
-    )
+    state = alarm.get("StateValue")
+    anchor_end: float | None = None
+    anchor_field = "StateTransitionedTimestamp"
+    if state in ("ALARM", "OK"):
+        for field in ("StateTransitionedTimestamp", "StateUpdatedTimestamp"):
+            ts = _dt(alarm.get(field))
+            if ts is not None:
+                anchor_end, anchor_field = ts.timestamp(), field
+                break
     ap = alarm.get("Period")
     alarm_period = (
         ap
@@ -663,8 +767,8 @@ def _anchor(
         else None
     )
     ep = alarm.get("EvaluationPeriods")
-    eval_span = (
-        alarm_period * ep * 3
+    lookback_s = (
+        (ep + math.ceil(240 / alarm_period) + 1) * alarm_period
         if alarm_period
         and isinstance(ep, int)
         and not isinstance(ep, bool)
@@ -676,7 +780,13 @@ def _anchor(
         if isinstance(period_s, int) and not isinstance(period_s, bool)
         else (alarm_period or 300)
     )
-    return anchor_end, eval_span, period
+    return {
+        "anchor_end": anchor_end,
+        "anchor_field": anchor_field,
+        "extend_to_now": state == "ALARM",
+        "lookback_s": lookback_s,
+        "period": period,
+    }
 
 
 # ------------------------------------------------------------ step 1: target
@@ -738,6 +848,12 @@ def _load_from_alarm(
             "Composite alarm has no metrics of its own; re-run with "
             f"--alarm-name set to one of its children: {children}."
         )
+        if any(c.startswith("arn:") for c in children):
+            out["notes"].append(
+                "Composite children that are ARNs can be re-run using the "
+                "alarm name portion (after ':alarm:') or the full ARN via "
+                "describe-alarms --alarm-types CompositeAlarm."
+            )
         return out
     if alarm.get("MetricName"):
         # Single-metric alarm: one replay query.
@@ -1282,6 +1398,49 @@ def _qperiod(q: dict[str, Any], fallback: int) -> int:
     return p if isinstance(p, int) and p > 0 else fallback
 
 
+def _unsupported_alarm_type(
+    alarm: dict[str, Any], kind: str, loaded: dict[str, Any]
+) -> tuple[str, str] | None:
+    """Return ``(detected_type, message)`` when the alarm cannot be replayed.
+
+    * ``EvaluationCriteria.PromQLCriteria`` -> PromQL (checked first: such an
+      alarm has no ``MetricName`` and no ``Metrics``).
+    * A metric alarm with no ``MetricName`` from which no ``MetricStat`` target
+      could be extracted -> unsupported, whether or not ``Metrics`` is present
+      (metric-math with no resolvable input, Log / Metrics Insights, or an
+      evaluation model this version does not know).
+    """
+    if kind != "metric_alarm":
+        return None
+    criteria = alarm.get("EvaluationCriteria")
+    if isinstance(criteria, dict) and "PromQLCriteria" in criteria:
+        return (
+            "PromQL (EvaluationCriteria.PromQLCriteria)",
+            "is a PromQL alarm; PromQL alarms are not supported in this "
+            "version.",
+        )
+    if alarm.get("MetricName") or loaded["metrics"]:
+        return None
+    metrics = alarm.get("Metrics") or []
+    if not metrics:
+        detected = (
+            "unknown (EvaluationCriteria with no MetricName or Metrics)"
+            if criteria
+            else "unknown (no MetricName and no Metrics)"
+        )
+    elif any(isinstance(m, dict) and m.get("Expression") for m in metrics):
+        detected = "metric-math or PromQL (an Expression with no resolvable MetricStat)"
+    else:
+        detected = (
+            "Log or Metrics Insights (a Metrics entry with no MetricStat)"
+        )
+    return (
+        detected,
+        f"looks like a {detected} alarm; alarm-metric-sweep supports standard "
+        "metric and metric-math alarms only in this version.",
+    )
+
+
 # ------------------------------------------------------------------- the sweep
 def alarm_metric_sweep(
     call_op: CallFn,
@@ -1399,37 +1558,26 @@ def _run_sweep(
     )
 
     # Detect alarm types this command cannot replay (PromQL / Log / Metrics
-    # Insights): a metric alarm that carries a Metrics list from which no
-    # standard MetricStat target could be extracted.
-    if (
-        rv["kind"] == "metric_alarm"
-        and alarm.get("Metrics")
-        and not alarm.get("MetricName")
-        and not loaded["metrics"]
-    ):
-        has_expr = any(
-            isinstance(m, dict) and m.get("Expression")
-            for m in alarm.get("Metrics") or []
-        )
-        detected = (
-            "metric-math or PromQL (an Expression with no resolvable MetricStat)"
-            if has_expr
-            else "Log or Metrics Insights (a Metrics entry with no MetricStat)"
-        )
+    # Insights). PromQL alarms carry EvaluationCriteria.PromQLCriteria and no
+    # MetricName/Metrics at all, so they are checked first and explicitly.
+    unsupported = _unsupported_alarm_type(alarm, rv["kind"], loaded)
+    if unsupported is not None:
+        detected, message = unsupported
+        alarm_label = loaded["target"]["alarm_name"]
         return err_result(
             "UNSUPPORTED_ALARM_TYPE",
-            f"Alarm {loaded['target']['alarm_name']!r} looks like a {detected} "
-            "alarm; alarm-metric-sweep supports standard metric and metric-math "
-            "alarms only in this version.",
+            f"Alarm {alarm_label!r} {message}",
             value={
                 "target": loaded["target"],
                 "detected_type": detected,
                 "raw_metrics": _js(alarm.get("Metrics")),
+                "raw_evaluation_criteria": _js(
+                    alarm.get("EvaluationCriteria")
+                ),
             },
             guidance=[
                 "Inspect the raw metric configuration with 'aws cloudwatch "
-                "describe-alarms --alarm-names "
-                f"{loaded['target']['alarm_name']}'.",
+                f"describe-alarms --alarm-names {alarm_label}'.",
                 "Query the underlying data directly (get-metric-data for "
                 "metric-math, or the owning service for PromQL/Log alarms).",
             ],
@@ -1438,14 +1586,16 @@ def _run_sweep(
 
     # Resolve the time window, anchoring its end to the alarm's state change and
     # its default period to the alarm's own Period (ITEM 1).
-    anchor_end, eval_span, period_resolved = _anchor(alarm, period_s)
+    anchor = _anchor(alarm, period_s)
     w = _window(
         start_time,
         end_time,
-        period_resolved,
+        anchor["period"],
         float(clock()),
-        anchor_end=anchor_end,
-        eval_span=eval_span,
+        anchor_end=anchor["anchor_end"],
+        anchor_field=anchor["anchor_field"],
+        extend_to_now=anchor["extend_to_now"],
+        lookback_s=anchor["lookback_s"],
     )
     if isinstance(w, list):
         return invalid_input("; ".join(w), guidance=list(w))
@@ -1755,9 +1905,11 @@ class AlarmMetricSweepCommand(BasicCommand):
         "alarm's own metric(s), and report gaps, peaks and trailing-gap "
         "detection.\n\n"
         "By default the time window is anchored to the alarm's own "
-        "configuration: it ends at the alarm's StateUpdatedTimestamp (or now for "
-        "INSUFFICIENT_DATA), spans 3x the alarm's evaluation window "
-        "(Period * EvaluationPeriods), and uses the alarm's own Period. Pass "
+        "configuration: it ends at the alarm's StateTransitionedTimestamp "
+        "(StateUpdatedTimestamp on alarms that lack it; now while the alarm is "
+        "still in ALARM, or for INSUFFICIENT_DATA), looks back "
+        "(EvaluationPeriods + ceil(240 / Period) + 1) * Period from the state "
+        "change, and uses the alarm's own Period. Pass "
         "--start-time / --end-time / --period-s to override.\n\n"
         "By default every dimension is pinned to the alarm's own values, so the "
         "sweep returns exactly the alarm's series and issues no ListMetrics "
@@ -1790,8 +1942,8 @@ class AlarmMetricSweepCommand(BasicCommand):
             "name": "start-time",
             "cli_type_name": "string",
             "help_text": (
-                "Window start (ISO-8601). Default: end-time minus 3x the "
-                "alarm's Period * EvaluationPeriods."
+                "Window start (ISO-8601). Default: the alarm's state change "
+                "minus (EvaluationPeriods + ceil(240 / Period) + 1) * Period."
             ),
         },
         {
@@ -1799,7 +1951,8 @@ class AlarmMetricSweepCommand(BasicCommand):
             "cli_type_name": "string",
             "help_text": (
                 "Window end (ISO-8601). Default: the alarm's "
-                "StateUpdatedTimestamp, or now for INSUFFICIENT_DATA."
+                "StateTransitionedTimestamp, or now while in ALARM or "
+                "INSUFFICIENT_DATA."
             ),
         },
         {

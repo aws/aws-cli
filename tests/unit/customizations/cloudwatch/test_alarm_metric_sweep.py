@@ -819,26 +819,79 @@ def test_normal_structured_errors_are_not_swallowed_by_the_boundary():
 # --------------------------------------------- ITEM 1: window anchoring
 
 
-def test_window_anchored_to_state_updated_timestamp():
+def _anchored_run(alarm, clock=1_700_030_000.0):
+    """Run the sweep with no explicit start/end/period (all alarm-anchored)."""
     call = ScriptedCW()
-    alarm = _metric_alarm()
-    alarm["StateValue"] = "ALARM"
-    alarm["StateUpdatedTimestamp"] = "2023-11-14T20:00:00Z"
-    alarm["Period"] = 300
-    alarm["EvaluationPeriods"] = 2
     call.queue("DescribeAlarms", _describe(metric=[alarm]))
     call.queue("DescribeAlarmHistory", _history())
     call.queue("GetMetricData", _metric_data([_series("alarm_metric", [1.0])]))
     call.queue("GetMetricData", _metric_data([_series("zs0", [1.0])]))
-    # No explicit start/end/period -> all anchored to the alarm.
-    result = alarm_metric_sweep(call, "cpu-high", clock=_fixed_clock())
+    return alarm_metric_sweep(
+        call, alarm["AlarmName"], clock=_fixed_clock(clock)
+    )
+
+
+def test_window_anchored_to_state_transitioned_timestamp():
+    alarm = _metric_alarm()
+    alarm["StateValue"] = "OK"
+    alarm["StateTransitionedTimestamp"] = "2023-11-14T20:00:00Z"
+    # StateUpdatedTimestamp moves on every evaluation; it must not win.
+    alarm["StateUpdatedTimestamp"] = "2023-11-14T20:55:00Z"
+    alarm["Period"] = 300
+    alarm["EvaluationPeriods"] = 2
+    result = _anchored_run(alarm)
     assert result["ok"] is True
     window = result["value"]["window"]
-    # End = StateUpdatedTimestamp; span = Period * EvaluationPeriods * 3 = 1800s.
+    # End = StateTransitionedTimestamp; look-back =
+    # (2 + ceil(240 / 300) + 1) * 300 = 1200s.
     assert window["end"] == "2023-11-14T20:00:00Z"
-    assert window["start"] == "2023-11-14T19:30:00Z"
+    assert window["start"] == "2023-11-14T19:40:00Z"
     assert window["period_s"] == 300  # the alarm's own Period
-    assert any("StateUpdatedTimestamp" in g for g in result["guidance"])
+    assert any("StateTransitionedTimestamp" in g for g in result["guidance"])
+    assert any("ceil(240 / Period)" in g for g in result["guidance"])
+
+
+def test_window_falls_back_to_state_updated_timestamp():
+    alarm = _metric_alarm()
+    alarm["StateValue"] = "OK"
+    alarm["StateUpdatedTimestamp"] = "2023-11-14T20:00:00Z"  # no transition ts
+    result = _anchored_run(alarm)
+    assert result["ok"] is True
+    assert result["value"]["window"]["end"] == "2023-11-14T20:00:00Z"
+    assert any(
+        "alarm's StateUpdatedTimestamp" in g for g in result["guidance"]
+    )
+
+
+def test_wider_lookback_for_one_minute_one_period_alarm():
+    alarm = _metric_alarm()
+    alarm["StateValue"] = "OK"
+    alarm["StateTransitionedTimestamp"] = "2023-11-14T20:00:00Z"
+    alarm["Period"] = 60
+    alarm["EvaluationPeriods"] = 1
+    result = _anchored_run(alarm)
+    window = result["value"]["window"]
+    # (1 + ceil(240 / 60) + 1) * 60 = 360s (the old 3x formula gave 180s).
+    assert window["end"] == "2023-11-14T20:00:00Z"
+    assert window["start"] == "2023-11-14T19:54:00Z"
+    assert window["expected_points_per_series"] == 6
+
+
+def test_still_in_alarm_extends_window_end_to_now():
+    alarm = _metric_alarm()
+    alarm["StateValue"] = "ALARM"
+    alarm["StateTransitionedTimestamp"] = "2023-11-14T20:00:00Z"
+    alarm["Period"] = 300
+    alarm["EvaluationPeriods"] = 2
+    now = 1_700_000_000.0  # 2023-11-14T22:13:20Z
+    result = _anchored_run(alarm, clock=now)
+    assert result["ok"] is True
+    window = result["value"]["window"]
+    # Start still measured back from the transition; end extended to now
+    # (aligned up to the next 300s boundary).
+    assert window["start"] == "2023-11-14T19:40:00Z"
+    assert window["end"] == "2023-11-14T22:15:00Z"
+    assert any("still in ALARM" in g for g in result["guidance"])
 
 
 def test_insufficient_data_alarm_anchors_window_end_to_now():
@@ -846,6 +899,7 @@ def test_insufficient_data_alarm_anchors_window_end_to_now():
     alarm = _metric_alarm()
     alarm["StateValue"] = "INSUFFICIENT_DATA"
     alarm["StateUpdatedTimestamp"] = "2020-01-01T00:00:00Z"  # must be ignored
+    alarm["StateTransitionedTimestamp"] = "2020-01-01T00:00:00Z"
     call.queue("DescribeAlarms", _describe(metric=[alarm]))
     call.queue("DescribeAlarmHistory", _history())
     call.queue("GetMetricData", _metric_data([_series("alarm_metric", [1.0])]))
@@ -854,7 +908,7 @@ def test_insufficient_data_alarm_anchors_window_end_to_now():
         call, "cpu-high", clock=_fixed_clock(1_700_030_000.0)
     )
     assert result["ok"] is True
-    # End defaults to "now", not the stale StateUpdatedTimestamp.
+    # End defaults to "now", not the stale state timestamps.
     assert result["value"]["window"]["end"].startswith("2023-11-15")
 
 
@@ -965,6 +1019,45 @@ def test_unsupported_log_alarm_type_is_detected():
     assert result["ok"] is False
     assert result["code"] == "UNSUPPORTED_ALARM_TYPE"
     assert "Log" in result["value"]["detected_type"]
+
+
+def test_promql_alarm_with_evaluation_criteria_is_unsupported():
+    call = ScriptedCW()
+    promql = {
+        "AlarmName": "promql-crit",
+        "AlarmArn": "arn:aws:cloudwatch:us-east-1:1:alarm:promql-crit",
+        "StateValue": "ALARM",
+        # PromQL alarms carry no MetricName and no Metrics at all.
+        "EvaluationCriteria": {
+            "PromQLCriteria": {"Query": "rate(http_requests_total[5m]) > 1"}
+        },
+    }
+    call.queue("DescribeAlarms", _describe(metric=[promql]))
+    result = _run(call, alarm_name="promql-crit")
+    assert result["ok"] is False
+    assert result["code"] == "UNSUPPORTED_ALARM_TYPE"
+    assert "PromQL alarms are not supported" in result["error"]
+    assert "PromQL" in result["value"]["detected_type"]
+    assert result["value"]["raw_evaluation_criteria"]["PromQLCriteria"]
+    assert "GetMetricData" not in call.ops()
+    assert "DescribeAlarmHistory" not in call.ops()
+
+
+def test_alarm_with_no_metric_name_and_no_metrics_is_unsupported():
+    call = ScriptedCW()
+    bare = {
+        "AlarmName": "bare",
+        "AlarmArn": "arn:aws:cloudwatch:us-east-1:1:alarm:bare",
+        "StateValue": "OK",
+        "Period": 60,
+        "EvaluationPeriods": 1,
+    }
+    call.queue("DescribeAlarms", _describe(metric=[bare]))
+    result = _run(call, alarm_name="bare")
+    assert result["ok"] is False
+    assert result["code"] == "UNSUPPORTED_ALARM_TYPE"
+    assert "no MetricName and no Metrics" in result["value"]["detected_type"]
+    assert "GetMetricData" not in call.ops()
 
 
 # --------------------------------------------- ITEM 5: exact match by default
@@ -1096,3 +1189,48 @@ def test_composite_children_handle_parens_and_arns():
         "plain-child",
     ]
     assert "GetMetricData" not in call.ops()
+
+
+def _composite_run(rule):
+    call = ScriptedCW()
+    composite = {
+        "AlarmName": "parent",
+        "AlarmArn": "arn:aws:cloudwatch:us-east-1:1:alarm:parent",
+        "StateValue": "ALARM",
+        "AlarmRule": rule,
+    }
+    call.queue("DescribeAlarms", _describe(composite=[composite]))
+    call.queue("DescribeAlarmHistory", _history())
+    return _run(call, alarm_name="parent")
+
+
+def test_composite_children_parse_at_least():
+    rule = (
+        'ALARM(a) AND AT_LEAST(2, ALARM, (d, "e", '
+        '"arn:aws:cloudwatch:us-east-1:1:alarm:f")) OR '
+        "AT_LEAST(50%, NOT_OK, (g ,h))"
+    )
+    result = _composite_run(rule)
+    assert result["ok"] is True
+    assert result["value"]["target"]["child_alarms"] == [
+        "a",
+        "d",
+        "e",
+        "arn:aws:cloudwatch:us-east-1:1:alarm:f",
+        "g",
+        "h",
+    ]
+    # An ARN child triggers the re-run hint.
+    assert any("':alarm:'" in g for g in result["guidance"])
+
+
+def test_composite_children_handle_escaped_quotes():
+    rule = 'ALARM("say \\"hi\\" (x)") OR AT_LEAST(1, OK, ("q\\"uote", plain))'
+    result = _composite_run(rule)
+    assert result["value"]["target"]["child_alarms"] == [
+        'say "hi" (x)',
+        'q"uote',
+        "plain",
+    ]
+    # No ARN children -> no ARN hint.
+    assert not any("':alarm:'" in g for g in result["guidance"])

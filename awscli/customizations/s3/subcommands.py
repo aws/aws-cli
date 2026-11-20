@@ -1257,7 +1257,12 @@ class SyncCommand(S3TransferCommand):
 
 class MbCommand(S3Command):
     NAME = 'mb'
-    DESCRIPTION = "Creates an S3 bucket."
+    DESCRIPTION = (
+        "Creates an S3 bucket. For information about bucket naming "
+        "restrictions, see `Bucket naming rules <https://docs.aws.amazon.com/"
+        "AmazonS3/latest/userguide/bucketnamingrules.html>`__ in the "
+        "Amazon S3 User Guide."
+    )
     USAGE = "<S3Uri>"
     ARG_TABLE = [
         {

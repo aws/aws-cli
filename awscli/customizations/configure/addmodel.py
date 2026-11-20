@@ -12,6 +12,7 @@
 # language governing permissions and limitations under the License.
 import json
 import os
+import tempfile
 
 from botocore.model import ServiceModel
 
@@ -90,7 +91,8 @@ class AddModelCommand(BasicCommand):
         'Adds a service JSON model to the appropriate location in '
         '~/.aws/models. Once the model gets added, CLI commands and Boto3 '
         'clients will be immediately available for the service JSON model '
-        'provided.'
+        'provided. Shell completion picks up the model the next time '
+        '``aws_completer`` runs.'
     )
     ARG_TABLE = [
         {
@@ -117,12 +119,22 @@ class AddModelCommand(BasicCommand):
 
         # If the service_name/api_version directories do not exist,
         # then create them.
-        model_directory = os.path.dirname(model_location)
-        if not os.path.exists(model_directory):
-            os.makedirs(model_directory)
+        # exist_ok because concurrent imports may create it at the same time.
+        os.makedirs(os.path.dirname(model_location), exist_ok=True)
 
-        # Write the model to the specified location
-        with open(model_location, 'wb') as f:
-            f.write(parsed_args.service_model.encode('utf-8'))
+        # Write the model to a temporary file and move it into place so
+        # concurrent commands and shell completion, which rebuilds its index
+        # when models change, never read a partially written model.
+        fd, temp_location = tempfile.mkstemp(
+            dir=os.path.dirname(model_location), suffix='.temp'
+        )
+        try:
+            with os.fdopen(fd, 'wb') as f:
+                f.write(parsed_args.service_model.encode('utf-8'))
+            os.replace(temp_location, model_location)
+        except BaseException:
+            if os.path.exists(temp_location):
+                os.remove(temp_location)
+            raise
 
         return 0

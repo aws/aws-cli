@@ -17,6 +17,10 @@ from botocore.exceptions import UnknownServiceError
 
 import awscli.clidriver
 from awscli.autocomplete.db import DatabaseConnection
+from awscli.autocomplete.local.indexer import (
+    COMMAND_SUBTREE_CLAUSE,
+    command_subtree_params,
+)
 
 
 def create_apicall_indexer(filename):
@@ -54,8 +58,34 @@ class APICallIndexer:
         for key, command in self._iter_all_commands(clidriver):
             self._construct_completion_data(loader, command)
 
+    def remove_commands(self, command_names):
+        """Remove completion data for top level commands and subtrees.
+
+        This must run before the corresponding ``param_table`` rows are
+        removed because rows are matched through ``param_id``.
+        """
+        self._create_tables()
+        for name in command_names:
+            self._db_connection.execute(
+                'DELETE FROM apicall_table WHERE param_id IN '
+                f'(SELECT param_id FROM param_table WHERE '
+                f'{COMMAND_SUBTREE_CLAUSE})',
+                **command_subtree_params(name),
+            )
+
+    def index_commands(self, clidriver, command_names):
+        self._create_tables()
+        loader = clidriver.session.get_component('data_loader')
+        command_table = clidriver.subcommand_table
+        commands = {name: command_table[name] for name in command_names}
+        for key, command in self._iter_commands(commands):
+            self._construct_completion_data(loader, command)
+
     def _iter_all_commands(self, clidriver):
-        stack = sorted(clidriver.subcommand_table.items())
+        return self._iter_commands(clidriver.subcommand_table)
+
+    def _iter_commands(self, command_table):
+        stack = sorted(command_table.items())
         while stack:
             key, command = stack.pop()
             for subkey, subcommand in sorted(command.subcommand_table.items()):

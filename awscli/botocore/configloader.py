@@ -146,6 +146,14 @@ def raw_config_parse(config_filename, parse_subsections=True):
         cp = configparser.RawConfigParser()
         try:
             cp.read([path])
+        except configparser.DuplicateSectionError as e:
+            message = _get_duplicate_section_error_message(
+                path, e.section, e.lineno
+            )
+            raise botocore.exceptions.ConfigParseError(
+                path=_unicode_path(path),
+                message=message,
+            )
         except (configparser.Error, UnicodeDecodeError):
             raise botocore.exceptions.ConfigParseError(
                 path=_unicode_path(path)
@@ -198,6 +206,52 @@ def _parse_nested(config_value):
         key, value = line.split('=', 1)
         parsed[key.strip()] = value.strip()
     return parsed
+
+
+def _find_first_section_line(path, section):
+    try:
+        with open(path, 'r', encoding='utf-8-sig', errors='replace') as f:
+            for lineno, line in enumerate(f, start=1):
+                clean_line = line.strip()
+                if not clean_line or clean_line.startswith(('#', ';')):
+                    continue
+                match = configparser.RawConfigParser.SECTCRE.match(clean_line)
+                if match:
+                    header = match.group('header')
+                    if header == section or header.strip() == section.strip():
+                        return lineno
+    except Exception:
+        pass
+    return None
+
+
+def _get_duplicate_section_error_message(path, section, dup_lineno):
+    parts = section.split(None, 1)
+    if len(parts) == 2 and parts[0] == 'profile':
+        target_type = 'profile'
+        target_name = parts[1].strip('"\'')
+    elif section == 'default':
+        target_type = 'profile'
+        target_name = 'default'
+    else:
+        target_type = 'section'
+        target_name = section
+
+    first_lineno = _find_first_section_line(path, section)
+
+    if first_lineno and dup_lineno and first_lineno != dup_lineno:
+        line_info = (
+            f" (first seen on line {first_lineno}, "
+            f"duplicated on line {dup_lineno})"
+        )
+    elif dup_lineno:
+        line_info = f" (duplicated on line {dup_lineno})"
+    elif first_lineno:
+        line_info = f" (line {first_lineno})"
+    else:
+        line_info = ""
+
+    return f"Found duplicate {target_type} '{target_name}'{line_info}"
 
 
 def _parse_section(key, values):

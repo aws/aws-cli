@@ -21,6 +21,7 @@ import json
 import logging
 import os
 import pathlib
+import shlex
 import stat
 import urllib.error
 import zipfile
@@ -59,6 +60,13 @@ from tests.unit.customizations.agentregistry.utils import (
 )
 
 posix_only = pytest.mark.skipif(os.name == 'nt', reason='POSIX modes')
+
+
+def _short_id(value):
+    # pytest puts the test id in the PYTEST_CURRENT_TEST environment
+    # variable, which Windows limits to 32767 characters
+    text = repr(value)
+    return text if len(text) <= 40 else f'{text[:37]}...'
 
 
 def _on_windows(monkeypatch, windows=True):
@@ -390,7 +398,9 @@ def test_folder_names_refuse_unsafe(monkeypatch, tmp_path, name, windows):
         skill_path(str(tmp_path), name)
 
 
-def test_folder_name_error_shows_the_name_safely():
+def test_folder_name_error_shows_the_name_safely(monkeypatch):
+    # The Windows-only rules add a clause to the message
+    _on_windows(monkeypatch, False)
     with pytest.raises(AgentRegistryJWTError) as e:
         install_skill.safe_folder_name('a\x1b[2J' + 'b' * 1000)
     message = str(e.value)
@@ -1627,7 +1637,8 @@ def test_skill_from_another_source_is_never_replaced(
     assert f'Refusing to replace {tmp_path / "pdf-extract"}: {expected}' in err
     assert (
         'Uninstall it first with aws agent-registry uninstall-skill --name '
-        f'pdf-extract --target-directory {tmp_path}, or install into '
+        f'pdf-extract --target-directory {shlex.quote(str(tmp_path))}, or '
+        'install into '
         'another folder with --agent or --target-directory.'
     ) in err
     assert 'Pass --force' not in err
@@ -1677,6 +1688,7 @@ def _write_marker(skill, content):
         # Deep enough to exhaust the JSON parser's recursion.
         '[' * 60_000,
     ],
+    ids=_short_id,
 )
 def test_unreadable_marker_counts_as_unknown(tmp_path, content):
     skill = _previous_install(tmp_path, marker=False)
@@ -2354,7 +2366,8 @@ def _earlier(path, name, folder):
     return (
         f'An earlier install of this record is at {path}; uninstall it with '
         f'aws agent-registry uninstall-skill --name {name} '
-        f'--target-directory {folder} if you no longer need it.'
+        f'--target-directory {shlex.quote(str(folder))} if you no longer '
+        'need it.'
     )
 
 
@@ -2455,6 +2468,7 @@ def _check(tmp_path, skill_md, name='pdf-extract', entry='SKILL.md'):
         + ''.join(f'a{i}: &a{i} [*a, *a, *a, *a, *a]\n' for i in range(30))
         + 'name: pdf-extract\n---\n',
     ],
+    ids=_short_id,
 )
 def test_skill_md_name_is_read(tmp_path, skill_md):
     assert _check(tmp_path, skill_md) == 'pdf-extract'
@@ -2476,7 +2490,9 @@ def test_skill_md_is_the_one_the_installer_picks(tmp_path, entry):
     )
 
 
-def test_skill_md_name_is_shown_safely(tmp_path):
+def test_skill_md_name_is_shown_safely(tmp_path, monkeypatch):
+    # The Windows-only rules add a clause to the message
+    _on_windows(monkeypatch, False)
     with pytest.raises(AgentRegistryJWTError) as e:
         _check(
             tmp_path, '---\nname: "evil\\e[2J\\u202e' + 'x' * 1000 + '"\n---\n'
@@ -2532,6 +2548,7 @@ _NO_NAME = "the frontmatter of the package's SKILL.md has no name"
         ('---\nname: {first: pdf-extract}\n---\n', _NO_NAME),
         ('---\n<<: {name: pdf-extract}\n---\n', _NO_NAME),
     ],
+    ids=_short_id,
 )
 def test_skill_md_without_a_readable_name_is_refused(
     tmp_path, skill_md, reason

@@ -1,0 +1,4337 @@
+{
+  "version":"2.0",
+  "metadata":{
+    "apiVersion":"2026-04-30",
+    "auth":["aws.auth#sigv4"],
+    "endpointPrefix":"apiportal",
+    "protocol":"rest-json",
+    "protocols":["rest-json"],
+    "serviceFullName":"APIPortal",
+    "serviceId":"APIPortal",
+    "signatureVersion":"v4",
+    "signingName":"apiportal",
+    "uid":"apiportal-2026-04-30"
+  },
+  "operations":{
+    "AssociateManagedApis":{
+      "name":"AssociateManagedApis",
+      "http":{
+        "method":"POST",
+        "requestUri":"/products/{productId}/associate",
+        "responseCode":200
+      },
+      "input":{"shape":"AssociateManagedApisRequest"},
+      "output":{"shape":"AssociateManagedApisResponse"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"LimitExceededException"},
+        {"shape":"BadRequestException"},
+        {"shape":"AccessDeniedException"}
+      ],
+      "documentation":"<p>Associate one or more Managed APIs with a product. Best-effort — IDs that fail are returned in {@link AssociateManagedApisResponse#failedItems}; IDs that succeed are omitted. Associating an already-associated Managed API is a no-op (not reported as failure).</p>"
+    },
+    "CreateManagedApi":{
+      "name":"CreateManagedApi",
+      "http":{
+        "method":"POST",
+        "requestUri":"/managedapis",
+        "responseCode":201
+      },
+      "input":{"shape":"CreateManagedApiRequest"},
+      "output":{"shape":"CreateManagedApiResponse"},
+      "errors":[
+        {"shape":"ConflictException"},
+        {"shape":"LimitExceededException"},
+        {"shape":"BadRequestException"},
+        {"shape":"AccessDeniedException"}
+      ],
+      "documentation":"<p>Promote a discovered API in the API inventory into the managed API list.</p>"
+    },
+    "CreatePortal":{
+      "name":"CreatePortal",
+      "http":{
+        "method":"POST",
+        "requestUri":"/portals",
+        "responseCode":201
+      },
+      "input":{"shape":"CreatePortalRequest"},
+      "output":{"shape":"CreatePortalResponse"},
+      "errors":[
+        {"shape":"LimitExceededException"},
+        {"shape":"BadRequestException"},
+        {"shape":"AccessDeniedException"}
+      ],
+      "documentation":"<p>Creates a portal that publishes documentation for the products it includes. Use UpdatePortalPublishStatus to publish it.</p>"
+    },
+    "CreatePortalPreview":{
+      "name":"CreatePortalPreview",
+      "http":{
+        "method":"POST",
+        "requestUri":"/portals/{portalId}/preview",
+        "responseCode":202
+      },
+      "input":{"shape":"CreatePortalPreviewRequest"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ConflictException"},
+        {"shape":"LimitExceededException"},
+        {"shape":"BadRequestException"},
+        {"shape":"AccessDeniedException"}
+      ],
+      "documentation":"<p>Starts building a preview of the portal's current content. Use GetPortal to check the preview status and get the preview URL.</p>"
+    },
+    "CreateProduct":{
+      "name":"CreateProduct",
+      "http":{
+        "method":"POST",
+        "requestUri":"/products",
+        "responseCode":201
+      },
+      "input":{"shape":"CreateProductRequest"},
+      "output":{"shape":"CreateProductResponse"},
+      "errors":[
+        {"shape":"LimitExceededException"},
+        {"shape":"BadRequestException"},
+        {"shape":"AccessDeniedException"}
+      ],
+      "documentation":"<p>Creates a product. A product groups Managed APIs with their API pages and product pages so a portal can publish them together.</p>"
+    },
+    "CreateProductApiPage":{
+      "name":"CreateProductApiPage",
+      "http":{
+        "method":"POST",
+        "requestUri":"/products/{productId}/apipages",
+        "responseCode":201
+      },
+      "input":{"shape":"CreateProductApiPageRequest"},
+      "output":{"shape":"CreateProductApiPageResponse"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"LimitExceededException"},
+        {"shape":"BadRequestException"},
+        {"shape":"AccessDeniedException"}
+      ],
+      "documentation":"<p>Creates an API page that documents a Managed API in a product. The page content is generated asynchronously. Use <code>status</code> to track it.</p>"
+    },
+    "CreateProductPage":{
+      "name":"CreateProductPage",
+      "http":{
+        "method":"POST",
+        "requestUri":"/products/{productId}/productpages",
+        "responseCode":201
+      },
+      "input":{"shape":"CreateProductPageRequest"},
+      "output":{"shape":"CreateProductPageResponse"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"LimitExceededException"},
+        {"shape":"BadRequestException"},
+        {"shape":"AccessDeniedException"}
+      ],
+      "documentation":"<p>Creates a product page with free-form documentation. A product can have up to 40 pages.</p>"
+    },
+    "DeleteDiscoveryConfiguration":{
+      "name":"DeleteDiscoveryConfiguration",
+      "http":{
+        "method":"DELETE",
+        "requestUri":"/discovery-configuration",
+        "responseCode":200
+      },
+      "input":{"shape":"DeleteDiscoveryConfigurationRequest"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"BadRequestException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Deletes the discovery configuration and stops any running discovery.</p>",
+      "idempotent":true
+    },
+    "DeleteManagedApi":{
+      "name":"DeleteManagedApi",
+      "http":{
+        "method":"DELETE",
+        "requestUri":"/managedapis/{managedApiId}",
+        "responseCode":204
+      },
+      "input":{"shape":"DeleteManagedApiRequest"},
+      "output":{"shape":"DeleteManagedApiResponse"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ConflictException"},
+        {"shape":"LimitExceededException"},
+        {"shape":"BadRequestException"},
+        {"shape":"AccessDeniedException"}
+      ],
+      "documentation":"<p>Deletes a Managed API.</p>",
+      "idempotent":true
+    },
+    "DeleteOrganizationDiscoveryConfiguration":{
+      "name":"DeleteOrganizationDiscoveryConfiguration",
+      "http":{
+        "method":"DELETE",
+        "requestUri":"/org-discovery-configuration",
+        "responseCode":200
+      },
+      "input":{"shape":"DeleteOrganizationDiscoveryConfigurationRequest"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"BadRequestException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Deletes the organization-wide discovery configuration and stops any running discovery across the organization. Only the organization management account may call this operation.</p>",
+      "idempotent":true
+    },
+    "DeletePortal":{
+      "name":"DeletePortal",
+      "http":{
+        "method":"DELETE",
+        "requestUri":"/portals/{portalId}",
+        "responseCode":204
+      },
+      "input":{"shape":"DeletePortalRequest"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ConflictException"},
+        {"shape":"LimitExceededException"},
+        {"shape":"BadRequestException"},
+        {"shape":"AccessDeniedException"}
+      ],
+      "documentation":"<p>Deletes a portal.</p>",
+      "idempotent":true
+    },
+    "DeleteProduct":{
+      "name":"DeleteProduct",
+      "http":{
+        "method":"DELETE",
+        "requestUri":"/products/{productId}",
+        "responseCode":204
+      },
+      "input":{"shape":"DeleteProductRequest"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"LimitExceededException"},
+        {"shape":"BadRequestException"},
+        {"shape":"AccessDeniedException"}
+      ],
+      "documentation":"<p>Deletes a product.</p>",
+      "idempotent":true
+    },
+    "DeleteProductApiPage":{
+      "name":"DeleteProductApiPage",
+      "http":{
+        "method":"DELETE",
+        "requestUri":"/products/{productId}/apipages/{productApiPageId}",
+        "responseCode":204
+      },
+      "input":{"shape":"DeleteProductApiPageRequest"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"LimitExceededException"},
+        {"shape":"BadRequestException"},
+        {"shape":"AccessDeniedException"}
+      ],
+      "documentation":"<p>Deletes an API page.</p>",
+      "idempotent":true
+    },
+    "DeleteProductPage":{
+      "name":"DeleteProductPage",
+      "http":{
+        "method":"DELETE",
+        "requestUri":"/products/{productId}/productpages/{productPageId}",
+        "responseCode":204
+      },
+      "input":{"shape":"DeleteProductPageRequest"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"LimitExceededException"},
+        {"shape":"BadRequestException"},
+        {"shape":"AccessDeniedException"}
+      ],
+      "documentation":"<p>Deletes a product page.</p>",
+      "idempotent":true
+    },
+    "DeleteProductSharingPolicy":{
+      "name":"DeleteProductSharingPolicy",
+      "http":{
+        "method":"DELETE",
+        "requestUri":"/products/{productId}/sharingpolicy",
+        "responseCode":204
+      },
+      "input":{"shape":"DeleteProductSharingPolicyRequest"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"LimitExceededException"},
+        {"shape":"BadRequestException"},
+        {"shape":"AccessDeniedException"}
+      ],
+      "documentation":"<p>Deletes the sharing policy of a product. The product is no longer shared.</p>",
+      "idempotent":true
+    },
+    "DisassociateManagedApis":{
+      "name":"DisassociateManagedApis",
+      "http":{
+        "method":"POST",
+        "requestUri":"/products/{productId}/disassociate",
+        "responseCode":200
+      },
+      "input":{"shape":"DisassociateManagedApisRequest"},
+      "output":{"shape":"DisassociateManagedApisResponse"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"LimitExceededException"},
+        {"shape":"BadRequestException"},
+        {"shape":"AccessDeniedException"}
+      ],
+      "documentation":"<p>Disassociate one or more Managed APIs from a product. Best-effort — IDs that fail are returned in {@link DisassociateManagedApisResponse#failedItems}; IDs that succeed are omitted. Disassociating an unmapped Managed API is a no-op (not reported as failure).</p>"
+    },
+    "GetApiInventoryItem":{
+      "name":"GetApiInventoryItem",
+      "http":{
+        "method":"GET",
+        "requestUri":"/api-inventory/item",
+        "responseCode":200
+      },
+      "input":{"shape":"GetApiInventoryItemRequest"},
+      "output":{"shape":"GetApiInventoryItemResponse"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"BadRequestException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Gets full details of a single API inventory item.</p>",
+      "readonly":true
+    },
+    "GetDiscoveryConfiguration":{
+      "name":"GetDiscoveryConfiguration",
+      "http":{
+        "method":"GET",
+        "requestUri":"/discovery-configuration",
+        "responseCode":200
+      },
+      "input":{"shape":"GetDiscoveryConfigurationRequest"},
+      "output":{"shape":"GetDiscoveryConfigurationResponse"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Retrieves the discovery configuration for the account and region.</p>",
+      "readonly":true
+    },
+    "GetManagedApi":{
+      "name":"GetManagedApi",
+      "http":{
+        "method":"GET",
+        "requestUri":"/managedapis/{managedApiId}",
+        "responseCode":200
+      },
+      "input":{"shape":"GetManagedApiRequest"},
+      "output":{"shape":"GetManagedApiResponse"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"LimitExceededException"},
+        {"shape":"BadRequestException"},
+        {"shape":"AccessDeniedException"}
+      ],
+      "documentation":"<p>Returns a Managed API, including its security posture findings.</p>",
+      "readonly":true
+    },
+    "GetOrganizationDiscoveryConfiguration":{
+      "name":"GetOrganizationDiscoveryConfiguration",
+      "http":{
+        "method":"GET",
+        "requestUri":"/org-discovery-configuration",
+        "responseCode":200
+      },
+      "input":{"shape":"GetOrganizationDiscoveryConfigurationRequest"},
+      "output":{"shape":"GetOrganizationDiscoveryConfigurationResponse"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Retrieves the organization-wide discovery configuration. Only the organization management account and registered delegated administrators may call this operation.</p>",
+      "readonly":true
+    },
+    "GetPortal":{
+      "name":"GetPortal",
+      "http":{
+        "method":"GET",
+        "requestUri":"/portals/{portalId}",
+        "responseCode":200
+      },
+      "input":{"shape":"GetPortalRequest"},
+      "output":{"shape":"GetPortalResponse"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"LimitExceededException"},
+        {"shape":"BadRequestException"},
+        {"shape":"AccessDeniedException"}
+      ],
+      "documentation":"<p>Returns the configuration, publish status, and preview status of a portal.</p>",
+      "readonly":true
+    },
+    "GetProduct":{
+      "name":"GetProduct",
+      "http":{
+        "method":"GET",
+        "requestUri":"/products/{productId}",
+        "responseCode":200
+      },
+      "input":{"shape":"GetProductRequest"},
+      "output":{"shape":"GetProductResponse"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"LimitExceededException"},
+        {"shape":"BadRequestException"},
+        {"shape":"AccessDeniedException"}
+      ],
+      "documentation":"<p>Returns a product. To read a product shared with you by another account, supply <code>resourceOwnerAccountId</code>.</p>",
+      "readonly":true
+    },
+    "GetProductApiPage":{
+      "name":"GetProductApiPage",
+      "http":{
+        "method":"GET",
+        "requestUri":"/products/{productId}/apipages/{productApiPageId}",
+        "responseCode":200
+      },
+      "input":{"shape":"GetProductApiPageRequest"},
+      "output":{"shape":"GetProductApiPageResponse"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"LimitExceededException"},
+        {"shape":"BadRequestException"},
+        {"shape":"AccessDeniedException"}
+      ],
+      "documentation":"<p>Returns an API page, including its body.</p>",
+      "readonly":true
+    },
+    "GetProductPage":{
+      "name":"GetProductPage",
+      "http":{
+        "method":"GET",
+        "requestUri":"/products/{productId}/productpages/{productPageId}",
+        "responseCode":200
+      },
+      "input":{"shape":"GetProductPageRequest"},
+      "output":{"shape":"GetProductPageResponse"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"LimitExceededException"},
+        {"shape":"BadRequestException"},
+        {"shape":"AccessDeniedException"}
+      ],
+      "documentation":"<p>Returns a product page, including its body.</p>",
+      "readonly":true
+    },
+    "GetProductSharingPolicy":{
+      "name":"GetProductSharingPolicy",
+      "http":{
+        "method":"GET",
+        "requestUri":"/products/{productId}/sharingpolicy",
+        "responseCode":200
+      },
+      "input":{"shape":"GetProductSharingPolicyRequest"},
+      "output":{"shape":"GetProductSharingPolicyResponse"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"LimitExceededException"},
+        {"shape":"BadRequestException"},
+        {"shape":"AccessDeniedException"}
+      ],
+      "documentation":"<p>Returns the sharing policy of a product.</p>",
+      "readonly":true
+    },
+    "ListApiInventoryItems":{
+      "name":"ListApiInventoryItems",
+      "http":{
+        "method":"POST",
+        "requestUri":"/api-inventory",
+        "responseCode":200
+      },
+      "input":{"shape":"ListApiInventoryItemsRequest"},
+      "output":{"shape":"ListApiInventoryItemsResponse"},
+      "errors":[
+        {"shape":"BadRequestException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Lists discovered API inventory items with filtering and pagination.</p>",
+      "readonly":true
+    },
+    "ListDiscoveryStatuses":{
+      "name":"ListDiscoveryStatuses",
+      "http":{
+        "method":"GET",
+        "requestUri":"/discovery/statuses",
+        "responseCode":200
+      },
+      "input":{"shape":"ListDiscoveryStatusesRequest"},
+      "output":{"shape":"ListDiscoveryStatusesResponse"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"BadRequestException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Lists discovery statuses for services.</p>",
+      "readonly":true
+    },
+    "ListManagedApiEvents":{
+      "name":"ListManagedApiEvents",
+      "http":{
+        "method":"GET",
+        "requestUri":"/managedapis/{managedApiId}/events",
+        "responseCode":200
+      },
+      "input":{"shape":"ListManagedApiEventsRequest"},
+      "output":{"shape":"ListManagedApiEventsResponse"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"LimitExceededException"},
+        {"shape":"BadRequestException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Lists API-security events for a single managed API, most recent first. Returns up to 20 of the most recent events (not paginated).</p>",
+      "readonly":true
+    },
+    "ListManagedApis":{
+      "name":"ListManagedApis",
+      "http":{
+        "method":"GET",
+        "requestUri":"/managedapis",
+        "responseCode":200
+      },
+      "input":{"shape":"ListManagedApisRequest"},
+      "output":{"shape":"ListManagedApisResponse"},
+      "errors":[
+        {"shape":"LimitExceededException"},
+        {"shape":"BadRequestException"},
+        {"shape":"AccessDeniedException"}
+      ],
+      "documentation":"<p>Lists the Managed APIs in your account.</p>",
+      "readonly":true
+    },
+    "ListPortals":{
+      "name":"ListPortals",
+      "http":{
+        "method":"GET",
+        "requestUri":"/portals",
+        "responseCode":200
+      },
+      "input":{"shape":"ListPortalsRequest"},
+      "output":{"shape":"ListPortalsResponse"},
+      "errors":[
+        {"shape":"LimitExceededException"},
+        {"shape":"BadRequestException"},
+        {"shape":"AccessDeniedException"}
+      ],
+      "documentation":"<p>Lists the portals in your account.</p>",
+      "readonly":true
+    },
+    "ListProductApiPages":{
+      "name":"ListProductApiPages",
+      "http":{
+        "method":"GET",
+        "requestUri":"/products/{productId}/apipages",
+        "responseCode":200
+      },
+      "input":{"shape":"ListProductApiPagesRequest"},
+      "output":{"shape":"ListProductApiPagesResponse"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"LimitExceededException"},
+        {"shape":"BadRequestException"},
+        {"shape":"AccessDeniedException"}
+      ],
+      "documentation":"<p>Lists the API pages in a product. The results do not include page bodies.</p>",
+      "readonly":true
+    },
+    "ListProductPages":{
+      "name":"ListProductPages",
+      "http":{
+        "method":"GET",
+        "requestUri":"/products/{productId}/productpages",
+        "responseCode":200
+      },
+      "input":{"shape":"ListProductPagesRequest"},
+      "output":{"shape":"ListProductPagesResponse"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"LimitExceededException"},
+        {"shape":"BadRequestException"},
+        {"shape":"AccessDeniedException"}
+      ],
+      "documentation":"<p>Lists the product pages in a product. The results do not include page bodies.</p>",
+      "readonly":true
+    },
+    "ListProducts":{
+      "name":"ListProducts",
+      "http":{
+        "method":"GET",
+        "requestUri":"/products",
+        "responseCode":200
+      },
+      "input":{"shape":"ListProductsRequest"},
+      "output":{"shape":"ListProductsResponse"},
+      "errors":[
+        {"shape":"LimitExceededException"},
+        {"shape":"BadRequestException"},
+        {"shape":"AccessDeniedException"}
+      ],
+      "documentation":"<p>Lists products you own, products shared with you, or both.</p>",
+      "readonly":true
+    },
+    "ListTagsForResource":{
+      "name":"ListTagsForResource",
+      "http":{
+        "method":"GET",
+        "requestUri":"/tags/{resourceArn}",
+        "responseCode":200
+      },
+      "input":{"shape":"ListTagsForResourceRequest"},
+      "output":{"shape":"ListTagsForResourceResponse"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"LimitExceededException"},
+        {"shape":"BadRequestException"},
+        {"shape":"AccessDeniedException"}
+      ],
+      "documentation":"<p>Lists the tags for an API Portal resource. One of the three basic tagging operations generated for Tagris integration (ListTagsForResource / TagResource / UntagResource).</p>",
+      "readonly":true
+    },
+    "PutDiscoveryConfiguration":{
+      "name":"PutDiscoveryConfiguration",
+      "http":{
+        "method":"PUT",
+        "requestUri":"/discovery-configuration",
+        "responseCode":200
+      },
+      "input":{"shape":"PutDiscoveryConfigurationRequest"},
+      "output":{"shape":"PutDiscoveryConfigurationResponse"},
+      "errors":[
+        {"shape":"LimitExceededException"},
+        {"shape":"BadRequestException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Creates or updates the discovery configuration</p>",
+      "idempotent":true
+    },
+    "PutOrganizationDiscoveryConfiguration":{
+      "name":"PutOrganizationDiscoveryConfiguration",
+      "http":{
+        "method":"PUT",
+        "requestUri":"/org-discovery-configuration",
+        "responseCode":200
+      },
+      "input":{"shape":"PutOrganizationDiscoveryConfigurationRequest"},
+      "output":{"shape":"PutOrganizationDiscoveryConfigurationResponse"},
+      "errors":[
+        {"shape":"ConflictException"},
+        {"shape":"LimitExceededException"},
+        {"shape":"BadRequestException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Creates or updates the organization-wide discovery configuration. This is a singleton per organization. Only the organization management account and registered delegated administrators may call this operation.</p>",
+      "idempotent":true
+    },
+    "PutProductSharingPolicy":{
+      "name":"PutProductSharingPolicy",
+      "http":{
+        "method":"PUT",
+        "requestUri":"/products/{productId}/sharingpolicy",
+        "responseCode":200
+      },
+      "input":{"shape":"PutProductSharingPolicyRequest"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"LimitExceededException"},
+        {"shape":"BadRequestException"},
+        {"shape":"AccessDeniedException"}
+      ],
+      "documentation":"<p>Creates or replaces the sharing policy of a product. The policy controls which other accounts can read the product.</p>",
+      "idempotent":true
+    },
+    "StartDiscovery":{
+      "name":"StartDiscovery",
+      "http":{
+        "method":"POST",
+        "requestUri":"/discovery/start",
+        "responseCode":200
+      },
+      "input":{"shape":"StartDiscoveryRequest"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ConflictException"},
+        {"shape":"BadRequestException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Starts the API discovery process.</p>"
+    },
+    "StopDiscovery":{
+      "name":"StopDiscovery",
+      "http":{
+        "method":"POST",
+        "requestUri":"/discovery/stop",
+        "responseCode":200
+      },
+      "input":{"shape":"StopDiscoveryRequest"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ConflictException"},
+        {"shape":"BadRequestException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Stops the running API discovery process.</p>"
+    },
+    "TagResource":{
+      "name":"TagResource",
+      "http":{
+        "method":"POST",
+        "requestUri":"/tags/{resourceArn}",
+        "responseCode":204
+      },
+      "input":{"shape":"TagResourceRequest"},
+      "output":{"shape":"TagResourceResponse"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"LimitExceededException"},
+        {"shape":"BadRequestException"},
+        {"shape":"AccessDeniedException"}
+      ],
+      "documentation":"<p>Adds or updates tags on an API Portal resource. One of the three basic tagging operations generated for Tagris integration (ListTagsForResource / TagResource / UntagResource).</p>"
+    },
+    "UntagResource":{
+      "name":"UntagResource",
+      "http":{
+        "method":"DELETE",
+        "requestUri":"/tags/{resourceArn}",
+        "responseCode":204
+      },
+      "input":{"shape":"UntagResourceRequest"},
+      "output":{"shape":"UntagResourceResponse"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"LimitExceededException"},
+        {"shape":"BadRequestException"},
+        {"shape":"AccessDeniedException"}
+      ],
+      "documentation":"<p>Removes tags from an API Portal resource. One of the three basic tagging operations generated for Tagris integration (ListTagsForResource / TagResource / UntagResource).</p> <p>tagKeys is a query string parameter: for tag-based access control (TBAC/ABAC) to work correctly, API Gateway requires the keys to be removed to be passed as a query string parameter.</p>",
+      "idempotent":true
+    },
+    "UpdatePortal":{
+      "name":"UpdatePortal",
+      "http":{
+        "method":"PATCH",
+        "requestUri":"/portals/{portalId}",
+        "responseCode":200
+      },
+      "input":{"shape":"UpdatePortalRequest"},
+      "output":{"shape":"UpdatePortalResponse"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ConflictException"},
+        {"shape":"LimitExceededException"},
+        {"shape":"BadRequestException"},
+        {"shape":"AccessDeniedException"}
+      ],
+      "documentation":"<p>Updates a portal. Only the fields supplied in the request are changed.</p>"
+    },
+    "UpdatePortalPublishStatus":{
+      "name":"UpdatePortalPublishStatus",
+      "http":{
+        "method":"POST",
+        "requestUri":"/portals/{portalId}/publish",
+        "responseCode":202
+      },
+      "input":{"shape":"UpdatePortalPublishStatusRequest"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ConflictException"},
+        {"shape":"LimitExceededException"},
+        {"shape":"BadRequestException"},
+        {"shape":"AccessDeniedException"}
+      ],
+      "documentation":"<p>Publishes or disables a portal. The change runs asynchronously. Use GetPortal to track <code>publishStatus</code>.</p>"
+    },
+    "UpdateProduct":{
+      "name":"UpdateProduct",
+      "http":{
+        "method":"PATCH",
+        "requestUri":"/products/{productId}",
+        "responseCode":200
+      },
+      "input":{"shape":"UpdateProductRequest"},
+      "output":{"shape":"UpdateProductResponse"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"LimitExceededException"},
+        {"shape":"BadRequestException"},
+        {"shape":"AccessDeniedException"}
+      ],
+      "documentation":"<p>Updates a product. Only the fields supplied in the request are changed.</p>"
+    },
+    "UpdateProductApiPage":{
+      "name":"UpdateProductApiPage",
+      "http":{
+        "method":"PATCH",
+        "requestUri":"/products/{productId}/apipages/{productApiPageId}",
+        "responseCode":200
+      },
+      "input":{"shape":"UpdateProductApiPageRequest"},
+      "output":{"shape":"UpdateProductApiPageResponse"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"LimitExceededException"},
+        {"shape":"BadRequestException"},
+        {"shape":"AccessDeniedException"}
+      ],
+      "documentation":"<p>Updates an API page. Only the fields supplied in the request are changed.</p>",
+      "idempotent":true
+    },
+    "UpdateProductPage":{
+      "name":"UpdateProductPage",
+      "http":{
+        "method":"PATCH",
+        "requestUri":"/products/{productId}/productpages/{productPageId}",
+        "responseCode":200
+      },
+      "input":{"shape":"UpdateProductPageRequest"},
+      "output":{"shape":"UpdateProductPageResponse"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"LimitExceededException"},
+        {"shape":"BadRequestException"},
+        {"shape":"AccessDeniedException"}
+      ],
+      "documentation":"<p>Updates a product page.</p>",
+      "idempotent":true
+    }
+  },
+  "shapes":{
+    "ACMManaged":{
+      "type":"structure",
+      "required":[
+        "domainName",
+        "certificateArn"
+      ],
+      "members":{
+        "domainName":{
+          "shape":"PortalDomainName",
+          "documentation":"<p>The custom domain name for the portal.</p>"
+        },
+        "certificateArn":{
+          "shape":"CertificateArn",
+          "documentation":"<p>The ARN of the ACM certificate for the domain. The certificate must be in us-east-1, issued, not private, and must cover the domain name.</p>"
+        }
+      },
+      "documentation":"<p>A custom domain for the portal and the ACM certificate that covers it.</p>"
+    },
+    "AccessDeniedException":{
+      "type":"structure",
+      "required":["message"],
+      "members":{
+        "message":{"shape":"String"}
+      },
+      "documentation":"<p>You do not have permission to perform this operation.</p>",
+      "error":{
+        "httpStatusCode":403,
+        "senderFault":true
+      },
+      "exception":true
+    },
+    "AccountId":{
+      "type":"string",
+      "pattern":"[0-9]{12}"
+    },
+    "AccountIdList":{
+      "type":"list",
+      "member":{"shape":"AccountId"},
+      "max":50,
+      "min":0
+    },
+    "ApiEndpoint":{
+      "type":"string",
+      "max":1024,
+      "min":1
+    },
+    "ApiId":{
+      "type":"structure",
+      "members":{
+        "identifierParts":{
+          "shape":"IdentifierParts",
+          "documentation":"<p>The resource, method, and path that identify the API.</p>"
+        }
+      },
+      "documentation":"<p>Identifies the API an API page documents.</p>"
+    },
+    "ApiInventoryFilters":{
+      "type":"structure",
+      "members":{
+        "discoverySource":{"shape":"DiscoverySource"},
+        "resourceArn":{
+          "shape":"ResourceArn",
+          "documentation":"<p>Return only APIs served by this resource.</p>"
+        }
+      },
+      "documentation":"<p>Filters for listing API inventory items. All supplied filters must match.</p>"
+    },
+    "ApiInventoryItem":{
+      "type":"structure",
+      "required":[
+        "method",
+        "host",
+        "port",
+        "path",
+        "accountId",
+        "resourceArn",
+        "region",
+        "discoverySource"
+      ],
+      "members":{
+        "method":{
+          "shape":"HttpMethod",
+          "documentation":"<p>The HTTP method of the API.</p>"
+        },
+        "host":{"shape":"Host"},
+        "port":{
+          "shape":"Integer",
+          "documentation":"<p>The port the API listens on, from 0 to 65535.</p>"
+        },
+        "path":{
+          "shape":"Path",
+          "documentation":"<p>The request path of the API.</p>"
+        },
+        "accountId":{
+          "shape":"AccountId",
+          "documentation":"<p>The AWS account ID that owns the API.</p>"
+        },
+        "resourceArn":{
+          "shape":"ResourceArn",
+          "documentation":"<p>The ARN of the resource that serves the API, such as an API Gateway stage or a load balancer.</p>"
+        },
+        "region":{
+          "shape":"String",
+          "documentation":"<p>The AWS Region the API was discovered in.</p>"
+        },
+        "discoverySource":{"shape":"DiscoverySource"},
+        "firstSeen":{
+          "shape":"Timestamp",
+          "documentation":"<p>When discovery first observed the API.</p>"
+        },
+        "lastSeen":{
+          "shape":"Timestamp",
+          "documentation":"<p>When discovery most recently observed the API.</p>"
+        },
+        "visibility":{"shape":"Visibility"},
+        "wafStatus":{"shape":"WafStatus"},
+        "classification":{"shape":"Classification"},
+        "managedBy":{"shape":"ManagedBy"},
+        "workloads":{
+          "shape":"WorkloadList",
+          "documentation":"<p>AI protocols seen in this API's traffic, each listed at most once. Absent when none has been reported, which includes an account that has not enabled AI discovery.</p>"
+        }
+      },
+      "documentation":"<p>An API found by discovery.</p>"
+    },
+    "ApiInventoryItemDetail":{
+      "type":"structure",
+      "required":[
+        "method",
+        "host",
+        "port",
+        "path",
+        "accountId",
+        "resourceArn",
+        "region",
+        "discoverySource"
+      ],
+      "members":{
+        "method":{
+          "shape":"HttpMethod",
+          "documentation":"<p>The HTTP method of the API.</p>"
+        },
+        "host":{"shape":"Host"},
+        "port":{
+          "shape":"Integer",
+          "documentation":"<p>The port the API listens on, from 0 to 65535.</p>"
+        },
+        "path":{
+          "shape":"Path",
+          "documentation":"<p>The request path of the API.</p>"
+        },
+        "accountId":{
+          "shape":"AccountId",
+          "documentation":"<p>The AWS account ID that owns the API.</p>"
+        },
+        "resourceArn":{
+          "shape":"ResourceArn",
+          "documentation":"<p>The ARN of the resource that serves the API, such as an API Gateway stage or a load balancer.</p>"
+        },
+        "region":{
+          "shape":"String",
+          "documentation":"<p>The AWS Region the API was discovered in.</p>"
+        },
+        "discoverySource":{"shape":"DiscoverySource"},
+        "visibility":{"shape":"Visibility"},
+        "wafStatus":{"shape":"WafStatus"},
+        "classification":{"shape":"Classification"},
+        "managedBy":{"shape":"ManagedBy"},
+        "workloads":{
+          "shape":"WorkloadList",
+          "documentation":"<p>AI protocols seen in this API's traffic, each listed at most once. Absent when none has been reported, which includes an account that has not enabled AI discovery.</p>"
+        },
+        "managedApiId":{
+          "shape":"ManagedApiId",
+          "documentation":"<p>The identifier of the Managed API created from this API. Absent if there is none.</p>"
+        }
+      },
+      "documentation":"<p>The full details of an API found by discovery.</p>"
+    },
+    "ApiInventoryItemList":{
+      "type":"list",
+      "member":{"shape":"ApiInventoryItem"}
+    },
+    "ApiPageBody":{
+      "type":"string",
+      "max":32768,
+      "min":1
+    },
+    "ApiPageDisplayContent":{
+      "type":"structure",
+      "members":{
+        "none":{
+          "shape":"None",
+          "documentation":"<p>Use the content generated from the Managed API.</p>"
+        },
+        "overrides":{
+          "shape":"DisplayContentOverrides",
+          "documentation":"<p>Replace the generated content with your own.</p>"
+        }
+      },
+      "documentation":"<p>Exactly one of the members is set: <code>none</code> to use default display content, or <code>overrides</code> to customize it. Modeled as a union so the &quot;exactly one&quot; choice is enforced by type.</p>",
+      "union":true
+    },
+    "ApiPageDisplayContentResponse":{
+      "type":"structure",
+      "required":["apiUrl"],
+      "members":{
+        "operationName":{
+          "shape":"OperationName",
+          "documentation":"<p>The operation name shown as the page title.</p>"
+        },
+        "apiUrl":{
+          "shape":"ApiEndpoint",
+          "documentation":"<p>The invoke URL shown on the page and used by Try-It.</p>"
+        },
+        "body":{
+          "shape":"ApiPageBody",
+          "documentation":"<p>The Markdown body of the page. Absent while the page is <code>IN_PROGRESS</code>.</p>"
+        }
+      },
+      "documentation":"<p>The content shown on an API page.</p>"
+    },
+    "ApiSelectionConfiguration":{
+      "type":"structure",
+      "required":["apiSelectionMode"],
+      "members":{
+        "apiSelectionMode":{"shape":"ApiSelectionMode"},
+        "ruleFilters":{
+          "shape":"RuleFilterList",
+          "documentation":"<p>Required for RULE_BASED, rejected for CUSTOM. Filters are combined with AND, the values within one filter with OR, and evaluated only over the account's Managed APIs. Replaced as a whole on update, not merged.</p>"
+        }
+      },
+      "documentation":"<p>How Managed APIs are selected for a product. With <code>CUSTOM</code>, you associate APIs yourself. With <code>RULE_BASED</code>, the APIs that match <code>ruleFilters</code> are selected.</p>"
+    },
+    "ApiSelectionMode":{
+      "type":"string",
+      "documentation":"<p>How a product's member Managed APIs are chosen. CUSTOM - the customer associates and disassociates Managed APIs explicitly. RULE_BASED - membership is derived from ruleFilters: every Managed API in the account that matches is associated, and nothing else is. BatchAssociateManagedApi and BatchDisassociateManagedApi are rejected for these products.</p> <p>Fixed at create time. UpdateProduct cannot change the mode of an existing product.</p>",
+      "enum":[
+        "CUSTOM",
+        "RULE_BASED"
+      ]
+    },
+    "ApiSignature":{
+      "type":"structure",
+      "required":[
+        "resourceArn",
+        "method",
+        "hostname",
+        "port",
+        "path"
+      ],
+      "members":{
+        "resourceArn":{
+          "shape":"ResourceArn",
+          "documentation":"<p>The ARN of the resource that serves the API.</p>"
+        },
+        "method":{
+          "shape":"HttpMethod",
+          "documentation":"<p>The HTTP method of the API.</p>"
+        },
+        "hostname":{
+          "shape":"ApiSignatureHostnameString",
+          "documentation":"<p>The host name the API is served on.</p>"
+        },
+        "port":{
+          "shape":"ApiSignaturePortInteger",
+          "documentation":"<p>The port the API listens on, from 0 to 65535.</p>"
+        },
+        "path":{
+          "shape":"ApiSignaturePathString",
+          "documentation":"<p>The request path of the API.</p>"
+        }
+      },
+      "documentation":"<p>The attributes that identify an API.</p>"
+    },
+    "ApiSignatureHostnameString":{
+      "type":"string",
+      "max":256,
+      "min":1
+    },
+    "ApiSignaturePathString":{
+      "type":"string",
+      "max":4096,
+      "min":1
+    },
+    "ApiSignaturePortInteger":{
+      "type":"integer",
+      "box":true,
+      "max":65535,
+      "min":0
+    },
+    "AppClientId":{
+      "type":"string",
+      "max":128,
+      "min":1,
+      "pattern":"[\\w+]+"
+    },
+    "AssociateManagedApisRequest":{
+      "type":"structure",
+      "required":[
+        "productId",
+        "managedApiIds"
+      ],
+      "members":{
+        "productId":{
+          "shape":"ProductId",
+          "documentation":"<p>The identifier of the product to associate the Managed APIs with.</p>",
+          "location":"uri",
+          "locationName":"productId"
+        },
+        "managedApiIds":{"shape":"ManagedApiIdList"}
+      }
+    },
+    "AssociateManagedApisResponse":{
+      "type":"structure",
+      "required":["failedItems"],
+      "members":{
+        "failedItems":{
+          "shape":"FailedManagedApiItemList",
+          "documentation":"<p>The Managed APIs that could not be processed. IDs not listed here succeeded.</p>"
+        }
+      }
+    },
+    "Authorization":{
+      "type":"structure",
+      "required":[
+        "authorizationConfig",
+        "fineGrainedAccessControl"
+      ],
+      "members":{
+        "authorizationConfig":{"shape":"AuthorizationConfig"},
+        "fineGrainedAccessControl":{
+          "shape":"FineGrainedAccessControl",
+          "documentation":"<p>Whether access to individual products in the portal is controlled per reader.</p>"
+        }
+      },
+      "documentation":"<p>How readers sign in to a portal.</p>"
+    },
+    "AuthorizationConfig":{
+      "type":"structure",
+      "members":{
+        "none":{
+          "shape":"None",
+          "documentation":"<p>The portal is public and readers do not sign in.</p>"
+        },
+        "cognitoConfig":{
+          "shape":"CognitoConfig",
+          "documentation":"<p>Readers sign in through an Amazon Cognito user pool.</p>"
+        }
+      },
+      "documentation":"<p>Exactly one of the members is set: <code>none</code> for no authorization, or <code>cognitoConfig</code> for Cognito. Modeled as a union so the &quot;exactly one&quot; choice is enforced by type.</p>",
+      "union":true
+    },
+    "BadRequestException":{
+      "type":"structure",
+      "required":["message"],
+      "members":{
+        "message":{"shape":"String"}
+      },
+      "documentation":"<p>The request is not valid. The message identifies the field or value that failed validation.</p>",
+      "error":{
+        "httpStatusCode":400,
+        "senderFault":true
+      },
+      "exception":true
+    },
+    "Boolean":{
+      "type":"boolean",
+      "box":true
+    },
+    "CertificateArn":{
+      "type":"string",
+      "max":2048,
+      "min":10,
+      "pattern":"arn:aws[a-z\\-]*:acm:[a-z0-9\\-]+:[0-9]{12}:certificate/[a-zA-Z0-9\\-]+"
+    },
+    "Classification":{
+      "type":"string",
+      "documentation":"<p>Whether any account has created a ManagedApi for a discovered API, and for a managed API whether it is unused or no longer in the caller's organization. SHADOW - no account has created a ManagedApi for this item. MANAGED - some account in the caller's organization has created a ManagedApi for this item. MANAGED_ZOMBIE - managed and unused: no traffic for at least the account's no-traffic window. The API is still reachable, so this clears once traffic resumes. MANAGED_ORPHANED - managed, but the account hosting the API has left the caller's organization or been closed. The item is a last-known snapshot: it is no longer rediscovered, and its findings are not authorized for the caller. An organizational unit move is not a trigger.</p> <p>MANAGED_ZOMBIE and MANAGED_ORPHANED add detail to a MANAGED item, so neither is returned for an item the caller does not manage, and MANAGED_ORPHANED takes priority over MANAGED_ZOMBIE. Both are derived per request rather than stored, so neither expires on its own.</p>",
+      "enum":[
+        "SHADOW",
+        "MANAGED",
+        "MANAGED_ZOMBIE",
+        "MANAGED_ORPHANED"
+      ]
+    },
+    "CognitoConfig":{
+      "type":"structure",
+      "required":[
+        "userPoolArn",
+        "appClientId",
+        "userPoolDomain"
+      ],
+      "members":{
+        "userPoolArn":{
+          "shape":"UserPoolArn",
+          "documentation":"<p>The ARN of the Cognito user pool.</p>"
+        },
+        "appClientId":{
+          "shape":"AppClientId",
+          "documentation":"<p>The ID of the user pool app client the portal uses.</p>"
+        },
+        "userPoolDomain":{
+          "shape":"UserPoolDomain",
+          "documentation":"<p>The domain of the user pool's hosted sign-in pages.</p>"
+        },
+        "identityPoolId":{
+          "shape":"IdentityPoolId",
+          "documentation":"<p>The ID of the Cognito identity pool. Required only for fine-grained access control.</p>"
+        }
+      },
+      "documentation":"<p>The Amazon Cognito resources readers use to sign in to a portal.</p>"
+    },
+    "Color":{
+      "type":"string",
+      "max":16,
+      "min":1
+    },
+    "Confidence":{
+      "type":"string",
+      "documentation":"<p>Confidence tier of a detection.</p>",
+      "enum":[
+        "LOW",
+        "MEDIUM",
+        "HIGH"
+      ]
+    },
+    "ConflictException":{
+      "type":"structure",
+      "required":["message"],
+      "members":{
+        "message":{"shape":"String"}
+      },
+      "documentation":"<p>The request conflicts with the current state of the resource, for example because another operation on it is still in progress.</p>",
+      "error":{
+        "httpStatusCode":409,
+        "senderFault":true
+      },
+      "exception":true
+    },
+    "Contents":{
+      "type":"list",
+      "member":{"shape":"Section"},
+      "documentation":"<p>Sections in a product's navigation. No service-side limit exists today; this bound caps request size.</p>",
+      "max":100,
+      "min":0
+    },
+    "CreateManagedApiRequest":{
+      "type":"structure",
+      "required":["apiSignature"],
+      "members":{
+        "apiSignature":{
+          "shape":"ApiSignature",
+          "documentation":"<p>The resource, method, host, port, and path that identify the API.</p>"
+        },
+        "tags":{"shape":"Tags"}
+      }
+    },
+    "CreateManagedApiResponse":{
+      "type":"structure",
+      "required":[
+        "managedApiId",
+        "managedApiArn",
+        "apiSignature",
+        "createdAt",
+        "updatedAt"
+      ],
+      "members":{
+        "managedApiId":{
+          "shape":"ManagedApiId",
+          "documentation":"<p>The identifier of the Managed API.</p>"
+        },
+        "managedApiArn":{
+          "shape":"ManagedApiArn",
+          "documentation":"<p>The ARN of the Managed API.</p>"
+        },
+        "apiSignature":{
+          "shape":"ApiSignature",
+          "documentation":"<p>The attributes that identify the API.</p>"
+        },
+        "createdAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>When the resource was created.</p>"
+        },
+        "updatedAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>When the resource was last updated.</p>"
+        },
+        "tags":{"shape":"Tags"}
+      }
+    },
+    "CreatePortalPreviewRequest":{
+      "type":"structure",
+      "required":["portalId"],
+      "members":{
+        "portalId":{
+          "shape":"PortalId",
+          "documentation":"<p>The identifier of the portal.</p>",
+          "location":"uri",
+          "locationName":"portalId"
+        }
+      }
+    },
+    "CreatePortalRequest":{
+      "type":"structure",
+      "required":[
+        "portalContent",
+        "endpointConfiguration",
+        "authorization"
+      ],
+      "members":{
+        "portalContent":{
+          "shape":"PortalContent",
+          "documentation":"<p>The portal's display name, description, and theme.</p>"
+        },
+        "endpointConfiguration":{"shape":"EndpointConfigurationRequest"},
+        "authorization":{
+          "shape":"Authorization",
+          "documentation":"<p>How readers sign in to the portal, and whether fine-grained access control is on.</p>"
+        },
+        "includedProductArns":{
+          "shape":"IncludedProductArns",
+          "documentation":"<p>The ARNs of the products the portal includes, up to 200.</p>"
+        },
+        "logoUri":{
+          "shape":"LogoUri",
+          "documentation":"<p>The S3 location of the portal logo, in the form <code>s3://bucket/key</code>.</p>"
+        },
+        "rumAppMonitorName":{
+          "shape":"RUMAppMonitorName",
+          "documentation":"<p>The name of the CloudWatch RUM app monitor that collects reader telemetry for the portal.</p>"
+        },
+        "tags":{"shape":"Tags"}
+      }
+    },
+    "CreatePortalResponse":{
+      "type":"structure",
+      "required":[
+        "portalId",
+        "portalArn",
+        "endpointConfiguration",
+        "authorization",
+        "portalContent",
+        "includedProductArns",
+        "updatedAt"
+      ],
+      "members":{
+        "portalId":{
+          "shape":"PortalId",
+          "documentation":"<p>The identifier of the portal.</p>"
+        },
+        "portalArn":{
+          "shape":"PortalArn",
+          "documentation":"<p>The ARN of the portal.</p>"
+        },
+        "endpointConfiguration":{
+          "shape":"EndpointConfigurationResponse",
+          "documentation":"<p>The domain configuration of the portal.</p>"
+        },
+        "authorization":{
+          "shape":"Authorization",
+          "documentation":"<p>How readers sign in to the portal, and whether fine-grained access control is on.</p>"
+        },
+        "portalContent":{
+          "shape":"PortalContent",
+          "documentation":"<p>The portal's display name, description, and theme.</p>"
+        },
+        "includedProductArns":{
+          "shape":"IncludedProductArns",
+          "documentation":"<p>The ARNs of the products the portal includes.</p>"
+        },
+        "publishStatus":{
+          "shape":"PublishStatus",
+          "documentation":"<p>The publish status of the portal. Absent if the portal has never been published.</p>"
+        },
+        "statusException":{"shape":"PortalStatusException"},
+        "updatedAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>When the resource was last updated.</p>"
+        },
+        "publishedAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>When the portal was last published.</p>"
+        },
+        "publishDescription":{
+          "shape":"PublishDescription",
+          "documentation":"<p>The description supplied with the most recent publish request.</p>"
+        },
+        "rumAppMonitorName":{
+          "shape":"RUMAppMonitorName",
+          "documentation":"<p>The name of the CloudWatch RUM app monitor that collects reader telemetry for the portal.</p>"
+        },
+        "tags":{"shape":"Tags"}
+      }
+    },
+    "CreateProductApiPageRequest":{
+      "type":"structure",
+      "required":[
+        "productId",
+        "managedApiId"
+      ],
+      "members":{
+        "productId":{
+          "shape":"ProductId",
+          "documentation":"<p>The identifier of the product.</p>",
+          "location":"uri",
+          "locationName":"productId"
+        },
+        "managedApiId":{
+          "shape":"ManagedApiId",
+          "documentation":"<p>The Managed API this page documents. It must already be associated with the product, and the page's API identifier is taken from the Managed API rather than supplied by the caller.</p>"
+        },
+        "displayContent":{"shape":"ApiPageDisplayContent"},
+        "tryItState":{
+          "shape":"TryItState",
+          "documentation":"<p>Whether readers can call the API from the page with Try-It. Defaults to <code>DISABLED</code>. To enable it, the page's API URL must use HTTPS on a domain that supports Try-It.</p>"
+        },
+        "tags":{"shape":"Tags"}
+      }
+    },
+    "CreateProductApiPageResponse":{
+      "type":"structure",
+      "required":[
+        "productApiPageId",
+        "productApiPageArn",
+        "apiId",
+        "displayContent",
+        "tryItState",
+        "updatedAt",
+        "status"
+      ],
+      "members":{
+        "productApiPageId":{
+          "shape":"ProductApiPageId",
+          "documentation":"<p>The identifier of the API page.</p>"
+        },
+        "productApiPageArn":{
+          "shape":"ProductApiPageArn",
+          "documentation":"<p>The ARN of the API page.</p>"
+        },
+        "apiId":{
+          "shape":"ApiId",
+          "documentation":"<p>The API the page documents.</p>"
+        },
+        "displayContent":{
+          "shape":"ApiPageDisplayContentResponse",
+          "documentation":"<p>The content shown on the page.</p>"
+        },
+        "tryItState":{
+          "shape":"TryItState",
+          "documentation":"<p>Whether Try-It is enabled on the page.</p>"
+        },
+        "updatedAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>When the resource was last updated.</p>"
+        },
+        "status":{
+          "shape":"Status",
+          "documentation":"<p>The status of the page content: <code>IN_PROGRESS</code> while it is generated, then <code>AVAILABLE</code> or <code>FAILED</code>.</p>"
+        },
+        "statusException":{"shape":"ProductApiPageStatusException"},
+        "tags":{"shape":"Tags"}
+      }
+    },
+    "CreateProductPageRequest":{
+      "type":"structure",
+      "required":[
+        "productId",
+        "displayContent"
+      ],
+      "members":{
+        "productId":{
+          "shape":"ProductId",
+          "documentation":"<p>The identifier of the product.</p>",
+          "location":"uri",
+          "locationName":"productId"
+        },
+        "displayContent":{
+          "shape":"DisplayContent",
+          "documentation":"<p>The title and body of the page.</p>"
+        },
+        "tags":{"shape":"Tags"}
+      }
+    },
+    "CreateProductPageResponse":{
+      "type":"structure",
+      "required":[
+        "productPageId",
+        "productPageArn",
+        "updatedAt"
+      ],
+      "members":{
+        "productPageId":{
+          "shape":"ProductPageId",
+          "documentation":"<p>The identifier of the product page.</p>"
+        },
+        "productPageArn":{
+          "shape":"ProductPageArn",
+          "documentation":"<p>The ARN of the product page.</p>"
+        },
+        "displayContent":{
+          "shape":"DisplayContent",
+          "documentation":"<p>The title and body of the page.</p>"
+        },
+        "updatedAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>When the resource was last updated.</p>"
+        },
+        "tags":{"shape":"Tags"}
+      }
+    },
+    "CreateProductRequest":{
+      "type":"structure",
+      "required":["displayName"],
+      "members":{
+        "displayName":{
+          "shape":"ProductName",
+          "documentation":"<p>The name of the product, from 1 to 255 characters.</p>"
+        },
+        "description":{
+          "shape":"ProductDescription",
+          "documentation":"<p>A description of the product, up to 1024 characters.</p>"
+        },
+        "tags":{"shape":"Tags"},
+        "apiSelectionConfiguration":{
+          "shape":"ApiSelectionConfiguration",
+          "documentation":"<p>How Managed APIs are selected for the product. The selection mode can't be changed after the product is created.</p>"
+        }
+      }
+    },
+    "CreateProductResponse":{
+      "type":"structure",
+      "required":[
+        "productId",
+        "productArn",
+        "displayName",
+        "updatedAt"
+      ],
+      "members":{
+        "productId":{
+          "shape":"ProductId",
+          "documentation":"<p>The identifier of the product.</p>"
+        },
+        "productArn":{
+          "shape":"ProductArn",
+          "documentation":"<p>The ARN of the product.</p>"
+        },
+        "displayName":{
+          "shape":"ProductName",
+          "documentation":"<p>The name of the product, from 1 to 255 characters.</p>"
+        },
+        "displayOrder":{
+          "shape":"DisplayOrder",
+          "documentation":"<p>The order of the product's pages and API page sections in the portal navigation.</p>"
+        },
+        "description":{
+          "shape":"ProductDescription",
+          "documentation":"<p>A description of the product, up to 1024 characters.</p>"
+        },
+        "updatedAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>When the resource was last updated.</p>"
+        },
+        "tags":{"shape":"Tags"},
+        "apiSelectionConfiguration":{
+          "shape":"ApiSelectionConfiguration",
+          "documentation":"<p>How Managed APIs are selected for the product.</p>"
+        },
+        "status":{"shape":"ProductStatus"},
+        "failureReason":{"shape":"ProductFailureReason"}
+      }
+    },
+    "CustomColors":{
+      "type":"structure",
+      "required":[
+        "backgroundColor",
+        "navigationColor",
+        "headerColor",
+        "textColor",
+        "accentColor",
+        "errorValidationColor"
+      ],
+      "members":{
+        "backgroundColor":{
+          "shape":"Color",
+          "documentation":"<p>The page background color.</p>"
+        },
+        "navigationColor":{
+          "shape":"Color",
+          "documentation":"<p>The navigation pane color.</p>"
+        },
+        "headerColor":{
+          "shape":"Color",
+          "documentation":"<p>The header color.</p>"
+        },
+        "textColor":{
+          "shape":"Color",
+          "documentation":"<p>The text color.</p>"
+        },
+        "accentColor":{
+          "shape":"Color",
+          "documentation":"<p>The color of links, buttons, and other highlighted elements.</p>"
+        },
+        "errorValidationColor":{
+          "shape":"Color",
+          "documentation":"<p>The color of error and validation messages.</p>"
+        }
+      },
+      "documentation":"<p>The colors of a portal. Each value is a color string of up to 16 characters.</p>"
+    },
+    "DeleteDiscoveryConfigurationRequest":{
+      "type":"structure",
+      "members":{}
+    },
+    "DeleteManagedApiRequest":{
+      "type":"structure",
+      "required":["managedApiId"],
+      "members":{
+        "managedApiId":{
+          "shape":"ManagedApiId",
+          "documentation":"<p>The identifier of the Managed API.</p>",
+          "location":"uri",
+          "locationName":"managedApiId"
+        }
+      }
+    },
+    "DeleteManagedApiResponse":{
+      "type":"structure",
+      "members":{}
+    },
+    "DeleteOrganizationDiscoveryConfigurationRequest":{
+      "type":"structure",
+      "members":{}
+    },
+    "DeletePortalRequest":{
+      "type":"structure",
+      "required":["portalId"],
+      "members":{
+        "portalId":{
+          "shape":"PortalId",
+          "documentation":"<p>The identifier of the portal.</p>",
+          "location":"uri",
+          "locationName":"portalId"
+        }
+      }
+    },
+    "DeleteProductApiPageRequest":{
+      "type":"structure",
+      "required":[
+        "productId",
+        "productApiPageId"
+      ],
+      "members":{
+        "productId":{
+          "shape":"ProductId",
+          "documentation":"<p>The identifier of the product.</p>",
+          "location":"uri",
+          "locationName":"productId"
+        },
+        "productApiPageId":{
+          "shape":"ProductApiPageId",
+          "documentation":"<p>The identifier of the API page.</p>",
+          "location":"uri",
+          "locationName":"productApiPageId"
+        }
+      }
+    },
+    "DeleteProductPageRequest":{
+      "type":"structure",
+      "required":[
+        "productId",
+        "productPageId"
+      ],
+      "members":{
+        "productId":{
+          "shape":"ProductId",
+          "documentation":"<p>The identifier of the product.</p>",
+          "location":"uri",
+          "locationName":"productId"
+        },
+        "productPageId":{
+          "shape":"ProductPageId",
+          "documentation":"<p>The identifier of the product page.</p>",
+          "location":"uri",
+          "locationName":"productPageId"
+        }
+      }
+    },
+    "DeleteProductRequest":{
+      "type":"structure",
+      "required":["productId"],
+      "members":{
+        "productId":{
+          "shape":"ProductId",
+          "documentation":"<p>The identifier of the product.</p>",
+          "location":"uri",
+          "locationName":"productId"
+        }
+      }
+    },
+    "DeleteProductSharingPolicyRequest":{
+      "type":"structure",
+      "required":["productId"],
+      "members":{
+        "productId":{
+          "shape":"ProductId",
+          "documentation":"<p>The identifier of the product.</p>",
+          "location":"uri",
+          "locationName":"productId"
+        }
+      }
+    },
+    "DesiredPublishStatus":{
+      "type":"string",
+      "documentation":"<p>The terminal publish state a caller can request for a portal via UpdatePortalPublishStatus. Only the two client-requestable targets are modeled here; the transient and failed states in PublishStatus are set by the service and are not valid caller input.</p>",
+      "enum":[
+        "PUBLISHED",
+        "DISABLED"
+      ]
+    },
+    "DisassociateManagedApisRequest":{
+      "type":"structure",
+      "required":[
+        "productId",
+        "managedApiIds"
+      ],
+      "members":{
+        "productId":{
+          "shape":"ProductId",
+          "documentation":"<p>The identifier of the product to disassociate the Managed APIs from.</p>",
+          "location":"uri",
+          "locationName":"productId"
+        },
+        "managedApiIds":{"shape":"ManagedApiIdList"}
+      }
+    },
+    "DisassociateManagedApisResponse":{
+      "type":"structure",
+      "required":["failedItems"],
+      "members":{
+        "failedItems":{
+          "shape":"FailedManagedApiItemList",
+          "documentation":"<p>The Managed APIs that could not be processed. IDs not listed here succeeded.</p>"
+        }
+      }
+    },
+    "DiscoveryConfigurationArn":{
+      "type":"string",
+      "max":1011,
+      "min":20,
+      "pattern":"arn:aws[a-z\\-]*:apiportal:[a-z0-9\\-]*:[0-9]{12}:discoveryconfiguration"
+    },
+    "DiscoveryConfigurationData":{
+      "type":"structure",
+      "required":["arn"],
+      "members":{
+        "arn":{
+          "shape":"DiscoveryConfigurationArn",
+          "documentation":"<p>The ARN of the discovery configuration.</p>"
+        },
+        "status":{
+          "shape":"DiscoveryConfigurationStatus",
+          "documentation":"<p>The current status of the discovery configuration.</p>"
+        },
+        "discoverySources":{
+          "shape":"DiscoverySourceList",
+          "documentation":"<p>The sources APIs are discovered from.</p>"
+        },
+        "excludedResources":{
+          "shape":"ResourceArnList",
+          "documentation":"<p>The ARNs of resources left out of discovery.</p>"
+        },
+        "features":{
+          "shape":"DiscoveryFeatureList",
+          "documentation":"<p>Optional capabilities enabled for this configuration. Absent when none are.</p>"
+        },
+        "createdAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>When the resource was created.</p>"
+        },
+        "updatedAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>When the resource was last updated.</p>"
+        }
+      },
+      "documentation":"<p>An account-level discovery configuration.</p>"
+    },
+    "DiscoveryConfigurationStatus":{
+      "type":"string",
+      "enum":[
+        "DISABLED",
+        "ENABLED",
+        "UPDATING"
+      ]
+    },
+    "DiscoveryExclusionFilters":{
+      "type":"structure",
+      "members":{
+        "organizationalUnitIds":{
+          "shape":"OrganizationalUnitIdList",
+          "documentation":"<p>List of organizational unit IDs to exclude from discovery.</p>"
+        },
+        "accountIds":{
+          "shape":"AccountIdList",
+          "documentation":"<p>List of AWS account IDs to exclude from discovery.</p>"
+        },
+        "resourceArns":{
+          "shape":"ResourceArnList",
+          "documentation":"<p>List of resource ARNs to exclude. Only ELB and CloudFront resource ARNs are supported.</p>"
+        }
+      },
+      "documentation":"<p>Exclusion filters for organization-scoped discovery. Resources matching any of these filters are excluded from discovery.</p>"
+    },
+    "DiscoveryFailureReason":{
+      "type":"string",
+      "documentation":"<p>Machine-readable reason discovery failed for a given account/service, present only when <code>status</code> is <code>FAILED</code>. Clients should branch recovery logic off this enum rather than parsing <code>message</code>, whose text is informational and may change. New reasons may be added over time, so clients MUST treat any unrecognized value as <code>UNKNOWN</code> and fall back to generic handling.</p>",
+      "enum":[
+        "ACCESS_DENIED",
+        "DEPENDENCY_ERROR",
+        "THROTTLED",
+        "INVALID_CONFIGURATION",
+        "INTERNAL_ERROR"
+      ]
+    },
+    "DiscoveryFeature":{
+      "type":"string",
+      "documentation":"<p>An optional discovery capability, enabled per discovery configuration. AI_DISCOVERY - also identify AI protocols (MCP, LLM, A2A) in each API's traffic and report them as the API's workloads.</p>",
+      "enum":["AI_DISCOVERY"]
+    },
+    "DiscoveryFeatureList":{
+      "type":"list",
+      "member":{"shape":"DiscoveryFeature"}
+    },
+    "DiscoveryInclusionFilters":{
+      "type":"structure",
+      "members":{
+        "organizationalUnitIds":{
+          "shape":"OrganizationalUnitIdList",
+          "documentation":"<p>List of organizational unit IDs to include in discovery.</p>"
+        },
+        "accountIds":{
+          "shape":"AccountIdList",
+          "documentation":"<p>List of AWS account IDs to include in discovery.</p>"
+        }
+      },
+      "documentation":"<p>Inclusion filters for organization-scoped discovery. Only Resources matching any of these filters are included in discovery.</p>"
+    },
+    "DiscoverySource":{
+      "type":"string",
+      "documentation":"<p>The AWS service that is the SOURCE of discovered APIs — i.e. the front-door service type whose resources discovery crawls to find APIs. New source services may be added over time, so clients MUST treat any unrecognized value gracefully.</p>",
+      "enum":[
+        "API_GATEWAY",
+        "ELB",
+        "CLOUDFRONT"
+      ]
+    },
+    "DiscoverySourceList":{
+      "type":"list",
+      "member":{"shape":"DiscoverySource"}
+    },
+    "DiscoveryStatus":{
+      "type":"structure",
+      "required":[
+        "discoverySource",
+        "status"
+      ],
+      "members":{
+        "accountId":{
+          "shape":"AccountId",
+          "documentation":"<p>The AWS account ID the status applies to.</p>"
+        },
+        "discoverySource":{"shape":"DiscoverySource"},
+        "status":{
+          "shape":"DiscoveryStatusValue",
+          "documentation":"<p>The current state of discovery for this source.</p>"
+        },
+        "failureReason":{
+          "shape":"DiscoveryFailureReason",
+          "documentation":"<p>Typed reason for failure, present only when <code>status</code> is <code>FAILED</code></p>"
+        }
+      },
+      "documentation":"<p>The state of API discovery for one discovery source.</p>"
+    },
+    "DiscoveryStatusList":{
+      "type":"list",
+      "member":{"shape":"DiscoveryStatus"}
+    },
+    "DiscoveryStatusValue":{
+      "type":"string",
+      "enum":[
+        "STOPPED",
+        "PROVISIONING",
+        "RUNNING",
+        "FAILED"
+      ]
+    },
+    "DisplayContent":{
+      "type":"structure",
+      "required":[
+        "title",
+        "body"
+      ],
+      "members":{
+        "title":{
+          "shape":"PageTitle",
+          "documentation":"<p>The page title, from 1 to 255 characters.</p>"
+        },
+        "body":{
+          "shape":"PageBody",
+          "documentation":"<p>The Markdown body of the page, from 1 to 32,768 characters.</p>"
+        }
+      },
+      "documentation":"<p>The content of a product page.</p>"
+    },
+    "DisplayContentOverrides":{
+      "type":"structure",
+      "members":{
+        "operationName":{
+          "shape":"OperationName",
+          "documentation":"<p>The operation name shown as the page title, from 1 to 255 characters.</p>"
+        },
+        "apiUrl":{
+          "shape":"DisplayContentOverridesApiUrlString",
+          "documentation":"<p>The invoke URL shown on the page and used for Try-It and the portal's allowed-domain list: http(s)://host[:port][/path], with no whitespace, quotes or angle brackets. On this request member only, as ApiEndpoint is also returned in responses.</p>"
+        },
+        "body":{
+          "shape":"ApiPageBody",
+          "documentation":"<p>The Markdown body of the page, from 1 to 32,768 characters.</p>"
+        }
+      },
+      "documentation":"<p>Content that replaces the defaults generated for an API page.</p>"
+    },
+    "DisplayContentOverridesApiUrlString":{
+      "type":"string",
+      "max":1024,
+      "min":1,
+      "pattern":"https?://[A-Za-z0-9.-]+(:[0-9]{1,5})?(/[^\\s<>\"'`]*)?"
+    },
+    "DisplayOrder":{
+      "type":"structure",
+      "members":{
+        "overviewPageArn":{
+          "shape":"ProductPageArn",
+          "documentation":"<p>The ARN of the product page shown as the product overview.</p>"
+        },
+        "productPageArns":{"shape":"ProductPageArnList"},
+        "contents":{"shape":"Contents"}
+      },
+      "documentation":"<p>The order of a product's content in the portal navigation.</p>"
+    },
+    "EndpointConfigurationRequest":{
+      "type":"structure",
+      "members":{
+        "none":{
+          "shape":"None",
+          "documentation":"<p>Serve the portal only on its default domain.</p>"
+        },
+        "acmManaged":{
+          "shape":"ACMManaged",
+          "documentation":"<p>Serve the portal on your own domain, using a certificate from AWS Certificate Manager.</p>"
+        }
+      },
+      "documentation":"<p>Exactly one of the members is set: <code>none</code> for no custom domain, or <code>acmManaged</code> to bring a domain + ACM certificate. Modeled as a union so the &quot;exactly one&quot; choice is enforced by type.</p>",
+      "union":true
+    },
+    "EndpointConfigurationResponse":{
+      "type":"structure",
+      "required":[
+        "portalDomainHostedZoneId",
+        "portalDefaultDomainName"
+      ],
+      "members":{
+        "domainName":{
+          "shape":"PortalDomainName",
+          "documentation":"<p>The custom domain name of the portal. Absent if the portal has no custom domain.</p>"
+        },
+        "certificateArn":{
+          "shape":"CertificateArn",
+          "documentation":"<p>The ARN of the ACM certificate for the custom domain. Absent if the portal has no custom domain.</p>"
+        },
+        "portalDomainHostedZoneId":{
+          "shape":"HostedZoneId",
+          "documentation":"<p>The ID of the hosted zone for the portal's distribution. Use it to create an alias record for a custom domain.</p>"
+        },
+        "portalDefaultDomainName":{
+          "shape":"PortalDomainName",
+          "documentation":"<p>The default domain name assigned to the portal.</p>"
+        }
+      },
+      "documentation":"<p>The domains a portal is served on.</p>"
+    },
+    "EventId":{
+      "type":"string",
+      "documentation":"<p>Identifier of a security event. Opaque; the key that will be used if we implement the GetManagedApiEvent drill-in.</p>",
+      "max":128,
+      "min":1,
+      "pattern":"[a-z0-9\\-]+"
+    },
+    "EventStatus":{
+      "type":"string",
+      "documentation":"<p>Lifecycle status of a security event.</p>",
+      "enum":[
+        "EVENT_STARTED",
+        "EVENT_IN_PROGRESS",
+        "EVENT_ENDED"
+      ]
+    },
+    "EventType":{
+      "type":"string",
+      "documentation":"<p>The kind of security event surfaced for a managed API. Only WAF_API_SECURITY events are returned today; kept as a discriminator so additional per-API event categories can be added later without reshaping the summary.</p>",
+      "enum":["WAF_API_SECURITY"]
+    },
+    "FailedItemErrorCode":{
+      "type":"string",
+      "documentation":"<p>Machine-readable reason a Managed API ID couldn't be processed in a batch call. Clients should key retry logic off this enum rather than parsing errorMessage.</p>",
+      "enum":[
+        "MANAGED_API_NOT_FOUND",
+        "INTERNAL_ERROR"
+      ]
+    },
+    "FailedManagedApiItem":{
+      "type":"structure",
+      "required":[
+        "managedApiId",
+        "errorCode",
+        "errorMessage"
+      ],
+      "members":{
+        "managedApiId":{
+          "shape":"ManagedApiId",
+          "documentation":"<p>The identifier of the Managed API that could not be processed.</p>"
+        },
+        "errorCode":{"shape":"FailedItemErrorCode"},
+        "errorMessage":{
+          "shape":"FailedManagedApiItemErrorMessageString",
+          "documentation":"<p>A description of the failure.</p>"
+        }
+      },
+      "documentation":"<p>One entry per Managed API ID that could not be processed in a batch call. Ids that succeed are omitted from the response — callers infer success by absence.</p>"
+    },
+    "FailedManagedApiItemErrorMessageString":{
+      "type":"string",
+      "max":1024,
+      "min":0
+    },
+    "FailedManagedApiItemList":{
+      "type":"list",
+      "member":{"shape":"FailedManagedApiItem"}
+    },
+    "FindingReason":{
+      "type":"string",
+      "documentation":"<p>Why a posture is not satisfied, or why no verdict was reached. Present only when <code>postureStatus</code> is <code>FALSE</code> or <code>INSUFFICIENT_DATA</code>. New reasons may be added over time, so clients MUST treat any unrecognized value as <code>UNKNOWN</code> and fall back to generic handling.</p>",
+      "enum":[
+        "AUTHENTICATION_NOT_CONFIGURED",
+        "REQUEST_VALIDATION_NOT_ENABLED",
+        "API_KEY_NOT_CONFIGURED",
+        "THROTTLING_NOT_ENABLED",
+        "THROTTLING_RATE_LIMIT_NOT_SET",
+        "THROTTLING_BURST_LIMIT_NOT_SET",
+        "RESPONSE_CACHING_NOT_ENABLED",
+        "STAGE_WAF_NOT_ASSOCIATED",
+        "STAGE_ACCESS_LOGGING_NOT_ENABLED",
+        "PRIVATE_API_RESOURCE_POLICY_MISSING",
+        "REST_API_TLS_BELOW_1_2",
+        "LOAD_BALANCER_WAF_NOT_ASSOCIATED",
+        "LISTENER_TLS_BELOW_1_2",
+        "DISTRIBUTION_TLS_BELOW_1_2",
+        "DISTRIBUTION_WAF_NOT_ASSOCIATED",
+        "DISTRIBUTION_SERVES_PLAINTEXT_HTTP",
+        "DISTRIBUTION_ACCESS_LOGGING_NOT_ENABLED",
+        "GEO_RESTRICTION_NOT_CONFIGURED",
+        "UNKNOWN"
+      ]
+    },
+    "FineGrainedAccessControl":{
+      "type":"string",
+      "enum":[
+        "ENABLED",
+        "DISABLED"
+      ]
+    },
+    "GetApiInventoryItemRequest":{
+      "type":"structure",
+      "required":[
+        "method",
+        "host",
+        "port",
+        "path",
+        "resourceArn"
+      ],
+      "members":{
+        "method":{
+          "shape":"HttpMethod",
+          "documentation":"<p>The HTTP method of the API.</p>",
+          "location":"querystring",
+          "locationName":"method"
+        },
+        "host":{
+          "shape":"Host",
+          "location":"querystring",
+          "locationName":"host"
+        },
+        "port":{
+          "shape":"GetApiInventoryItemRequestPortInteger",
+          "documentation":"<p>The port the API listens on, from 0 to 65535.</p>",
+          "location":"querystring",
+          "locationName":"port"
+        },
+        "path":{
+          "shape":"Path",
+          "documentation":"<p>The request path of the API.</p>",
+          "location":"querystring",
+          "locationName":"path"
+        },
+        "resourceArn":{
+          "shape":"ResourceArn",
+          "documentation":"<p>The ARN of the resource that serves the API, such as an API Gateway stage or a load balancer.</p>",
+          "location":"querystring",
+          "locationName":"resourceArn"
+        }
+      }
+    },
+    "GetApiInventoryItemRequestPortInteger":{
+      "type":"integer",
+      "box":true,
+      "max":65535,
+      "min":0
+    },
+    "GetApiInventoryItemResponse":{
+      "type":"structure",
+      "required":["item"],
+      "members":{
+        "item":{
+          "shape":"ApiInventoryItemDetail",
+          "documentation":"<p>The details of the API inventory item.</p>"
+        }
+      }
+    },
+    "GetDiscoveryConfigurationRequest":{
+      "type":"structure",
+      "members":{}
+    },
+    "GetDiscoveryConfigurationResponse":{
+      "type":"structure",
+      "required":["discoveryConfiguration"],
+      "members":{
+        "discoveryConfiguration":{
+          "shape":"DiscoveryConfigurationData",
+          "documentation":"<p>The discovery configuration for the account.</p>"
+        },
+        "tags":{"shape":"Tags"}
+      }
+    },
+    "GetManagedApiRequest":{
+      "type":"structure",
+      "required":["managedApiId"],
+      "members":{
+        "managedApiId":{
+          "shape":"ManagedApiId",
+          "documentation":"<p>The identifier of the Managed API.</p>",
+          "location":"uri",
+          "locationName":"managedApiId"
+        }
+      }
+    },
+    "GetManagedApiResponse":{
+      "type":"structure",
+      "required":[
+        "managedApiId",
+        "managedApiArn",
+        "apiSignature",
+        "createdAt",
+        "updatedAt"
+      ],
+      "members":{
+        "managedApiId":{
+          "shape":"ManagedApiId",
+          "documentation":"<p>The identifier of the Managed API.</p>"
+        },
+        "managedApiArn":{
+          "shape":"ManagedApiArn",
+          "documentation":"<p>The ARN of the Managed API.</p>"
+        },
+        "apiSignature":{
+          "shape":"ApiSignature",
+          "documentation":"<p>The attributes that identify the API.</p>"
+        },
+        "createdAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>When the resource was created.</p>"
+        },
+        "updatedAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>When the resource was last updated.</p>"
+        },
+        "findings":{
+          "shape":"ManagedApiFindingList",
+          "documentation":"<p>The security posture findings for the API, up to 100.</p>"
+        },
+        "tags":{"shape":"Tags"}
+      }
+    },
+    "GetOrganizationDiscoveryConfigurationRequest":{
+      "type":"structure",
+      "members":{}
+    },
+    "GetOrganizationDiscoveryConfigurationResponse":{
+      "type":"structure",
+      "required":["discoveryConfiguration"],
+      "members":{
+        "discoveryConfiguration":{
+          "shape":"OrganizationDiscoveryConfigurationData",
+          "documentation":"<p>The discovery configuration for the organization.</p>"
+        },
+        "tags":{"shape":"Tags"}
+      }
+    },
+    "GetPortalRequest":{
+      "type":"structure",
+      "required":["portalId"],
+      "members":{
+        "portalId":{
+          "shape":"PortalId",
+          "documentation":"<p>The identifier of the portal.</p>",
+          "location":"uri",
+          "locationName":"portalId"
+        }
+      }
+    },
+    "GetPortalResponse":{
+      "type":"structure",
+      "required":[
+        "portalId",
+        "portalArn",
+        "endpointConfiguration",
+        "authorization",
+        "portalContent",
+        "includedProductArns",
+        "updatedAt"
+      ],
+      "members":{
+        "portalId":{
+          "shape":"PortalId",
+          "documentation":"<p>The identifier of the portal.</p>"
+        },
+        "portalArn":{
+          "shape":"PortalArn",
+          "documentation":"<p>The ARN of the portal.</p>"
+        },
+        "endpointConfiguration":{
+          "shape":"EndpointConfigurationResponse",
+          "documentation":"<p>The domain configuration of the portal.</p>"
+        },
+        "authorization":{
+          "shape":"Authorization",
+          "documentation":"<p>How readers sign in to the portal, and whether fine-grained access control is on.</p>"
+        },
+        "portalContent":{
+          "shape":"PortalContent",
+          "documentation":"<p>The portal's display name, description, and theme.</p>"
+        },
+        "includedProductArns":{
+          "shape":"IncludedProductArns",
+          "documentation":"<p>The ARNs of the products the portal includes.</p>"
+        },
+        "publishStatus":{
+          "shape":"PublishStatus",
+          "documentation":"<p>The publish status of the portal. Absent if the portal has never been published.</p>"
+        },
+        "statusException":{"shape":"PortalStatusException"},
+        "updatedAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>When the resource was last updated.</p>"
+        },
+        "publishedAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>When the portal was last published.</p>"
+        },
+        "publishDescription":{
+          "shape":"PublishDescription",
+          "documentation":"<p>The description supplied with the most recent publish request.</p>"
+        },
+        "rumAppMonitorName":{
+          "shape":"RUMAppMonitorName",
+          "documentation":"<p>The name of the CloudWatch RUM app monitor that collects reader telemetry for the portal.</p>"
+        },
+        "preview":{
+          "shape":"Preview",
+          "documentation":"<p>The most recent preview of the portal. Absent if no preview has been created.</p>"
+        },
+        "tags":{"shape":"Tags"}
+      }
+    },
+    "GetProductApiPageRequest":{
+      "type":"structure",
+      "required":[
+        "productId",
+        "productApiPageId"
+      ],
+      "members":{
+        "productId":{
+          "shape":"ProductId",
+          "documentation":"<p>The identifier of the product.</p>",
+          "location":"uri",
+          "locationName":"productId"
+        },
+        "productApiPageId":{
+          "shape":"ProductApiPageId",
+          "documentation":"<p>The identifier of the API page.</p>",
+          "location":"uri",
+          "locationName":"productApiPageId"
+        },
+        "resourceOwnerAccountId":{
+          "shape":"AccountId",
+          "documentation":"<p>The AWS account ID that owns the product. Supply it to read a product shared with you by another account. Omit it for products in your own account.</p>",
+          "location":"querystring",
+          "locationName":"resourceOwnerAccountId"
+        },
+        "includeRawDisplayContent":{
+          "shape":"Boolean",
+          "documentation":"<p>Set to <code>true</code> to also return the page body in <code>rawDisplayContent</code>.</p>",
+          "location":"querystring",
+          "locationName":"includeRawDisplayContent"
+        }
+      }
+    },
+    "GetProductApiPageResponse":{
+      "type":"structure",
+      "required":[
+        "productApiPageId",
+        "productApiPageArn",
+        "apiId",
+        "displayContent",
+        "tryItState",
+        "updatedAt",
+        "status"
+      ],
+      "members":{
+        "productApiPageId":{
+          "shape":"ProductApiPageId",
+          "documentation":"<p>The identifier of the API page.</p>"
+        },
+        "productApiPageArn":{
+          "shape":"ProductApiPageArn",
+          "documentation":"<p>The ARN of the API page.</p>"
+        },
+        "apiId":{
+          "shape":"ApiId",
+          "documentation":"<p>The API the page documents.</p>"
+        },
+        "displayContent":{
+          "shape":"ApiPageDisplayContentResponse",
+          "documentation":"<p>The content shown on the page.</p>"
+        },
+        "tryItState":{
+          "shape":"TryItState",
+          "documentation":"<p>Whether Try-It is enabled on the page.</p>"
+        },
+        "updatedAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>When the resource was last updated.</p>"
+        },
+        "status":{
+          "shape":"Status",
+          "documentation":"<p>The status of the page content: <code>IN_PROGRESS</code> while it is generated, then <code>AVAILABLE</code> or <code>FAILED</code>.</p>"
+        },
+        "rawDisplayContent":{
+          "shape":"String",
+          "documentation":"<p>The Markdown body of the page. Returned only when <code>includeRawDisplayContent</code> is <code>true</code>.</p>"
+        },
+        "statusException":{"shape":"ProductApiPageStatusException"},
+        "tags":{"shape":"Tags"}
+      }
+    },
+    "GetProductPageRequest":{
+      "type":"structure",
+      "required":[
+        "productId",
+        "productPageId"
+      ],
+      "members":{
+        "productId":{
+          "shape":"ProductId",
+          "documentation":"<p>The identifier of the product.</p>",
+          "location":"uri",
+          "locationName":"productId"
+        },
+        "productPageId":{
+          "shape":"ProductPageId",
+          "documentation":"<p>The identifier of the product page.</p>",
+          "location":"uri",
+          "locationName":"productPageId"
+        },
+        "resourceOwnerAccountId":{
+          "shape":"AccountId",
+          "documentation":"<p>The AWS account ID that owns the product. Supply it to read a product shared with you by another account. Omit it for products in your own account.</p>",
+          "location":"querystring",
+          "locationName":"resourceOwnerAccountId"
+        }
+      }
+    },
+    "GetProductPageResponse":{
+      "type":"structure",
+      "required":[
+        "productPageId",
+        "productPageArn",
+        "displayContent",
+        "updatedAt"
+      ],
+      "members":{
+        "productPageId":{
+          "shape":"ProductPageId",
+          "documentation":"<p>The identifier of the product page.</p>"
+        },
+        "productPageArn":{
+          "shape":"ProductPageArn",
+          "documentation":"<p>The ARN of the product page.</p>"
+        },
+        "displayContent":{
+          "shape":"DisplayContent",
+          "documentation":"<p>The title and body of the page.</p>"
+        },
+        "updatedAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>When the resource was last updated.</p>"
+        },
+        "tags":{"shape":"Tags"}
+      }
+    },
+    "GetProductRequest":{
+      "type":"structure",
+      "required":["productId"],
+      "members":{
+        "productId":{
+          "shape":"ProductId",
+          "documentation":"<p>The identifier of the product.</p>",
+          "location":"uri",
+          "locationName":"productId"
+        },
+        "resourceOwnerAccountId":{
+          "shape":"AccountId",
+          "documentation":"<p>The AWS account ID that owns the product. Supply it to read a product shared with you by another account. Omit it for products in your own account.</p>",
+          "location":"querystring",
+          "locationName":"resourceOwnerAccountId"
+        }
+      }
+    },
+    "GetProductResponse":{
+      "type":"structure",
+      "required":[
+        "productId",
+        "productArn",
+        "displayName",
+        "displayOrder",
+        "description",
+        "updatedAt"
+      ],
+      "members":{
+        "productId":{
+          "shape":"ProductId",
+          "documentation":"<p>The identifier of the product.</p>"
+        },
+        "productArn":{
+          "shape":"ProductArn",
+          "documentation":"<p>The ARN of the product.</p>"
+        },
+        "displayName":{
+          "shape":"ProductName",
+          "documentation":"<p>The name of the product, from 1 to 255 characters.</p>"
+        },
+        "displayOrder":{
+          "shape":"DisplayOrder",
+          "documentation":"<p>The order of the product's pages and API page sections in the portal navigation.</p>"
+        },
+        "description":{
+          "shape":"ProductDescription",
+          "documentation":"<p>A description of the product, up to 1024 characters.</p>"
+        },
+        "updatedAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>When the resource was last updated.</p>"
+        },
+        "tags":{"shape":"Tags"},
+        "apiSelectionConfiguration":{
+          "shape":"ApiSelectionConfiguration",
+          "documentation":"<p>How Managed APIs are selected for the product.</p>"
+        },
+        "status":{"shape":"ProductStatus"},
+        "failureReason":{"shape":"ProductFailureReason"}
+      }
+    },
+    "GetProductSharingPolicyRequest":{
+      "type":"structure",
+      "required":["productId"],
+      "members":{
+        "productId":{
+          "shape":"ProductId",
+          "documentation":"<p>The identifier of the product.</p>",
+          "location":"uri",
+          "locationName":"productId"
+        }
+      }
+    },
+    "GetProductSharingPolicyResponse":{
+      "type":"structure",
+      "required":[
+        "productId",
+        "policyDocument"
+      ],
+      "members":{
+        "productId":{
+          "shape":"ProductId",
+          "documentation":"<p>The identifier of the product.</p>"
+        },
+        "policyDocument":{
+          "shape":"PolicyDocument",
+          "documentation":"<p>The sharing policy as a JSON resource policy document.</p>"
+        },
+        "tags":{"shape":"Tags"}
+      }
+    },
+    "Host":{
+      "type":"string",
+      "documentation":"<p>A discovered API's front-door hostname (e.g. an ALB, CloudFront, or API Gateway DNS name), bounded by the DNS name limit (RFC 1035). Usually literal, but may contain placeholders: &lt;<em>&gt; - stands for one dot-separated part of the hostname. When 10 or more hosts differ only in that part, they fold into one, e.g. a.example.com, b.example.com, ... become &quot;&lt;</em>&gt;.example.com&quot;. Deeper levels fold the same way (&quot;&lt;<em>&gt;.&lt;</em>&gt;.example.com&quot;). The registrable domain never folds. <ip> - an IP-literal host.</p>",
+      "max":253,
+      "min":1,
+      "pattern":"[A-Za-z0-9.<>*-]+"
+    },
+    "HostedZoneId":{
+      "type":"string",
+      "max":64,
+      "min":1
+    },
+    "HttpMethod":{
+      "type":"string",
+      "enum":[
+        "GET",
+        "POST",
+        "PUT",
+        "DELETE",
+        "PATCH",
+        "ANY",
+        "HEAD",
+        "OPTIONS"
+      ]
+    },
+    "IdentifierParts":{
+      "type":"structure",
+      "required":[
+        "path",
+        "method",
+        "resourceArn"
+      ],
+      "members":{
+        "path":{
+          "shape":"Path",
+          "documentation":"<p>The request path of the API.</p>"
+        },
+        "method":{
+          "shape":"Method",
+          "documentation":"<p>The HTTP method of the API.</p>"
+        },
+        "resourceArn":{
+          "shape":"ResourceArn",
+          "documentation":"<p>The ARN of the resource that serves the API.</p>"
+        }
+      },
+      "documentation":"<p>The parts that together identify an API.</p>"
+    },
+    "IdentityPoolId":{
+      "type":"string",
+      "max":64,
+      "min":1,
+      "pattern":"[\\w-]+:[0-9a-f-]+"
+    },
+    "IncludedProductArns":{
+      "type":"list",
+      "member":{"shape":"ProductArn"},
+      "max":200,
+      "min":0
+    },
+    "Integer":{
+      "type":"integer",
+      "box":true
+    },
+    "InternalServerException":{
+      "type":"structure",
+      "required":["message"],
+      "members":{
+        "message":{"shape":"String"}
+      },
+      "documentation":"<p>The service encountered an internal error. Try the request again.</p>",
+      "error":{"httpStatusCode":500},
+      "exception":true,
+      "fault":true
+    },
+    "LimitExceededException":{
+      "type":"structure",
+      "required":["message"],
+      "members":{
+        "message":{"shape":"String"}
+      },
+      "documentation":"<p>The request rate or a service quota was exceeded. Reduce the request rate or the number of resources and try again.</p>",
+      "error":{
+        "httpStatusCode":429,
+        "senderFault":true
+      },
+      "exception":true
+    },
+    "ListApiInventoryItemsRequest":{
+      "type":"structure",
+      "members":{
+        "filters":{
+          "shape":"ApiInventoryFilters",
+          "documentation":"<p>Filters that limit the results. Omit it to list every discovered API.</p>"
+        },
+        "maxResults":{
+          "shape":"MaxResults",
+          "documentation":"<p>The maximum number of results to return in one page, from 1 to 100.</p>"
+        },
+        "nextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>The pagination token returned by a previous call. Omit it to get the first page.</p>"
+        }
+      }
+    },
+    "ListApiInventoryItemsResponse":{
+      "type":"structure",
+      "required":["items"],
+      "members":{
+        "items":{
+          "shape":"ApiInventoryItemList",
+          "documentation":"<p>The discovered APIs in this page of results.</p>"
+        },
+        "nextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>The token to pass in the next request to get the next page. Absent when there are no more results.</p>"
+        }
+      }
+    },
+    "ListDiscoveryStatusesRequest":{
+      "type":"structure",
+      "members":{
+        "discoverySource":{
+          "shape":"DiscoverySource",
+          "location":"querystring",
+          "locationName":"discoverySource"
+        },
+        "maxResults":{
+          "shape":"MaxResults",
+          "documentation":"<p>The maximum number of results to return in one page, from 1 to 100.</p>",
+          "location":"querystring",
+          "locationName":"maxResults"
+        },
+        "nextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>The pagination token returned by a previous call. Omit it to get the first page.</p>",
+          "location":"querystring",
+          "locationName":"nextToken"
+        }
+      }
+    },
+    "ListDiscoveryStatusesResponse":{
+      "type":"structure",
+      "required":["items"],
+      "members":{
+        "items":{
+          "shape":"DiscoveryStatusList",
+          "documentation":"<p>The discovery status for each account and discovery source.</p>"
+        },
+        "nextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>The token to pass in the next request to get the next page. Absent when there are no more results.</p>"
+        }
+      }
+    },
+    "ListManagedApiEventsRequest":{
+      "type":"structure",
+      "required":["managedApiId"],
+      "members":{
+        "managedApiId":{
+          "shape":"ManagedApiId",
+          "documentation":"<p>The identifier of the Managed API.</p>",
+          "location":"uri",
+          "locationName":"managedApiId"
+        },
+        "startedAfter":{
+          "shape":"Timestamp",
+          "documentation":"<p>Inclusive lower bound on each event's start time; only events that started at or after this time are returned. Optional; defaults to 30 days before the current time.</p>",
+          "location":"querystring",
+          "locationName":"startedAfter"
+        },
+        "startedBefore":{
+          "shape":"Timestamp",
+          "documentation":"<p>Exclusive upper bound on each event's start time; only events that started before this time are returned. Optional; defaults to the current time.</p>",
+          "location":"querystring",
+          "locationName":"startedBefore"
+        },
+        "maxResults":{
+          "shape":"ManagedApiEventMaxResults",
+          "documentation":"<p>The maximum number of results to return in one page, from 1 to 20.</p>",
+          "location":"querystring",
+          "locationName":"maxResults"
+        },
+        "nextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>The pagination token returned by a previous call. Omit it to get the first page.</p>",
+          "location":"querystring",
+          "locationName":"nextToken"
+        }
+      }
+    },
+    "ListManagedApiEventsResponse":{
+      "type":"structure",
+      "required":["items"],
+      "members":{
+        "items":{"shape":"ManagedApiEventSummaryList"},
+        "nextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>The token to pass in the next request to get the next page. Absent when there are no more results.</p>"
+        }
+      }
+    },
+    "ListManagedApisRequest":{
+      "type":"structure",
+      "members":{
+        "maxResults":{
+          "shape":"MaxResults",
+          "documentation":"<p>The maximum number of results to return in one page, from 1 to 100.</p>",
+          "location":"querystring",
+          "locationName":"maxResults"
+        },
+        "nextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>The pagination token returned by a previous call. Omit it to get the first page.</p>",
+          "location":"querystring",
+          "locationName":"nextToken"
+        },
+        "productId":{
+          "shape":"ProductId",
+          "documentation":"<p>Optional filter: when supplied, only Managed APIs associated with this product are returned.</p>",
+          "location":"querystring",
+          "locationName":"productId"
+        }
+      }
+    },
+    "ListManagedApisResponse":{
+      "type":"structure",
+      "required":["items"],
+      "members":{
+        "nextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>The token to pass in the next request to get the next page. Absent when there are no more results.</p>"
+        },
+        "items":{
+          "shape":"ManagedApiList",
+          "documentation":"<p>The Managed APIs in this page of results.</p>"
+        }
+      }
+    },
+    "ListPortalsRequest":{
+      "type":"structure",
+      "members":{
+        "maxResults":{
+          "shape":"MaxResults",
+          "documentation":"<p>The maximum number of results to return in one page, from 1 to 100.</p>",
+          "location":"querystring",
+          "locationName":"maxResults"
+        },
+        "nextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>The pagination token returned by a previous call. Omit it to get the first page.</p>",
+          "location":"querystring",
+          "locationName":"nextToken"
+        }
+      }
+    },
+    "ListPortalsResponse":{
+      "type":"structure",
+      "members":{
+        "items":{
+          "shape":"PortalList",
+          "documentation":"<p>The portals in this page of results.</p>"
+        },
+        "nextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>The token to pass in the next request to get the next page. Absent when there are no more results.</p>"
+        }
+      }
+    },
+    "ListProductApiPagesRequest":{
+      "type":"structure",
+      "required":["productId"],
+      "members":{
+        "productId":{
+          "shape":"ProductId",
+          "documentation":"<p>The identifier of the product.</p>",
+          "location":"uri",
+          "locationName":"productId"
+        },
+        "nextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>The pagination token returned by a previous call. Omit it to get the first page.</p>",
+          "location":"querystring",
+          "locationName":"nextToken"
+        },
+        "maxResults":{
+          "shape":"MaxResults",
+          "documentation":"<p>The maximum number of results to return in one page, from 1 to 100.</p>",
+          "location":"querystring",
+          "locationName":"maxResults"
+        },
+        "resourceOwnerAccountId":{
+          "shape":"AccountId",
+          "documentation":"<p>The AWS account ID that owns the product. Supply it to read a product shared with you by another account. Omit it for products in your own account.</p>",
+          "location":"querystring",
+          "locationName":"resourceOwnerAccountId"
+        }
+      }
+    },
+    "ListProductApiPagesResponse":{
+      "type":"structure",
+      "required":["items"],
+      "members":{
+        "nextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>The token to pass in the next request to get the next page. Absent when there are no more results.</p>"
+        },
+        "items":{
+          "shape":"ProductApiPageList",
+          "documentation":"<p>The API pages in this page of results.</p>"
+        }
+      }
+    },
+    "ListProductPagesRequest":{
+      "type":"structure",
+      "required":["productId"],
+      "members":{
+        "productId":{
+          "shape":"ProductId",
+          "documentation":"<p>The identifier of the product.</p>",
+          "location":"uri",
+          "locationName":"productId"
+        },
+        "nextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>The pagination token returned by a previous call. Omit it to get the first page.</p>",
+          "location":"querystring",
+          "locationName":"nextToken"
+        },
+        "maxResults":{
+          "shape":"MaxResults",
+          "documentation":"<p>The maximum number of results to return in one page, from 1 to 100.</p>",
+          "location":"querystring",
+          "locationName":"maxResults"
+        },
+        "resourceOwnerAccountId":{
+          "shape":"AccountId",
+          "documentation":"<p>The AWS account ID that owns the product. Supply it to read a product shared with you by another account. Omit it for products in your own account.</p>",
+          "location":"querystring",
+          "locationName":"resourceOwnerAccountId"
+        }
+      }
+    },
+    "ListProductPagesResponse":{
+      "type":"structure",
+      "required":["items"],
+      "members":{
+        "nextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>The token to pass in the next request to get the next page. Absent when there are no more results.</p>"
+        },
+        "items":{
+          "shape":"ProductPageList",
+          "documentation":"<p>The product pages in this page of results.</p>"
+        }
+      }
+    },
+    "ListProductsRequest":{
+      "type":"structure",
+      "members":{
+        "maxResults":{
+          "shape":"MaxResults",
+          "documentation":"<p>The maximum number of results to return in one page, from 1 to 100.</p>",
+          "location":"querystring",
+          "locationName":"maxResults"
+        },
+        "nextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>The pagination token returned by a previous call. Omit it to get the first page.</p>",
+          "location":"querystring",
+          "locationName":"nextToken"
+        },
+        "resourceOwner":{
+          "shape":"ResourceOwner",
+          "documentation":"<p>Whose products to return: <code>SELF</code> for your own, <code>OTHER_ACCOUNTS</code> for products shared with you, or <code>ALL</code>. Defaults to <code>ALL</code>, or to <code>SELF</code> when <code>managedApiId</code> is supplied.</p>",
+          "location":"querystring",
+          "locationName":"resourceOwner"
+        },
+        "managedApiId":{
+          "shape":"ManagedApiId",
+          "documentation":"<p>Optional filter: when supplied, only Products this Managed API is associated with are returned.</p>",
+          "location":"querystring",
+          "locationName":"managedApiId"
+        }
+      }
+    },
+    "ListProductsResponse":{
+      "type":"structure",
+      "members":{
+        "nextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>The token to pass in the next request to get the next page. Absent when there are no more results.</p>"
+        },
+        "items":{
+          "shape":"ProductList",
+          "documentation":"<p>The products in this page of results.</p>"
+        }
+      }
+    },
+    "ListTagsForResourceRequest":{
+      "type":"structure",
+      "required":["resourceArn"],
+      "members":{
+        "resourceArn":{
+          "shape":"ResourceArn",
+          "documentation":"<p>The ARN of the resource.</p>",
+          "location":"uri",
+          "locationName":"resourceArn"
+        }
+      }
+    },
+    "ListTagsForResourceResponse":{
+      "type":"structure",
+      "members":{
+        "tags":{"shape":"Tags"}
+      }
+    },
+    "LogoUri":{
+      "type":"string",
+      "max":1092,
+      "min":0,
+      "pattern":"(s3://[a-z0-9.\\-]+/[^/].*)?"
+    },
+    "ManagedApiArn":{
+      "type":"string",
+      "max":1011,
+      "min":20
+    },
+    "ManagedApiEventMaxResults":{
+      "type":"integer",
+      "box":true,
+      "max":20,
+      "min":1
+    },
+    "ManagedApiEventSummary":{
+      "type":"structure",
+      "required":["eventId"],
+      "members":{
+        "eventId":{
+          "shape":"EventId",
+          "documentation":"<p>Event identifier; row identity and input to GetManagedApiEvent.</p>"
+        },
+        "eventType":{
+          "shape":"EventType",
+          "documentation":"<p>Always WAF_API_SECURITY today.</p>"
+        },
+        "status":{"shape":"EventStatus"},
+        "wafApiSecurityEventDetail":{
+          "shape":"WafApiSecurityEventDetail",
+          "documentation":"<p>Detail specific to a WAF API-security event; populated when eventType is WAF_API_SECURITY.</p>"
+        },
+        "startedAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>When the event was first observed.</p>"
+        },
+        "endedAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>When the event completed; absent while it is still in progress.</p>"
+        },
+        "updatedAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>When the event was last updated.</p>"
+        }
+      },
+      "documentation":"<p>Summary of a single security event attributed to a managed API. This is the list view; full per-event detail will come from GetManagedApiEvent in future.</p>"
+    },
+    "ManagedApiEventSummaryList":{
+      "type":"list",
+      "member":{"shape":"ManagedApiEventSummary"},
+      "documentation":"<p>A page of security events for a managed API. Page size is bounded by the operation's maxResults; callers retrieve all events by following nextToken.</p>"
+    },
+    "ManagedApiFinding":{
+      "type":"structure",
+      "members":{
+        "postureId":{
+          "shape":"ManagedApiFindingPostureIdString",
+          "documentation":"<p>The identifier of the posture check that produced the finding.</p>"
+        },
+        "postureStatus":{"shape":"PostureStatus"},
+        "reason":{"shape":"FindingReason"},
+        "updatedAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>When the finding was last updated.</p>"
+        }
+      },
+      "documentation":"<p>Security posture finding attached to this API. Shape mirrors the inventory's Finding sub-document.</p>"
+    },
+    "ManagedApiFindingList":{
+      "type":"list",
+      "member":{"shape":"ManagedApiFinding"},
+      "max":100,
+      "min":0
+    },
+    "ManagedApiFindingPostureIdString":{
+      "type":"string",
+      "max":128,
+      "min":1
+    },
+    "ManagedApiId":{
+      "type":"string",
+      "max":30,
+      "min":10,
+      "pattern":"[a-z0-9]+"
+    },
+    "ManagedApiIdList":{
+      "type":"list",
+      "member":{"shape":"ManagedApiId"},
+      "documentation":"<p>Bounded list of Managed API IDs, used as the request payload for batch associate/disassociate.</p>",
+      "max":25,
+      "min":1
+    },
+    "ManagedApiList":{
+      "type":"list",
+      "member":{"shape":"ManagedApiSummary"}
+    },
+    "ManagedApiSummary":{
+      "type":"structure",
+      "required":[
+        "managedApiId",
+        "managedApiArn",
+        "apiSignature",
+        "createdAt",
+        "updatedAt"
+      ],
+      "members":{
+        "managedApiId":{
+          "shape":"ManagedApiId",
+          "documentation":"<p>The identifier of the Managed API.</p>"
+        },
+        "managedApiArn":{
+          "shape":"ManagedApiArn",
+          "documentation":"<p>The ARN of the Managed API.</p>"
+        },
+        "apiSignature":{
+          "shape":"ApiSignature",
+          "documentation":"<p>The attributes that identify the API.</p>"
+        },
+        "createdAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>When the resource was created.</p>"
+        },
+        "updatedAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>When the resource was last updated.</p>"
+        }
+      },
+      "documentation":"<p>A summary of a Managed API.</p>"
+    },
+    "ManagedBy":{
+      "type":"string",
+      "documentation":"<p>Who manages a MANAGED item, relative to the caller. Absent when the item is SHADOW. SELF - the caller account has created the ManagedApi. ORGANIZATION - some other account in the caller's organization has, but the caller has not.</p>",
+      "enum":[
+        "SELF",
+        "ORGANIZATION"
+      ]
+    },
+    "MaxResults":{
+      "type":"integer",
+      "box":true,
+      "max":100,
+      "min":1
+    },
+    "Message":{
+      "type":"string",
+      "max":2048,
+      "min":1
+    },
+    "Method":{
+      "type":"string",
+      "max":20,
+      "min":1
+    },
+    "NextToken":{
+      "type":"string",
+      "max":2048,
+      "min":1
+    },
+    "NonEmptyDiscoverySourceList":{
+      "type":"list",
+      "member":{"shape":"DiscoverySource"},
+      "min":1
+    },
+    "None":{
+      "type":"structure",
+      "members":{},
+      "documentation":"<p>An empty value, used in a union to choose the option that has no settings.</p>"
+    },
+    "OperationName":{
+      "type":"string",
+      "max":255,
+      "min":1
+    },
+    "OrgDiscoveryConfigurationArn":{
+      "type":"string",
+      "max":1011,
+      "min":20,
+      "pattern":"arn:aws[a-z\\-]*:apiportal:[a-z0-9\\-]*:[0-9]{12}:orgdiscoveryconfiguration"
+    },
+    "OrganizationDiscoveryConfigurationData":{
+      "type":"structure",
+      "required":["arn"],
+      "members":{
+        "arn":{
+          "shape":"OrgDiscoveryConfigurationArn",
+          "documentation":"<p>The ARN of the organization discovery configuration.</p>"
+        },
+        "status":{
+          "shape":"DiscoveryConfigurationStatus",
+          "documentation":"<p>The current status of the discovery configuration.</p>"
+        },
+        "discoverySources":{
+          "shape":"DiscoverySourceList",
+          "documentation":"<p>The sources APIs are discovered from.</p>"
+        },
+        "exclusionFilters":{
+          "shape":"DiscoveryExclusionFilters",
+          "documentation":"<p>Exclusion filters for organization-scoped discovery. @deprecated. Remove this once client (Console) moves to discoveryFilters</p>"
+        },
+        "discoveryFilters":{
+          "shape":"OrganizationDiscoveryFilters",
+          "documentation":"<p>The accounts or organizational units included in or excluded from discovery.</p>"
+        },
+        "features":{
+          "shape":"DiscoveryFeatureList",
+          "documentation":"<p>Optional capabilities enabled for this configuration. Absent when none are.</p>"
+        },
+        "createdAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>When the resource was created.</p>"
+        },
+        "updatedAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>When the resource was last updated.</p>"
+        }
+      },
+      "documentation":"<p>An organization-level discovery configuration.</p>"
+    },
+    "OrganizationDiscoveryFilters":{
+      "type":"structure",
+      "members":{
+        "exclusionFilters":{"shape":"DiscoveryExclusionFilters"},
+        "inclusionFilters":{"shape":"DiscoveryInclusionFilters"}
+      },
+      "documentation":"<p>Limits organization-scoped discovery. Set exactly one member: <code>inclusionFilters</code> to discover only the matching targets, or <code>exclusionFilters</code> to discover everything except them.</p>",
+      "union":true
+    },
+    "OrganizationalUnitId":{
+      "type":"string",
+      "max":68,
+      "min":1,
+      "pattern":"ou-[a-z0-9]{4,32}-[a-z0-9]{8,32}"
+    },
+    "OrganizationalUnitIdList":{
+      "type":"list",
+      "member":{"shape":"OrganizationalUnitId"},
+      "max":50,
+      "min":0
+    },
+    "PageBody":{
+      "type":"string",
+      "max":32768,
+      "min":1
+    },
+    "PageTitle":{
+      "type":"string",
+      "max":255,
+      "min":1
+    },
+    "Path":{
+      "type":"string",
+      "max":4096,
+      "min":1
+    },
+    "PolicyDocument":{
+      "type":"string",
+      "max":307200,
+      "min":1
+    },
+    "PortalArn":{
+      "type":"string",
+      "max":1011,
+      "min":20
+    },
+    "PortalContent":{
+      "type":"structure",
+      "required":[
+        "displayName",
+        "theme"
+      ],
+      "members":{
+        "displayName":{
+          "shape":"PortalName",
+          "documentation":"<p>The name shown in the portal, from 3 to 255 characters.</p>"
+        },
+        "description":{
+          "shape":"PortalDescription",
+          "documentation":"<p>A description of the portal, up to 1024 characters.</p>"
+        },
+        "theme":{
+          "shape":"PortalTheme",
+          "documentation":"<p>The colors and logo of the portal.</p>"
+        }
+      },
+      "documentation":"<p>The display settings of a portal.</p>"
+    },
+    "PortalDescription":{
+      "type":"string",
+      "max":1024,
+      "min":0
+    },
+    "PortalDomainName":{
+      "type":"string",
+      "max":256,
+      "min":3,
+      "pattern":"(([a-z0-9-]+\\.)+[a-z0-9-]+)"
+    },
+    "PortalId":{
+      "type":"string",
+      "max":30,
+      "min":10,
+      "pattern":"[a-z0-9]+"
+    },
+    "PortalList":{
+      "type":"list",
+      "member":{"shape":"PortalSummary"}
+    },
+    "PortalName":{
+      "type":"string",
+      "max":255,
+      "min":3
+    },
+    "PortalStatusException":{
+      "type":"structure",
+      "members":{
+        "exception":{"shape":"PortalStatusExceptionType"},
+        "message":{
+          "shape":"Message",
+          "documentation":"<p>A description of the failure.</p>"
+        }
+      },
+      "documentation":"<p>Failure detail attached to a Portal's publish/preview status: a typed reason plus an optional human-readable message.</p>"
+    },
+    "PortalStatusExceptionType":{
+      "type":"string",
+      "documentation":"<p>Treat any unrecognized value as INTERNAL_FAILURE.</p>",
+      "enum":[
+        "INTERNAL_FAILURE",
+        "UNSHARED_PRODUCT_EXCEPTION",
+        "CLOUDFRONT_DOMAIN_IN_USE",
+        "MISSING_CLOUDFRONT_PERMISSIONS"
+      ]
+    },
+    "PortalSummary":{
+      "type":"structure",
+      "required":[
+        "portalId",
+        "portalArn",
+        "endpointConfiguration",
+        "authorization",
+        "portalContent",
+        "includedProductArns",
+        "updatedAt"
+      ],
+      "members":{
+        "portalId":{
+          "shape":"PortalId",
+          "documentation":"<p>The identifier of the portal.</p>"
+        },
+        "portalArn":{
+          "shape":"PortalArn",
+          "documentation":"<p>The ARN of the portal.</p>"
+        },
+        "endpointConfiguration":{
+          "shape":"EndpointConfigurationResponse",
+          "documentation":"<p>The domain configuration of the portal.</p>"
+        },
+        "authorization":{
+          "shape":"Authorization",
+          "documentation":"<p>How readers sign in to the portal, and whether fine-grained access control is on.</p>"
+        },
+        "portalContent":{
+          "shape":"PortalContent",
+          "documentation":"<p>The portal's display name, description, and theme.</p>"
+        },
+        "includedProductArns":{
+          "shape":"IncludedProductArns",
+          "documentation":"<p>The ARNs of the products the portal includes.</p>"
+        },
+        "publishStatus":{
+          "shape":"PublishStatus",
+          "documentation":"<p>The publish status of the portal. Absent if the portal has never been published.</p>"
+        },
+        "statusException":{"shape":"PortalStatusException"},
+        "updatedAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>When the resource was last updated.</p>"
+        },
+        "publishedAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>When the portal was last published.</p>"
+        },
+        "publishDescription":{
+          "shape":"PublishDescription",
+          "documentation":"<p>The description supplied with the most recent publish request.</p>"
+        },
+        "rumAppMonitorName":{
+          "shape":"RUMAppMonitorName",
+          "documentation":"<p>The name of the CloudWatch RUM app monitor that collects reader telemetry for the portal.</p>"
+        },
+        "preview":{
+          "shape":"Preview",
+          "documentation":"<p>The most recent preview of the portal. Absent if no preview has been created.</p>"
+        }
+      },
+      "documentation":"<p>A summary of a portal.</p>"
+    },
+    "PortalTheme":{
+      "type":"structure",
+      "required":["customColors"],
+      "members":{
+        "customColors":{
+          "shape":"CustomColors",
+          "documentation":"<p>The colors used in the portal.</p>"
+        },
+        "logoUploadedAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>When the portal logo was last uploaded. Absent if the portal has no logo.</p>"
+        }
+      },
+      "documentation":"<p>The visual theme of a portal.</p>"
+    },
+    "PostureStatus":{
+      "type":"string",
+      "documentation":"<p>Values are spelled exactly as the inventory document stores them, so the same string means the same thing at both layers and no second translation sits between the index and the wire.</p>",
+      "enum":[
+        "TRUE",
+        "FALSE",
+        "NOT_APPLICABLE",
+        "INSUFFICIENT_DATA"
+      ]
+    },
+    "Preview":{
+      "type":"structure",
+      "required":["previewStatus"],
+      "members":{
+        "previewStatus":{
+          "shape":"PreviewStatus",
+          "documentation":"<p>The status of the preview.</p>"
+        },
+        "statusException":{"shape":"PortalStatusException"},
+        "previewUrl":{
+          "shape":"String",
+          "documentation":"<p>The URL to view the preview. Present when <code>previewStatus</code> is <code>PREVIEW_READY</code>.</p>"
+        }
+      },
+      "documentation":"<p>A preview of a portal.</p>"
+    },
+    "PreviewStatus":{
+      "type":"string",
+      "enum":[
+        "PREVIEW_IN_PROGRESS",
+        "PREVIEW_FAILED",
+        "PREVIEW_READY"
+      ]
+    },
+    "ProductApiPageArn":{
+      "type":"string",
+      "max":1011,
+      "min":20,
+      "pattern":"arn:aws[a-z\\-]*:apiportal:[a-z0-9\\-]+:[0-9]{12}:products/[a-z0-9]{10,30}/apipages/[a-z0-9]{10,30}"
+    },
+    "ProductApiPageArnList":{
+      "type":"list",
+      "member":{"shape":"ProductApiPageArn"},
+      "documentation":"<p>API pages in one section. No service-side limit exists today; this bound caps request size.</p>",
+      "max":1000,
+      "min":0
+    },
+    "ProductApiPageId":{
+      "type":"string",
+      "max":30,
+      "min":10,
+      "pattern":"[a-z0-9]+"
+    },
+    "ProductApiPageList":{
+      "type":"list",
+      "member":{"shape":"ProductApiPageSummaryNoBody"}
+    },
+    "ProductApiPageStatusException":{
+      "type":"structure",
+      "members":{
+        "exception":{"shape":"ProductApiPageStatusExceptionType"},
+        "message":{
+          "shape":"Message",
+          "documentation":"<p>A description of the failure.</p>"
+        }
+      },
+      "documentation":"<p>Failure detail attached to a ProductApiPage's status: a typed reason plus an optional human-readable message.</p>"
+    },
+    "ProductApiPageStatusExceptionType":{
+      "type":"string",
+      "documentation":"<p>treat any unrecognized value as INTERNAL_FAILURE.</p>",
+      "enum":[
+        "INTERNAL_FAILURE",
+        "RESOURCE_DELETED",
+        "MEMBER_LEFT_ORG"
+      ]
+    },
+    "ProductApiPageSummaryNoBody":{
+      "type":"structure",
+      "required":[
+        "productApiPageId",
+        "productApiPageArn",
+        "apiId",
+        "apiUrl",
+        "tryItState",
+        "updatedAt",
+        "status"
+      ],
+      "members":{
+        "productApiPageId":{
+          "shape":"ProductApiPageId",
+          "documentation":"<p>The identifier of the API page.</p>"
+        },
+        "productApiPageArn":{
+          "shape":"ProductApiPageArn",
+          "documentation":"<p>The ARN of the API page.</p>"
+        },
+        "apiId":{
+          "shape":"ApiId",
+          "documentation":"<p>The API the page documents.</p>"
+        },
+        "operationName":{
+          "shape":"OperationName",
+          "documentation":"<p>The operation name shown as the page title.</p>"
+        },
+        "apiUrl":{
+          "shape":"ApiEndpoint",
+          "documentation":"<p>The invoke URL shown on the page and used by Try-It.</p>"
+        },
+        "tryItState":{
+          "shape":"TryItState",
+          "documentation":"<p>Whether Try-It is enabled on the page.</p>"
+        },
+        "updatedAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>When the resource was last updated.</p>"
+        },
+        "status":{
+          "shape":"Status",
+          "documentation":"<p>The status of the page content: <code>IN_PROGRESS</code> while it is generated, then <code>AVAILABLE</code> or <code>FAILED</code>.</p>"
+        },
+        "statusException":{"shape":"ProductApiPageStatusException"}
+      },
+      "documentation":"<p>A summary of an API page, without its body.</p>"
+    },
+    "ProductArn":{
+      "type":"string",
+      "max":1011,
+      "min":20,
+      "pattern":"arn:aws[a-z\\-]*:apiportal:[a-z0-9\\-]+:[0-9]{12}:products/[a-z0-9]{10,30}"
+    },
+    "ProductDescription":{
+      "type":"string",
+      "max":1024,
+      "min":0
+    },
+    "ProductFailureReason":{
+      "type":"string",
+      "documentation":"<p>Reason a product's rules could not be fully applied, present only when <code>status</code> is <code>FAILED</code>. New reasons may be added over time, so clients MUST treat any unrecognized value as <code>UNKNOWN</code> and fall back to generic handling.</p>",
+      "enum":[
+        "API_PAGE_ATTACHED",
+        "EVALUATION_ERROR"
+      ]
+    },
+    "ProductId":{
+      "type":"string",
+      "max":30,
+      "min":10,
+      "pattern":"[a-z0-9]+"
+    },
+    "ProductList":{
+      "type":"list",
+      "member":{"shape":"ProductSummary"}
+    },
+    "ProductName":{
+      "type":"string",
+      "max":255,
+      "min":1
+    },
+    "ProductPageArn":{
+      "type":"string",
+      "max":1011,
+      "min":20,
+      "pattern":"arn:aws[a-z\\-]*:apiportal:[a-z0-9\\-]+:[0-9]{12}:products/[a-z0-9]{10,30}/productpages/[a-z0-9]{10,30}"
+    },
+    "ProductPageArnList":{
+      "type":"list",
+      "member":{"shape":"ProductPageArn"},
+      "documentation":"<p>A product has at most DocHubLimits.DEFAULT_PAGES_PER_PRODUCT_LIMIT (40) pages, enforced by LimitsHelper.</p>",
+      "max":40,
+      "min":0
+    },
+    "ProductPageId":{
+      "type":"string",
+      "max":30,
+      "min":10,
+      "pattern":"[a-z0-9]+"
+    },
+    "ProductPageList":{
+      "type":"list",
+      "member":{"shape":"ProductPageSummaryNoBody"}
+    },
+    "ProductPageSummaryNoBody":{
+      "type":"structure",
+      "required":[
+        "productPageId",
+        "productPageArn",
+        "pageTitle",
+        "updatedAt"
+      ],
+      "members":{
+        "productPageId":{
+          "shape":"ProductPageId",
+          "documentation":"<p>The identifier of the product page.</p>"
+        },
+        "productPageArn":{
+          "shape":"ProductPageArn",
+          "documentation":"<p>The ARN of the product page.</p>"
+        },
+        "pageTitle":{
+          "shape":"PageTitle",
+          "documentation":"<p>The page title.</p>"
+        },
+        "updatedAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>When the resource was last updated.</p>"
+        }
+      },
+      "documentation":"<p>A summary of a product page, without its body.</p>"
+    },
+    "ProductStatus":{
+      "type":"string",
+      "documentation":"<p>Whether the product's member APIs match its apiSelectionConfiguration. ACTIVE - membership matches. The only status a CUSTOM product reports. IN_PROGRESS - ruleFilters changed and membership is still being evaluated. FAILED - evaluation could not finish and membership is incomplete; failureReason says why.</p>",
+      "enum":[
+        "ACTIVE",
+        "IN_PROGRESS",
+        "FAILED"
+      ]
+    },
+    "ProductSummary":{
+      "type":"structure",
+      "required":[
+        "productId",
+        "productArn",
+        "displayName",
+        "description",
+        "updatedAt"
+      ],
+      "members":{
+        "productId":{
+          "shape":"ProductId",
+          "documentation":"<p>The identifier of the product.</p>"
+        },
+        "productArn":{
+          "shape":"ProductArn",
+          "documentation":"<p>The ARN of the product.</p>"
+        },
+        "displayName":{
+          "shape":"ProductName",
+          "documentation":"<p>The name of the product, from 1 to 255 characters.</p>"
+        },
+        "description":{
+          "shape":"ProductDescription",
+          "documentation":"<p>A description of the product, up to 1024 characters.</p>"
+        },
+        "updatedAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>When the resource was last updated.</p>"
+        },
+        "apiSelectionConfiguration":{
+          "shape":"ApiSelectionConfiguration",
+          "documentation":"<p>How Managed APIs are selected for the product.</p>"
+        },
+        "status":{"shape":"ProductStatus"},
+        "failureReason":{"shape":"ProductFailureReason"}
+      },
+      "documentation":"<p>A summary of a product.</p>"
+    },
+    "PublishDescription":{
+      "type":"string",
+      "max":1024,
+      "min":0
+    },
+    "PublishStatus":{
+      "type":"string",
+      "enum":[
+        "PUBLISHED",
+        "PUBLISH_IN_PROGRESS",
+        "PUBLISH_FAILED",
+        "DISABLE_IN_PROGRESS",
+        "DISABLE_FAILED",
+        "DISABLED"
+      ]
+    },
+    "PutDiscoveryConfigurationRequest":{
+      "type":"structure",
+      "members":{
+        "discoverySources":{
+          "shape":"NonEmptyDiscoverySourceList",
+          "documentation":"<p>The sources to discover APIs from. Omitting it removes all sources, which stops discovery for this configuration.</p>"
+        },
+        "excludedResources":{
+          "shape":"ResourceArnList",
+          "documentation":"<p>The ARNs of resources to leave out of discovery, up to 50.</p>"
+        },
+        "features":{
+          "shape":"DiscoveryFeatureList",
+          "documentation":"<p>Optional capabilities to enable. Omitting it disables all of them, as with the other fields.</p>"
+        },
+        "tags":{"shape":"Tags"}
+      }
+    },
+    "PutDiscoveryConfigurationResponse":{
+      "type":"structure",
+      "required":["discoveryConfiguration"],
+      "members":{
+        "discoveryConfiguration":{
+          "shape":"DiscoveryConfigurationData",
+          "documentation":"<p>The discovery configuration for the account.</p>"
+        },
+        "tags":{"shape":"Tags"}
+      }
+    },
+    "PutOrganizationDiscoveryConfigurationRequest":{
+      "type":"structure",
+      "members":{
+        "discoverySources":{
+          "shape":"NonEmptyDiscoverySourceList",
+          "documentation":"<p>The sources to discover APIs from. Omitting it removes all sources, which stops discovery for this configuration.</p>"
+        },
+        "exclusionFilters":{
+          "shape":"DiscoveryExclusionFilters",
+          "documentation":"<p>Exclusion filters for organization-scoped discovery. @deprecated. Remove this once client (Console) moves to discoveryFilters</p>"
+        },
+        "discoveryFilters":{
+          "shape":"OrganizationDiscoveryFilters",
+          "documentation":"<p>The accounts or organizational units to include in or exclude from discovery.</p>"
+        },
+        "features":{
+          "shape":"DiscoveryFeatureList",
+          "documentation":"<p>Optional capabilities to enable. Omitting it disables all of them, as with the other fields.</p>"
+        },
+        "tags":{"shape":"Tags"}
+      }
+    },
+    "PutOrganizationDiscoveryConfigurationResponse":{
+      "type":"structure",
+      "required":["discoveryConfiguration"],
+      "members":{
+        "discoveryConfiguration":{
+          "shape":"OrganizationDiscoveryConfigurationData",
+          "documentation":"<p>The discovery configuration for the organization.</p>"
+        },
+        "tags":{"shape":"Tags"}
+      }
+    },
+    "PutProductSharingPolicyRequest":{
+      "type":"structure",
+      "required":[
+        "productId",
+        "policyDocument"
+      ],
+      "members":{
+        "productId":{
+          "shape":"ProductId",
+          "documentation":"<p>The identifier of the product.</p>",
+          "location":"uri",
+          "locationName":"productId"
+        },
+        "policyDocument":{
+          "shape":"PolicyDocument",
+          "documentation":"<p>The sharing policy as a JSON resource policy document.</p>"
+        },
+        "tags":{"shape":"Tags"}
+      }
+    },
+    "RUMAppMonitorName":{
+      "type":"string",
+      "max":255,
+      "min":0
+    },
+    "ResourceArn":{
+      "type":"string",
+      "max":2048,
+      "min":20,
+      "pattern":"arn:aws[a-z\\-]*:[a-z0-9\\-]+:[a-z0-9\\-]*:([0-9]{12})?:.+"
+    },
+    "ResourceArnList":{
+      "type":"list",
+      "member":{"shape":"ResourceArn"},
+      "max":50,
+      "min":0
+    },
+    "ResourceNotFoundException":{
+      "type":"structure",
+      "required":["message"],
+      "members":{
+        "message":{"shape":"String"}
+      },
+      "documentation":"<p>The requested resource does not exist, or you do not have access to it.</p>",
+      "error":{
+        "httpStatusCode":404,
+        "senderFault":true
+      },
+      "exception":true
+    },
+    "ResourceOwner":{
+      "type":"string",
+      "enum":[
+        "ALL",
+        "SELF",
+        "OTHER_ACCOUNTS"
+      ]
+    },
+    "RuleFilter":{
+      "type":"structure",
+      "required":[
+        "key",
+        "values"
+      ],
+      "members":{
+        "key":{"shape":"RuleFilterKey"},
+        "values":{
+          "shape":"RuleFilterValueList",
+          "documentation":"<p>The values to match. The filter matches when the attribute equals any of them.</p>"
+        }
+      },
+      "documentation":"<p>Values are compared to the attribute as literals: exact and case-sensitive, no wildcards.</p>"
+    },
+    "RuleFilterKey":{
+      "type":"string",
+      "documentation":"<p>The Managed API attribute a RuleFilter compares against. RESOURCE_ARN - apiSignature.resourceArn HOST - apiSignature.hostname METHOD - apiSignature.method, so values must be HttpMethod names PATH - apiSignature.path PORT - apiSignature.port, compared as its decimal string, so values must be 0-65535 with no leading zeros ACCOUNT - the account hosting the API, which for an ORGANIZATION-scoped Managed API is the member account rather than the account that created it</p>",
+      "enum":[
+        "RESOURCE_ARN",
+        "HOST",
+        "METHOD",
+        "PATH",
+        "PORT",
+        "ACCOUNT"
+      ]
+    },
+    "RuleFilterList":{
+      "type":"list",
+      "member":{"shape":"RuleFilter"},
+      "documentation":"<p>One filter per RuleFilterKey: filters are AND-ed, so two on the same key never both match.</p>",
+      "max":6,
+      "min":1
+    },
+    "RuleFilterValue":{
+      "type":"string",
+      "documentation":"<p>Bounded by the longest matchable attribute, apiSignature.path.</p> <p>No whitespace: none of the matchable attributes (ARN, hostname, method, path, port, account) contain any. Per-key formats (METHOD, PORT, ACCOUNT) are enforced in ProductValidator.validateRuleFilterValue, since one pattern cannot express them for a value shared by every key.</p>",
+      "max":4096,
+      "min":1,
+      "pattern":"\\S+"
+    },
+    "RuleFilterValueList":{
+      "type":"list",
+      "member":{"shape":"RuleFilterValue"},
+      "max":10,
+      "min":1
+    },
+    "Section":{
+      "type":"structure",
+      "members":{
+        "sectionName":{
+          "shape":"SectionSectionNameString",
+          "documentation":"<p>Shown in the portal navigation. Same bound as page titles and operation names, and no control characters (the service rejects a blank name).</p>"
+        },
+        "productApiPageArns":{"shape":"ProductApiPageArnList"}
+      },
+      "documentation":"<p>A named group of API pages in the portal navigation.</p>"
+    },
+    "SectionSectionNameString":{
+      "type":"string",
+      "max":255,
+      "min":1,
+      "pattern":"[^\\u0000-\\u001F\\u007F]+"
+    },
+    "StartDiscoveryRequest":{
+      "type":"structure",
+      "required":["id"],
+      "members":{
+        "id":{
+          "shape":"StringWithLengthBetween1And1600",
+          "documentation":"<p>Identifier of the discovery configuration to start. Required. Today this is the configuration ARN, which carries the owner account id so a delegated admin or org admin can start an org-scoped configuration that lives in a different account.</p>",
+          "location":"querystring",
+          "locationName":"id"
+        }
+      }
+    },
+    "Status":{
+      "type":"string",
+      "enum":[
+        "AVAILABLE",
+        "IN_PROGRESS",
+        "FAILED"
+      ]
+    },
+    "StopDiscoveryRequest":{
+      "type":"structure",
+      "required":["id"],
+      "members":{
+        "id":{
+          "shape":"StringWithLengthBetween1And1600",
+          "documentation":"<p>Identifier of the discovery configuration to stop. Required. Today this is the configuration ARN, which carries the owner account id so a delegated admin or org admin can stop an org-scoped configuration that lives in a different account.</p>",
+          "location":"querystring",
+          "locationName":"id"
+        }
+      }
+    },
+    "String":{"type":"string"},
+    "StringWithLengthBetween1And1600":{
+      "type":"string",
+      "max":1600,
+      "min":1
+    },
+    "TagKey":{
+      "type":"string",
+      "documentation":"<p>A tag key of 1-128 Unicode characters, per the AWS tagging limits.</p>",
+      "max":128,
+      "min":1
+    },
+    "TagKeys":{
+      "type":"list",
+      "member":{"shape":"TagKey"},
+      "max":50,
+      "min":0
+    },
+    "TagResourceRequest":{
+      "type":"structure",
+      "required":[
+        "resourceArn",
+        "tags"
+      ],
+      "members":{
+        "resourceArn":{
+          "shape":"ResourceArn",
+          "documentation":"<p>The ARN of the resource.</p>",
+          "location":"uri",
+          "locationName":"resourceArn"
+        },
+        "tags":{"shape":"Tags"}
+      }
+    },
+    "TagResourceResponse":{
+      "type":"structure",
+      "members":{}
+    },
+    "TagValue":{
+      "type":"string",
+      "documentation":"<p>A tag value of 0-256 Unicode characters, per the AWS tagging limits; an empty value is valid.</p>",
+      "max":256,
+      "min":0
+    },
+    "Tags":{
+      "type":"map",
+      "key":{"shape":"TagKey"},
+      "value":{"shape":"TagValue"},
+      "documentation":"<p>Up to 50 tags per request, matching API Gateway's limit of 50 tags per resource.</p>",
+      "max":50,
+      "min":1
+    },
+    "ThreatCategory":{
+      "type":"string",
+      "documentation":"<p>OWASP API Security category, e.g. &quot;API2:2023&quot;. Open string — OWASP revises the list per edition.</p>",
+      "max":64,
+      "min":1
+    },
+    "ThreatLabel":{
+      "type":"string",
+      "documentation":"<p>Detection label describing the attack and its confidence tier, e.g. &quot;awswaf:managed:aws:api-security:credential-stuffing-high&quot;.</p>",
+      "max":1024,
+      "min":1
+    },
+    "Timestamp":{"type":"timestamp"},
+    "TryItState":{
+      "type":"string",
+      "enum":[
+        "ENABLED",
+        "DISABLED"
+      ]
+    },
+    "UntagResourceRequest":{
+      "type":"structure",
+      "required":[
+        "resourceArn",
+        "tagKeys"
+      ],
+      "members":{
+        "resourceArn":{
+          "shape":"ResourceArn",
+          "documentation":"<p>The ARN of the resource.</p>",
+          "location":"uri",
+          "locationName":"resourceArn"
+        },
+        "tagKeys":{
+          "shape":"TagKeys",
+          "documentation":"<p>The keys of the tags to remove, up to 50.</p>",
+          "location":"querystring",
+          "locationName":"tagKeys"
+        }
+      }
+    },
+    "UntagResourceResponse":{
+      "type":"structure",
+      "members":{}
+    },
+    "UpdatePortalPublishStatusRequest":{
+      "type":"structure",
+      "required":[
+        "portalId",
+        "status"
+      ],
+      "members":{
+        "portalId":{
+          "shape":"PortalId",
+          "documentation":"<p>The identifier of the portal.</p>",
+          "location":"uri",
+          "locationName":"portalId"
+        },
+        "status":{"shape":"DesiredPublishStatus"},
+        "description":{
+          "shape":"PublishDescription",
+          "documentation":"<p>A description of this publish request, up to 1024 characters.</p>"
+        }
+      }
+    },
+    "UpdatePortalRequest":{
+      "type":"structure",
+      "required":["portalId"],
+      "members":{
+        "portalId":{
+          "shape":"PortalId",
+          "documentation":"<p>The identifier of the portal.</p>",
+          "location":"uri",
+          "locationName":"portalId"
+        },
+        "portalContent":{
+          "shape":"PortalContent",
+          "documentation":"<p>The new display name, description, and theme. Omit it to keep the current values.</p>"
+        },
+        "endpointConfiguration":{"shape":"EndpointConfigurationRequest"},
+        "authorization":{
+          "shape":"Authorization",
+          "documentation":"<p>The new authorization settings. Omit it to keep the current settings.</p>"
+        },
+        "rumAppMonitorName":{
+          "shape":"RUMAppMonitorName",
+          "documentation":"<p>The new CloudWatch RUM app monitor name. Omit it to keep the current value.</p>"
+        },
+        "includedProductArns":{
+          "shape":"IncludedProductArns",
+          "documentation":"<p>The new list of product ARNs, up to 200. It replaces the current list. Omit it to keep the current list.</p>"
+        },
+        "logoUri":{
+          "shape":"LogoUri",
+          "documentation":"<p>The new S3 location of the portal logo, in the form <code>s3://bucket/key</code>. An empty string removes the logo. Omit it to keep the current logo.</p>"
+        }
+      }
+    },
+    "UpdatePortalResponse":{
+      "type":"structure",
+      "required":[
+        "portalId",
+        "portalArn",
+        "endpointConfiguration",
+        "authorization",
+        "portalContent",
+        "includedProductArns",
+        "updatedAt"
+      ],
+      "members":{
+        "portalId":{
+          "shape":"PortalId",
+          "documentation":"<p>The identifier of the portal.</p>"
+        },
+        "portalArn":{
+          "shape":"PortalArn",
+          "documentation":"<p>The ARN of the portal.</p>"
+        },
+        "endpointConfiguration":{
+          "shape":"EndpointConfigurationResponse",
+          "documentation":"<p>The domain configuration of the portal.</p>"
+        },
+        "authorization":{
+          "shape":"Authorization",
+          "documentation":"<p>How readers sign in to the portal, and whether fine-grained access control is on.</p>"
+        },
+        "portalContent":{
+          "shape":"PortalContent",
+          "documentation":"<p>The portal's display name, description, and theme.</p>"
+        },
+        "includedProductArns":{
+          "shape":"IncludedProductArns",
+          "documentation":"<p>The ARNs of the products the portal includes.</p>"
+        },
+        "publishStatus":{
+          "shape":"PublishStatus",
+          "documentation":"<p>The publish status of the portal. Absent if the portal has never been published.</p>"
+        },
+        "statusException":{"shape":"PortalStatusException"},
+        "updatedAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>When the resource was last updated.</p>"
+        },
+        "publishedAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>When the portal was last published.</p>"
+        },
+        "publishDescription":{
+          "shape":"PublishDescription",
+          "documentation":"<p>The description supplied with the most recent publish request.</p>"
+        },
+        "rumAppMonitorName":{
+          "shape":"RUMAppMonitorName",
+          "documentation":"<p>The name of the CloudWatch RUM app monitor that collects reader telemetry for the portal.</p>"
+        },
+        "preview":{
+          "shape":"Preview",
+          "documentation":"<p>The most recent preview of the portal. Absent if no preview has been created.</p>"
+        }
+      }
+    },
+    "UpdateProductApiPageRequest":{
+      "type":"structure",
+      "required":[
+        "productId",
+        "productApiPageId"
+      ],
+      "members":{
+        "productId":{
+          "shape":"ProductId",
+          "documentation":"<p>The identifier of the product.</p>",
+          "location":"uri",
+          "locationName":"productId"
+        },
+        "productApiPageId":{
+          "shape":"ProductApiPageId",
+          "documentation":"<p>The identifier of the API page.</p>",
+          "location":"uri",
+          "locationName":"productApiPageId"
+        },
+        "displayContent":{"shape":"ApiPageDisplayContent"},
+        "tryItState":{
+          "shape":"TryItState",
+          "documentation":"<p>The new Try-It setting. Omit it to keep the current setting. To enable it, the page's API URL must use HTTPS on a domain that supports Try-It.</p>"
+        }
+      }
+    },
+    "UpdateProductApiPageResponse":{
+      "type":"structure",
+      "required":[
+        "productApiPageId",
+        "productApiPageArn",
+        "apiId",
+        "displayContent",
+        "tryItState",
+        "updatedAt",
+        "status"
+      ],
+      "members":{
+        "productApiPageId":{
+          "shape":"ProductApiPageId",
+          "documentation":"<p>The identifier of the API page.</p>"
+        },
+        "productApiPageArn":{
+          "shape":"ProductApiPageArn",
+          "documentation":"<p>The ARN of the API page.</p>"
+        },
+        "apiId":{
+          "shape":"ApiId",
+          "documentation":"<p>The API the page documents.</p>"
+        },
+        "displayContent":{
+          "shape":"ApiPageDisplayContentResponse",
+          "documentation":"<p>The content shown on the page.</p>"
+        },
+        "tryItState":{
+          "shape":"TryItState",
+          "documentation":"<p>Whether Try-It is enabled on the page.</p>"
+        },
+        "updatedAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>When the resource was last updated.</p>"
+        },
+        "status":{
+          "shape":"Status",
+          "documentation":"<p>The status of the page content: <code>IN_PROGRESS</code> while it is generated, then <code>AVAILABLE</code> or <code>FAILED</code>.</p>"
+        },
+        "statusException":{"shape":"ProductApiPageStatusException"}
+      }
+    },
+    "UpdateProductPageRequest":{
+      "type":"structure",
+      "required":[
+        "productId",
+        "productPageId"
+      ],
+      "members":{
+        "productId":{
+          "shape":"ProductId",
+          "documentation":"<p>The identifier of the product.</p>",
+          "location":"uri",
+          "locationName":"productId"
+        },
+        "productPageId":{
+          "shape":"ProductPageId",
+          "documentation":"<p>The identifier of the product page.</p>",
+          "location":"uri",
+          "locationName":"productPageId"
+        },
+        "displayContent":{
+          "shape":"DisplayContent",
+          "documentation":"<p>The new title and body of the page. Omit it to keep the current content.</p>"
+        }
+      }
+    },
+    "UpdateProductPageResponse":{
+      "type":"structure",
+      "required":[
+        "productPageId",
+        "productPageArn",
+        "updatedAt"
+      ],
+      "members":{
+        "productPageId":{
+          "shape":"ProductPageId",
+          "documentation":"<p>The identifier of the product page.</p>"
+        },
+        "productPageArn":{
+          "shape":"ProductPageArn",
+          "documentation":"<p>The ARN of the product page.</p>"
+        },
+        "displayContent":{
+          "shape":"DisplayContent",
+          "documentation":"<p>The title and body of the page.</p>"
+        },
+        "updatedAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>When the resource was last updated.</p>"
+        }
+      }
+    },
+    "UpdateProductRequest":{
+      "type":"structure",
+      "required":["productId"],
+      "members":{
+        "productId":{
+          "shape":"ProductId",
+          "documentation":"<p>The identifier of the product.</p>",
+          "location":"uri",
+          "locationName":"productId"
+        },
+        "displayName":{
+          "shape":"ProductName",
+          "documentation":"<p>The new name of the product. Omit it to keep the current name.</p>"
+        },
+        "description":{
+          "shape":"ProductDescription",
+          "documentation":"<p>The new description of the product. Omit it to keep the current description.</p>"
+        },
+        "displayOrder":{
+          "shape":"DisplayOrder",
+          "documentation":"<p>The new page order. Omit it to keep the current order.</p>"
+        },
+        "apiSelectionConfiguration":{
+          "shape":"ApiSelectionConfiguration",
+          "documentation":"<p>The new API selection settings. The selection mode must match the mode the product was created with. Omit it to keep the current settings.</p>"
+        }
+      }
+    },
+    "UpdateProductResponse":{
+      "type":"structure",
+      "required":[
+        "productId",
+        "productArn",
+        "displayName",
+        "updatedAt"
+      ],
+      "members":{
+        "productId":{
+          "shape":"ProductId",
+          "documentation":"<p>The identifier of the product.</p>"
+        },
+        "productArn":{
+          "shape":"ProductArn",
+          "documentation":"<p>The ARN of the product.</p>"
+        },
+        "displayName":{
+          "shape":"ProductName",
+          "documentation":"<p>The name of the product, from 1 to 255 characters.</p>"
+        },
+        "displayOrder":{
+          "shape":"DisplayOrder",
+          "documentation":"<p>The order of the product's pages and API page sections in the portal navigation.</p>"
+        },
+        "description":{
+          "shape":"ProductDescription",
+          "documentation":"<p>A description of the product, up to 1024 characters.</p>"
+        },
+        "updatedAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>When the resource was last updated.</p>"
+        },
+        "apiSelectionConfiguration":{
+          "shape":"ApiSelectionConfiguration",
+          "documentation":"<p>How Managed APIs are selected for the product.</p>"
+        },
+        "status":{"shape":"ProductStatus"},
+        "failureReason":{"shape":"ProductFailureReason"}
+      }
+    },
+    "UserPoolArn":{
+      "type":"string",
+      "max":2048,
+      "min":20,
+      "pattern":"arn:aws[a-z\\-]*:cognito-idp:[a-z0-9\\-]+:[0-9]{12}:userpool/[\\w-]+_[0-9a-zA-Z]+"
+    },
+    "UserPoolDomain":{
+      "type":"string",
+      "max":2048,
+      "min":20,
+      "pattern":"(([a-zA-Z0-9-]+\\.)+[a-zA-Z0-9-]+)"
+    },
+    "Visibility":{
+      "type":"string",
+      "documentation":"<p>Whether a discovered API is reachable publicly or only from within a private network.</p>",
+      "enum":[
+        "PUBLIC",
+        "PRIVATE"
+      ]
+    },
+    "WafApiSecurityEventDetail":{
+      "type":"structure",
+      "members":{
+        "label":{
+          "shape":"ThreatLabel",
+          "documentation":"<p>Detection label (attack type + confidence tier).</p>"
+        },
+        "category":{
+          "shape":"ThreatCategory",
+          "documentation":"<p>OWASP class — the primary display value (e.g. &quot;API2:2023&quot;).</p>"
+        },
+        "confidence":{
+          "shape":"Confidence",
+          "documentation":"<p>Confidence tier of the detection.</p>"
+        },
+        "webAclArn":{
+          "shape":"WebAclArn",
+          "documentation":"<p>WebACL that produced the event.</p>"
+        }
+      },
+      "documentation":"<p>Detail specific to a WAF API-security event.</p>"
+    },
+    "WafStatus":{
+      "type":"string",
+      "documentation":"<p>Whether a WAF web ACL is attached to the API's front-door service.</p>",
+      "enum":[
+        "ENABLED",
+        "DISABLED"
+      ]
+    },
+    "WebAclArn":{
+      "type":"string",
+      "documentation":"<p>ARN of the WebACL that produced the event. Carried on the event detail so GetManagedApiEvent can fetch the event's full detail; scope and region are derived from it.</p>",
+      "max":2048,
+      "min":20,
+      "pattern":"arn:aws[a-z\\-]*:wafv2:[a-z0-9\\-]*:[0-9]{12}:(regional|global)/webacl/.+"
+    },
+    "Workload":{
+      "type":"string",
+      "documentation":"<p>An AI protocol seen in an API's traffic, detected by the front door from request or response headers (and, for A2A, a query parameter). MCP - Model Context Protocol. LLM - traffic to or from an LLM inference server or gateway. A2A - Agent2Agent protocol.</p>",
+      "enum":[
+        "MCP",
+        "LLM",
+        "A2A"
+      ]
+    },
+    "WorkloadList":{
+      "type":"list",
+      "member":{"shape":"Workload"}
+    }
+  },
+  "documentation":"<p>API Portal discovers the APIs running in your AWS accounts and organization, lets you manage them as Managed APIs, and publishes their documentation to developer portals.</p>"
+}

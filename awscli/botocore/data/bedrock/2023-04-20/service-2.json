@@ -16,6 +16,26 @@
     "uid":"bedrock-2023-04-20"
   },
   "operations":{
+    "ArchiveProject":{
+      "name":"ArchiveProject",
+      "http":{
+        "method":"POST",
+        "requestUri":"/projects/{projectIdentifier}/archive",
+        "responseCode":200
+      },
+      "input":{"shape":"ArchiveProjectRequest"},
+      "output":{"shape":"ArchiveProjectResponse"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ValidationException"},
+        {"shape":"ConflictException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ThrottlingException"}
+      ],
+      "documentation":"<p>Archives a project. Archiving is terminal; there is no delete. Archiving an already-archived project succeeds without effect. The default project cannot be archived.</p>",
+      "idempotent":true
+    },
     "BatchDeleteAdvancedPromptOptimizationJob":{
       "name":"BatchDeleteAdvancedPromptOptimizationJob",
       "http":{
@@ -407,6 +427,26 @@
       "documentation":"<p>Creates a batch inference job to invoke a model on multiple prompts. Format your data according to <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/batch-inference-data\">Format your inference data</a> and upload it to an Amazon S3 bucket. For more information, see <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/batch-inference.html\">Process multiple prompts with batch inference</a>.</p> <p>The response returns a <code>jobArn</code> that you can use to stop or get details about the job.</p>",
       "idempotent":true
     },
+    "CreateProject":{
+      "name":"CreateProject",
+      "http":{
+        "method":"POST",
+        "requestUri":"/projects",
+        "responseCode":200
+      },
+      "input":{"shape":"CreateProjectRequest"},
+      "output":{"shape":"CreateProjectResponse"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"ValidationException"},
+        {"shape":"ConflictException"},
+        {"shape":"InternalServerException"},
+        {"shape":"TooManyTagsException"},
+        {"shape":"ServiceQuotaExceededException"},
+        {"shape":"ThrottlingException"}
+      ],
+      "documentation":"<p>Creates a project: a workload boundary within the account that inference requests can be associated with.</p>"
+    },
     "CreatePromptRouter":{
       "name":"CreatePromptRouter",
       "http":{
@@ -448,6 +488,24 @@
         {"shape":"ThrottlingException"}
       ],
       "documentation":"<p>Creates dedicated throughput for a base or custom model with the model units and for the duration that you specify. For pricing details, see <a href=\"http://aws.amazon.com/bedrock/pricing/\">Amazon Bedrock Pricing</a>. For more information, see <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/prov-throughput.html\">Provisioned Throughput</a> in the <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/what-is-service.html\">Amazon Bedrock User Guide</a>.</p>",
+      "idempotent":true
+    },
+    "DeleteAccountDataRetentionStorage":{
+      "name":"DeleteAccountDataRetentionStorage",
+      "http":{
+        "method":"DELETE",
+        "requestUri":"/v1/data_retention/storage/{modelProvider}",
+        "responseCode":200
+      },
+      "input":{"shape":"DeleteAccountDataRetentionStorageRequest"},
+      "output":{"shape":"DeleteAccountDataRetentionStorageResponse"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"ValidationException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ThrottlingException"}
+      ],
+      "documentation":"<p>Deletes your account's retention storage configuration for a model provider. Deleting an absent configuration succeeds. You do not need to participate in the program to delete the configuration. You can delete it even if your account is ineligible or its eligibility is revoked.</p>",
       "idempotent":true
     },
     "DeleteAutomatedReasoningPolicy":{
@@ -688,6 +746,43 @@
       "documentation":"<p>Delete the invocation logging. </p>",
       "idempotent":true
     },
+    "DeleteOrganizationDataRetentionStorage":{
+      "name":"DeleteOrganizationDataRetentionStorage",
+      "http":{
+        "method":"DELETE",
+        "requestUri":"/v1/data_retention/organization-storage/{modelProvider}",
+        "responseCode":200
+      },
+      "input":{"shape":"DeleteOrganizationDataRetentionStorageRequest"},
+      "output":{"shape":"DeleteOrganizationDataRetentionStorageResponse"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"ValidationException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ThrottlingException"}
+      ],
+      "documentation":"<p>Deletes the organization's retention storage configuration for a model provider. The caller must be the organization's management account or a delegated administrator. Deleting an absent configuration succeeds; no program participation is required to delete.</p>",
+      "idempotent":true
+    },
+    "DeleteProjectDataRetentionStorage":{
+      "name":"DeleteProjectDataRetentionStorage",
+      "http":{
+        "method":"DELETE",
+        "requestUri":"/v1/projects/{projectIdentifier}/data_retention/storage/{modelProvider}",
+        "responseCode":200
+      },
+      "input":{"shape":"DeleteProjectDataRetentionStorageRequest"},
+      "output":{"shape":"DeleteProjectDataRetentionStorageResponse"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ValidationException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ThrottlingException"}
+      ],
+      "documentation":"<p>Deletes a project's retention storage configuration for a model provider. Deleting an absent configuration on an active project succeeds. If the project does not exist or your account does not own it, the operation returns <code>ResourceNotFoundException</code>. For an archived project, the operation returns <code>ValidationException</code>. You can read the archived project's stored configuration until Amazon Bedrock purges the project. You do not need to participate in the program to delete the configuration.</p>",
+      "idempotent":true
+    },
     "DeletePromptRouter":{
       "name":"DeletePromptRouter",
       "http":{
@@ -800,6 +895,25 @@
         {"shape":"ThrottlingException"}
       ],
       "documentation":"<p>Returns the account-wide data retention mode for Amazon Bedrock.</p>",
+      "readonly":true
+    },
+    "GetAccountDataRetentionStorage":{
+      "name":"GetAccountDataRetentionStorage",
+      "http":{
+        "method":"GET",
+        "requestUri":"/v1/data_retention/storage/{modelProvider}",
+        "responseCode":200
+      },
+      "input":{"shape":"GetAccountDataRetentionStorageRequest"},
+      "output":{"shape":"GetAccountDataRetentionStorageResponse"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ValidationException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ThrottlingException"}
+      ],
+      "documentation":"<p>Returns your account's stored retention storage configuration for a model provider. Amazon Bedrock determines whether the configuration applies when processing an inference request. Returns <code>ResourceNotFoundException</code> when no configuration exists.</p>",
       "readonly":true
     },
     "GetAdvancedPromptOptimizationJob":{
@@ -1218,6 +1332,63 @@
       "documentation":"<p>Get the current configuration values for model invocation logging.</p>",
       "readonly":true
     },
+    "GetOrganizationDataRetentionStorage":{
+      "name":"GetOrganizationDataRetentionStorage",
+      "http":{
+        "method":"GET",
+        "requestUri":"/v1/data_retention/organization-storage/{modelProvider}",
+        "responseCode":200
+      },
+      "input":{"shape":"GetOrganizationDataRetentionStorageRequest"},
+      "output":{"shape":"GetOrganizationDataRetentionStorageResponse"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ValidationException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ThrottlingException"}
+      ],
+      "documentation":"<p>Returns the organization's retention storage configuration for a model provider. The caller must be the organization's management account or a delegated administrator. Returns ResourceNotFoundException when no configuration exists.</p>",
+      "readonly":true
+    },
+    "GetProject":{
+      "name":"GetProject",
+      "http":{
+        "method":"GET",
+        "requestUri":"/projects/{projectIdentifier}",
+        "responseCode":200
+      },
+      "input":{"shape":"GetProjectRequest"},
+      "output":{"shape":"GetProjectResponse"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ValidationException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ThrottlingException"}
+      ],
+      "documentation":"<p>Retrieves a project.</p>",
+      "readonly":true
+    },
+    "GetProjectDataRetentionStorage":{
+      "name":"GetProjectDataRetentionStorage",
+      "http":{
+        "method":"GET",
+        "requestUri":"/v1/projects/{projectIdentifier}/data_retention/storage/{modelProvider}",
+        "responseCode":200
+      },
+      "input":{"shape":"GetProjectDataRetentionStorageRequest"},
+      "output":{"shape":"GetProjectDataRetentionStorageResponse"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ValidationException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ThrottlingException"}
+      ],
+      "documentation":"<p>Returns a project's retention storage configuration for a model provider. Returns ResourceNotFoundException when the project does not exist, is not owned by the calling account, or has no configuration.</p>",
+      "readonly":true
+    },
     "GetPromptRouter":{
       "name":"GetPromptRouter",
       "http":{
@@ -1273,6 +1444,82 @@
         {"shape":"ThrottlingException"}
       ],
       "documentation":"<p>Gets the resource policy document for a Bedrock resource</p>",
+      "readonly":true
+    },
+    "GetTrustedAccessProgram":{
+      "name":"GetTrustedAccessProgram",
+      "http":{
+        "method":"GET",
+        "requestUri":"/trusted-access-programs/{programIdentifier}",
+        "responseCode":200
+      },
+      "input":{"shape":"GetTrustedAccessProgramRequest"},
+      "output":{"shape":"GetTrustedAccessProgramResponse"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ValidationException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ThrottlingException"}
+      ],
+      "documentation":"<p>Gets trusted access program details and resolves participation for your account and its current organization. If you specify a project, Amazon Bedrock resolves participation for the project, including inheritance from the account and organization. Archived projects remain readable until they expire. Returns the same flat summary as a ListTrustedAccessPrograms item. An absent or invisible program returns ResourceNotFoundException.</p>",
+      "readonly":true
+    },
+    "GetTrustedAccessProgramAccountEnrollment":{
+      "name":"GetTrustedAccessProgramAccountEnrollment",
+      "http":{
+        "method":"GET",
+        "requestUri":"/trusted-access-programs/{programIdentifier}/account-enrollment",
+        "responseCode":200
+      },
+      "input":{"shape":"GetTrustedAccessProgramAccountEnrollmentRequest"},
+      "output":{"shape":"GetTrustedAccessProgramAccountEnrollmentResponse"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ValidationException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ThrottlingException"}
+      ],
+      "documentation":"<p>Gets the calling account's stored enrollment setting for a trusted access program. The account is derived from the authenticated caller. Use GetTrustedAccessProgram to retrieve the resolved participation status, including organization inheritance. If no enrollment is stored, returns inherit without timestamps.</p>",
+      "readonly":true
+    },
+    "GetTrustedAccessProgramOrganizationEnrollment":{
+      "name":"GetTrustedAccessProgramOrganizationEnrollment",
+      "http":{
+        "method":"GET",
+        "requestUri":"/trusted-access-programs/{programIdentifier}/organization-enrollment",
+        "responseCode":200
+      },
+      "input":{"shape":"GetTrustedAccessProgramOrganizationEnrollmentRequest"},
+      "output":{"shape":"GetTrustedAccessProgramOrganizationEnrollmentResponse"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ValidationException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ThrottlingException"}
+      ],
+      "documentation":"<p>Gets the current organization's stored enrollment setting for a trusted access program. The organization and payer account are derived from the authenticated context. Requires operation permission and management-account or Bedrock-specific delegated-administrator authority. The setting can differ from the caller's resolved status returned by GetTrustedAccessProgram. If no enrollment is stored, returns inherit without timestamps.</p>",
+      "readonly":true
+    },
+    "GetTrustedAccessProgramProjectEnrollment":{
+      "name":"GetTrustedAccessProgramProjectEnrollment",
+      "http":{
+        "method":"GET",
+        "requestUri":"/trusted-access-programs/{programIdentifier}/project-enrollment/{projectIdentifier}",
+        "responseCode":200
+      },
+      "input":{"shape":"GetTrustedAccessProgramProjectEnrollmentRequest"},
+      "output":{"shape":"GetTrustedAccessProgramProjectEnrollmentResponse"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ValidationException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ThrottlingException"}
+      ],
+      "documentation":"<p>Gets a named project's stored enrollment setting for a trusted access program. The project must exist in this Region and be owned by the calling account. Archived projects remain readable until they expire. Use GetTrustedAccessProgram with projectIdentifier to retrieve resolved participation, including account and organization inheritance. If no enrollment is stored, returns inherit without timestamps.</p>",
       "readonly":true
     },
     "GetUseCaseForModelAccess":{
@@ -1645,6 +1892,24 @@
       "documentation":"<p>Lists all batch inference jobs in the account. For more information, see <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/batch-inference-view.html\">View details about a batch inference job</a>.</p>",
       "readonly":true
     },
+    "ListProjects":{
+      "name":"ListProjects",
+      "http":{
+        "method":"GET",
+        "requestUri":"/projects",
+        "responseCode":200
+      },
+      "input":{"shape":"ListProjectsRequest"},
+      "output":{"shape":"ListProjectsResponse"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"ValidationException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ThrottlingException"}
+      ],
+      "documentation":"<p>Lists the account's projects. Results are paginated: when the response includes <code>nextToken</code>, pass it in the next request to fetch the following page. Page size is 1-100, default 20. By default every project is returned regardless of status; set <code>statusFilter</code> to list only active or only archived projects.</p>",
+      "readonly":true
+    },
     "ListPromptRouters":{
       "name":"ListPromptRouters",
       "http":{
@@ -1699,6 +1964,25 @@
       ],
       "documentation":"<p>List the tags associated with the specified resource.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/what-is-service.html\">Tagging resources</a> in the <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/what-is-service.html\">Amazon Bedrock User Guide</a>.</p>"
     },
+    "ListTrustedAccessPrograms":{
+      "name":"ListTrustedAccessPrograms",
+      "http":{
+        "method":"GET",
+        "requestUri":"/trusted-access-programs",
+        "responseCode":200
+      },
+      "input":{"shape":"ListTrustedAccessProgramsRequest"},
+      "output":{"shape":"ListTrustedAccessProgramsResponse"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ValidationException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ThrottlingException"}
+      ],
+      "documentation":"<p>Lists all trusted access programs visible to your account, ordered by program ID. Amazon Bedrock resolves participation for your account and its current organization. If you specify a project, Amazon Bedrock resolves participation for the project, including inheritance from the account and organization. Archived projects remain readable until they expire. Amazon Bedrock returns all visible programs in one response.</p>",
+      "readonly":true
+    },
     "PutAccountDataRetention":{
       "name":"PutAccountDataRetention",
       "http":{
@@ -1715,6 +1999,25 @@
         {"shape":"ThrottlingException"}
       ],
       "documentation":"<p>Sets the account-wide data retention mode for Amazon Bedrock.</p>",
+      "idempotent":true
+    },
+    "PutAccountDataRetentionStorage":{
+      "name":"PutAccountDataRetentionStorage",
+      "http":{
+        "method":"PUT",
+        "requestUri":"/v1/data_retention/storage/{modelProvider}",
+        "responseCode":200
+      },
+      "input":{"shape":"PutAccountDataRetentionStorageRequest"},
+      "output":{"shape":"PutAccountDataRetentionStorageResponse"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"ValidationException"},
+        {"shape":"ConflictException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ThrottlingException"}
+      ],
+      "documentation":"<p>Creates or replaces the calling account's retention storage record for a model provider. Amazon Bedrock identifies the account from your authenticated request. Requires resolved trusted access eligibility for a storage-capable program of the provider at a covering scope; otherwise returns ConflictException. Writes replace the whole record; the last write wins.</p> <p>For <code>customer_managed</code> destinations, Amazon Bedrock validates the caller's and service's access to the bucket and key before saving the configuration. The bucket and key must be in the AWS Region where you register the configuration. Validation failures reject the write.</p>",
       "idempotent":true
     },
     "PutEnforcedGuardrailConfiguration":{
@@ -1755,6 +2058,45 @@
       "documentation":"<p>Set the configuration values for model invocation logging.</p>",
       "idempotent":true
     },
+    "PutOrganizationDataRetentionStorage":{
+      "name":"PutOrganizationDataRetentionStorage",
+      "http":{
+        "method":"PUT",
+        "requestUri":"/v1/data_retention/organization-storage/{modelProvider}",
+        "responseCode":200
+      },
+      "input":{"shape":"PutOrganizationDataRetentionStorageRequest"},
+      "output":{"shape":"PutOrganizationDataRetentionStorageResponse"},
+      "errors":[
+        {"shape":"AccessDeniedException"},
+        {"shape":"ValidationException"},
+        {"shape":"ConflictException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ThrottlingException"}
+      ],
+      "documentation":"<p>Creates or replaces the organization's retention storage record for a model provider. The organization is resolved from the authenticated caller's management context; the caller must be the organization's management account or a delegated administrator. Requires resolved organization-scope trusted access eligibility for a storage-capable program of the provider; otherwise returns ConflictException. Writes replace the whole record; the last write wins.</p> <p>For <code>customer_managed</code> destinations, Amazon Bedrock validates the caller's and service's access to the bucket and key before saving the configuration. The bucket and key must be in the AWS Region where you register the configuration. Validation failures reject the write.</p>",
+      "idempotent":true
+    },
+    "PutProjectDataRetentionStorage":{
+      "name":"PutProjectDataRetentionStorage",
+      "http":{
+        "method":"PUT",
+        "requestUri":"/v1/projects/{projectIdentifier}/data_retention/storage/{modelProvider}",
+        "responseCode":200
+      },
+      "input":{"shape":"PutProjectDataRetentionStorageRequest"},
+      "output":{"shape":"PutProjectDataRetentionStorageResponse"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ValidationException"},
+        {"shape":"ConflictException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ThrottlingException"}
+      ],
+      "documentation":"<p>Creates or replaces a project's retention storage record for a model provider. The project must be active in this AWS Region and owned by the calling account. A missing or unowned project returns <code>ResourceNotFoundException</code>; an archived project returns <code>ValidationException</code>.</p> <p>Requires applicable project, account, or organization approval for a storage-capable trusted access program of the provider, with no applicable revocation. Otherwise, the operation returns <code>ConflictException</code>. Enrollment is not required to save the configuration.</p> <p>The request replaces the complete stored configuration. The last successful write wins.</p> <p>For <code>customer_managed</code> destinations, Amazon Bedrock validates the caller's and service's access to the bucket and key before saving the configuration. The bucket and key must be in the AWS Region where you register the configuration. Validation failures reject the write.</p>",
+      "idempotent":true
+    },
     "PutResourcePolicy":{
       "name":"PutResourcePolicy",
       "http":{
@@ -1772,6 +2114,66 @@
         {"shape":"ThrottlingException"}
       ],
       "documentation":"<p>Adds a resource policy for a Bedrock resource.</p>",
+      "idempotent":true
+    },
+    "PutTrustedAccessProgramAccountEnrollment":{
+      "name":"PutTrustedAccessProgramAccountEnrollment",
+      "http":{
+        "method":"PUT",
+        "requestUri":"/trusted-access-programs/{programIdentifier}/account-enrollment",
+        "responseCode":200
+      },
+      "input":{"shape":"PutTrustedAccessProgramAccountEnrollmentRequest"},
+      "output":{"shape":"PutTrustedAccessProgramAccountEnrollmentResponse"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ValidationException"},
+        {"shape":"ConflictException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ThrottlingException"}
+      ],
+      "documentation":"<p>Sets your account's enrollment preference for a trusted access program. Amazon Bedrock identifies the account from your authenticated request. To enable enrollment, your account needs applicable approval and no applicable revocation, including when you repeat an enabled setting. Otherwise, Amazon Bedrock returns <code>ConflictException</code> and preserves the stored setting. With the required permissions, you can set <code>disabled</code> or <code>inherit</code> even if your account is ineligible or its eligibility is revoked.</p>",
+      "idempotent":true
+    },
+    "PutTrustedAccessProgramOrganizationEnrollment":{
+      "name":"PutTrustedAccessProgramOrganizationEnrollment",
+      "http":{
+        "method":"PUT",
+        "requestUri":"/trusted-access-programs/{programIdentifier}/organization-enrollment",
+        "responseCode":200
+      },
+      "input":{"shape":"PutTrustedAccessProgramOrganizationEnrollmentRequest"},
+      "output":{"shape":"PutTrustedAccessProgramOrganizationEnrollmentResponse"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ValidationException"},
+        {"shape":"ConflictException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ThrottlingException"}
+      ],
+      "documentation":"<p>Sets the current organization's enrollment preference for a trusted access program. The organization and payer account are derived from the authenticated context. Every write requires operation permission and management-account or Bedrock-specific delegated-administrator authority. Enabling requires approval and no revocation for the organization, including when repeating an enabled setting; otherwise returns ConflictException and preserves the stored setting. Account approval alone is insufficient. If you have the required permissions, you can set the enrollment preference to <code>disabled</code> or <code>inherit</code> even if your organization is ineligible or its eligibility is revoked.</p>",
+      "idempotent":true
+    },
+    "PutTrustedAccessProgramProjectEnrollment":{
+      "name":"PutTrustedAccessProgramProjectEnrollment",
+      "http":{
+        "method":"PUT",
+        "requestUri":"/trusted-access-programs/{programIdentifier}/project-enrollment/{projectIdentifier}",
+        "responseCode":200
+      },
+      "input":{"shape":"PutTrustedAccessProgramProjectEnrollmentRequest"},
+      "output":{"shape":"PutTrustedAccessProgramProjectEnrollmentResponse"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ValidationException"},
+        {"shape":"ConflictException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ThrottlingException"}
+      ],
+      "documentation":"<p>Sets a named project's enrollment preference for a trusted access program. The project must be active in this Region and owned by the calling account. Enabling requires applicable project, account, or organization approval and no applicable revocation, including when repeating an enabled setting; otherwise returns ConflictException and preserves the stored setting. Authorized disable and inherit writes are allowed while ineligible or revoked. Archived projects reject all writes with ValidationException.</p>",
       "idempotent":true
     },
     "PutUseCaseForModelAccess":{
@@ -1849,6 +2251,60 @@
         {"shape":"ThrottlingException"}
       ],
       "documentation":"<p>Initiates a test workflow to validate Automated Reasoning policy tests. The workflow executes the specified tests against the policy and generates validation results.</p>"
+    },
+    "StartTrustedAccessProgramAccountApplication":{
+      "name":"StartTrustedAccessProgramAccountApplication",
+      "http":{
+        "method":"POST",
+        "requestUri":"/trusted-access-programs/{programIdentifier}/account-application",
+        "responseCode":200
+      },
+      "input":{"shape":"StartTrustedAccessProgramAccountApplicationRequest"},
+      "output":{"shape":"StartTrustedAccessProgramAccountApplicationResponse"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ValidationException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ThrottlingException"}
+      ],
+      "documentation":"<p>Prepare a provider application handoff for the calling account. This does not submit an application, grant eligibility, or change enrollment. Programs without self-service applications return ValidationException with guidance to contact the AWS account team. Repeated calls can issue fresh tokens. Successful responses use Cache-Control: no-store.</p>"
+    },
+    "StartTrustedAccessProgramOrganizationApplication":{
+      "name":"StartTrustedAccessProgramOrganizationApplication",
+      "http":{
+        "method":"POST",
+        "requestUri":"/trusted-access-programs/{programIdentifier}/organization-application",
+        "responseCode":200
+      },
+      "input":{"shape":"StartTrustedAccessProgramOrganizationApplicationRequest"},
+      "output":{"shape":"StartTrustedAccessProgramOrganizationApplicationResponse"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ValidationException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ThrottlingException"}
+      ],
+      "documentation":"<p>Prepare a provider application handoff for the calling account's current organization. Requires operation permission and management-account or Bedrock-specific delegated-administrator authority. This does not submit an application, grant eligibility, or change enrollment. Programs without self-service applications return ValidationException with guidance to contact the AWS account team. Repeated calls can issue fresh tokens. Successful responses use Cache-Control: no-store.</p>"
+    },
+    "StartTrustedAccessProgramProjectApplication":{
+      "name":"StartTrustedAccessProgramProjectApplication",
+      "http":{
+        "method":"POST",
+        "requestUri":"/trusted-access-programs/{programIdentifier}/project-application/{projectIdentifier}",
+        "responseCode":200
+      },
+      "input":{"shape":"StartTrustedAccessProgramProjectApplicationRequest"},
+      "output":{"shape":"StartTrustedAccessProgramProjectApplicationResponse"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ValidationException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ThrottlingException"}
+      ],
+      "documentation":"<p>Prepare a provider application handoff for a named project. The project must be active in this Region and owned by the calling account. Archived projects return ValidationException. This does not submit an application, grant eligibility, or change enrollment. Programs without self-service applications return ValidationException with guidance to contact the AWS account team. Repeated calls can issue fresh tokens. Successful responses use Cache-Control: no-store.</p>"
     },
     "StopAdvancedPromptOptimizationJob":{
       "name":"StopAdvancedPromptOptimizationJob",
@@ -2084,6 +2540,25 @@
         {"shape":"ThrottlingException"}
       ],
       "documentation":"<p>Updates the configuration of an existing endpoint for a model from Amazon Bedrock Marketplace.</p>"
+    },
+    "UpdateProject":{
+      "name":"UpdateProject",
+      "http":{
+        "method":"POST",
+        "requestUri":"/projects/{projectIdentifier}",
+        "responseCode":200
+      },
+      "input":{"shape":"UpdateProjectRequest"},
+      "output":{"shape":"UpdateProjectResponse"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ValidationException"},
+        {"shape":"ConflictException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ThrottlingException"}
+      ],
+      "documentation":"<p>Updates one mutable project field per call: exactly one of <code>name</code> or <code>dataRetention</code> must be set. The default project and archived projects cannot be updated.</p>"
     },
     "UpdateProvisionedModelThroughput":{
       "name":"UpdateProvisionedModelThroughput",
@@ -2378,6 +2853,61 @@
         "ModelEvaluation",
         "RagEvaluation"
       ]
+    },
+    "ArchiveProjectRequest":{
+      "type":"structure",
+      "required":["projectIdentifier"],
+      "members":{
+        "projectIdentifier":{
+          "shape":"ProjectIdentifier",
+          "documentation":"<p>The id or ARN of the project to archive.</p>",
+          "location":"uri",
+          "locationName":"projectIdentifier"
+        }
+      },
+      "documentation":"<p>Identifies the project to archive.</p>"
+    },
+    "ArchiveProjectResponse":{
+      "type":"structure",
+      "required":[
+        "id",
+        "arn",
+        "name",
+        "status",
+        "createdAt",
+        "dataRetention"
+      ],
+      "members":{
+        "id":{
+          "shape":"ProjectResourceId",
+          "documentation":"<p>The project ID. The account's default project uses <code>default</code>; a named project's generated ID starts with <code>proj_</code>.</p>"
+        },
+        "arn":{
+          "shape":"ProjectArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the project.</p>"
+        },
+        "name":{
+          "shape":"ProjectName",
+          "documentation":"<p>The project's display name. Project names do not have to be unique.</p>"
+        },
+        "status":{
+          "shape":"ProjectStatus",
+          "documentation":"<p>The project's lifecycle status.</p>"
+        },
+        "createdAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The time the project was created.</p>"
+        },
+        "archivedAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The time the project was archived.</p>"
+        },
+        "dataRetention":{
+          "shape":"ProjectDataRetention",
+          "documentation":"<p>The project's data retention setting. A mode of <code>inherit</code> defers to the account setting or model default.</p>"
+        }
+      },
+      "documentation":"<p>The project after the archive operation.</p>"
     },
     "Arn":{
       "type":"string",
@@ -5906,6 +6436,67 @@
         }
       }
     },
+    "CreateProjectRequest":{
+      "type":"structure",
+      "required":["name"],
+      "members":{
+        "name":{
+          "shape":"ProjectName",
+          "documentation":"<p>The display name for the project. Project names do not have to be unique.</p>"
+        },
+        "tags":{
+          "shape":"TagList",
+          "documentation":"<p>The tags to associate with the project.</p>"
+        },
+        "dataRetention":{
+          "shape":"ProjectDataRetention",
+          "documentation":"<p>The project's data-retention mode. If you omit this field, Amazon Bedrock sets the mode to <code>inherit</code>. The project then uses the account setting or the model default.</p>"
+        }
+      },
+      "documentation":"<p>The display name, optional tags, and optional data retention setting for the new project.</p>"
+    },
+    "CreateProjectResponse":{
+      "type":"structure",
+      "required":[
+        "id",
+        "arn",
+        "name",
+        "status",
+        "createdAt",
+        "dataRetention"
+      ],
+      "members":{
+        "id":{
+          "shape":"ProjectResourceId",
+          "documentation":"<p>The project ID. The account's default project uses <code>default</code>; a named project's generated ID starts with <code>proj_</code>.</p>"
+        },
+        "arn":{
+          "shape":"ProjectArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the project.</p>"
+        },
+        "name":{
+          "shape":"ProjectName",
+          "documentation":"<p>The project's display name. Project names do not have to be unique.</p>"
+        },
+        "status":{
+          "shape":"ProjectStatus",
+          "documentation":"<p>The project's lifecycle status.</p>"
+        },
+        "createdAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The time the project was created.</p>"
+        },
+        "archivedAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The time the project was archived.</p>"
+        },
+        "dataRetention":{
+          "shape":"ProjectDataRetention",
+          "documentation":"<p>The project's data retention setting. A mode of <code>inherit</code> defers to the account setting or model default.</p>"
+        }
+      },
+      "documentation":"<p>The newly created project.</p>"
+    },
     "CreatePromptRouterRequest":{
       "type":"structure",
       "required":[
@@ -6297,6 +6888,88 @@
         "inherit"
       ]
     },
+    "DataRetentionStorageBucketArn":{
+      "type":"string",
+      "documentation":"<p>The Amazon Resource Name (ARN) of the Amazon S3 bucket for retained data.</p>",
+      "max":2048,
+      "min":1,
+      "pattern":"arn:aws(-[^:]+)?:s3:::[a-z0-9][a-z0-9.-]{1,61}[a-z0-9]"
+    },
+    "DataRetentionStorageConfiguration":{
+      "type":"structure",
+      "required":[
+        "kmsKeyArn",
+        "s3BucketArn",
+        "s3BucketOwner"
+      ],
+      "members":{
+        "kmsKeyArn":{
+          "shape":"KmsKeyArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the customer managed AWS Key Management Service (AWS KMS) key you use to encrypt retained data. Specify an enabled symmetric encryption key in the AWS Region where you register the configuration. You cannot specify a key alias.</p>"
+        },
+        "s3BucketArn":{
+          "shape":"DataRetentionStorageBucketArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the Amazon S3 bucket that receives retained data. The bucket must be in the AWS Region where you register the configuration.</p>"
+        },
+        "s3BucketOwner":{
+          "shape":"AccountId",
+          "documentation":"<p>The AWS account ID of the destination bucket's owner. You must specify the owner, even when the bucket belongs to another account. Amazon Bedrock uses this ID to verify bucket ownership for each delivery request.</p>"
+        }
+      },
+      "documentation":"<p>You provide the Amazon S3 destination and AWS Key Management Service (AWS KMS) key for retained data.</p> <p>Before saving a customer-managed destination, Amazon Bedrock validates that you can use the bucket and key and that their resource policies permit the required Amazon Bedrock access. If validation fails, Amazon Bedrock rejects the configuration without saving it.</p> <p>You need <code>s3:PutObject</code>, <code>s3:GetObject</code>, <code>kms:GenerateDataKey</code>, and <code>kms:Decrypt</code> permissions. The Amazon S3 bucket policy must allow the Amazon Bedrock service principal, <code>bedrock.amazonaws.com</code>, to put, get, and delete objects with conditions appropriate to the configuration scope.</p> <p>Use <code>aws:SourceAccount</code> for account scope, <code>aws:SourceOrgID</code> for organization scope, and both <code>aws:SourceAccount</code> and the project's <code>aws:SourceArn</code> for project scope. Validation rejects resource policies that allow the service principal to access the destination without the required scope conditions.</p> <p>The key policy must permit <code>kms:GenerateDataKey</code> and <code>kms:Decrypt</code> for both uses of the key: direct use by Amazon Bedrock with the scope conditions, and use through Amazon S3 with a <code>kms:ViaService</code> condition for the bucket's Region and <code>kms:EncryptionContext:aws:s3:arn</code> scoped to the bucket.</p>"
+    },
+    "DataRetentionStorageDestination":{
+      "type":"string",
+      "documentation":"<p>Where a scope's retained data is delivered. Clients must tolerate unknown values.</p>",
+      "enum":[
+        "customer_managed",
+        "amazon_managed"
+      ]
+    },
+    "DataRetentionStorageModelProvider":{
+      "type":"string",
+      "documentation":"<p>Model provider owning a retention storage configuration. Clients must tolerate unknown values.</p>",
+      "enum":[
+        "anthropic",
+        "openai"
+      ]
+    },
+    "DataRetentionStorageResourceStatus":{
+      "type":"string",
+      "documentation":"<p>Validation state of a configured destination resource. Clients must tolerate unknown values.</p>",
+      "enum":[
+        "pending",
+        "active",
+        "access_denied"
+      ]
+    },
+    "DataRetentionStorageScope":{
+      "type":"string",
+      "documentation":"<p>Scope addressed by a retention storage operation. Clients must tolerate unknown values.</p>",
+      "enum":[
+        "account",
+        "organization",
+        "project"
+      ]
+    },
+    "DeleteAccountDataRetentionStorageRequest":{
+      "type":"structure",
+      "required":["modelProvider"],
+      "members":{
+        "modelProvider":{
+          "shape":"DataRetentionStorageModelProvider",
+          "documentation":"<p>The model provider whose retention storage configuration is addressed by this request.</p>",
+          "location":"uri",
+          "locationName":"modelProvider"
+        }
+      },
+      "documentation":"<p>Identifies the model provider whose account retention storage configuration to delete.</p>"
+    },
+    "DeleteAccountDataRetentionStorageResponse":{
+      "type":"structure",
+      "members":{},
+      "documentation":"<p>A successful deletion returns no response fields.</p>"
+    },
     "DeleteAutomatedReasoningPolicyBuildWorkflowRequest":{
       "type":"structure",
       "required":[
@@ -6522,6 +7195,51 @@
     "DeleteModelInvocationLoggingConfigurationResponse":{
       "type":"structure",
       "members":{}
+    },
+    "DeleteOrganizationDataRetentionStorageRequest":{
+      "type":"structure",
+      "required":["modelProvider"],
+      "members":{
+        "modelProvider":{
+          "shape":"DataRetentionStorageModelProvider",
+          "documentation":"<p>The model provider whose retention storage configuration is addressed by this request.</p>",
+          "location":"uri",
+          "locationName":"modelProvider"
+        }
+      },
+      "documentation":"<p>Identifies the model provider whose organization retention storage configuration to delete.</p>"
+    },
+    "DeleteOrganizationDataRetentionStorageResponse":{
+      "type":"structure",
+      "members":{},
+      "documentation":"<p>A successful deletion returns no response fields.</p>"
+    },
+    "DeleteProjectDataRetentionStorageRequest":{
+      "type":"structure",
+      "required":[
+        "projectIdentifier",
+        "modelProvider"
+      ],
+      "members":{
+        "projectIdentifier":{
+          "shape":"ProjectIdentifier",
+          "documentation":"<p>The ID or ARN of a named project owned by the calling account in this AWS Region. The default project is not supported; use the account-level retention storage operations instead.</p>",
+          "location":"uri",
+          "locationName":"projectIdentifier"
+        },
+        "modelProvider":{
+          "shape":"DataRetentionStorageModelProvider",
+          "documentation":"<p>The model provider whose retention storage configuration is addressed by this request.</p>",
+          "location":"uri",
+          "locationName":"modelProvider"
+        }
+      },
+      "documentation":"<p>Identifies the project and model provider whose retention storage configuration to delete.</p>"
+    },
+    "DeleteProjectDataRetentionStorageResponse":{
+      "type":"structure",
+      "members":{},
+      "documentation":"<p>A successful deletion returns no response fields.</p>"
     },
     "DeletePromptRouterRequest":{
       "type":"structure",
@@ -7488,6 +8206,59 @@
         }
       }
     },
+    "GetAccountDataRetentionStorageRequest":{
+      "type":"structure",
+      "required":["modelProvider"],
+      "members":{
+        "modelProvider":{
+          "shape":"DataRetentionStorageModelProvider",
+          "documentation":"<p>The model provider whose retention storage configuration is addressed by this request.</p>",
+          "location":"uri",
+          "locationName":"modelProvider"
+        }
+      },
+      "documentation":"<p>Identifies the model provider whose account retention storage configuration to retrieve.</p>"
+    },
+    "GetAccountDataRetentionStorageResponse":{
+      "type":"structure",
+      "required":[
+        "scope",
+        "modelProvider",
+        "storageDestination",
+        "updatedAt"
+      ],
+      "members":{
+        "scope":{
+          "shape":"DataRetentionStorageScope",
+          "documentation":"<p>Scope addressed by the operation that returned this record.</p>"
+        },
+        "modelProvider":{
+          "shape":"DataRetentionStorageModelProvider",
+          "documentation":"<p>Model provider this configuration applies to.</p>"
+        },
+        "storageDestination":{
+          "shape":"DataRetentionStorageDestination",
+          "documentation":"<p>Where this record delivers retained data.</p>"
+        },
+        "storageConfiguration":{
+          "shape":"DataRetentionStorageConfiguration",
+          "documentation":"<p>The stored destination and key. Present only when storageDestination is customer_managed.</p>"
+        },
+        "updatedAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>Time the stored record last changed.</p>"
+        },
+        "kmsKeyStatus":{
+          "shape":"DataRetentionStorageResourceStatus",
+          "documentation":"<p>Validation state of the KMS key. Present only when storageDestination is customer_managed.</p>"
+        },
+        "s3BucketStatus":{
+          "shape":"DataRetentionStorageResourceStatus",
+          "documentation":"<p>Validation state of the bucket. Present only when storageDestination is customer_managed.</p>"
+        }
+      },
+      "documentation":"<p>The calling account's stored retention storage configuration for the requested model provider.</p>"
+    },
     "GetAdvancedPromptOptimizationJobRequest":{
       "type":"structure",
       "required":["jobIdentifier"],
@@ -8208,6 +8979,12 @@
           "documentation":"<p>The model identifier. </p>",
           "location":"uri",
           "locationName":"modelIdentifier"
+        },
+        "projectIdentifier":{
+          "shape":"ProjectIdentifier",
+          "documentation":"<p>The ID or Amazon Resource Name (ARN) of a project. Amazon Bedrock uses the project's trusted access program participation when determining whether to return the model. The project must belong to your account in the same AWS Region and partition as the request.</p> <p>If you omit this parameter or specify <code>default</code>, Amazon Bedrock uses your account's participation, including organization inheritance.</p> <p>A project that doesn't exist or is archived causes a <code>ValidationException</code>. A model outside the project's available model catalog causes a <code>ResourceNotFoundException</code>.</p>",
+          "location":"querystring",
+          "locationName":"projectIdentifier"
         }
       }
     },
@@ -8400,6 +9177,12 @@
           "documentation":"<p>The ID or Amazon Resource Name (ARN) of the inference profile.</p>",
           "location":"uri",
           "locationName":"inferenceProfileIdentifier"
+        },
+        "projectIdentifier":{
+          "shape":"ProjectIdentifier",
+          "documentation":"<p>The ID or Amazon Resource Name (ARN) of a project. Amazon Bedrock uses the project's trusted access program participation when determining whether to return a system-defined inference profile. The project must belong to your account in the same AWS Region and partition as the request.</p> <p>If you omit this parameter or specify <code>default</code>, Amazon Bedrock uses your account's participation, including organization inheritance.</p> <p>A project that doesn't exist or is archived causes a <code>ValidationException</code>. Specifying a project other than <code>default</code> for an application inference profile also causes a <code>ValidationException</code>.</p>",
+          "location":"querystring",
+          "locationName":"projectIdentifier"
         }
       }
     },
@@ -8849,6 +9632,181 @@
         }
       }
     },
+    "GetOrganizationDataRetentionStorageRequest":{
+      "type":"structure",
+      "required":["modelProvider"],
+      "members":{
+        "modelProvider":{
+          "shape":"DataRetentionStorageModelProvider",
+          "documentation":"<p>The model provider whose retention storage configuration is addressed by this request.</p>",
+          "location":"uri",
+          "locationName":"modelProvider"
+        }
+      },
+      "documentation":"<p>Identifies the model provider whose organization retention storage configuration to retrieve.</p>"
+    },
+    "GetOrganizationDataRetentionStorageResponse":{
+      "type":"structure",
+      "required":[
+        "scope",
+        "modelProvider",
+        "storageDestination",
+        "updatedAt"
+      ],
+      "members":{
+        "scope":{
+          "shape":"DataRetentionStorageScope",
+          "documentation":"<p>Scope addressed by the operation that returned this record.</p>"
+        },
+        "modelProvider":{
+          "shape":"DataRetentionStorageModelProvider",
+          "documentation":"<p>Model provider this configuration applies to.</p>"
+        },
+        "storageDestination":{
+          "shape":"DataRetentionStorageDestination",
+          "documentation":"<p>Where this record delivers retained data.</p>"
+        },
+        "storageConfiguration":{
+          "shape":"DataRetentionStorageConfiguration",
+          "documentation":"<p>The stored destination and key. Present only when storageDestination is customer_managed.</p>"
+        },
+        "updatedAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>Time the stored record last changed.</p>"
+        },
+        "kmsKeyStatus":{
+          "shape":"DataRetentionStorageResourceStatus",
+          "documentation":"<p>Validation state of the KMS key. Present only when storageDestination is customer_managed.</p>"
+        },
+        "s3BucketStatus":{
+          "shape":"DataRetentionStorageResourceStatus",
+          "documentation":"<p>Validation state of the bucket. Present only when storageDestination is customer_managed.</p>"
+        }
+      },
+      "documentation":"<p>The organization's stored retention storage configuration for the requested model provider.</p>"
+    },
+    "GetProjectDataRetentionStorageRequest":{
+      "type":"structure",
+      "required":[
+        "projectIdentifier",
+        "modelProvider"
+      ],
+      "members":{
+        "projectIdentifier":{
+          "shape":"ProjectIdentifier",
+          "documentation":"<p>The ID or ARN of a named project owned by the calling account in this AWS Region. The default project is not supported; use the account-level retention storage operations instead.</p>",
+          "location":"uri",
+          "locationName":"projectIdentifier"
+        },
+        "modelProvider":{
+          "shape":"DataRetentionStorageModelProvider",
+          "documentation":"<p>The model provider whose retention storage configuration is addressed by this request.</p>",
+          "location":"uri",
+          "locationName":"modelProvider"
+        }
+      },
+      "documentation":"<p>Identifies the project and model provider whose retention storage configuration to retrieve.</p>"
+    },
+    "GetProjectDataRetentionStorageResponse":{
+      "type":"structure",
+      "required":[
+        "scope",
+        "modelProvider",
+        "storageDestination",
+        "updatedAt",
+        "projectArn"
+      ],
+      "members":{
+        "scope":{
+          "shape":"DataRetentionStorageScope",
+          "documentation":"<p>Scope addressed by the operation that returned this record.</p>"
+        },
+        "modelProvider":{
+          "shape":"DataRetentionStorageModelProvider",
+          "documentation":"<p>Model provider this configuration applies to.</p>"
+        },
+        "storageDestination":{
+          "shape":"DataRetentionStorageDestination",
+          "documentation":"<p>Where this record delivers retained data.</p>"
+        },
+        "storageConfiguration":{
+          "shape":"DataRetentionStorageConfiguration",
+          "documentation":"<p>The stored destination and key. Present only when storageDestination is customer_managed.</p>"
+        },
+        "updatedAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>Time the stored record last changed.</p>"
+        },
+        "kmsKeyStatus":{
+          "shape":"DataRetentionStorageResourceStatus",
+          "documentation":"<p>Validation state of the KMS key. Present only when storageDestination is customer_managed.</p>"
+        },
+        "s3BucketStatus":{
+          "shape":"DataRetentionStorageResourceStatus",
+          "documentation":"<p>Validation state of the bucket. Present only when storageDestination is customer_managed.</p>"
+        },
+        "projectArn":{
+          "shape":"ProjectArn",
+          "documentation":"<p>ARN of the configured project.</p>"
+        }
+      },
+      "documentation":"<p>The project's stored retention storage configuration for the requested model provider.</p>"
+    },
+    "GetProjectRequest":{
+      "type":"structure",
+      "required":["projectIdentifier"],
+      "members":{
+        "projectIdentifier":{
+          "shape":"ProjectIdentifier",
+          "documentation":"<p>The id or ARN of the project to retrieve.</p>",
+          "location":"uri",
+          "locationName":"projectIdentifier"
+        }
+      },
+      "documentation":"<p>Identifies the project to retrieve.</p>"
+    },
+    "GetProjectResponse":{
+      "type":"structure",
+      "required":[
+        "id",
+        "arn",
+        "name",
+        "status",
+        "createdAt",
+        "dataRetention"
+      ],
+      "members":{
+        "id":{
+          "shape":"ProjectResourceId",
+          "documentation":"<p>The project ID. The account's default project uses <code>default</code>; a named project's generated ID starts with <code>proj_</code>.</p>"
+        },
+        "arn":{
+          "shape":"ProjectArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the project.</p>"
+        },
+        "name":{
+          "shape":"ProjectName",
+          "documentation":"<p>The project's display name. Project names do not have to be unique.</p>"
+        },
+        "status":{
+          "shape":"ProjectStatus",
+          "documentation":"<p>The project's lifecycle status.</p>"
+        },
+        "createdAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The time the project was created.</p>"
+        },
+        "archivedAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The time the project was archived.</p>"
+        },
+        "dataRetention":{
+          "shape":"ProjectDataRetention",
+          "documentation":"<p>The project's data retention setting. A mode of <code>inherit</code> defers to the account setting or model default.</p>"
+        }
+      },
+      "documentation":"<p>The requested project's details and data retention setting.</p>"
+    },
     "GetPromptRouterRequest":{
       "type":"structure",
       "required":["promptRouterArn"],
@@ -9016,6 +9974,187 @@
           "documentation":"<p>The JSON string representing the Bedrock resource policy.</p>"
         }
       }
+    },
+    "GetTrustedAccessProgramAccountEnrollmentRequest":{
+      "type":"structure",
+      "required":["programIdentifier"],
+      "members":{
+        "programIdentifier":{
+          "shape":"TrustedAccessProgramIdentifier",
+          "documentation":"<p>The identifier of the trusted access program.</p>",
+          "location":"uri",
+          "locationName":"programIdentifier"
+        }
+      },
+      "documentation":"<p>Identifies the trusted access program whose saved account enrollment preference to retrieve.</p>"
+    },
+    "GetTrustedAccessProgramAccountEnrollmentResponse":{
+      "type":"structure",
+      "required":["optIn"],
+      "members":{
+        "optIn":{
+          "shape":"TrustedAccessProgramOptIn",
+          "documentation":"<p>Stored preference at the addressed scope. A missing enrollment returns inherit without updatedAt.</p>"
+        },
+        "updatedAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>Last change to the stored enrollment. Present whenever a row exists, including an explicitly stored inherit setting.</p>"
+        }
+      },
+      "documentation":"<p>The account's stored enrollment. updatedAt is present whenever a row exists, including an explicit inherit setting.</p>"
+    },
+    "GetTrustedAccessProgramOrganizationEnrollmentRequest":{
+      "type":"structure",
+      "required":["programIdentifier"],
+      "members":{
+        "programIdentifier":{
+          "shape":"TrustedAccessProgramIdentifier",
+          "documentation":"<p>The identifier of the trusted access program.</p>",
+          "location":"uri",
+          "locationName":"programIdentifier"
+        }
+      },
+      "documentation":"<p>Identifies the trusted access program whose saved organization enrollment preference to retrieve.</p>"
+    },
+    "GetTrustedAccessProgramOrganizationEnrollmentResponse":{
+      "type":"structure",
+      "required":["optIn"],
+      "members":{
+        "optIn":{
+          "shape":"TrustedAccessProgramOptIn",
+          "documentation":"<p>Stored preference at the addressed scope. A missing enrollment returns inherit without updatedAt.</p>"
+        },
+        "updatedAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>Last change to the stored enrollment. Present whenever a row exists, including an explicitly stored inherit setting.</p>"
+        }
+      },
+      "documentation":"<p>The organization's stored enrollment. updatedAt is present whenever a row exists, including an explicit inherit setting.</p>"
+    },
+    "GetTrustedAccessProgramProjectEnrollmentRequest":{
+      "type":"structure",
+      "required":[
+        "programIdentifier",
+        "projectIdentifier"
+      ],
+      "members":{
+        "programIdentifier":{
+          "shape":"TrustedAccessProgramIdentifier",
+          "documentation":"<p>The identifier of the trusted access program.</p>",
+          "location":"uri",
+          "locationName":"programIdentifier"
+        },
+        "projectIdentifier":{
+          "shape":"ProjectIdentifier",
+          "documentation":"<p>The id or ARN of the named Bedrock project. The default project is not supported; use GetTrustedAccessProgramAccountEnrollment for account-level enrollment. An ARN from another account, Region, or partition returns ValidationException. A project that does not exist in the calling account returns ResourceNotFoundException.</p>",
+          "location":"uri",
+          "locationName":"projectIdentifier"
+        }
+      },
+      "documentation":"<p>Identifies the trusted access program and named project whose saved enrollment preference to retrieve.</p>"
+    },
+    "GetTrustedAccessProgramProjectEnrollmentResponse":{
+      "type":"structure",
+      "required":["optIn"],
+      "members":{
+        "optIn":{
+          "shape":"TrustedAccessProgramOptIn",
+          "documentation":"<p>Stored preference at the addressed scope. A missing enrollment returns inherit without updatedAt.</p>"
+        },
+        "updatedAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>Last change to the stored enrollment. Present whenever a row exists, including an explicitly stored inherit setting.</p>"
+        }
+      },
+      "documentation":"<p>The project's stored enrollment. updatedAt is present whenever a row exists, including an explicit inherit setting.</p>"
+    },
+    "GetTrustedAccessProgramRequest":{
+      "type":"structure",
+      "required":["programIdentifier"],
+      "members":{
+        "programIdentifier":{
+          "shape":"TrustedAccessProgramIdentifier",
+          "documentation":"<p>Identifier of the trusted access program.</p>",
+          "location":"uri",
+          "locationName":"programIdentifier"
+        },
+        "projectIdentifier":{
+          "shape":"ProjectIdentifier",
+          "documentation":"<p>The ID or ARN of a named Bedrock project owned by the calling account in this Region. When omitted, resolves participation for the calling account, including participation inherited from its current organization. When specified, resolves participation for the project, including participation inherited from the account and its current organization. You cannot specify the default project. Omit this field to resolve its inherited participation. An ARN from another account, Region, or partition returns ValidationException. A project that does not exist in the calling account returns ResourceNotFoundException.</p>",
+          "location":"querystring",
+          "locationName":"projectIdentifier"
+        }
+      },
+      "documentation":"<p>Identifies the trusted access program and optional named project for which to resolve participation.</p>"
+    },
+    "GetTrustedAccessProgramResponse":{
+      "type":"structure",
+      "required":[
+        "programId",
+        "name",
+        "description",
+        "providerName",
+        "detailsUrl",
+        "status",
+        "source",
+        "resolvedFor",
+        "optIn"
+      ],
+      "members":{
+        "programId":{
+          "shape":"TrustedAccessProgramId",
+          "documentation":"<p>Identifier of the trusted access program.</p>"
+        },
+        "name":{
+          "shape":"TrustedAccessProgramName",
+          "documentation":"<p>Display name of the program.</p>"
+        },
+        "description":{
+          "shape":"String",
+          "documentation":"<p>Description of the program and its effects on model access or data handling.</p>"
+        },
+        "providerName":{
+          "shape":"BrandedName",
+          "documentation":"<p>Name of the model provider offering the program.</p>"
+        },
+        "detailsUrl":{
+          "shape":"TrustedAccessProgramUrl",
+          "documentation":"<p>URL with program details, terms, and instructions for obtaining access.</p>"
+        },
+        "enrollmentUrl":{
+          "shape":"TrustedAccessProgramUrl",
+          "documentation":"<p>Provider application intake URL. Omitted when the program has no customer-facing intake URL.</p>"
+        },
+        "status":{
+          "shape":"TrustedAccessProgramStatus",
+          "documentation":"<p>Participation status resolved for the account and optional project context.</p>"
+        },
+        "statusReason":{
+          "shape":"String",
+          "documentation":"<p>Nonempty explanation for requestable or revoked status. Omitted for other statuses.</p>"
+        },
+        "source":{
+          "shape":"TrustedAccessProgramScope",
+          "documentation":"<p>Scope deciding the status. This can differ from the scope supplying the resolved opt-in preference and enrollment timestamps.</p>"
+        },
+        "eligibilityScope":{
+          "shape":"TrustedAccessProgramScope",
+          "documentation":"<p>Scope supplying the applicable approval or most-specific revocation. Omitted when no approval or revocation applies.</p>"
+        },
+        "resolvedFor":{
+          "shape":"TrustedAccessResolutionContext",
+          "documentation":"<p>Account and optional project context for which participation was resolved.</p>"
+        },
+        "optIn":{
+          "shape":"TrustedAccessProgramOptIn",
+          "documentation":"<p>Resolved customer preference, preserved independently of eligibility, including while revoked.</p>"
+        },
+        "updatedAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>Last change to the enrollment supplying the resolved opt-in. Present for enabled or disabled, including while revoked; omitted for inherit.</p>"
+        }
+      },
+      "documentation":"<p>The program's details and participation resolved for the calling account or requested project.</p>"
     },
     "GetUseCaseForModelAccessRequest":{
       "type":"structure",
@@ -11401,6 +12540,12 @@
           "documentation":"<p>Return models that support the inference type that you specify. For more information, see <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/prov-throughput.html\">Provisioned Throughput</a> in the <a href=\"https://docs.aws.amazon.com/bedrock/latest/userguide/what-is-service.html\">Amazon Bedrock User Guide</a>.</p>",
           "location":"querystring",
           "locationName":"byInferenceType"
+        },
+        "projectIdentifier":{
+          "shape":"ProjectIdentifier",
+          "documentation":"<p>The ID or Amazon Resource Name (ARN) of a project. Amazon Bedrock uses the project's trusted access program participation when determining which models to return. The project must belong to your account in the same AWS Region and partition as the request.</p> <p>If you omit this parameter or specify <code>default</code>, Amazon Bedrock uses your account's participation, including organization inheritance. A project that doesn't exist or is archived causes a <code>ValidationException</code>.</p>",
+          "location":"querystring",
+          "locationName":"projectIdentifier"
         }
       }
     },
@@ -11530,6 +12675,12 @@
           "documentation":"<p>Filters for inference profiles that match the type you specify.</p> <ul> <li> <p> <code>SYSTEM_DEFINED</code> – The inference profile is defined by Amazon Bedrock. You can route inference requests across regions with these inference profiles.</p> </li> <li> <p> <code>APPLICATION</code> – The inference profile was created by a user. This type of inference profile can track metrics and costs when invoking the model in it. The inference profile may route requests to one or multiple regions.</p> </li> </ul>",
           "location":"querystring",
           "locationName":"type"
+        },
+        "projectIdentifier":{
+          "shape":"ProjectIdentifier",
+          "documentation":"<p>The ID or Amazon Resource Name (ARN) of a project. Amazon Bedrock uses the project's trusted access program participation when determining which system-defined inference profiles to return. The project must belong to your account in the same AWS Region and partition as the request.</p> <p>If you omit this parameter or specify <code>default</code>, Amazon Bedrock uses your account's participation, including organization inheritance.</p> <p>A project that doesn't exist or is archived causes a <code>ValidationException</code>. Specifying a project other than <code>default</code> with <code>typeEquals</code> set to <code>APPLICATION</code> also causes a <code>ValidationException</code>. Omit <code>typeEquals</code> or set it to <code>SYSTEM_DEFINED</code> to list system-defined inference profiles for the project.</p>",
+          "location":"querystring",
+          "locationName":"projectIdentifier"
         }
       }
     },
@@ -11858,6 +13009,45 @@
         }
       }
     },
+    "ListProjectsRequest":{
+      "type":"structure",
+      "members":{
+        "nextToken":{
+          "shape":"PaginationToken",
+          "documentation":"<p>Continuation token from a previous ListProjects response.</p>",
+          "location":"querystring",
+          "locationName":"nextToken"
+        },
+        "maxResults":{
+          "shape":"ProjectMaxResults",
+          "documentation":"<p>The maximum number of projects to return in one response, from 1 to 100. The default is 20.</p>",
+          "location":"querystring",
+          "locationName":"maxResults"
+        },
+        "statusFilter":{
+          "shape":"ProjectStatus",
+          "documentation":"<p>Returns only the projects in this lifecycle status. When absent, no status filtering is applied and every project is returned. New lifecycle states extend the <code>ProjectStatus</code> enum, and with it this filter, compatibly.</p>",
+          "location":"querystring",
+          "locationName":"statusFilter"
+        }
+      },
+      "documentation":"<p>The page size, continuation token, and optional lifecycle status filter for listing projects.</p>"
+    },
+    "ListProjectsResponse":{
+      "type":"structure",
+      "required":["projectSummaries"],
+      "members":{
+        "projectSummaries":{
+          "shape":"ProjectSummaryList",
+          "documentation":"<p>The projects returned for this page, including their details and data retention settings.</p>"
+        },
+        "nextToken":{
+          "shape":"PaginationToken",
+          "documentation":"<p>Continuation token; present only when more results exist. Pass it in the next request to fetch the following page.</p>"
+        }
+      },
+      "documentation":"<p>A page of projects and a continuation token when more results are available.</p>"
+    },
     "ListPromptRoutersRequest":{
       "type":"structure",
       "members":{
@@ -11984,6 +13174,45 @@
           "documentation":"<p>An array of the tags associated with this resource.</p>"
         }
       }
+    },
+    "ListTrustedAccessProgramsRequest":{
+      "type":"structure",
+      "members":{
+        "projectIdentifier":{
+          "shape":"ProjectIdentifier",
+          "documentation":"<p>The ID or ARN of a named Bedrock project owned by the calling account in this Region. When omitted, resolves participation for the calling account, including participation inherited from its current organization. When specified, resolves participation for the project, including participation inherited from the account and its current organization. You cannot specify the default project. Omit this field to resolve its inherited participation. An ARN from another account, Region, or partition returns ValidationException. A project that does not exist in the calling account returns ResourceNotFoundException.</p>",
+          "location":"querystring",
+          "locationName":"projectIdentifier"
+        },
+        "maxResults":{
+          "shape":"MaxResults",
+          "documentation":"<p>Reserved for future pagination support. Currently ignored; the response includes all visible programs.</p>",
+          "location":"querystring",
+          "locationName":"maxResults"
+        },
+        "nextToken":{
+          "shape":"PaginationToken",
+          "documentation":"<p>Reserved for future pagination support. Omit this field.</p>",
+          "location":"querystring",
+          "locationName":"nextToken"
+        }
+      },
+      "documentation":"<p>The optional named project for which to resolve participation in visible trusted access programs.</p>"
+    },
+    "ListTrustedAccessProgramsResponse":{
+      "type":"structure",
+      "required":["programSummaries"],
+      "members":{
+        "programSummaries":{
+          "shape":"TrustedAccessProgramSummaries",
+          "documentation":"<p>All visible programs with resolved participation, ordered by program ID. Always present, including an empty array when no programs are visible.</p>"
+        },
+        "nextToken":{
+          "shape":"PaginationToken",
+          "documentation":"<p>Reserved for future pagination support. Currently omitted because the response contains the complete list.</p>"
+        }
+      },
+      "documentation":"<p>The visible trusted access programs and their resolved participation statuses.</p>"
     },
     "LogGroupName":{
       "type":"string",
@@ -12890,6 +14119,111 @@
       },
       "documentation":"<p>Describes the usage-based pricing term.</p>"
     },
+    "ProjectArn":{
+      "type":"string",
+      "documentation":"<p>The ARN of a project.</p>",
+      "max":2048,
+      "min":1,
+      "pattern":"arn:aws(-[^:]+)?:bedrock:[0-9a-z-]{1,20}:[0-9]{12}:project/[a-zA-Z0-9_-]+"
+    },
+    "ProjectDataRetention":{
+      "type":"structure",
+      "required":["mode"],
+      "members":{
+        "mode":{
+          "shape":"DataRetentionMode",
+          "documentation":"<p>The project's data retention mode. Use <code>inherit</code> to defer to the account setting or model default.</p>"
+        }
+      },
+      "documentation":"<p>A project's data-retention setting: the project-scope mode, which may be <code>inherit</code> to defer to the account scope or the model default. Uses the same mode space as the account-level data-retention operations; the effective mode for a request resolves project, then account, then model default.</p>"
+    },
+    "ProjectIdentifier":{
+      "type":"string",
+      "documentation":"<p>Identifies a project by bare id or by full project ARN. An ARN must belong to the caller's account and this Region. When sent in a request path, an ARN's slash must be percent-encoded.</p>",
+      "max":2048,
+      "min":1,
+      "pattern":"([a-zA-Z0-9_-]+|arn:aws(-[^:]+)?:bedrock:[0-9a-z-]{1,20}:[0-9]{12}:project/[a-zA-Z0-9_-]+)"
+    },
+    "ProjectMaxResults":{
+      "type":"integer",
+      "documentation":"<p>The number of projects to request in one response. The value must be from 1 to 100.</p>",
+      "box":true,
+      "max":100,
+      "min":1
+    },
+    "ProjectName":{
+      "type":"string",
+      "documentation":"<p>The display name you choose for a project. Project names do not have to be unique. Include at least one non-whitespace character. The length limit counts Unicode characters, not bytes.</p>",
+      "max":127,
+      "min":1,
+      "pattern":".*\\S.*",
+      "sensitive":true
+    },
+    "ProjectResourceId":{
+      "type":"string",
+      "documentation":"<p>The id of a project: <code>default</code> for the account's default project, or a created project's generated id (<code>proj_</code> followed by its suffix).</p>",
+      "max":64,
+      "min":1,
+      "pattern":"[a-zA-Z0-9_-]+"
+    },
+    "ProjectStatus":{
+      "type":"string",
+      "documentation":"<p>The lifecycle status of a project. An <code>archived</code> project rejects new inference requests and mutations; its stored data remains readable until it expires. There is no delete: archive is the terminal state.</p>",
+      "enum":[
+        "active",
+        "archived"
+      ]
+    },
+    "ProjectSummary":{
+      "type":"structure",
+      "required":[
+        "id",
+        "arn",
+        "name",
+        "status",
+        "createdAt",
+        "dataRetention"
+      ],
+      "members":{
+        "id":{
+          "shape":"ProjectResourceId",
+          "documentation":"<p>The project ID. The account's default project uses <code>default</code>; a named project's generated ID starts with <code>proj_</code>.</p>"
+        },
+        "arn":{
+          "shape":"ProjectArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the project.</p>"
+        },
+        "name":{
+          "shape":"ProjectName",
+          "documentation":"<p>The project's display name. Project names do not have to be unique.</p>"
+        },
+        "status":{
+          "shape":"ProjectStatus",
+          "documentation":"<p>The project's lifecycle status.</p>"
+        },
+        "createdAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The time the project was created.</p>"
+        },
+        "archivedAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The time the project was archived.</p>"
+        },
+        "dataRetention":{
+          "shape":"ProjectDataRetention",
+          "documentation":"<p>The project's data retention setting. A mode of <code>inherit</code> defers to the account setting or model default.</p>"
+        }
+      },
+      "documentation":"<p>A project. The same field set every project-returning operation uses: create, get, update, and archive all return the full project, and list returns one per project.</p>"
+    },
+    "ProjectSummaryList":{
+      "type":"list",
+      "member":{
+        "shape":"ProjectSummary",
+        "documentation":"<p>A project's details and data retention setting.</p>"
+      },
+      "documentation":"<p>A list of projects and their details.</p>"
+    },
     "PromptRouterArn":{
       "type":"string",
       "max":2048,
@@ -13131,6 +14465,70 @@
         }
       }
     },
+    "PutAccountDataRetentionStorageRequest":{
+      "type":"structure",
+      "required":[
+        "modelProvider",
+        "storageDestination"
+      ],
+      "members":{
+        "modelProvider":{
+          "shape":"DataRetentionStorageModelProvider",
+          "documentation":"<p>The model provider whose retention storage configuration is addressed by this request.</p>",
+          "location":"uri",
+          "locationName":"modelProvider"
+        },
+        "storageDestination":{
+          "shape":"DataRetentionStorageDestination",
+          "documentation":"<p>Where retained data is delivered for this scope. customer_managed requires storageConfiguration; amazon_managed forbids it.</p>"
+        },
+        "storageConfiguration":{
+          "shape":"DataRetentionStorageConfiguration",
+          "documentation":"<p>Destination bucket and key. Required when storageDestination is customer_managed; rejected with ValidationException when amazon_managed.</p>"
+        }
+      },
+      "documentation":"<p>The model provider and retention storage destination to configure for the calling account.</p>"
+    },
+    "PutAccountDataRetentionStorageResponse":{
+      "type":"structure",
+      "required":[
+        "scope",
+        "modelProvider",
+        "storageDestination",
+        "updatedAt"
+      ],
+      "members":{
+        "scope":{
+          "shape":"DataRetentionStorageScope",
+          "documentation":"<p>Scope addressed by the operation that returned this record.</p>"
+        },
+        "modelProvider":{
+          "shape":"DataRetentionStorageModelProvider",
+          "documentation":"<p>Model provider this configuration applies to.</p>"
+        },
+        "storageDestination":{
+          "shape":"DataRetentionStorageDestination",
+          "documentation":"<p>Where this record delivers retained data.</p>"
+        },
+        "storageConfiguration":{
+          "shape":"DataRetentionStorageConfiguration",
+          "documentation":"<p>The stored destination and key. Present only when storageDestination is customer_managed.</p>"
+        },
+        "updatedAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>Time the stored record last changed.</p>"
+        },
+        "kmsKeyStatus":{
+          "shape":"DataRetentionStorageResourceStatus",
+          "documentation":"<p>Validation state of the KMS key. Present only when storageDestination is customer_managed.</p>"
+        },
+        "s3BucketStatus":{
+          "shape":"DataRetentionStorageResourceStatus",
+          "documentation":"<p>Validation state of the bucket. Present only when storageDestination is customer_managed.</p>"
+        }
+      },
+      "documentation":"<p>The stored configuration after the write.</p>"
+    },
     "PutEnforcedGuardrailConfigurationRequest":{
       "type":"structure",
       "required":["guardrailInferenceConfig"],
@@ -13176,6 +14574,146 @@
       "type":"structure",
       "members":{}
     },
+    "PutOrganizationDataRetentionStorageRequest":{
+      "type":"structure",
+      "required":[
+        "modelProvider",
+        "storageDestination"
+      ],
+      "members":{
+        "modelProvider":{
+          "shape":"DataRetentionStorageModelProvider",
+          "documentation":"<p>The model provider whose retention storage configuration is addressed by this request.</p>",
+          "location":"uri",
+          "locationName":"modelProvider"
+        },
+        "storageDestination":{
+          "shape":"DataRetentionStorageDestination",
+          "documentation":"<p>Where retained data is delivered for this scope. customer_managed requires storageConfiguration; amazon_managed forbids it.</p>"
+        },
+        "storageConfiguration":{
+          "shape":"DataRetentionStorageConfiguration",
+          "documentation":"<p>Destination bucket and key. Required when storageDestination is customer_managed; rejected with ValidationException when amazon_managed.</p>"
+        }
+      },
+      "documentation":"<p>The model provider and retention storage destination to configure for the organization.</p>"
+    },
+    "PutOrganizationDataRetentionStorageResponse":{
+      "type":"structure",
+      "required":[
+        "scope",
+        "modelProvider",
+        "storageDestination",
+        "updatedAt"
+      ],
+      "members":{
+        "scope":{
+          "shape":"DataRetentionStorageScope",
+          "documentation":"<p>Scope addressed by the operation that returned this record.</p>"
+        },
+        "modelProvider":{
+          "shape":"DataRetentionStorageModelProvider",
+          "documentation":"<p>Model provider this configuration applies to.</p>"
+        },
+        "storageDestination":{
+          "shape":"DataRetentionStorageDestination",
+          "documentation":"<p>Where this record delivers retained data.</p>"
+        },
+        "storageConfiguration":{
+          "shape":"DataRetentionStorageConfiguration",
+          "documentation":"<p>The stored destination and key. Present only when storageDestination is customer_managed.</p>"
+        },
+        "updatedAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>Time the stored record last changed.</p>"
+        },
+        "kmsKeyStatus":{
+          "shape":"DataRetentionStorageResourceStatus",
+          "documentation":"<p>Validation state of the KMS key. Present only when storageDestination is customer_managed.</p>"
+        },
+        "s3BucketStatus":{
+          "shape":"DataRetentionStorageResourceStatus",
+          "documentation":"<p>Validation state of the bucket. Present only when storageDestination is customer_managed.</p>"
+        }
+      },
+      "documentation":"<p>The organization's stored retention storage configuration after the write.</p>"
+    },
+    "PutProjectDataRetentionStorageRequest":{
+      "type":"structure",
+      "required":[
+        "projectIdentifier",
+        "modelProvider",
+        "storageDestination"
+      ],
+      "members":{
+        "projectIdentifier":{
+          "shape":"ProjectIdentifier",
+          "documentation":"<p>The ID or ARN of a named project owned by the calling account in this AWS Region. The default project is not supported; use the account-level retention storage operations instead.</p>",
+          "location":"uri",
+          "locationName":"projectIdentifier"
+        },
+        "modelProvider":{
+          "shape":"DataRetentionStorageModelProvider",
+          "documentation":"<p>The model provider whose retention storage configuration is addressed by this request.</p>",
+          "location":"uri",
+          "locationName":"modelProvider"
+        },
+        "storageDestination":{
+          "shape":"DataRetentionStorageDestination",
+          "documentation":"<p>Where retained data is delivered for this scope. customer_managed requires storageConfiguration; amazon_managed forbids it.</p>"
+        },
+        "storageConfiguration":{
+          "shape":"DataRetentionStorageConfiguration",
+          "documentation":"<p>Destination bucket and key. Required when storageDestination is customer_managed; rejected with ValidationException when amazon_managed.</p>"
+        }
+      },
+      "documentation":"<p>The project, model provider, and retention storage destination to configure.</p>"
+    },
+    "PutProjectDataRetentionStorageResponse":{
+      "type":"structure",
+      "required":[
+        "scope",
+        "modelProvider",
+        "storageDestination",
+        "updatedAt",
+        "projectArn"
+      ],
+      "members":{
+        "scope":{
+          "shape":"DataRetentionStorageScope",
+          "documentation":"<p>Scope addressed by the operation that returned this record.</p>"
+        },
+        "modelProvider":{
+          "shape":"DataRetentionStorageModelProvider",
+          "documentation":"<p>Model provider this configuration applies to.</p>"
+        },
+        "storageDestination":{
+          "shape":"DataRetentionStorageDestination",
+          "documentation":"<p>Where this record delivers retained data.</p>"
+        },
+        "storageConfiguration":{
+          "shape":"DataRetentionStorageConfiguration",
+          "documentation":"<p>The stored destination and key. Present only when storageDestination is customer_managed.</p>"
+        },
+        "updatedAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>Time the stored record last changed.</p>"
+        },
+        "kmsKeyStatus":{
+          "shape":"DataRetentionStorageResourceStatus",
+          "documentation":"<p>Validation state of the KMS key. Present only when storageDestination is customer_managed.</p>"
+        },
+        "s3BucketStatus":{
+          "shape":"DataRetentionStorageResourceStatus",
+          "documentation":"<p>Validation state of the bucket. Present only when storageDestination is customer_managed.</p>"
+        },
+        "projectArn":{
+          "shape":"ProjectArn",
+          "documentation":"<p>ARN of the configured project.</p>"
+        }
+      },
+      "documentation":"<p>The project's stored retention storage configuration after the write.</p>"
+    },
     "PutResourcePolicyRequest":{
       "type":"structure",
       "required":[
@@ -13201,6 +14739,127 @@
           "documentation":"<p>The ARN of the Bedrock resource to which this resource policy applies.</p>"
         }
       }
+    },
+    "PutTrustedAccessProgramAccountEnrollmentRequest":{
+      "type":"structure",
+      "required":[
+        "programIdentifier",
+        "optIn"
+      ],
+      "members":{
+        "programIdentifier":{
+          "shape":"TrustedAccessProgramIdentifier",
+          "documentation":"<p>The identifier of the trusted access program.</p>",
+          "location":"uri",
+          "locationName":"programIdentifier"
+        },
+        "optIn":{
+          "shape":"TrustedAccessProgramOptIn",
+          "documentation":"<p>The enrollment preference to store. A transition to enabled accepts the program's terms. Changing the preference records a new updatedAt. Repeating the same stored preference preserves updatedAt.</p>"
+        }
+      },
+      "documentation":"<p>The trusted access program and enrollment preference to save for the calling account.</p>"
+    },
+    "PutTrustedAccessProgramAccountEnrollmentResponse":{
+      "type":"structure",
+      "required":[
+        "optIn",
+        "updatedAt"
+      ],
+      "members":{
+        "optIn":{
+          "shape":"TrustedAccessProgramOptIn",
+          "documentation":"<p>Stored preference at the addressed scope. A missing enrollment returns inherit without updatedAt.</p>"
+        },
+        "updatedAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The time the stored enrollment setting last changed.</p>"
+        }
+      },
+      "documentation":"<p>The account's resulting stored enrollment setting. An initial inherit write creates a stored setting with updatedAt.</p>"
+    },
+    "PutTrustedAccessProgramOrganizationEnrollmentRequest":{
+      "type":"structure",
+      "required":[
+        "programIdentifier",
+        "optIn"
+      ],
+      "members":{
+        "programIdentifier":{
+          "shape":"TrustedAccessProgramIdentifier",
+          "documentation":"<p>The identifier of the trusted access program.</p>",
+          "location":"uri",
+          "locationName":"programIdentifier"
+        },
+        "optIn":{
+          "shape":"TrustedAccessProgramOptIn",
+          "documentation":"<p>The enrollment preference to store for the organization. A transition to enabled accepts the program's terms. Changing the preference records a new updatedAt. Repeating the same stored preference preserves updatedAt.</p>"
+        }
+      },
+      "documentation":"<p>The trusted access program and enrollment preference to save for the organization.</p>"
+    },
+    "PutTrustedAccessProgramOrganizationEnrollmentResponse":{
+      "type":"structure",
+      "required":[
+        "optIn",
+        "updatedAt"
+      ],
+      "members":{
+        "optIn":{
+          "shape":"TrustedAccessProgramOptIn",
+          "documentation":"<p>Stored preference at the addressed scope. A missing enrollment returns inherit without updatedAt.</p>"
+        },
+        "updatedAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The time the stored enrollment setting last changed.</p>"
+        }
+      },
+      "documentation":"<p>The organization's resulting stored enrollment setting. An initial inherit write creates a stored setting with updatedAt.</p>"
+    },
+    "PutTrustedAccessProgramProjectEnrollmentRequest":{
+      "type":"structure",
+      "required":[
+        "programIdentifier",
+        "projectIdentifier",
+        "optIn"
+      ],
+      "members":{
+        "programIdentifier":{
+          "shape":"TrustedAccessProgramIdentifier",
+          "documentation":"<p>The identifier of the trusted access program.</p>",
+          "location":"uri",
+          "locationName":"programIdentifier"
+        },
+        "projectIdentifier":{
+          "shape":"ProjectIdentifier",
+          "documentation":"<p>The id or ARN of the named Bedrock project. The default project is not supported; use PutTrustedAccessProgramAccountEnrollment for account-level enrollment. An ARN from another account, Region, or partition returns ValidationException. A project that does not exist in the calling account returns ResourceNotFoundException.</p>",
+          "location":"uri",
+          "locationName":"projectIdentifier"
+        },
+        "optIn":{
+          "shape":"TrustedAccessProgramOptIn",
+          "documentation":"<p>The enrollment preference to store. A transition to enabled accepts the program's terms. Changing the preference records a new updatedAt. Repeating the same stored preference preserves updatedAt.</p>"
+        }
+      },
+      "documentation":"<p>The trusted access program, named project, and enrollment preference to save.</p>"
+    },
+    "PutTrustedAccessProgramProjectEnrollmentResponse":{
+      "type":"structure",
+      "required":[
+        "optIn",
+        "updatedAt"
+      ],
+      "members":{
+        "optIn":{
+          "shape":"TrustedAccessProgramOptIn",
+          "documentation":"<p>Stored preference at the addressed scope. A missing enrollment returns inherit without updatedAt.</p>"
+        },
+        "updatedAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The time the stored enrollment setting last changed.</p>"
+        }
+      },
+      "documentation":"<p>The project's resulting stored enrollment setting. An initial inherit write creates a stored setting with updatedAt.</p>"
     },
     "PutUseCaseForModelAccessRequest":{
       "type":"structure",
@@ -13958,6 +15617,87 @@
         }
       }
     },
+    "StartTrustedAccessProgramAccountApplicationRequest":{
+      "type":"structure",
+      "required":["programIdentifier"],
+      "members":{
+        "programIdentifier":{
+          "shape":"TrustedAccessProgramIdentifier",
+          "documentation":"<p>Identifier of the trusted access program.</p>",
+          "location":"uri",
+          "locationName":"programIdentifier"
+        }
+      },
+      "documentation":"<p>Identifies the trusted access program for which to prepare an account application handoff.</p>"
+    },
+    "StartTrustedAccessProgramAccountApplicationResponse":{
+      "type":"structure",
+      "required":["result"],
+      "members":{
+        "result":{
+          "shape":"TrustedAccessProgramApplicationResult",
+          "documentation":"<p>Provider handoff for the calling account.</p>"
+        }
+      },
+      "documentation":"<p>The information needed to continue the account's application with the provider.</p>"
+    },
+    "StartTrustedAccessProgramOrganizationApplicationRequest":{
+      "type":"structure",
+      "required":["programIdentifier"],
+      "members":{
+        "programIdentifier":{
+          "shape":"TrustedAccessProgramIdentifier",
+          "documentation":"<p>Identifier of the trusted access program.</p>",
+          "location":"uri",
+          "locationName":"programIdentifier"
+        }
+      },
+      "documentation":"<p>Identifies the trusted access program for which to prepare an organization application handoff.</p>"
+    },
+    "StartTrustedAccessProgramOrganizationApplicationResponse":{
+      "type":"structure",
+      "required":["result"],
+      "members":{
+        "result":{
+          "shape":"TrustedAccessProgramApplicationResult",
+          "documentation":"<p>Provider handoff for the calling account's current organization.</p>"
+        }
+      },
+      "documentation":"<p>The information needed to continue the organization's application with the provider.</p>"
+    },
+    "StartTrustedAccessProgramProjectApplicationRequest":{
+      "type":"structure",
+      "required":[
+        "programIdentifier",
+        "projectIdentifier"
+      ],
+      "members":{
+        "programIdentifier":{
+          "shape":"TrustedAccessProgramIdentifier",
+          "documentation":"<p>Identifier of the trusted access program.</p>",
+          "location":"uri",
+          "locationName":"programIdentifier"
+        },
+        "projectIdentifier":{
+          "shape":"ProjectIdentifier",
+          "documentation":"<p>The id or ARN of the named Bedrock project. The default project is not supported; use StartTrustedAccessProgramAccountApplication for an account-level application. An ARN from another account, Region, or partition returns ValidationException. A project that does not exist in the calling account returns ResourceNotFoundException.</p>",
+          "location":"uri",
+          "locationName":"projectIdentifier"
+        }
+      },
+      "documentation":"<p>Identifies the trusted access program and named project for which to prepare an application handoff.</p>"
+    },
+    "StartTrustedAccessProgramProjectApplicationResponse":{
+      "type":"structure",
+      "required":["result"],
+      "members":{
+        "result":{
+          "shape":"TrustedAccessProgramApplicationResult",
+          "documentation":"<p>Provider handoff for the named project.</p>"
+        }
+      },
+      "documentation":"<p>The information needed to continue the project's application with the provider.</p>"
+    },
     "Status":{
       "type":"string",
       "enum":[
@@ -14139,7 +15879,7 @@
       "type":"string",
       "max":1011,
       "min":20,
-      "pattern":".*(^[a-zA-Z0-9][a-zA-Z0-9\\-]*$)|(^arn:aws(-[^:]+)?:bedrock:[a-z0-9-]{1,20}:[0-9]{12}:custom-model/(imported)/[a-z0-9]{12}$)|(^arn:aws(-[^:]+)?:bedrock:[a-z0-9-]{1,20}:([0-9]{12}|)((:(fine-tuning-job|model-customization-job|custom-model)/[a-z0-9-]{1,63}[.]{1}[a-z0-9-]{1,63}([a-z0-9-]{1,63}[.]){0,2}[a-z0-9-]{1,63}([:][a-z0-9-]{1,63}){0,2}(/[a-z0-9]{12})$)|(:guardrail/[a-z0-9]+$)|(:automated-reasoning-policy/[a-zA-Z0-9]+(:[a-zA-Z0-9]+)?$)|(:(inference-profile|application-inference-profile)/[a-zA-Z0-9-:.]+$)|(:(provisioned-model|model-invocation-job|model-evaluation-job|evaluation-job|model-import-job|imported-model|async-invoke|provisioned-model-v2|provisioned-model-reservation|prompt-router|custom-model-deployment)/[a-z0-9]{12}$))).*"
+      "pattern":".*(^[a-zA-Z0-9][a-zA-Z0-9\\-]*$)|(^arn:aws(-[^:]+)?:bedrock:[a-z0-9-]{1,20}:[0-9]{12}:custom-model/(imported)/[a-z0-9]{12}$)|(^arn:aws(-[^:]+)?:bedrock:[a-z0-9-]{1,20}:([0-9]{12}|)((:(fine-tuning-job|model-customization-job|custom-model)/[a-z0-9-]{1,63}[.]{1}[a-z0-9-]{1,63}([a-z0-9-]{1,63}[.]){0,2}[a-z0-9-]{1,63}([:][a-z0-9-]{1,63}){0,2}(/[a-z0-9]{12})$)|(:guardrail/[a-z0-9]+$)|(:automated-reasoning-policy/[a-zA-Z0-9]+(:[a-zA-Z0-9]+)?$)|(:(inference-profile|application-inference-profile)/[a-zA-Z0-9-:.]+$)|(:project/(proj_[a-z2-7]{20}|default)$)|(:(provisioned-model|model-invocation-job|model-evaluation-job|evaluation-job|model-import-job|imported-model|async-invoke|provisioned-model-v2|provisioned-model-reservation|prompt-router|custom-model-deployment)/[a-z0-9]{12}$))).*"
     },
     "TeacherModelConfig":{
       "type":"structure",
@@ -14297,6 +16037,194 @@
         }
       },
       "documentation":"<p>Metrics associated with the custom job.</p>"
+    },
+    "TrustedAccessProgramApplicationResult":{
+      "type":"structure",
+      "members":{
+        "providerHandoff":{
+          "shape":"TrustedAccessProgramProviderHandoff",
+          "documentation":"<p>Information for continuing the application with the provider.</p>"
+        }
+      },
+      "documentation":"<p>Result of preparing an application. A provider handoff does not submit an application, grant eligibility, or change enrollment. Clients must tolerate unknown union members.</p>",
+      "union":true
+    },
+    "TrustedAccessProgramApplicationToken":{
+      "type":"string",
+      "documentation":"<p>Opaque application token to pass unchanged to the provider. Do not log this token.</p>",
+      "min":1,
+      "sensitive":true
+    },
+    "TrustedAccessProgramId":{
+      "type":"string",
+      "documentation":"<p>Provider-prefixed identifier of a trusted access program. This is the final component of the program ARN.</p>",
+      "max":64,
+      "min":3,
+      "pattern":"[a-z0-9]+-[a-z0-9-]+"
+    },
+    "TrustedAccessProgramIdentifier":{
+      "type":"string",
+      "documentation":"<p>A trusted access program ID or its system-owned global ARN, arn:&lt;partition&gt;:bedrock::aws:trusted-access-program/&lt;id&gt;. The program ID must contain 3 to 64 characters. An ARN must use this request's AWS partition.</p>",
+      "max":115,
+      "min":3,
+      "pattern":"([a-z0-9]+-[a-z0-9-]+|arn:aws(-[^:]+)?:bedrock::aws:trusted-access-program/[a-z0-9]+-[a-z0-9-]+)"
+    },
+    "TrustedAccessProgramName":{
+      "type":"string",
+      "documentation":"<p>Display name of a trusted access program.</p>",
+      "max":128,
+      "min":1
+    },
+    "TrustedAccessProgramOptIn":{
+      "type":"string",
+      "documentation":"<p>Customer preference for a trusted access program. Clients must tolerate unknown values.</p>",
+      "enum":[
+        "inherit",
+        "enabled",
+        "disabled"
+      ]
+    },
+    "TrustedAccessProgramProviderHandoff":{
+      "type":"structure",
+      "required":[
+        "applicationToken",
+        "applicationTokenExpiresAt"
+      ],
+      "members":{
+        "enrollmentUrl":{
+          "shape":"TrustedAccessProgramUrl",
+          "documentation":"<p>Provider intake URL. When present, open it and paste the complete application token into the provider's token field. Omitted when the provider receives the application token through a separate integration.</p>"
+        },
+        "applicationToken":{
+          "shape":"TrustedAccessProgramApplicationToken",
+          "documentation":"<p>Opaque token binding the application to the authenticated customer, requested program, and scope.</p>"
+        },
+        "applicationTokenExpiresAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>Deadline for the provider to accept the application context. Start another application handoff if the token expires before acceptance.</p>"
+        }
+      },
+      "documentation":"<p>Information needed to continue an application with the provider.</p>"
+    },
+    "TrustedAccessProgramScope":{
+      "type":"string",
+      "documentation":"<p>Scope supplying a trusted access decision. Clients must tolerate unknown values.</p>",
+      "enum":[
+        "organization",
+        "account",
+        "project",
+        "program_default"
+      ]
+    },
+    "TrustedAccessProgramStatus":{
+      "type":"string",
+      "documentation":"<p>Resolved participation status for a trusted access program. Clients must tolerate unknown values.</p>",
+      "enum":[
+        "requestable",
+        "eligible",
+        "enabled",
+        "disabled",
+        "revoked"
+      ]
+    },
+    "TrustedAccessProgramSummaries":{
+      "type":"list",
+      "member":{
+        "shape":"TrustedAccessProgramSummary",
+        "documentation":"<p>A visible trusted access program and its resolved participation status.</p>"
+      },
+      "documentation":"<p>Visible programs, ordered by program ID. An empty array is returned when no programs are visible.</p>"
+    },
+    "TrustedAccessProgramSummary":{
+      "type":"structure",
+      "required":[
+        "programId",
+        "name",
+        "description",
+        "providerName",
+        "detailsUrl",
+        "status",
+        "source",
+        "resolvedFor",
+        "optIn"
+      ],
+      "members":{
+        "programId":{
+          "shape":"TrustedAccessProgramId",
+          "documentation":"<p>Identifier of the trusted access program.</p>"
+        },
+        "name":{
+          "shape":"TrustedAccessProgramName",
+          "documentation":"<p>Display name of the program.</p>"
+        },
+        "description":{
+          "shape":"String",
+          "documentation":"<p>Description of the program and its effects on model access or data handling.</p>"
+        },
+        "providerName":{
+          "shape":"BrandedName",
+          "documentation":"<p>Name of the model provider offering the program.</p>"
+        },
+        "detailsUrl":{
+          "shape":"TrustedAccessProgramUrl",
+          "documentation":"<p>URL with program details, terms, and instructions for obtaining access.</p>"
+        },
+        "enrollmentUrl":{
+          "shape":"TrustedAccessProgramUrl",
+          "documentation":"<p>Provider application intake URL. Omitted when the program has no customer-facing intake URL.</p>"
+        },
+        "status":{
+          "shape":"TrustedAccessProgramStatus",
+          "documentation":"<p>Participation status resolved for the account and optional project context.</p>"
+        },
+        "statusReason":{
+          "shape":"String",
+          "documentation":"<p>Nonempty explanation for requestable or revoked status. Omitted for other statuses.</p>"
+        },
+        "source":{
+          "shape":"TrustedAccessProgramScope",
+          "documentation":"<p>Scope deciding the status. This can differ from the scope supplying the resolved opt-in preference and enrollment timestamps.</p>"
+        },
+        "eligibilityScope":{
+          "shape":"TrustedAccessProgramScope",
+          "documentation":"<p>Scope supplying the applicable approval or most-specific revocation. Omitted when no approval or revocation applies.</p>"
+        },
+        "resolvedFor":{
+          "shape":"TrustedAccessResolutionContext",
+          "documentation":"<p>Account and optional project context for which participation was resolved.</p>"
+        },
+        "optIn":{
+          "shape":"TrustedAccessProgramOptIn",
+          "documentation":"<p>Resolved customer preference, preserved independently of eligibility, including while revoked.</p>"
+        },
+        "updatedAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>Last change to the enrollment supplying the resolved opt-in. Present for enabled or disabled, including while revoked; omitted for inherit.</p>"
+        }
+      },
+      "documentation":"<p>Program details and participation resolved for the calling account and optional named project.</p>"
+    },
+    "TrustedAccessProgramUrl":{
+      "type":"string",
+      "documentation":"<p>HTTPS URL for trusted access program details or provider application intake.</p>",
+      "max":4096,
+      "min":1,
+      "pattern":"https://[^\\s]+"
+    },
+    "TrustedAccessResolutionContext":{
+      "type":"structure",
+      "required":["accountId"],
+      "members":{
+        "accountId":{
+          "shape":"AccountId",
+          "documentation":"<p>AWS account for which the program status was resolved, including applicable organization settings.</p>"
+        },
+        "projectArn":{
+          "shape":"ProjectArn",
+          "documentation":"<p>The canonical ARN of the authorized named project for which participation was resolved. Omitted when the request has no project context.</p>"
+        }
+      },
+      "documentation":"<p>Account and optional project context evaluated when resolving a trusted access program's status.</p>"
     },
     "UntagResourceRequest":{
       "type":"structure",
@@ -14651,6 +16579,69 @@
           "documentation":"<p>Details about the updated endpoint.</p>"
         }
       }
+    },
+    "UpdateProjectRequest":{
+      "type":"structure",
+      "required":["projectIdentifier"],
+      "members":{
+        "projectIdentifier":{
+          "shape":"ProjectIdentifier",
+          "documentation":"<p>The id or ARN of the project to update.</p>",
+          "location":"uri",
+          "locationName":"projectIdentifier"
+        },
+        "name":{
+          "shape":"ProjectName",
+          "documentation":"<p>The project's new display name. Specify this field only when <code>dataRetention</code> is omitted. Project names do not have to be unique.</p>"
+        },
+        "dataRetention":{
+          "shape":"ProjectDataRetention",
+          "documentation":"<p>The project's new data-retention mode. Must be set on its own.</p>"
+        }
+      },
+      "documentation":"<p>Identifies the project and the field to update. Specify exactly one of <code>name</code> or <code>dataRetention</code>.</p>"
+    },
+    "UpdateProjectResponse":{
+      "type":"structure",
+      "required":[
+        "id",
+        "arn",
+        "name",
+        "status",
+        "createdAt",
+        "dataRetention"
+      ],
+      "members":{
+        "id":{
+          "shape":"ProjectResourceId",
+          "documentation":"<p>The project ID. The account's default project uses <code>default</code>; a named project's generated ID starts with <code>proj_</code>.</p>"
+        },
+        "arn":{
+          "shape":"ProjectArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the project.</p>"
+        },
+        "name":{
+          "shape":"ProjectName",
+          "documentation":"<p>The project's display name. Project names do not have to be unique.</p>"
+        },
+        "status":{
+          "shape":"ProjectStatus",
+          "documentation":"<p>The project's lifecycle status.</p>"
+        },
+        "createdAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The time the project was created.</p>"
+        },
+        "archivedAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The time the project was archived.</p>"
+        },
+        "dataRetention":{
+          "shape":"ProjectDataRetention",
+          "documentation":"<p>The project's data retention setting. A mode of <code>inherit</code> defers to the account setting or model default.</p>"
+        }
+      },
+      "documentation":"<p>The project after the update.</p>"
     },
     "UpdateProvisionedModelThroughputRequest":{
       "type":"structure",

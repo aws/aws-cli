@@ -6060,6 +6060,10 @@
         "OriginMtlsConfig":{
           "shape":"OriginMtlsConfig",
           "documentation":"<p>Configures mutual TLS authentication between CloudFront and your origin server.</p>"
+        },
+        "OriginHttpVersion":{
+          "shape":"OriginHttpVersion",
+          "documentation":"<p>The HTTP version that CloudFront uses for requests to your custom origin. Valid values are <code>http1.1</code> and <code>http2</code>. If you don't specify a value, CloudFront uses HTTP/1.1.</p> <p>When you specify <code>http2</code>, CloudFront offers HTTP/2 to the origin by using ALPN. If the origin doesn't negotiate HTTP/2, CloudFront uses HTTP/1.1. CloudFront uses HTTP/2 only over Transport Layer Security (TLS) 1.2 or later. Otherwise, it uses HTTP/1.1.</p> <p>If you use a version of an AWS SDK or the AWS CLI that doesn't support this field, an update that sends back a configuration you got from CloudFront removes the value, and CloudFront then uses HTTP/1.1.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/DownloadDistValuesOrigin.html#DownloadDistValuesOriginHttpVersion\">Origin HTTP version</a> in the <i>Amazon CloudFront Developer Guide</i>.</p>"
         }
       },
       "documentation":"<p>A custom origin. A custom origin is any origin that is <i>not</i> an Amazon S3 bucket, with one exception. An Amazon S3 bucket that is <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/dev/WebsiteHosting.html\">configured with static website hosting</a> <i>is</i> a custom origin.</p>"
@@ -12298,6 +12302,14 @@
       },
       "documentation":"<p>A complex data type for the origin groups specified for a distribution.</p>"
     },
+    "OriginHttpVersion":{
+      "type":"string",
+      "documentation":"<p>HTTP version CloudFront uses for connections to a custom or VPC origin. http2 negotiates HTTP/2 via ALPN, with automatic fallback to HTTP/1.1 if the origin does not support HTTP/2. CloudFront uses HTTP/2 only over TLS 1.2 or later; otherwise it uses HTTP/1.1. When absent, HTTP/1.1 is used.</p>",
+      "enum":[
+        "http1.1",
+        "http2"
+      ]
+    },
     "OriginList":{
       "type":"list",
       "member":{
@@ -16525,6 +16537,10 @@
         "OriginKeepaliveTimeout":{
           "shape":"integer",
           "documentation":"<p>Specifies how long, in seconds, CloudFront persists its connection to the origin. The minimum timeout is 1 second, the maximum is 120 seconds, and the default (if you don't specify otherwise) is 5 seconds.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/DownloadDistValuesOrigin.html#DownloadDistValuesOriginKeepaliveTimeout\">Keep-alive timeout (custom origins only)</a> in the <i>Amazon CloudFront Developer Guide</i>.</p>"
+        },
+        "OriginHttpVersion":{
+          "shape":"OriginHttpVersion",
+          "documentation":"<p>The HTTP version that CloudFront uses for requests to the VPC origin for this distribution. Valid values are <code>http1.1</code> and <code>http2</code>. If you don't specify a value, CloudFront uses HTTP/1.1.</p> <p>When you specify <code>http2</code>, CloudFront offers HTTP/2 to the origin by using ALPN. If the origin doesn't negotiate HTTP/2, CloudFront uses HTTP/1.1. CloudFront uses HTTP/2 only over Transport Layer Security (TLS) 1.2 or later. Otherwise, it uses HTTP/1.1.</p> <p>If you use a version of an AWS SDK or the AWS CLI that doesn't support this field, an update that sends back a configuration you got from CloudFront removes the value, and CloudFront then uses HTTP/1.1.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/AmazonCloudFront/latest/DeveloperGuide/DownloadDistValuesOrigin.html#DownloadDistValuesOriginHttpVersion\">Origin HTTP version</a> in the <i>Amazon CloudFront Developer Guide</i>.</p>"
         }
       },
       "documentation":"<p>An Amazon CloudFront VPC origin configuration.</p>"

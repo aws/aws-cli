@@ -1,0 +1,107 @@
+{
+    "version": "1.0",
+    "testCases": [
+        {
+            "documentation": "Commercial region resolves to the dual-stack api.aws suffix by default",
+            "params": {
+                "Region": "us-west-2",
+                "UseFIPS": false,
+                "UseDualStack": false
+            },
+            "expect": {
+                "endpoint": {
+                    "url": "https://apiportal.us-west-2.api.aws"
+                }
+            }
+        },
+        {
+            "documentation": "Commercial FIPS resolves to the FIPS dual-stack api.aws host",
+            "params": {
+                "Region": "us-west-2",
+                "UseFIPS": true,
+                "UseDualStack": false
+            },
+            "expect": {
+                "endpoint": {
+                    "url": "https://apiportal-fips.us-west-2.api.aws"
+                }
+            }
+        },
+        {
+            "documentation": "Explicitly requesting dual-stack in a commercial region",
+            "params": {
+                "Region": "us-east-1",
+                "UseFIPS": false,
+                "UseDualStack": true
+            },
+            "expect": {
+                "endpoint": {
+                    "url": "https://apiportal.us-east-1.api.aws"
+                }
+            }
+        },
+        {
+            "documentation": "ISO (aws-iso) advertises a dual-stack suffix, so the default resolves to its api.aws.* host",
+            "params": {
+                "Region": "us-iso-east-1",
+                "UseFIPS": false,
+                "UseDualStack": false
+            },
+            "expect": {
+                "endpoint": {
+                    "url": "https://apiportal.us-iso-east-1.api.aws.ic.gov"
+                }
+            }
+        },
+        {
+            "documentation": "ISO-B (aws-iso-b) advertises a dual-stack suffix, so the default resolves to its api.aws.* host",
+            "params": {
+                "Region": "us-isob-east-1",
+                "UseFIPS": false,
+                "UseDualStack": false
+            },
+            "expect": {
+                "endpoint": {
+                    "url": "https://apiportal.us-isob-east-1.api.aws.scloud"
+                }
+            }
+        },
+        {
+            "documentation": "Explicit dual-stack in an ISO partition resolves to its api.aws.* suffix (ISO supports dual-stack)",
+            "params": {
+                "Region": "us-iso-east-1",
+                "UseFIPS": false,
+                "UseDualStack": true
+            },
+            "expect": {
+                "endpoint": {
+                    "url": "https://apiportal.us-iso-east-1.api.aws.ic.gov"
+                }
+            }
+        },
+        {
+            "documentation": "A custom endpoint override is used verbatim",
+            "params": {
+                "Region": "us-west-2",
+                "Endpoint": "https://example.com",
+                "UseFIPS": false,
+                "UseDualStack": false
+            },
+            "expect": {
+                "endpoint": {
+                    "url": "https://example.com"
+                }
+            }
+        },
+        {
+            "documentation": "Missing Region is an error",
+            "params": {
+                "UseFIPS": false,
+                "UseDualStack": false
+            },
+            "expect": {
+                "error": "Invalid Configuration: Missing Region"
+            }
+        }
+    ]
+}

@@ -36,6 +36,25 @@
       "documentation":"<p>Accepts a pending channel handshake request from another AWS account.</p>",
       "idempotent":true
     },
+    "CancelChannelContract":{
+      "name":"CancelChannelContract",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"CancelChannelContractRequest"},
+      "output":{"shape":"CancelChannelContractResponse"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ValidationException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ConflictException"}
+      ],
+      "documentation":"<p>Cancels a pending channel contract created within the last 30 days. A request for a channel contract that isn't PENDING, including one that is already CANCELED, fails with a ValidationException.</p>",
+      "idempotent":true
+    },
     "CancelChannelHandshake":{
       "name":"CancelChannelHandshake",
       "http":{
@@ -52,6 +71,26 @@
         {"shape":"AccessDeniedException"}
       ],
       "documentation":"<p>Cancels a pending channel handshake request.</p>",
+      "idempotent":true
+    },
+    "CreateChannelContract":{
+      "name":"CreateChannelContract",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"CreateChannelContractRequest"},
+      "output":{"shape":"CreateChannelContractResponse"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ValidationException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ConflictException"},
+        {"shape":"ServiceQuotaExceededException"}
+      ],
+      "documentation":"<p>Creates a new channel contract and sends it to the signatory for signature. In the Sandbox catalog, the channel contract is accepted automatically.</p>",
       "idempotent":true
     },
     "CreateChannelHandshake":{
@@ -152,6 +191,24 @@
       "documentation":"<p>Deletes a partner relationship.</p>",
       "idempotent":true
     },
+    "GetChannelContract":{
+      "name":"GetChannelContract",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"GetChannelContractRequest"},
+      "output":{"shape":"GetChannelContractResponse"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ValidationException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"}
+      ],
+      "documentation":"<p>Retrieves details of a specific channel contract.</p>",
+      "readonly":true
+    },
     "GetRelationship":{
       "name":"GetRelationship",
       "http":{
@@ -168,6 +225,24 @@
         {"shape":"AccessDeniedException"}
       ],
       "documentation":"<p>Retrieves details of a specific partner relationship.</p>",
+      "readonly":true
+    },
+    "ListChannelContracts":{
+      "name":"ListChannelContracts",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"ListChannelContractsRequest"},
+      "output":{"shape":"ListChannelContractsResponse"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ValidationException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"}
+      ],
+      "documentation":"<p>Lists channel contracts based on specified criteria.</p>",
       "readonly":true
     },
     "ListChannelHandshakes":{
@@ -407,6 +482,57 @@
       "type":"list",
       "member":{"shape":"AccountId"}
     },
+    "AccountScope":{
+      "type":"string",
+      "enum":[
+        "ENTIRE_ORGANIZATION",
+        "SPECIFIC_MEMBER_ACCOUNTS"
+      ]
+    },
+    "Address":{
+      "type":"structure",
+      "required":[
+        "city",
+        "stateOrRegion",
+        "postalCode",
+        "countryCode",
+        "addressLine"
+      ],
+      "members":{
+        "city":{
+          "shape":"City",
+          "documentation":"<p>The city or locality.</p>"
+        },
+        "stateOrRegion":{
+          "shape":"StateOrRegion",
+          "documentation":"<p>The state, province, or prefecture.</p>"
+        },
+        "postalCode":{
+          "shape":"PostalCode",
+          "documentation":"<p>The postal code.</p>"
+        },
+        "countryCode":{
+          "shape":"CountryCode",
+          "documentation":"<p>The two-letter ISO 3166-1 country code.</p>"
+        },
+        "addressLine":{
+          "shape":"AddressLine",
+          "documentation":"<p>The first line of the street address.</p>"
+        },
+        "addressLine2":{
+          "shape":"AddressLine",
+          "documentation":"<p>The second line of the street address.</p>"
+        }
+      },
+      "documentation":"<p>The postal address of a legal entity.</p>",
+      "sensitive":true
+    },
+    "AddressLine":{
+      "type":"string",
+      "max":200,
+      "min":1,
+      "pattern":"\\p{Z}*[^\\p{C}\\p{Z}][^\\p{C}]*"
+    },
     "Arn":{
       "type":"string",
       "max":1011,
@@ -433,12 +559,70 @@
       "enum":[
         "DOWNSTREAM_SELLER",
         "END_CUSTOMER",
-        "INTERNAL"
+        "INTERNAL",
+        "MANAGED_SERVICES_END_CUSTOMER"
       ]
     },
     "AssociationTypeList":{
       "type":"list",
       "member":{"shape":"AssociationType"}
+    },
+    "CancelChannelContractDetail":{
+      "type":"structure",
+      "members":{
+        "id":{
+          "shape":"ChannelContractId",
+          "documentation":"<p>The unique identifier of the canceled channel contract.</p>"
+        },
+        "arn":{
+          "shape":"Arn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the canceled channel contract.</p>"
+        },
+        "status":{
+          "shape":"ChannelContractStatus",
+          "documentation":"<p>The current status of the canceled channel contract.</p>"
+        },
+        "cancellationReason":{
+          "shape":"CancellationReason",
+          "documentation":"<p>The reason the channel contract was canceled, if one was provided.</p>"
+        }
+      },
+      "documentation":"<p>Contains details about a canceled channel contract.</p>"
+    },
+    "CancelChannelContractRequest":{
+      "type":"structure",
+      "required":[
+        "catalog",
+        "identifier"
+      ],
+      "members":{
+        "catalog":{
+          "shape":"Catalog",
+          "documentation":"<p>The catalog identifier for the channel contract.</p>"
+        },
+        "identifier":{
+          "shape":"ChannelContractIdentifier",
+          "documentation":"<p>The unique identifier of the channel contract to cancel.</p>"
+        },
+        "reason":{
+          "shape":"CancellationReason",
+          "documentation":"<p>The reason for canceling the channel contract. Later requests don't change or remove it.</p>"
+        },
+        "clientToken":{
+          "shape":"ClientToken",
+          "documentation":"<p>A unique, case-sensitive identifier to ensure idempotency of the request.</p>",
+          "idempotencyToken":true
+        }
+      }
+    },
+    "CancelChannelContractResponse":{
+      "type":"structure",
+      "members":{
+        "channelContractDetail":{
+          "shape":"CancelChannelContractDetail",
+          "documentation":"<p>Details of the canceled channel contract.</p>"
+        }
+      }
     },
     "CancelChannelHandshakeDetail":{
       "type":"structure",
@@ -484,11 +668,217 @@
         }
       }
     },
+    "CancellationReason":{
+      "type":"string",
+      "max":1024,
+      "min":1,
+      "pattern":"[^\\x00-\\x1F\\x7F]*"
+    },
     "Catalog":{
       "type":"string",
       "max":64,
       "min":1,
       "pattern":"[a-zA-Z]*"
+    },
+    "ChannelContractDetail":{
+      "type":"structure",
+      "required":[
+        "id",
+        "arn",
+        "catalog",
+        "contractType",
+        "status",
+        "createdAt",
+        "updatedAt",
+        "details"
+      ],
+      "members":{
+        "id":{
+          "shape":"ChannelContractId",
+          "documentation":"<p>The unique identifier of the channel contract.</p>"
+        },
+        "arn":{
+          "shape":"Arn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the channel contract.</p>"
+        },
+        "catalog":{
+          "shape":"Catalog",
+          "documentation":"<p>The catalog identifier associated with the channel contract.</p>"
+        },
+        "contractType":{
+          "shape":"ChannelContractType",
+          "documentation":"<p>The type of the channel contract.</p>"
+        },
+        "status":{
+          "shape":"ChannelContractStatus",
+          "documentation":"<p>The current status of the channel contract.</p>"
+        },
+        "createdAt":{
+          "shape":"DateTime",
+          "documentation":"<p>The timestamp when the channel contract was created.</p>"
+        },
+        "updatedAt":{
+          "shape":"DateTime",
+          "documentation":"<p>The timestamp when the channel contract was last updated.</p>"
+        },
+        "respondedAt":{
+          "shape":"DateTime",
+          "documentation":"<p>The timestamp when the channel contract was accepted, if applicable.</p>"
+        },
+        "cancellationReason":{
+          "shape":"CancellationReason",
+          "documentation":"<p>The reason the channel contract was canceled, if one was provided.</p>"
+        },
+        "details":{
+          "shape":"ChannelContractDetails",
+          "documentation":"<p>Type-specific details of the channel contract.</p>"
+        }
+      },
+      "documentation":"<p>Detailed information about a channel contract.</p>"
+    },
+    "ChannelContractDetails":{
+      "type":"structure",
+      "members":{
+        "managedServicesAttestationDetails":{
+          "shape":"ManagedServicesAttestationDetails",
+          "documentation":"<p>Details specific to managed services attestation channel contracts. Applies only to managed services attestation channel contracts.</p>"
+        }
+      },
+      "documentation":"<p>Contains detailed information about different types of channel contracts.</p>",
+      "union":true
+    },
+    "ChannelContractId":{
+      "type":"string",
+      "max":16,
+      "min":16,
+      "pattern":"cc-[a-z0-9]{13}"
+    },
+    "ChannelContractIdentifier":{
+      "type":"string",
+      "max":1011,
+      "min":16,
+      "pattern":"(arn:[a-z-]+:partnercentral:[a-z0-9-]+:[0-9]{12}:catalog/[a-zA-Z]+/channel-contract/)?cc-[a-z0-9]{13}"
+    },
+    "ChannelContractLegalEntityName":{
+      "type":"string",
+      "max":300,
+      "min":1,
+      "pattern":"[^\\x00-\\x1F\\x7F]*",
+      "sensitive":true
+    },
+    "ChannelContractLegalEntityNameFilterList":{
+      "type":"list",
+      "member":{"shape":"ChannelContractLegalEntityName"}
+    },
+    "ChannelContractPayload":{
+      "type":"structure",
+      "members":{
+        "managedServicesAttestationPayload":{
+          "shape":"ManagedServicesAttestationPayload",
+          "documentation":"<p>Payload for creating a managed services attestation channel contract. Applies only to managed services attestation channel contracts.</p>"
+        }
+      },
+      "documentation":"<p>Contains the payload data for different types of channel contracts.</p>",
+      "union":true
+    },
+    "ChannelContractSignatoryEmail":{
+      "type":"string",
+      "max":256,
+      "min":1,
+      "pattern":"[^\\s@]+@[^\\s@]+\\.[^\\s@]+",
+      "sensitive":true
+    },
+    "ChannelContractSignatoryName":{
+      "type":"string",
+      "max":256,
+      "min":1,
+      "pattern":"[^\\x00-\\x1F\\x7F]*",
+      "sensitive":true
+    },
+    "ChannelContractStatus":{
+      "type":"string",
+      "enum":[
+        "PENDING",
+        "ACCEPTED",
+        "EXPIRED",
+        "CANCELED",
+        "INACTIVE"
+      ]
+    },
+    "ChannelContractStatusFilterList":{
+      "type":"list",
+      "member":{"shape":"ChannelContractStatus"}
+    },
+    "ChannelContractSummaries":{
+      "type":"list",
+      "member":{"shape":"ChannelContractSummary"}
+    },
+    "ChannelContractSummary":{
+      "type":"structure",
+      "required":[
+        "id",
+        "arn",
+        "catalog",
+        "contractType",
+        "status",
+        "createdAt",
+        "updatedAt",
+        "details"
+      ],
+      "members":{
+        "id":{
+          "shape":"ChannelContractId",
+          "documentation":"<p>The unique identifier of the channel contract.</p>"
+        },
+        "arn":{
+          "shape":"Arn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the channel contract.</p>"
+        },
+        "catalog":{
+          "shape":"Catalog",
+          "documentation":"<p>The catalog identifier associated with the channel contract.</p>"
+        },
+        "contractType":{
+          "shape":"ChannelContractType",
+          "documentation":"<p>The type of the channel contract.</p>"
+        },
+        "status":{
+          "shape":"ChannelContractStatus",
+          "documentation":"<p>The current status of the channel contract.</p>"
+        },
+        "createdAt":{
+          "shape":"DateTime",
+          "documentation":"<p>The timestamp when the channel contract was created.</p>"
+        },
+        "updatedAt":{
+          "shape":"DateTime",
+          "documentation":"<p>The timestamp when the channel contract was last updated.</p>"
+        },
+        "respondedAt":{
+          "shape":"DateTime",
+          "documentation":"<p>The timestamp when the channel contract was accepted, if applicable.</p>"
+        },
+        "details":{
+          "shape":"ChannelContractSummaryDetails",
+          "documentation":"<p>Type-specific summary details of the channel contract.</p>"
+        }
+      },
+      "documentation":"<p>Summary information about a channel contract.</p>"
+    },
+    "ChannelContractSummaryDetails":{
+      "type":"structure",
+      "members":{
+        "managedServicesAttestationDetails":{
+          "shape":"ManagedServicesAttestationSummaryDetails",
+          "documentation":"<p>Summary details specific to managed services attestation channel contracts. Applies only to managed services attestation channel contracts.</p>"
+        }
+      },
+      "documentation":"<p>Contains summary information about different types of channel contracts.</p>",
+      "union":true
+    },
+    "ChannelContractType":{
+      "type":"string",
+      "enum":["MANAGED_SERVICES_ATTESTATION"]
     },
     "ChannelHandshakeId":{
       "type":"string",
@@ -579,6 +969,12 @@
       },
       "documentation":"<p>Summary information about a channel handshake.</p>"
     },
+    "City":{
+      "type":"string",
+      "max":50,
+      "min":1,
+      "pattern":"\\p{Z}*[^\\p{C}\\p{Z}][^\\p{C}]*"
+    },
     "ClientToken":{
       "type":"string",
       "max":64,
@@ -609,12 +1005,72 @@
       "documentation":"<p>The request could not be completed due to a conflict with the current state of the resource.</p>",
       "exception":true
     },
+    "CountryCode":{
+      "type":"string",
+      "max":2,
+      "min":2,
+      "pattern":"[A-Z]{2}"
+    },
     "Coverage":{
       "type":"string",
       "enum":[
         "ENTIRE_ORGANIZATION",
         "MANAGEMENT_ACCOUNT_ONLY"
       ]
+    },
+    "CreateChannelContractDetail":{
+      "type":"structure",
+      "members":{
+        "id":{
+          "shape":"ChannelContractId",
+          "documentation":"<p>The unique identifier of the created channel contract.</p>"
+        },
+        "arn":{
+          "shape":"Arn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the created channel contract.</p>"
+        }
+      },
+      "documentation":"<p>Contains details about a newly created channel contract.</p>"
+    },
+    "CreateChannelContractRequest":{
+      "type":"structure",
+      "required":[
+        "contractType",
+        "catalog",
+        "payload"
+      ],
+      "members":{
+        "contractType":{
+          "shape":"ChannelContractType",
+          "documentation":"<p>The type of channel contract to create (for example, managed services attestation).</p>"
+        },
+        "catalog":{
+          "shape":"Catalog",
+          "documentation":"<p>The catalog identifier for the channel contract.</p>"
+        },
+        "payload":{
+          "shape":"ChannelContractPayload",
+          "documentation":"<p>The payload containing specific details for the contract type.</p>"
+        },
+        "clientToken":{
+          "shape":"ClientToken",
+          "documentation":"<p>A unique, case-sensitive identifier to ensure idempotency of the request.</p>",
+          "idempotencyToken":true
+        },
+        "tags":{
+          "shape":"TagList",
+          "documentation":"<p>Key-value pairs to associate with the channel contract.</p>"
+        }
+      }
+    },
+    "CreateChannelContractResponse":{
+      "type":"structure",
+      "members":{
+        "channelContractDetail":{
+          "shape":"CreateChannelContractDetail",
+          "documentation":"<p>Details of the created channel contract.</p>"
+        }
+      }
     },
     "CreateChannelHandshakeDetail":{
       "type":"structure",
@@ -721,6 +1177,10 @@
         "tags":{
           "shape":"TagList",
           "documentation":"<p>Key-value pairs to associate with the program management account.</p>"
+        },
+        "type":{
+          "shape":"ProgramManagementAccountType",
+          "documentation":"<p>The type of the program management account (for example, resale billing transfer, managed services), required for the managed services provider program.</p>"
         }
       }
     },
@@ -753,7 +1213,6 @@
         "catalog",
         "associationType",
         "programManagementAccountIdentifier",
-        "associatedAccountId",
         "displayName",
         "sector"
       ],
@@ -780,7 +1239,7 @@
         },
         "resaleAccountModel":{
           "shape":"ResaleAccountModel",
-          "documentation":"<p>The resale account model for the relationship.</p>"
+          "documentation":"<p>The resale account model for the relationship. Applies only to billing transfer relationships.</p>"
         },
         "sector":{
           "shape":"Sector",
@@ -797,7 +1256,15 @@
         },
         "requestedSupportPlan":{
           "shape":"SupportPlan",
-          "documentation":"<p>The support plan requested for this relationship.</p>"
+          "documentation":"<p>The support plan requested for this relationship. Applies only to billing transfer relationships.</p>"
+        },
+        "accountScope":{
+          "shape":"AccountScope",
+          "documentation":"<p>The account scope for a managed services relationship (for example, entire organization, specific member accounts). Applies only to managed services relationships.</p>"
+        },
+        "startDate":{
+          "shape":"DateTime",
+          "documentation":"<p>The start date of the managed services relationship. Applies only to managed services relationships.</p>"
         }
       }
     },
@@ -870,6 +1337,32 @@
     "DeleteRelationshipResponse":{
       "type":"structure",
       "members":{}
+    },
+    "GetChannelContractRequest":{
+      "type":"structure",
+      "required":[
+        "catalog",
+        "identifier"
+      ],
+      "members":{
+        "catalog":{
+          "shape":"Catalog",
+          "documentation":"<p>The catalog identifier for the channel contract.</p>"
+        },
+        "identifier":{
+          "shape":"ChannelContractIdentifier",
+          "documentation":"<p>The unique identifier of the channel contract to retrieve.</p>"
+        }
+      }
+    },
+    "GetChannelContractResponse":{
+      "type":"structure",
+      "members":{
+        "channelContractDetail":{
+          "shape":"ChannelContractDetail",
+          "documentation":"<p>Details of the requested channel contract.</p>"
+        }
+      }
     },
     "GetRelationshipRequest":{
       "type":"structure",
@@ -956,6 +1449,85 @@
       "exception":true,
       "fault":true,
       "retryable":{"throttling":false}
+    },
+    "ListChannelContractsRequest":{
+      "type":"structure",
+      "required":[
+        "catalog",
+        "contractType"
+      ],
+      "members":{
+        "catalog":{
+          "shape":"Catalog",
+          "documentation":"<p>The catalog identifier to filter channel contracts.</p>"
+        },
+        "contractType":{
+          "shape":"ChannelContractType",
+          "documentation":"<p>Filter results by contract type.</p>"
+        },
+        "statuses":{
+          "shape":"ChannelContractStatusFilterList",
+          "documentation":"<p>Filter results by channel contract status.</p>"
+        },
+        "contractTypeFilters":{
+          "shape":"ListChannelContractsTypeFilters",
+          "documentation":"<p>Type-specific filters for channel contracts.</p>"
+        },
+        "contractTypeSort":{
+          "shape":"ListChannelContractsTypeSort",
+          "documentation":"<p>Type-specific sorting options for channel contracts.</p>"
+        },
+        "maxResults":{
+          "shape":"ListChannelContractsRequestMaxResultsInteger",
+          "documentation":"<p>The maximum number of results to return in a single call.</p>"
+        },
+        "nextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>Token for retrieving the next page of results.</p>"
+        }
+      }
+    },
+    "ListChannelContractsRequestMaxResultsInteger":{
+      "type":"integer",
+      "box":true,
+      "max":100,
+      "min":1
+    },
+    "ListChannelContractsResponse":{
+      "type":"structure",
+      "required":["items"],
+      "members":{
+        "items":{
+          "shape":"ChannelContractSummaries",
+          "documentation":"<p>List of channel contracts matching the criteria.</p>"
+        },
+        "nextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>Token for retrieving the next page of results, if available.</p>"
+        }
+      }
+    },
+    "ListChannelContractsTypeFilters":{
+      "type":"structure",
+      "members":{
+        "managedServicesAttestationTypeFilters":{
+          "shape":"ManagedServicesAttestationTypeFilters",
+          "documentation":"<p>Filters specific to managed services attestation channel contracts. Applies only to managed services attestation channel contracts.</p>"
+        }
+      },
+      "documentation":"<p>Type-specific filters for listing channel contracts.</p>",
+      "union":true
+    },
+    "ListChannelContractsTypeSort":{
+      "type":"structure",
+      "members":{
+        "managedServicesAttestationTypeSort":{
+          "shape":"ManagedServicesAttestationTypeSort",
+          "documentation":"<p>Sorting options specific to managed services attestation channel contracts. Applies only to managed services attestation channel contracts.</p>"
+        }
+      },
+      "documentation":"<p>Type-specific sorting options for listing channel contracts.</p>",
+      "union":true
     },
     "ListChannelHandshakesRequest":{
       "type":"structure",
@@ -1095,6 +1667,10 @@
         "nextToken":{
           "shape":"NextToken",
           "documentation":"<p>Token for retrieving the next page of results.</p>"
+        },
+        "type":{
+          "shape":"ProgramManagementAccountType",
+          "documentation":"<p>Filter by program management account type.</p>"
         }
       }
     },
@@ -1237,6 +1813,203 @@
         }
       }
     },
+    "ManagedServicesAttestationDetails":{
+      "type":"structure",
+      "required":[
+        "legalEntityName",
+        "relationshipIdentifier",
+        "programManagementAccountIdentifier",
+        "endDate",
+        "supportedServices",
+        "signatoryName",
+        "signatoryEmail"
+      ],
+      "members":{
+        "legalEntityName":{
+          "shape":"ChannelContractLegalEntityName",
+          "documentation":"<p>The legal name of the end customer's legal entity.</p>"
+        },
+        "relationshipIdentifier":{
+          "shape":"RelationshipIdentifier",
+          "documentation":"<p>The identifier of the relationship covered by the attestation.</p>"
+        },
+        "programManagementAccountIdentifier":{
+          "shape":"ProgramManagementAccountIdentifier",
+          "documentation":"<p>The identifier of the program management account.</p>"
+        },
+        "memberAccountIds":{
+          "shape":"MemberAccountIdList",
+          "documentation":"<p>The AWS account IDs of the end customer's member accounts covered by the managed services.</p>"
+        },
+        "endDate":{
+          "shape":"DateTime",
+          "documentation":"<p>The end date of the managed services attestation.</p>"
+        },
+        "supportedServices":{
+          "shape":"ManagedServicesSupportedServiceList",
+          "documentation":"<p>The managed services that the partner provides to the end customer.</p>"
+        },
+        "signatoryName":{
+          "shape":"ChannelContractSignatoryName",
+          "documentation":"<p>The name of the person who signs the attestation for the end customer.</p>"
+        },
+        "signatoryEmail":{
+          "shape":"ChannelContractSignatoryEmail",
+          "documentation":"<p>The email address of the signatory.</p>"
+        },
+        "legalEntityAddress":{
+          "shape":"Address",
+          "documentation":"<p>The address of the end customer's legal entity, if available.</p>"
+        }
+      },
+      "documentation":"<p>Details specific to managed services attestation channel contracts. Applies only to managed services attestation channel contracts.</p>"
+    },
+    "ManagedServicesAttestationPayload":{
+      "type":"structure",
+      "required":[
+        "legalEntityName",
+        "relationshipIdentifier",
+        "programManagementAccountIdentifier",
+        "endDate",
+        "supportedServices",
+        "legalEntityAddress",
+        "signatoryName",
+        "signatoryEmail"
+      ],
+      "members":{
+        "legalEntityName":{
+          "shape":"ChannelContractLegalEntityName",
+          "documentation":"<p>The legal name of the end customer's legal entity.</p>"
+        },
+        "relationshipIdentifier":{
+          "shape":"RelationshipIdentifier",
+          "documentation":"<p>The identifier of the managed services relationship to cover with the attestation.</p>"
+        },
+        "programManagementAccountIdentifier":{
+          "shape":"ProgramManagementAccountIdentifier",
+          "documentation":"<p>The identifier of the program management account for the relationship.</p>"
+        },
+        "memberAccountIds":{
+          "shape":"MemberAccountIdList",
+          "documentation":"<p>The AWS account IDs of the end customer's member accounts to cover, not allowed when the account scope is the entire organization.</p>"
+        },
+        "endDate":{
+          "shape":"DateTime",
+          "documentation":"<p>The end date of the attestation, which must be after the start date of the relationship.</p>"
+        },
+        "supportedServices":{
+          "shape":"ManagedServicesSupportedServiceList",
+          "documentation":"<p>The managed services that the partner provides to the end customer.</p>"
+        },
+        "legalEntityAddress":{
+          "shape":"Address",
+          "documentation":"<p>The address of the end customer's legal entity.</p>"
+        },
+        "signatoryName":{
+          "shape":"ChannelContractSignatoryName",
+          "documentation":"<p>The name of the person who signs the attestation for the end customer.</p>"
+        },
+        "signatoryEmail":{
+          "shape":"ChannelContractSignatoryEmail",
+          "documentation":"<p>The email address to which the attestation is sent for signature.</p>"
+        }
+      },
+      "documentation":"<p>Payload for managed services attestation channel contract requests. Applies only to managed services attestation channel contracts.</p>"
+    },
+    "ManagedServicesAttestationSummaryDetails":{
+      "type":"structure",
+      "required":[
+        "legalEntityName",
+        "relationshipIdentifier",
+        "programManagementAccountIdentifier",
+        "endDate",
+        "supportedServices"
+      ],
+      "members":{
+        "legalEntityName":{
+          "shape":"ChannelContractLegalEntityName",
+          "documentation":"<p>The legal name of the end customer's legal entity.</p>"
+        },
+        "relationshipIdentifier":{
+          "shape":"RelationshipIdentifier",
+          "documentation":"<p>The identifier of the relationship covered by the attestation.</p>"
+        },
+        "programManagementAccountIdentifier":{
+          "shape":"ProgramManagementAccountIdentifier",
+          "documentation":"<p>The identifier of the program management account.</p>"
+        },
+        "memberAccountIds":{
+          "shape":"MemberAccountIdList",
+          "documentation":"<p>The AWS account IDs of the end customer's member accounts covered by the managed services.</p>"
+        },
+        "endDate":{
+          "shape":"DateTime",
+          "documentation":"<p>The end date of the managed services attestation.</p>"
+        },
+        "supportedServices":{
+          "shape":"ManagedServicesSupportedServiceList",
+          "documentation":"<p>The managed services that the partner provides to the end customer.</p>"
+        }
+      },
+      "documentation":"<p>Summary information about a managed services attestation channel contract. Applies only to managed services attestation channel contracts.</p>"
+    },
+    "ManagedServicesAttestationTypeFilters":{
+      "type":"structure",
+      "members":{
+        "relationshipIdentifiers":{
+          "shape":"RelationshipIdentifierFilterList",
+          "documentation":"<p>Filter by relationship identifiers.</p>"
+        },
+        "legalEntityNames":{
+          "shape":"ChannelContractLegalEntityNameFilterList",
+          "documentation":"<p>Filter by legal entity names.</p>"
+        }
+      },
+      "documentation":"<p>Filters specific to managed services attestation channel contracts. Applies only to managed services attestation channel contracts.</p>"
+    },
+    "ManagedServicesAttestationTypeSort":{
+      "type":"structure",
+      "required":[
+        "sortOrder",
+        "sortBy"
+      ],
+      "members":{
+        "sortOrder":{
+          "shape":"SortOrder",
+          "documentation":"<p>The sort order (ascending or descending).</p>"
+        },
+        "sortBy":{
+          "shape":"ManagedServicesAttestationTypeSortName",
+          "documentation":"<p>The field to sort by.</p>"
+        }
+      },
+      "documentation":"<p>Sorting options specific to managed services attestation channel contracts. Applies only to managed services attestation channel contracts.</p>"
+    },
+    "ManagedServicesAttestationTypeSortName":{
+      "type":"string",
+      "enum":["UpdatedAt"]
+    },
+    "ManagedServicesSupportedService":{
+      "type":"string",
+      "enum":[
+        "MONITORING",
+        "PATCHING",
+        "SECURITY",
+        "BACKUP_AND_DISASTER_RECOVERY",
+        "FINANCIAL_OPERATIONS",
+        "INFRASTRUCTURE_AS_CODE_AND_AUTOMATION",
+        "WELL_ARCHITECTED",
+        "ARTIFICIAL_INTELLIGENCE_AND_MACHINE_LEARNING_OPERATIONS"
+      ]
+    },
+    "ManagedServicesSupportedServiceList":{
+      "type":"list",
+      "member":{"shape":"ManagedServicesSupportedService"}
+    },
+    "MemberAccountIdList":{
+      "type":"list",
+      "member":{"shape":"AccountId"}
+    },
     "MinimumNoticeDays":{
       "type":"string",
       "max":10,
@@ -1290,12 +2063,19 @@
       "min":1,
       "pattern":"[\\x00-\\x7E\\xA9\\xAE\\xA2-\\xA5\\u202F]+"
     },
+    "PostalCode":{
+      "type":"string",
+      "max":10,
+      "min":1,
+      "pattern":"\\p{Z}*[^\\p{C}\\p{Z}][^\\p{C}]*"
+    },
     "Program":{
       "type":"string",
       "enum":[
         "SOLUTION_PROVIDER",
         "DISTRIBUTION",
-        "DISTRIBUTION_SELLER"
+        "DISTRIBUTION_SELLER",
+        "MANAGED_SERVICES_PROVIDER"
       ]
     },
     "ProgramList":{
@@ -1400,9 +2180,20 @@
         "status":{
           "shape":"ProgramManagementAccountStatus",
           "documentation":"<p>The current status of the program management account.</p>"
+        },
+        "type":{
+          "shape":"ProgramManagementAccountType",
+          "documentation":"<p>The type of the program management account.</p>"
         }
       },
       "documentation":"<p>Summary information about a program management account.</p>"
+    },
+    "ProgramManagementAccountType":{
+      "type":"string",
+      "enum":[
+        "RESALE_BILLING_TRANSFER",
+        "MANAGED_SERVICES"
+      ]
     },
     "ProgramManagementAccountTypeFilters":{
       "type":"structure",
@@ -1524,11 +2315,19 @@
         },
         "resaleAccountModel":{
           "shape":"ResaleAccountModel",
-          "documentation":"<p>The resale account model for the relationship.</p>"
+          "documentation":"<p>The resale account model for the relationship. Applies only to billing transfer relationships.</p>"
         },
         "sector":{
           "shape":"Sector",
           "documentation":"<p>The business sector for the relationship.</p>"
+        },
+        "accountScope":{
+          "shape":"AccountScope",
+          "documentation":"<p>The account scope of the managed services relationship. Applies only to managed services relationships.</p>"
+        },
+        "channelContractId":{
+          "shape":"ChannelContractId",
+          "documentation":"<p>The identifier of the channel contract currently in effect for the relationship. Applies only to managed services relationships.</p>"
         },
         "createdAt":{
           "shape":"DateTime",
@@ -1541,6 +2340,10 @@
         "startDate":{
           "shape":"DateTime",
           "documentation":"<p>The start date of the relationship.</p>"
+        },
+        "endDate":{
+          "shape":"DateTime",
+          "documentation":"<p>The end date of the relationship.</p>"
         }
       },
       "documentation":"<p>Detailed information about a partner relationship.</p>"
@@ -1566,6 +2369,10 @@
       "max":1011,
       "min":16,
       "pattern":"(arn:[a-z-]+:partnercentral:[a-z0-9-]+:[0-9]{12}:catalog/[a-zA-Z]+/program-management-account/pma-[a-z0-9]{13}/relationship/)?rs-[a-z0-9]{13}"
+    },
+    "RelationshipIdentifierFilterList":{
+      "type":"list",
+      "member":{"shape":"RelationshipIdentifier"}
     },
     "RelationshipSummaries":{
       "type":"list",
@@ -1920,6 +2727,12 @@
       "type":"string",
       "enum":["UpdatedAt"]
     },
+    "StateOrRegion":{
+      "type":"string",
+      "max":50,
+      "min":1,
+      "pattern":"\\p{Z}*[^\\p{C}\\p{Z}][^\\p{C}]*"
+    },
     "String":{"type":"string"},
     "SupportPlan":{
       "type":"structure",
@@ -2003,7 +2816,7 @@
       "type":"string",
       "max":1011,
       "min":1,
-      "pattern":"arn:[a-z-]+:partnercentral:[a-z0-9-]+:[0-9]{12}:catalog/[a-zA-Z]+/(program-management-account/pma-[a-z0-9]{13}(/relationship/rs-[a-z0-9]{13})?|channel-handshake/ch-[a-z0-9]{13})"
+      "pattern":"arn:[a-z-]+:partnercentral:[a-z0-9-]+:[0-9]{12}:catalog/[a-zA-Z]+/(program-management-account/pma-[a-z0-9]{13}(/relationship/rs-[a-z0-9]{13})?|channel-handshake/ch-[a-z0-9]{13}|channel-contract/cc-[a-z0-9]{13})"
     },
     "ThrottlingException":{
       "type":"structure",
@@ -2155,7 +2968,7 @@
         },
         "requestedSupportPlan":{
           "shape":"SupportPlan",
-          "documentation":"<p>The updated support plan for the relationship.</p>"
+          "documentation":"<p>The updated support plan for the relationship. Applies only to billing transfer relationships.</p>"
         }
       }
     },

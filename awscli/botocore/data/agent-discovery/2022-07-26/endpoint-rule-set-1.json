@@ -1,0 +1,240 @@
+{
+    "version": "1.0",
+    "parameters": {
+        "Region": {
+            "type": "String",
+            "required": false,
+            "builtIn": "AWS::Region",
+            "documentation": "The AWS Region the client is configured for. us-east-1, eu-west-1 and ap-northeast-1 resolve to their own Regional endpoint; any other Region resolves to the standard Regional pattern, which Agent Discovery does not serve."
+        },
+        "UseFIPS": {
+            "type": "Boolean",
+            "required": true,
+            "default": false,
+            "builtIn": "AWS::UseFIPS",
+            "documentation": "When true, send the request to a FIPS-compliant endpoint. Agent Discovery has none, so this is an error."
+        },
+        "UseDualStack": {
+            "type": "Boolean",
+            "required": true,
+            "default": false,
+            "builtIn": "AWS::UseDualStack",
+            "documentation": "When true, send the request to a dual-stack endpoint. Agent Discovery's Regional endpoints already are, so they resolve unchanged."
+        },
+        "Endpoint": {
+            "type": "String",
+            "required": false,
+            "builtIn": "SDK::Endpoint",
+            "documentation": "Override the endpoint used to send this request."
+        }
+    },
+    "rules": [
+        {
+            "documentation": "An explicit endpoint override wins.",
+            "type": "tree",
+            "conditions": [
+                {
+                    "fn": "isSet",
+                    "argv": [
+                        {
+                            "ref": "Endpoint"
+                        }
+                    ]
+                }
+            ],
+            "rules": [
+                {
+                    "type": "error",
+                    "conditions": [
+                        {
+                            "fn": "booleanEquals",
+                            "argv": [
+                                {
+                                    "ref": "UseFIPS"
+                                },
+                                true
+                            ]
+                        }
+                    ],
+                    "error": "Invalid Configuration: FIPS and custom endpoint are not supported"
+                },
+                {
+                    "type": "error",
+                    "conditions": [
+                        {
+                            "fn": "booleanEquals",
+                            "argv": [
+                                {
+                                    "ref": "UseDualStack"
+                                },
+                                true
+                            ]
+                        }
+                    ],
+                    "error": "Invalid Configuration: Dualstack and custom endpoint are not supported"
+                },
+                {
+                    "type": "endpoint",
+                    "conditions": [],
+                    "endpoint": {
+                        "url": {
+                            "ref": "Endpoint"
+                        }
+                    }
+                }
+            ]
+        },
+        {
+            "documentation": "Any Region: its own Regional endpoint where Agent Discovery serves, the standard pattern elsewhere.",
+            "type": "tree",
+            "conditions": [
+                {
+                    "fn": "isSet",
+                    "argv": [
+                        {
+                            "ref": "Region"
+                        }
+                    ]
+                },
+                {
+                    "fn": "aws.partition",
+                    "argv": [
+                        {
+                            "ref": "Region"
+                        }
+                    ],
+                    "assign": "PartitionResult"
+                }
+            ],
+            "rules": [
+                {
+                    "type": "error",
+                    "conditions": [
+                        {
+                            "fn": "booleanEquals",
+                            "argv": [
+                                {
+                                    "ref": "UseFIPS"
+                                },
+                                true
+                            ]
+                        }
+                    ],
+                    "error": "FIPS is enabled but Agent Discovery does not have a FIPS endpoint"
+                },
+                {
+                    "documentation": "us-east-1 serves Agent Discovery.",
+                    "type": "endpoint",
+                    "conditions": [
+                        {
+                            "fn": "stringEquals",
+                            "argv": [
+                                {
+                                    "ref": "Region"
+                                },
+                                "us-east-1"
+                            ]
+                        }
+                    ],
+                    "endpoint": {
+                        "url": "https://agent-discovery.us-east-1.api.aws",
+                        "properties": {
+                            "authSchemes": [
+                                {
+                                    "name": "sigv4",
+                                    "signingName": "agent-discovery",
+                                    "signingRegion": "us-east-1"
+                                }
+                            ]
+                        }
+                    }
+                },
+                {
+                    "documentation": "eu-west-1 serves Agent Discovery.",
+                    "type": "endpoint",
+                    "conditions": [
+                        {
+                            "fn": "stringEquals",
+                            "argv": [
+                                {
+                                    "ref": "Region"
+                                },
+                                "eu-west-1"
+                            ]
+                        }
+                    ],
+                    "endpoint": {
+                        "url": "https://agent-discovery.eu-west-1.api.aws",
+                        "properties": {
+                            "authSchemes": [
+                                {
+                                    "name": "sigv4",
+                                    "signingName": "agent-discovery",
+                                    "signingRegion": "eu-west-1"
+                                }
+                            ]
+                        }
+                    }
+                },
+                {
+                    "documentation": "ap-northeast-1 serves Agent Discovery.",
+                    "type": "endpoint",
+                    "conditions": [
+                        {
+                            "fn": "stringEquals",
+                            "argv": [
+                                {
+                                    "ref": "Region"
+                                },
+                                "ap-northeast-1"
+                            ]
+                        }
+                    ],
+                    "endpoint": {
+                        "url": "https://agent-discovery.ap-northeast-1.api.aws",
+                        "properties": {
+                            "authSchemes": [
+                                {
+                                    "name": "sigv4",
+                                    "signingName": "agent-discovery",
+                                    "signingRegion": "ap-northeast-1"
+                                }
+                            ]
+                        }
+                    }
+                },
+                {
+                    "documentation": "Any other Region with dual-stack gets the partition's dual-stack Regional pattern, which is not deployed.",
+                    "type": "endpoint",
+                    "conditions": [
+                        {
+                            "fn": "booleanEquals",
+                            "argv": [
+                                {
+                                    "ref": "UseDualStack"
+                                },
+                                true
+                            ]
+                        }
+                    ],
+                    "endpoint": {
+                        "url": "https://agent-discovery.{Region}.{PartitionResult#dualStackDnsSuffix}"
+                    }
+                },
+                {
+                    "documentation": "Any other Region, in any partition, gets the standard Regional pattern, which is not deployed.",
+                    "type": "endpoint",
+                    "conditions": [],
+                    "endpoint": {
+                        "url": "https://agent-discovery.{Region}.{PartitionResult#dnsSuffix}"
+                    }
+                }
+            ]
+        },
+        {
+            "type": "error",
+            "conditions": [],
+            "error": "Invalid Configuration: Missing Region"
+        }
+    ]
+}

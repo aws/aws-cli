@@ -9293,7 +9293,7 @@
         },
         "ServiceManaged":{
           "shape":"ServiceManaged",
-          "documentation":"<p>The service that manages the elastic IP address.</p> <note> <p>The only option supported today is <code>alb</code>.</p> </note>",
+          "documentation":"<p>The service that manages the elastic IP address.</p>",
           "locationName":"serviceManaged"
         },
         "InstanceId":{
@@ -40582,6 +40582,22 @@
         "unknown"
       ]
     },
+    "FirewallArn":{"type":"string"},
+    "FirewallMode":{
+      "type":"string",
+      "enum":[
+        "monitor",
+        "enforce"
+      ]
+    },
+    "FirewallOnboardingStatus":{
+      "type":"string",
+      "enum":[
+        "pending",
+        "active",
+        "disabling"
+      ]
+    },
     "FirewallStatefulRule":{
       "type":"structure",
       "members":{
@@ -43777,7 +43793,7 @@
         },
         "ResourceType":{
           "shape":"IpamPolicyResourceType",
-          "documentation":"<p>The resource type for which to get the allocation rules.</p> <p>The Amazon Web Services service or resource type that can use IP addresses through IPAM policies. Supported services and resource types include:</p> <ul> <li> <p>Elastic IP addresses</p> </li> </ul>"
+          "documentation":"<p>The resource type for which to get the allocation rules.</p> <p>The Amazon Web Services service or resource type that can use IP addresses through IPAM policies. Supported services and resource types include:</p> <ul> <li> <p>Elastic IP addresses</p> </li> <li> <p>Application Load Balancers</p> </li> <li> <p>Amazon RDS</p> </li> <li> <p>NAT gateways in regional availability mode</p> </li> <li> <p>Lambda Network Connector</p> </li> <li> <p>Automated Internet Firewall</p> </li> </ul>"
         },
         "MaxResults":{
           "shape":"IpamMaxResults",
@@ -46534,6 +46550,22 @@
         "enable",
         "disable"
       ]
+    },
+    "IgwFirewall":{
+      "type":"structure",
+      "members":{
+        "FirewallArn":{
+          "shape":"FirewallArn",
+          "documentation":"<p>The ARN of the firewall that inspects traffic for this route.</p>",
+          "locationName":"firewallArn"
+        },
+        "Status":{
+          "shape":"FirewallOnboardingStatus",
+          "documentation":"<p>The status of the firewall that inspects traffic for this route. Uses the same values as <code>NetworkFirewallAssociation$firewallOnboardingStatus</code>: <code>active</code>, <code>disabling</code>, or <code>pending</code>.</p>",
+          "locationName":"status"
+        }
+      },
+      "documentation":"<p>Describes the Automated Internet Firewall that inspects traffic for an internet gateway or egress-only internet gateway route.</p>"
     },
     "Image":{
       "type":"structure",
@@ -54070,7 +54102,7 @@
         },
         "ResourceType":{
           "shape":"IpamPolicyResourceType",
-          "documentation":"<p>The resource type of the IPAM policy document.</p> <p>The Amazon Web Services service or resource type that can use IP addresses through IPAM policies. Supported services and resource types include:</p> <ul> <li> <p>Elastic IP addresses</p> </li> </ul>",
+          "documentation":"<p>The resource type of the IPAM policy document.</p> <p>The Amazon Web Services service or resource type that can use IP addresses through IPAM policies. Supported services and resource types include:</p> <ul> <li> <p>Elastic IP addresses</p> </li> <li> <p>Application Load Balancers</p> </li> <li> <p>Amazon RDS</p> </li> <li> <p>NAT gateways in regional availability mode</p> </li> <li> <p>Lambda Network Connector</p> </li> <li> <p>Automated Internet Firewall</p> </li> </ul>",
           "locationName":"resourceType"
         },
         "AllocationRules":{
@@ -54120,7 +54152,9 @@
         "alb",
         "eip",
         "rds",
-        "rnat"
+        "rnat",
+        "lambda-network-connector",
+        "igw-firewall"
       ]
     },
     "IpamPolicySet":{
@@ -55610,7 +55644,8 @@
         "update-in-progress",
         "update-complete",
         "delete-in-progress",
-        "delete-complete"
+        "delete-complete",
+        "disable-complete"
       ]
     },
     "IpamRpkiStatus":{
@@ -60815,7 +60850,7 @@
         },
         "ResourceType":{
           "shape":"IpamPolicyResourceType",
-          "documentation":"<p>The resource type for which to modify the allocation rules.</p> <p>The Amazon Web Services service or resource type that can use IP addresses through IPAM policies. Supported services and resource types include:</p> <ul> <li> <p>Elastic IP addresses</p> </li> </ul>"
+          "documentation":"<p>The resource type for which to modify the allocation rules.</p> <p>The Amazon Web Services service or resource type that can use IP addresses through IPAM policies. Supported services and resource types include:</p> <ul> <li> <p>Elastic IP addresses</p> </li> <li> <p>Application Load Balancers</p> </li> <li> <p>Amazon RDS</p> </li> <li> <p>NAT gateways in regional availability mode</p> </li> <li> <p>Lambda Network Connector</p> </li> <li> <p>Automated Internet Firewall</p> </li> </ul>"
         },
         "AllocationRules":{
           "shape":"IpamPolicyAllocationRuleListRequest",
@@ -64564,6 +64599,44 @@
         "shape":"NetworkCardInterfaceType",
         "locationName":"item"
       }
+    },
+    "NetworkFirewallAssociation":{
+      "type":"structure",
+      "members":{
+        "FirewallArn":{
+          "shape":"FirewallArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the firewall.</p>",
+          "locationName":"firewallArn"
+        },
+        "FirewallOnboardingStatus":{
+          "shape":"FirewallOnboardingStatus",
+          "documentation":"<p>The status of the firewall for the VPC. Possible values:</p> <ul> <li> <p> <code>active</code>: The firewall inspects traffic for the VPC.</p> </li> <li> <p> <code>disabling</code>: AWS is removing the firewall from the VPC.</p> </li> <li> <p> <code>pending</code>: AWS is setting up the firewall for the VPC. The firewall might not inspect traffic yet.</p> </li> </ul>",
+          "locationName":"firewallOnboardingStatus"
+        },
+        "FirewallMode":{
+          "shape":"FirewallMode",
+          "documentation":"<p>The mode of the firewall. Possible values:</p> <ul> <li> <p> <code>enforce</code>: The firewall applies its policy to traffic.</p> </li> <li> <p> <code>monitor</code>: The firewall logs traffic that its policy would act on, but doesn't block it.</p> </li> </ul>",
+          "locationName":"firewallMode"
+        }
+      },
+      "documentation":"<p>Describes an Automated Internet Firewall that inspects traffic between a VPC and its internet gateway or egress-only internet gateway.</p>"
+    },
+    "NetworkFirewallAssociationSet":{
+      "type":"list",
+      "member":{
+        "shape":"NetworkFirewallAssociation",
+        "locationName":"item"
+      }
+    },
+    "NetworkFirewallConnectivityType":{
+      "type":"string",
+      "enum":[
+        "flexible",
+        "outbound-only",
+        "bidirectional",
+        "exclude",
+        "az-unsupported"
+      ]
     },
     "NetworkFunctionAttachmentAZIdList":{
       "type":"list",
@@ -71886,6 +71959,11 @@
           "shape":"String",
           "documentation":"<p>The next hop IP address for routes propagated by VPC Route Server into VPC route tables.</p>",
           "locationName":"ipAddress"
+        },
+        "IgwFirewall":{
+          "shape":"IgwFirewall",
+          "documentation":"<p>Information about the Automated Internet Firewall that inspects traffic for this route. The response includes this value only for routes that target an internet gateway or egress-only internet gateway in a VPC that has a firewall. The route target remains the internet gateway or egress-only internet gateway.</p>",
+          "locationName":"igwFirewall"
         }
       },
       "documentation":"<p>Describes a route in a route table.</p>"
@@ -74967,7 +75045,9 @@
         "alb",
         "nlb",
         "rnat",
-        "rds"
+        "rds",
+        "lambda-network-connector",
+        "igw-firewall"
       ]
     },
     "ServiceNetworkArn":{"type":"string"},
@@ -76917,6 +76997,11 @@
           "shape":"String",
           "documentation":"<p>Indicates if this is a subnet used with Amazon Elastic VMware Service (EVS). Possible values are <code>Elastic VMware Service</code> or no value. For more information about Amazon EVS, see <a href=\"https://docs.aws.amazon.com/evs/latest/APIReference/Welcome.html\"> <i>Amazon Elastic VMware Service API Reference</i> </a>.</p>",
           "locationName":"type"
+        },
+        "NetworkFirewallConnectivityType":{
+          "shape":"NetworkFirewallConnectivityType",
+          "documentation":"<p>The internet connectivity treatment that the Automated Internet Firewall applies to the subnet. The response includes this value only if the subnet is in a VPC that has a firewall. Possible values:</p> <ul> <li> <p> <code>az-unsupported</code>: The firewall doesn't support the subnet's Availability Zone, so it doesn't inspect traffic for the subnet.</p> </li> <li> <p> <code>bidirectional</code>: Provides bidirectional internet connectivity to every network interface that has a public IP association. Any network interface without a public IP cannot communicate with the internet unless a NAT device is explicitly inserted in the path. All inbound and outbound traffic is inspected against your firewall rules.</p> </li> <li> <p> <code>exclude</code>: The firewall doesn't inspect traffic for the subnet. The subnet bypasses the firewall, and its traffic passes directly through the internet gateway.</p> </li> <li> <p> <code>flexible</code>: Sets the connectivity for each network interface in the subnet based on whether it is associated with a public IP address. A network interface with a public IP address gets bidirectional internet connectivity. A network interface without a public IP address gets outbound-only connectivity. All traffic is inspected against your firewall rules.</p> </li> <li> <p> <code>outbound-only</code>: Provides egress-only connectivity for all network interfaces in the subnet. All outbound traffic and inbound responses are inspected against your firewall rules. Unsolicited inbound connections are dropped. For IPv4 traffic, the firewall performs NAT.</p> </li> </ul>",
+          "locationName":"networkFirewallConnectivityType"
         },
         "SubnetId":{
           "shape":"String",
@@ -80957,7 +81042,8 @@
         "t3",
         "t3a",
         "t4g",
-        "t8i"
+        "t8i",
+        "t9g"
       ]
     },
     "UnlockSnapshotRequest":{
@@ -83424,6 +83510,11 @@
           "shape":"BlockPublicAccessStates",
           "documentation":"<p>The state of VPC Block Public Access (BPA).</p>",
           "locationName":"blockPublicAccessStates"
+        },
+        "NetworkFirewallAssociations":{
+          "shape":"NetworkFirewallAssociationSet",
+          "documentation":"<p>Information about the firewall associations for the VPC. Automated Internet Firewall, a feature of Amazon Virtual Private Cloud (Amazon VPC), inspects traffic between the VPC and its internet gateway or egress-only internet gateway. This list is empty if the VPC doesn't have a firewall.</p>",
+          "locationName":"networkFirewallAssociationSet"
         },
         "VpcId":{
           "shape":"String",

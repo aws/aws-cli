@@ -606,6 +606,21 @@
       ],
       "documentation":"<p>Adds one or more custom tags, each in the form of a key:value pair, to the specified resource.</p> <p>To learn more about using tags with Amazon Transcribe, refer to <a href=\"https://docs.aws.amazon.com/transcribe/latest/dg/tagging.html\">Tagging resources</a>.</p>"
     },
+    "TranscribeAudio":{
+      "name":"TranscribeAudio",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"TranscribeAudioRequest"},
+      "output":{"shape":"TranscribeAudioResponse"},
+      "errors":[
+        {"shape":"BadRequestException"},
+        {"shape":"LimitExceededException"},
+        {"shape":"InternalFailureException"}
+      ],
+      "documentation":"<p>Transcribes a media file and returns the transcript in the same response. There is no job to start and no status to poll.</p> <p>Use <code>TranscribeAudio</code> when you already have a complete media file and want the transcript right away. For large files, long audio, or bulk processing, use .</p> <p>You must include the following parameters in your <code>TranscribeAudio</code> request:</p> <ul> <li> <p> <code>Media</code>: Your audio, either as inline bytes (<code>MediaBytes</code>) or as the Amazon S3 location of a media file (<code>MediaFileUri</code>).</p> </li> <li> <p>One of <code>Language</code> or <code>LanguageDetectionMode</code>: Specify the language of your audio, or have Amazon Transcribe identify it.</p> </li> </ul> <p>Your audio must be between 0.5 seconds and 1 hour long. Supported formats are WAV, MP3, FLAC, M4A, MP4, Ogg, WebM, and AMR.</p> <p>If you send your audio in the request (<code>MediaBytes</code>), the file can be up to 25 MB. If you provide an Amazon S3 location (<code>MediaFileUri</code>), the file can be up to 500 MB.</p> <p>Amazon Transcribe always turns on smart formatting, also known as inverse text normalization (ITN). It writes numbers, dates, currency, and similar items in their usual written form. For example, \"one hundred\" becomes \"100\". You can't turn smart formatting off.</p> <p>By default, Amazon Transcribe returns the transcript in <code>TranscriptResponse</code>. If you include <code>OutputConfiguration</code>, Amazon Transcribe writes the transcript to the Amazon S3 location you specify instead, and the response contains only that location.</p>"
+    },
     "UntagResource":{
       "name":"UntagResource",
       "http":{
@@ -735,11 +750,27 @@
     "BadRequestException":{
       "type":"structure",
       "members":{
-        "Message":{"shape":"FailureReason"}
+        "Message":{"shape":"FailureReason"},
+        "Reason":{
+          "shape":"BadRequestExceptionReason",
+          "documentation":"<p>A code that identifies why the audio in your request was rejected. Currently, <code>TranscribeAudio</code> returns this field, and only for problems with your audio. It isn't returned for other validation errors.</p> <p>Possible values:</p> <ul> <li> <p> <code>audioTooLong</code>: The audio is longer than the maximum duration of 1 hour.</p> </li> <li> <p> <code>audioTooShort</code>: The audio is shorter than 0.5 seconds.</p> </li> <li> <p> <code>audioFileTooLarge</code>: The audio is larger than the maximum size.</p> </li> <li> <p> <code>unsupportedAudioFormat</code>: The media format isn't supported.</p> </li> <li> <p> <code>unsupportedChannelCount</code>: You enabled <code>ChannelIdentification</code> and the audio has more than two channels.</p> </li> <li> <p> <code>invalidAudio</code>: Amazon Transcribe couldn't decode the audio.</p> </li> <li> <p> <code>mediaDownloadFailed</code>: Amazon Transcribe couldn't download the audio at your <code>MediaFileUri</code>.</p> </li> </ul>"
+        }
       },
-      "documentation":"<p>Your request didn't pass one or more validation tests. This can occur when the entity you're trying to delete doesn't exist or if it's in a non-terminal state (such as <code>IN PROGRESS</code>). See the exception message field for more information.</p>",
+      "documentation":"<p>Your request didn't pass one or more validation tests. This can occur when a parameter has an invalid value, when you combine parameters in a way that isn't supported, when the entity you're trying to delete doesn't exist, or if it's in a non-terminal state (such as <code>IN PROGRESS</code>). See the exception message field for more information.</p>",
       "error":{"httpStatusCode":400},
       "exception":true
+    },
+    "BadRequestExceptionReason":{
+      "type":"string",
+      "enum":[
+        "audioTooLong",
+        "audioTooShort",
+        "unsupportedAudioFormat",
+        "unsupportedChannelCount",
+        "invalidAudio",
+        "audioFileTooLarge",
+        "mediaDownloadFailed"
+      ]
     },
     "BaseModelName":{
       "type":"string",
@@ -1064,14 +1095,14 @@
         },
         "RedactionOutput":{
           "shape":"RedactionOutput",
-          "documentation":"<p>Specify if you want only a redacted transcript, or if you want a redacted and an unredacted transcript.</p> <p>When you choose <code>redacted</code> Amazon Transcribe creates only a redacted transcript.</p> <p>When you choose <code>redacted_and_unredacted</code> Amazon Transcribe creates a redacted and an unredacted transcript (as two separate files).</p>"
+          "documentation":"<p>Specify if you want only a redacted transcript, or if you want a redacted and an unredacted transcript.</p> <p>When you choose <code>redacted</code> Amazon Transcribe creates only a redacted transcript.</p> <p>When you choose <code>redacted_and_unredacted</code> Amazon Transcribe creates a redacted and an unredacted transcript. For batch jobs, Amazon Transcribe creates two separate files. For <code>TranscribeAudio</code>, Amazon Transcribe returns them in <code>RedactedResults</code> and <code>Results</code>, or writes them as two separate files if you use <code>OutputConfiguration</code>.</p>"
         },
         "PiiEntityTypes":{
           "shape":"PiiEntityTypes",
           "documentation":"<p>Specify which types of personally identifiable information (PII) you want to redact in your transcript. You can include as many types as you'd like, or you can select <code>ALL</code>. If you do not include <code>PiiEntityTypes</code> in your request, all PII is redacted.</p>"
         }
       },
-      "documentation":"<p>Makes it possible to redact or flag specified personally identifiable information (PII) in your transcript. If you use <code>ContentRedaction</code>, you must also include the sub-parameters: <code>RedactionOutput</code> and <code>RedactionType</code>. You can optionally include <code>PiiEntityTypes</code> to choose which types of PII you want to redact.</p>"
+      "documentation":"<p>Makes it possible to redact specified personally identifiable information (PII) in your transcript. If you use <code>ContentRedaction</code>, you must also include the sub-parameters: <code>RedactionOutput</code> and <code>RedactionType</code>. You can optionally include <code>PiiEntityTypes</code> to choose which types of PII you want to redact.</p>"
     },
     "CreateCallAnalyticsCategoryRequest":{
       "type":"structure",
@@ -1134,7 +1165,7 @@
         },
         "EncryptionConfiguration":{
           "shape":"EncryptionConfiguration",
-          "documentation":"<p>Specifies the encryption configuration for your custom language model. Your model artifacts are encrypted with the specified KMS key or with an AWS-owned key if a key is not supplied.</p>"
+          "documentation":"<p>Specifies the encryption configuration for your custom language model. Your model artifacts are encrypted with the specified KMS key or with an Amazon Web Services owned key if a key is not supplied.</p>"
         },
         "Tags":{
           "shape":"TagList",
@@ -1251,7 +1282,7 @@
         },
         "EncryptionConfiguration":{
           "shape":"EncryptionConfiguration",
-          "documentation":"<p>Specifies the encryption configuration for your custom vocabulary filter. Your vocabulary filter artifacts are encrypted with the specified KMS key or with an AWS-owned key if a key is not supplied.</p>"
+          "documentation":"<p>Specifies the encryption configuration for your custom vocabulary filter. Your vocabulary filter artifacts are encrypted with the specified KMS key or with an Amazon Web Services owned key if a key is not supplied.</p>"
         }
       }
     },
@@ -1305,7 +1336,7 @@
         },
         "EncryptionConfiguration":{
           "shape":"EncryptionConfiguration",
-          "documentation":"<p>Specifies the encryption configuration for your custom vocabulary. Your vocabulary artifacts are encrypted with the specified KMS key or with an AWS-owned key if a key is not supplied.</p>"
+          "documentation":"<p>Specifies the encryption configuration for your custom vocabulary. Your vocabulary artifacts are encrypted with the specified KMS key or with an Amazon Web Services owned key if a key is not supplied.</p>"
         }
       }
     },
@@ -1458,6 +1489,7 @@
         }
       }
     },
+    "Double":{"type":"double"},
     "DurationInSeconds":{"type":"float"},
     "EncryptionConfiguration":{
       "type":"structure",
@@ -1472,7 +1504,7 @@
           "documentation":"<p>The Amazon Resource Name (ARN) of the KMS key you want to use to encrypt your resource artifacts. Only full KMS key ARN format is supported.</p> <p>KMS key ARNs have the format <code>arn:partition:kms:region:account:key/key-id</code>. For example: <code>arn:aws:kms:us-west-2:111122223333:key/1234abcd-12ab-34cd-56ef-1234567890ab</code>.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/kms/latest/developerguide/concepts.html#key-id-key-ARN\">KMS key ARNs</a>.</p>"
         }
       },
-      "documentation":"Encryption configuration for the invocation"
+      "documentation":"<p>The encryption configuration for your custom resource. Specify a customer managed KMS key, and optionally an encryption context, to encrypt your custom vocabulary, custom vocabulary filter, or custom language model artifacts at rest. If you do not provide a key, your artifacts are encrypted with an Amazon Web Services owned key.</p>"
     },
     "FailureReason":{"type":"string"},
     "GetCallAnalyticsCategoryRequest":{
@@ -1761,6 +1793,7 @@
       },
       "documentation":"<p>Flag the presence or absence of interruptions in your Call Analytics transcription output.</p> <p>Rules using <code>InterruptionFilter</code> are designed to match:</p> <ul> <li> <p>Instances where an agent interrupts a customer</p> </li> <li> <p>Instances where a customer interrupts an agent</p> </li> <li> <p>Either participant interrupting the other</p> </li> <li> <p>A lack of interruptions</p> </li> </ul> <p>See <a href=\"https://docs.aws.amazon.com/transcribe/latest/dg/tca-categories-batch.html#tca-rules-batch\">Rule criteria for post-call categories</a> for usage examples.</p>"
     },
+    "ItemId":{"type":"integer"},
     "JobExecutionSettings":{
       "type":"structure",
       "members":{
@@ -1927,6 +1960,10 @@
     "LanguageCodeList":{
       "type":"list",
       "member":{"shape":"LanguageCodeItem"}
+    },
+    "LanguageDetectionMode":{
+      "type":"string",
+      "enum":["IDENTIFY_LANGUAGE"]
     },
     "LanguageIdSettings":{
       "type":"structure",
@@ -2382,6 +2419,11 @@
         }
       },
       "documentation":"<p>Describes the Amazon S3 location of the media file you want to use in your request.</p> <p>For information on supported media formats, refer to the <code>MediaFormat</code> parameter or the <a href=\"https://docs.aws.amazon.com/transcribe/latest/dg/how-input.html#how-input-audio\">Media formats</a> section in the Amazon S3 Developer Guide.</p>"
+    },
+    "MediaBytesBlob":{
+      "type":"blob",
+      "max":26214400,
+      "min":1
     },
     "MediaFormat":{
       "type":"string",
@@ -2871,6 +2913,8 @@
       "error":{"httpStatusCode":404},
       "exception":true
     },
+    "NumberOfChannels":{"type":"integer"},
+    "NumberOfSpeakers":{"type":"integer"},
     "OutputBucketName":{
       "type":"string",
       "max":64,
@@ -3353,7 +3397,7 @@
         },
         "ContentRedaction":{
           "shape":"ContentRedaction",
-          "documentation":"<p>Makes it possible to redact or flag specified personally identifiable information (PII) in your transcript. If you use <code>ContentRedaction</code>, you must also include the sub-parameters: <code>RedactionOutput</code> and <code>RedactionType</code>. You can optionally include <code>PiiEntityTypes</code> to choose which types of PII you want to redact. If you do not include <code>PiiEntityTypes</code> in your request, all PII is redacted.</p>"
+          "documentation":"<p>Makes it possible to redact specified personally identifiable information (PII) in your transcript. If you use <code>ContentRedaction</code>, you must also include the sub-parameters: <code>RedactionOutput</code> and <code>RedactionType</code>. You can optionally include <code>PiiEntityTypes</code> to choose which types of PII you want to redact. If you do not include <code>PiiEntityTypes</code> in your request, all PII is redacted.</p>"
         },
         "IdentifyLanguage":{
           "shape":"Boolean",
@@ -3463,6 +3507,160 @@
       },
       "documentation":"<p>Contains <code>GenerateAbstractiveSummary</code>, which is a required parameter if you want to enable Generative call summarization in your Call Analytics request.</p>"
     },
+    "SyncItem":{
+      "type":"structure",
+      "members":{
+        "Id":{
+          "shape":"ItemId",
+          "documentation":"<p>The position of this item in the transcript, starting at 0.</p>"
+        },
+        "Content":{
+          "shape":"String",
+          "documentation":"<p>The word or punctuation mark. In <code>RedactedResults</code>, Amazon Transcribe replaces redacted words with <code>[PII]</code>.</p>"
+        },
+        "StartTime":{
+          "shape":"Double",
+          "documentation":"<p>The time, in seconds from the start of your audio, when this item starts.</p>"
+        },
+        "EndTime":{
+          "shape":"Double",
+          "documentation":"<p>The time, in seconds from the start of your audio, when this item ends.</p>"
+        },
+        "LanguageCode":{
+          "shape":"SyncLanguageCode",
+          "documentation":"<p>The language of this item, as a locale (for example, <code>en-US</code>).</p>"
+        },
+        "ChannelLabel":{
+          "shape":"String",
+          "documentation":"<p>The audio channel this item came from (<code>ch_0</code> or <code>ch_1</code>). Present if you enabled <code>ChannelIdentification</code>.</p> <p>Item start and end times are measured from the start of the audio, separately for each channel.</p>"
+        },
+        "SpeakerLabel":{
+          "shape":"String",
+          "documentation":"<p>The speaker of this item (for example, <code>spk_0</code>). Present if you enabled <code>ShowSpeakerLabels</code>.</p>"
+        },
+        "VocabularyFilterMatch":{
+          "shape":"Boolean",
+          "documentation":"<p>Indicates whether this item matched a word in your custom vocabulary filter. Present if you included <code>VocabularyFilterSettings</code>.</p>"
+        },
+        "Redactions":{
+          "shape":"SyncRedactionList",
+          "documentation":"<p>The types of personally identifiable information (PII) that Amazon Transcribe redacted from this item. Present only on redacted items in <code>RedactedResults</code>.</p>"
+        }
+      },
+      "documentation":"<p>A word or punctuation mark in your transcript. Labels such as <code>SpeakerLabel</code> and <code>ChannelLabel</code> are present only if you enabled the related feature.</p>"
+    },
+    "SyncItemList":{
+      "type":"list",
+      "member":{"shape":"SyncItem"}
+    },
+    "SyncLanguage":{
+      "type":"string",
+      "enum":[
+        "en",
+        "es",
+        "fr",
+        "it",
+        "de",
+        "ja",
+        "pt",
+        "ko",
+        "zh-CN",
+        "zh-TW",
+        "zh-HK"
+      ]
+    },
+    "SyncLanguageCode":{
+      "type":"string",
+      "enum":[
+        "en-US",
+        "en-AB",
+        "en-AU",
+        "en-GB",
+        "en-IE",
+        "en-IN",
+        "en-WL",
+        "en-ZA",
+        "en-NZ",
+        "es-US",
+        "es-ES",
+        "es-MX",
+        "fr-FR",
+        "fr-CA",
+        "it-IT",
+        "de-DE",
+        "de-CH",
+        "ja-JP",
+        "pt-BR",
+        "pt-PT",
+        "zh-CN",
+        "zh-TW",
+        "zh-HK",
+        "ko-KR"
+      ]
+    },
+    "SyncLanguageCodeItem":{
+      "type":"structure",
+      "members":{
+        "LanguageCode":{
+          "shape":"SyncLanguageCode",
+          "documentation":"<p>The identified language, as a locale (for example, <code>en-US</code>).</p>"
+        },
+        "DurationInSeconds":{
+          "shape":"DurationInSeconds",
+          "documentation":"<p>The total time, in seconds, the identified language is spoken in your audio.</p>"
+        }
+      },
+      "documentation":"<p>A language identified in your audio, and how long it's spoken.</p>"
+    },
+    "SyncLanguageCodeList":{
+      "type":"list",
+      "member":{"shape":"SyncLanguageCodeItem"}
+    },
+    "SyncLanguageOptions":{
+      "type":"list",
+      "member":{"shape":"SyncLanguage"},
+      "min":1
+    },
+    "SyncMedia":{
+      "type":"structure",
+      "members":{
+        "MediaBytes":{
+          "shape":"MediaBytesBlob",
+          "documentation":"<p>Your audio file, provided inline in the request. The maximum size is 25 MB (26,214,400 bytes) of audio, measured before base64 encoding.</p> <p>If you use an Amazon Web Services SDK, the SDK base64-encodes the bytes for you. If you call the API directly, base64-encode the bytes yourself.</p>"
+        },
+        "MediaFileUri":{
+          "shape":"Uri",
+          "documentation":"<p>The Amazon S3 location of the media file you want to transcribe. For example:</p> <ul> <li> <p> <code>s3://amzn-s3-demo-bucket/my-media-file.flac</code> </p> </li> <li> <p> <code>s3://amzn-s3-demo-bucket/media-files/my-media-file.flac</code> </p> </li> </ul> <p>The maximum file size is 500 MB. You must have read permission for the file.</p> <p>The Amazon S3 bucket that contains your input media must be located in the same Amazon Web Services Region where you're making your transcription request.</p>"
+        }
+      },
+      "documentation":"<p>The audio to transcribe. Specify exactly one of <code>MediaBytes</code> or <code>MediaFileUri</code>.</p> <p>Audio sent in the request (<code>MediaBytes</code>) can be up to 25 MB. Audio in Amazon S3 (<code>MediaFileUri</code>) can be up to 500 MB.</p>",
+      "union":true
+    },
+    "SyncOutputConfiguration":{
+      "type":"structure",
+      "required":["OutputMediaFileUri"],
+      "members":{
+        "OutputMediaFileUri":{
+          "shape":"Uri",
+          "documentation":"<p>The Amazon S3 location where you want your transcript written. For example:</p> <ul> <li> <p> <code>s3://amzn-s3-demo-bucket/my-transcript.json</code> </p> </li> <li> <p> <code>s3://amzn-s3-demo-bucket/transcripts/</code> </p> </li> </ul> <p>If the location ends with an object key, Amazon Transcribe writes the transcript to that key. If it is a bucket or ends with a forward slash (<code>/</code>), it's treated as a prefix, and Amazon Transcribe writes the transcript under it to a file named with the request ID of your call and a <code>.json</code> extension.</p> <p>If you use <code>ContentRedaction</code>, Amazon Transcribe writes the redacted transcript to the same location and adds <code>redacted-</code> before the file name (for example, <code>redacted-my-transcript.json</code>). With <code>redacted_and_unredacted</code>, Amazon Transcribe writes both files.</p> <p>If an object already exists at that key, Amazon Transcribe overwrites it.</p> <p>In a response, this is the location where Amazon Transcribe wrote your transcript. If you requested <code>redacted_and_unredacted</code> output, this is the location of the unredacted transcript.</p>"
+        }
+      },
+      "documentation":"<p>The Amazon S3 location where your transcript is written.</p>"
+    },
+    "SyncRedaction":{
+      "type":"structure",
+      "members":{
+        "Type":{
+          "shape":"PiiEntityType",
+          "documentation":"<p>The type of PII that was redacted, for example <code>NAME</code> or <code>SSN</code>.</p>"
+        }
+      },
+      "documentation":"<p>A type of personally identifiable information (PII) redacted from an item.</p>"
+    },
+    "SyncRedactionList":{
+      "type":"list",
+      "member":{"shape":"SyncRedaction"}
+    },
     "Tag":{
       "type":"structure",
       "required":[
@@ -3562,6 +3760,113 @@
       "min":1,
       "pattern":"arn:aws(-[^:]+)?:transcribe:[a-zA-Z0-9-]*:[0-9]{12}:[a-zA-Z-]*/[0-9a-zA-Z._-]+"
     },
+    "TranscribeAudioMetadata":{
+      "type":"structure",
+      "members":{
+        "LanguageCode":{
+          "shape":"SyncLanguageCode",
+          "documentation":"<p>The language of your transcript, as a locale (for example, <code>en-US</code>). Present if you used <code>LanguageDetectionMode</code>.</p>"
+        },
+        "LanguageCodes":{
+          "shape":"SyncLanguageCodeList",
+          "documentation":"<p>The language identified in your audio, and how long it's spoken. Present if you used <code>LanguageDetectionMode</code>.</p>"
+        },
+        "MediaFormat":{
+          "shape":"MediaFormat",
+          "documentation":"<p>The format of your audio, as detected by Amazon Transcribe.</p>"
+        },
+        "MediaSampleRateHertz":{
+          "shape":"MediaSampleRateHertz",
+          "documentation":"<p>The sample rate of your audio, in hertz, as detected by Amazon Transcribe.</p>"
+        },
+        "SpeakersCount":{
+          "shape":"NumberOfSpeakers",
+          "documentation":"<p>The number of speakers identified in your audio. Present if you enabled <code>ShowSpeakerLabels</code>.</p>"
+        },
+        "NumberOfChannels":{
+          "shape":"NumberOfChannels",
+          "documentation":"<p>The number of audio channels in your media. Present if you enabled <code>ChannelIdentification</code>.</p>"
+        }
+      },
+      "documentation":"<p>Information about your audio.</p>"
+    },
+    "TranscribeAudioRequest":{
+      "type":"structure",
+      "required":["Media"],
+      "members":{
+        "Media":{
+          "shape":"SyncMedia",
+          "documentation":"<p>The audio to transcribe. Specify exactly one of <code>MediaBytes</code> or <code>MediaFileUri</code>.</p> <p>Audio sent in the request (<code>MediaBytes</code>) can be up to 25 MB. Audio in Amazon S3 (<code>MediaFileUri</code>) can be up to 500 MB.</p>"
+        },
+        "Language":{
+          "shape":"SyncLanguage",
+          "documentation":"<p>The language spoken in your audio, as a base language code (for example, <code>en</code> or <code>es</code>).</p> <p>Include either <code>Language</code> or <code>LanguageDetectionMode</code> in your request, but not both.</p>"
+        },
+        "LanguageDetectionMode":{
+          "shape":"LanguageDetectionMode",
+          "documentation":"<p>Enables automatic language identification. Use <code>IDENTIFY_LANGUAGE</code> if your audio contains a single language that you don't know in advance.</p> <p>You can optionally include <code>LanguageOptions</code> to limit identification to languages you think may be present, which can improve accuracy.</p> <p>Amazon Transcribe returns the identified language, as a locale (for example, <code>en-US</code>), in the response metadata.</p> <p>Include either <code>Language</code> or <code>LanguageDetectionMode</code> in your request, but not both.</p>"
+        },
+        "LanguageOptions":{
+          "shape":"SyncLanguageOptions",
+          "documentation":"<p>A list of two or more languages that you think may be present in your audio, as base language codes (for example, <code>en</code> and <code>es</code>). Each language can appear only once. A list with only one language returns a <code>BadRequestException</code>.</p> <p>You can use <code>LanguageOptions</code> only with <code>LanguageDetectionMode</code>.</p>"
+        },
+        "ChannelIdentification":{
+          "shape":"Boolean",
+          "documentation":"<p>Enables channel identification in multi-channel audio. Each channel is transcribed independently, and each item in the transcript is labeled with its channel.</p> <p>Channel identification supports up to two channels.</p>"
+        },
+        "ShowSpeakerLabels":{
+          "shape":"Boolean",
+          "documentation":"<p>Enables speaker partitioning (diarization) in your transcript. Speaker partitioning labels the speech from individual speakers in your media file.</p> <p>If you set <code>ShowSpeakerLabels</code> to <code>true</code>, you must also include <code>MaxSpeakerLabels</code>.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/transcribe/latest/dg/diarization.html\">Partitioning speakers (diarization)</a>.</p>"
+        },
+        "MaxSpeakerLabels":{
+          "shape":"MaxSpeakers",
+          "documentation":"<p>Specify the maximum number of speakers you want to partition in your media.</p> <p>Note that if your media contains more speakers than the specified number, Amazon Transcribe treats multiple speakers as a single speaker.</p> <p>You can set <code>MaxSpeakerLabels</code> only if <code>ShowSpeakerLabels</code> is <code>true</code>.</p>"
+        },
+        "VocabularySettings":{
+          "shape":"VocabularySettingsList",
+          "documentation":"<p>Custom vocabularies to apply to your transcript, with one entry per language. In each entry, you can reference a custom vocabulary you created or provide phrases inline. All entries must use the same type, either all by name or all inline.</p> <p>If you specify <code>Language</code>, include exactly one entry, and its <code>Language</code> must match. If you use <code>LanguageDetectionMode</code>, you can include one entry for each language in <code>LanguageOptions</code>.</p>"
+        },
+        "VocabularyFilterSettings":{
+          "shape":"VocabularyFilterSettings",
+          "documentation":"<p>Custom vocabulary filters to apply to your transcript, and how to apply them.</p>"
+        },
+        "ContentRedaction":{
+          "shape":"ContentRedaction",
+          "documentation":"<p>Redacts personally identifiable information (PII) from your transcript. Amazon Transcribe returns the redacted transcript in <code>RedactedResults</code>.</p> <p>If you set <code>RedactionOutput</code> to <code>redacted_and_unredacted</code>, Amazon Transcribe also returns the unredacted transcript in <code>Results</code>.</p> <p>In Sync, content redaction has these limits:</p> <ul> <li> <p> <b>Languages:</b> English (<code>en</code>), Spanish (<code>es</code>), French (<code>fr</code>), Italian (<code>it</code>), German (<code>de</code>), and Portuguese (<code>pt</code>).</p> </li> <li> <p> <b>Language identification:</b> If you use <code>LanguageDetectionMode</code>, you must also include <code>LanguageOptions</code>, and every language in it must be one of the languages above. A request that has no <code>LanguageOptions</code>, or that lists a language that isn't supported, returns a <code>BadRequestException</code>.</p> </li> <li> <p> <b>Regions:</b> Content redaction isn't available in the South America (São Paulo) Region (<code>sa-east-1</code>). It's available in the other Amazon Web Services Regions where Sync is available.</p> </li> </ul>"
+        },
+        "OutputConfiguration":{
+          "shape":"SyncOutputConfiguration",
+          "documentation":"<p>Writes the transcript to an Amazon S3 location instead of returning it in the response. If you include <code>OutputConfiguration</code>, the response contains only the output location.</p> <p>You must have write permission for the location you specify.</p>"
+        }
+      }
+    },
+    "TranscribeAudioResponse":{
+      "type":"structure",
+      "members":{
+        "OutputConfiguration":{
+          "shape":"SyncOutputConfiguration",
+          "documentation":"<p>The Amazon S3 location where your transcript was written. Present only if you included <code>OutputConfiguration</code> in your request. In that case, <code>TranscriptResponse</code> isn't returned.</p>"
+        },
+        "TranscriptResponse":{
+          "shape":"TranscriptResponse",
+          "documentation":"<p>Your transcript and information about your audio. Present only if you didn't include <code>OutputConfiguration</code> in your request.</p>"
+        }
+      }
+    },
+    "TranscribeAudioResults":{
+      "type":"structure",
+      "members":{
+        "Transcript":{
+          "shape":"String",
+          "documentation":"<p>The full text of your transcript.</p> <p>If you enabled <code>ChannelIdentification</code>, the text of channel <code>ch_0</code> is followed by the text of channel <code>ch_1</code>.</p>"
+        },
+        "Items":{
+          "shape":"SyncItemList",
+          "documentation":"<p>The words and punctuation in your transcript, with timing and any labels you requested.</p>"
+        }
+      },
+      "documentation":"<p>A transcript of your audio.</p>"
+    },
     "Transcript":{
       "type":"structure",
       "members":{
@@ -3613,6 +3918,24 @@
     "TranscriptFilterType":{
       "type":"string",
       "enum":["EXACT"]
+    },
+    "TranscriptResponse":{
+      "type":"structure",
+      "members":{
+        "Metadata":{
+          "shape":"TranscribeAudioMetadata",
+          "documentation":"<p>Information about your audio, such as the detected language, format, and sample rate.</p>"
+        },
+        "Results":{
+          "shape":"TranscribeAudioResults",
+          "documentation":"<p>Your unredacted transcript.</p> <p>If you set <code>RedactionOutput</code> to <code>redacted</code>, Amazon Transcribe doesn't return this field. Use <code>RedactedResults</code> instead.</p>"
+        },
+        "RedactedResults":{
+          "shape":"TranscribeAudioResults",
+          "documentation":"<p>Your transcript with personally identifiable information (PII) redacted. Present only if you included <code>ContentRedaction</code> in your request.</p>"
+        }
+      },
+      "documentation":"<p>Your transcript and information about your audio.</p>"
     },
     "TranscriptionJob":{
       "type":"structure",
@@ -3870,7 +4193,7 @@
         },
         "EncryptionConfiguration":{
           "shape":"EncryptionConfiguration",
-          "documentation":"<p>Specifies the new encryption configuration for your custom language model. The model artifacts are re-encrypted in place using the specified KMS key or with an AWS-owned key if a key is not supplied.</p>"
+          "documentation":"<p>Specifies the new encryption configuration for your custom language model. The model artifacts are re-encrypted in place using the specified KMS key or with an Amazon Web Services owned key if a key is not supplied.</p>"
         }
       }
     },
@@ -3956,7 +4279,7 @@
         },
         "EncryptionConfiguration":{
           "shape":"EncryptionConfiguration",
-          "documentation":"<p>Specifies the new encryption configuration for your custom vocabulary filter. The vocabulary filter artifacts are re-encrypted in place using the specified KMS key or with an AWS-owned key if a key is not supplied.</p>"
+          "documentation":"<p>Specifies the encryption configuration for your custom vocabulary filter. Your vocabulary filter artifacts are encrypted with the specified KMS key or with an Amazon Web Services owned key if a key is not supplied.</p>"
         }
       }
     },
@@ -4006,7 +4329,7 @@
         },
         "EncryptionConfiguration":{
           "shape":"EncryptionConfiguration",
-          "documentation":"<p>Specifies the new encryption configuration for your custom vocabulary. The vocabulary artifacts are re-encrypted in place using the specified KMS key or with an AWS-owned key if a key is not supplied.</p>"
+          "documentation":"<p>Specifies the encryption configuration for your custom vocabulary. Your vocabulary artifacts are encrypted with the specified KMS key or with an Amazon Web Services owned key if a key is not supplied.</p>"
         }
       }
     },
@@ -4041,6 +4364,31 @@
       "type":"list",
       "member":{"shape":"VocabularyInfo"}
     },
+    "VocabularyFilterEntry":{
+      "type":"structure",
+      "required":["Language"],
+      "members":{
+        "Language":{
+          "shape":"SyncLanguage",
+          "documentation":"<p>The language this custom vocabulary filter applies to, as a base language code (for example, <code>en</code>). Each language can appear in only one entry.</p>"
+        },
+        "VocabularyFilterName":{
+          "shape":"VocabularyFilterName",
+          "documentation":"<p>The name of a custom vocabulary filter you created. The filter's language must match this entry's <code>Language</code>.</p> <p>Vocabulary filter names are case sensitive.</p> <p>Include either <code>VocabularyFilterName</code> or <code>Words</code> in each entry, but not both.</p>"
+        },
+        "Words":{
+          "shape":"Words",
+          "documentation":"<p>The words to filter, provided inline. You don't need to create the vocabulary filter first.</p> <p>Include either <code>Words</code> or <code>VocabularyFilterName</code> in each entry, but not both.</p>"
+        }
+      },
+      "documentation":"<p>A custom vocabulary filter for one language. Specify exactly one of <code>VocabularyFilterName</code> or <code>Words</code>.</p>"
+    },
+    "VocabularyFilterEntryList":{
+      "type":"list",
+      "member":{"shape":"VocabularyFilterEntry"},
+      "max":5,
+      "min":1
+    },
     "VocabularyFilterInfo":{
       "type":"structure",
       "members":{
@@ -4072,6 +4420,24 @@
       "max":200,
       "min":1,
       "pattern":"^[0-9a-zA-Z._-]+"
+    },
+    "VocabularyFilterSettings":{
+      "type":"structure",
+      "required":[
+        "VocabularyFilterMethod",
+        "Filters"
+      ],
+      "members":{
+        "VocabularyFilterMethod":{
+          "shape":"VocabularyFilterMethod",
+          "documentation":"<p>Specify how you want your custom vocabulary filter applied to your transcript.</p> <p>To replace words with <code>***</code>, choose <code>mask</code>.</p> <p>To delete words, choose <code>remove</code>.</p> <p>To flag words without changing them, choose <code>tag</code>.</p>"
+        },
+        "Filters":{
+          "shape":"VocabularyFilterEntryList",
+          "documentation":"<p>Custom vocabulary filters, with one entry per language. In each entry, you can reference a custom vocabulary filter you created or provide words inline. All entries must use the same type, either all by name or all inline.</p> <p>If you specify <code>Language</code>, include exactly one entry, and its <code>Language</code> must match. If you use <code>LanguageDetectionMode</code>, you can include one entry for each language in <code>LanguageOptions</code>.</p>"
+        }
+      },
+      "documentation":"<p>Custom vocabulary filters to apply to your transcript, and how to apply them.</p>"
     },
     "VocabularyFilters":{
       "type":"list",
@@ -4105,6 +4471,52 @@
       "min":1,
       "pattern":"^[0-9a-zA-Z._-]+"
     },
+    "VocabularyPhrase":{
+      "type":"structure",
+      "required":["Text"],
+      "members":{
+        "Text":{
+          "shape":"VocabularyText",
+          "documentation":"<p>The phrase to recognize in your audio.</p>"
+        },
+        "DisplayAs":{
+          "shape":"VocabularyText",
+          "documentation":"<p>How the phrase is written in your transcript. If you don't include <code>DisplayAs</code>, the phrase is written as it appears in <code>Text</code>.</p>"
+        }
+      },
+      "documentation":"<p>A phrase in an inline custom vocabulary.</p>"
+    },
+    "VocabularyPhraseList":{
+      "type":"list",
+      "member":{"shape":"VocabularyPhrase"},
+      "max":100,
+      "min":1
+    },
+    "VocabularySettingsEntry":{
+      "type":"structure",
+      "required":["Language"],
+      "members":{
+        "Language":{
+          "shape":"SyncLanguage",
+          "documentation":"<p>The language this custom vocabulary applies to, as a base language code (for example, <code>en</code>). Each language can appear in only one entry.</p>"
+        },
+        "VocabularyName":{
+          "shape":"VocabularyName",
+          "documentation":"<p>The name of a custom vocabulary you created. The vocabulary must be in the <code>READY</code> state, and its language must match this entry's <code>Language</code>.</p> <p>Vocabulary names are case sensitive.</p> <p>Include either <code>VocabularyName</code> or <code>Phrases</code> in each entry, but not both.</p>"
+        },
+        "Phrases":{
+          "shape":"VocabularyPhraseList",
+          "documentation":"<p>Up to 100 phrases to use as a custom vocabulary, provided inline. You don't need to create the vocabulary first.</p> <p>Include either <code>Phrases</code> or <code>VocabularyName</code> in each entry, but not both.</p>"
+        }
+      },
+      "documentation":"<p>A custom vocabulary for one language. Specify exactly one of <code>VocabularyName</code> or <code>Phrases</code>.</p>"
+    },
+    "VocabularySettingsList":{
+      "type":"list",
+      "member":{"shape":"VocabularySettingsEntry"},
+      "max":5,
+      "min":1
+    },
     "VocabularyState":{
       "type":"string",
       "enum":[
@@ -4112,6 +4524,11 @@
         "READY",
         "FAILED"
       ]
+    },
+    "VocabularyText":{
+      "type":"string",
+      "max":256,
+      "min":1
     },
     "Word":{
       "type":"string",

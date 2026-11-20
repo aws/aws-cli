@@ -861,6 +861,24 @@
       "documentation":"<p>Lists the peer databases of the specified Autonomous Database.</p>",
       "readonly":true
     },
+    "ListAutonomousDatabaseRefreshableClones":{
+      "name":"ListAutonomousDatabaseRefreshableClones",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"ListAutonomousDatabaseRefreshableClonesInput"},
+      "output":{"shape":"ListAutonomousDatabaseRefreshableClonesOutput"},
+      "errors":[
+        {"shape":"ThrottlingException"},
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ResourceNotFoundException"}
+      ],
+      "documentation":"<p>Lists the refreshable clones of the specified Autonomous Database.</p>",
+      "readonly":true
+    },
     "ListAutonomousDatabaseVersions":{
       "name":"ListAutonomousDatabaseVersions",
       "http":{
@@ -1261,6 +1279,24 @@
         {"shape":"ResourceNotFoundException"}
       ],
       "documentation":"<p>Starts the specified Autonomous Database.</p>"
+    },
+    "StartAutonomousDatabaseRefresh":{
+      "name":"StartAutonomousDatabaseRefresh",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"StartAutonomousDatabaseRefreshInput"},
+      "output":{"shape":"StartAutonomousDatabaseRefreshOutput"},
+      "errors":[
+        {"shape":"ThrottlingException"},
+        {"shape":"ValidationException"},
+        {"shape":"ConflictException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ResourceNotFoundException"}
+      ],
+      "documentation":"<p>Starts a refresh of the specified refreshable clone Autonomous Database with data from its source database. The refresh runs asynchronously. To track its progress, check the <code>refreshableStatus</code> of the Autonomous Database.</p>"
     },
     "StartDbNode":{
       "name":"StartDbNode",
@@ -2464,6 +2500,32 @@
         }
       },
       "documentation":"<p>A summary of a peer database of an Autonomous Database.</p>"
+    },
+    "AutonomousDatabaseRefreshableCloneList":{
+      "type":"list",
+      "member":{"shape":"AutonomousDatabaseRefreshableCloneSummary"}
+    },
+    "AutonomousDatabaseRefreshableCloneSummary":{
+      "type":"structure",
+      "members":{
+        "autonomousDatabaseId":{
+          "shape":"ResourceId",
+          "documentation":"<p>The unique identifier of the refreshable clone Autonomous Database.</p>"
+        },
+        "autonomousDatabaseArn":{
+          "shape":"ResourceArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the refreshable clone Autonomous Database.</p>"
+        },
+        "ocid":{
+          "shape":"String",
+          "documentation":"<p>The Oracle Cloud Identifier (OCID) of the refreshable clone Autonomous Database.</p>"
+        },
+        "region":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Web Services Region where the refreshable clone Autonomous Database is located.</p>"
+        }
+      },
+      "documentation":"<p>A summary of a refreshable clone of an Autonomous Database.</p>"
     },
     "AutonomousDatabaseResourceStatus":{
       "type":"string",
@@ -8422,6 +8484,49 @@
         }
       }
     },
+    "ListAutonomousDatabaseRefreshableClonesInput":{
+      "type":"structure",
+      "required":["autonomousDatabaseId"],
+      "members":{
+        "maxResults":{
+          "shape":"ListAutonomousDatabaseRefreshableClonesInputMaxResultsInteger",
+          "documentation":"<p>The maximum number of items to return for this request. To get the next page of items, make another request with the token returned in the output.</p>"
+        },
+        "nextToken":{
+          "shape":"ListAutonomousDatabaseRefreshableClonesInputNextTokenString",
+          "documentation":"<p>The token returned from a previous paginated request. Pagination continues from the end of the items returned by the previous request.</p>"
+        },
+        "autonomousDatabaseId":{
+          "shape":"ResourceIdOrArn",
+          "documentation":"<p>The unique identifier of the source Autonomous Database whose refreshable clones you want to list.</p>"
+        }
+      }
+    },
+    "ListAutonomousDatabaseRefreshableClonesInputMaxResultsInteger":{
+      "type":"integer",
+      "box":true,
+      "max":1000,
+      "min":1
+    },
+    "ListAutonomousDatabaseRefreshableClonesInputNextTokenString":{
+      "type":"string",
+      "max":8192,
+      "min":1
+    },
+    "ListAutonomousDatabaseRefreshableClonesOutput":{
+      "type":"structure",
+      "required":["autonomousDatabaseRefreshableClones"],
+      "members":{
+        "nextToken":{
+          "shape":"String",
+          "documentation":"<p>The token to include in another request to get the next page of items. This value is <code>null</code> when there are no more items to return.</p>"
+        },
+        "autonomousDatabaseRefreshableClones":{
+          "shape":"AutonomousDatabaseRefreshableCloneList",
+          "documentation":"<p>The list of refreshable clones for the Autonomous Database.</p>"
+        }
+      }
+    },
     "ListAutonomousDatabaseVersionsInput":{
       "type":"structure",
       "members":{
@@ -10593,6 +10698,46 @@
         "statusReason":{
           "shape":"String",
           "documentation":"<p>Additional information about the status of the Autonomous Database after the start operation.</p>"
+        }
+      }
+    },
+    "StartAutonomousDatabaseRefreshInput":{
+      "type":"structure",
+      "required":["autonomousDatabaseId"],
+      "members":{
+        "autonomousDatabaseId":{
+          "shape":"ResourceIdOrArn",
+          "documentation":"<p>The unique identifier of the refreshable clone Autonomous Database to refresh.</p>"
+        },
+        "timeOfRefreshCutoff":{
+          "shape":"SyntheticTimestamp_date_time",
+          "documentation":"<p>The date and time up to which the refreshable clone Autonomous Database is refreshed from its source database. Data committed on the source database after this time isn't applied to the refreshable clone. The time must be at least 1 minute and at most 7 days in the past, and later than the clone's last refresh point.</p>"
+        }
+      }
+    },
+    "StartAutonomousDatabaseRefreshOutput":{
+      "type":"structure",
+      "required":["autonomousDatabaseId"],
+      "members":{
+        "autonomousDatabaseId":{
+          "shape":"String",
+          "documentation":"<p>The unique identifier of the refreshable clone Autonomous Database that is being refreshed.</p>"
+        },
+        "displayName":{
+          "shape":"String",
+          "documentation":"<p>The user-friendly name of the Autonomous Database.</p>"
+        },
+        "status":{
+          "shape":"AutonomousDatabaseResourceStatus",
+          "documentation":"<p>The current status of the Autonomous Database.</p>"
+        },
+        "statusReason":{
+          "shape":"String",
+          "documentation":"<p>Additional information about the current status of the Autonomous Database.</p>"
+        },
+        "refreshableStatus":{
+          "shape":"RefreshableStatus",
+          "documentation":"<p>The refresh status of the refreshable clone Autonomous Database.</p>"
         }
       }
     },

@@ -10146,6 +10146,18 @@
         "filePath":{
           "shape":"StringFilter",
           "documentation":"<p>An object that contains details on the package file path to filter on.</p>"
+        },
+        "runtimeReachability":{
+          "shape":"RuntimeReachabilityFilter",
+          "documentation":"<p>An object that contains details on the runtime reachability status of the package to filter on. For more information, see <a href=\"https://docs.aws.amazon.com/inspector/latest/user/findings-understanding-runtime-reachability.html\">Understanding runtime reachability</a> in the Amazon Inspector user guide.</p>"
+        },
+        "runtimeReachabilityReason":{
+          "shape":"RuntimeReachabilityReasonFilter",
+          "documentation":"<p>An object that contains details on the runtime reachability reason of the package to filter on. For more information, see <a href=\"https://docs.aws.amazon.com/inspector/latest/user/findings-understanding-runtime-reachability.html\">Understanding runtime reachability</a> in the Amazon Inspector user guide.</p>"
+        },
+        "purlQualifier":{
+          "shape":"PurlQualifierFilter",
+          "documentation":"<p>An object that contains details on the package URL (purl) qualifier to filter on.</p>"
         }
       },
       "documentation":"<p>Contains information on the details of a package filter.</p>"
@@ -10203,6 +10215,11 @@
         "IMAGE",
         "ZIP"
       ]
+    },
+    "PackageUrl":{
+      "type":"string",
+      "max":2048,
+      "min":1
     },
     "PackageVersion":{
       "type":"string",
@@ -10536,6 +10553,49 @@
       "max":64,
       "min":1,
       "pattern":"([a-z]{2}(-[a-z]+)+-\\d+|[a-z][a-z0-9]+|[a-z]+-[a-z]+[0-9]+(-[a-z])?)"
+    },
+    "PurlQualifierFilter":{
+      "type":"structure",
+      "required":[
+        "comparison",
+        "key"
+      ],
+      "members":{
+        "comparison":{
+          "shape":"MapComparison",
+          "documentation":"<p>The operator to use when comparing values in the filter.</p>"
+        },
+        "key":{
+          "shape":"PurlQualifierKey",
+          "documentation":"<p>The package URL (purl) qualifier key to filter on.</p>"
+        },
+        "value":{
+          "shape":"MapValue",
+          "documentation":"<p>The package URL (purl) qualifier value to filter on.</p>"
+        }
+      },
+      "documentation":"<p>An object that describes the details of a package URL (purl) qualifier filter.</p>"
+    },
+    "PurlQualifierKey":{
+      "type":"string",
+      "enum":[
+        "arch",
+        "collector",
+        "dev_dependency",
+        "distro",
+        "epoch",
+        "go_toolchain",
+        "hardened",
+        "private",
+        "rust_toolchain",
+        "scope",
+        "skip_chromium_download",
+        "source",
+        "stream",
+        "transitive_dependency",
+        "unresolved",
+        "vendor"
+      ]
     },
     "Reason":{
       "type":"string",
@@ -11187,6 +11247,66 @@
         "DOTNET_8",
         "NODEJS_20_X"
       ]
+    },
+    "RuntimeReachability":{
+      "type":"string",
+      "enum":[
+        "REACHABLE",
+        "NOT_REACHABLE",
+        "UNKNOWN"
+      ]
+    },
+    "RuntimeReachabilityComparison":{
+      "type":"string",
+      "enum":[
+        "EQUALS",
+        "NOT_EQUALS"
+      ]
+    },
+    "RuntimeReachabilityFilter":{
+      "type":"structure",
+      "required":[
+        "comparison",
+        "value"
+      ],
+      "members":{
+        "comparison":{
+          "shape":"RuntimeReachabilityComparison",
+          "documentation":"<p>The operator to use when comparing values in the filter.</p>"
+        },
+        "value":{
+          "shape":"RuntimeReachability",
+          "documentation":"<p>The runtime reachability status to filter on.</p>"
+        }
+      },
+      "documentation":"<p>An object that describes the details of a runtime reachability filter.</p>"
+    },
+    "RuntimeReachabilityReason":{
+      "type":"string",
+      "enum":[
+        "PACKAGE_IN_DOCKERFILE_WORKLOAD_PATH",
+        "PACKAGE_NOT_IN_DOCKERFILE_WORKLOAD_PATH",
+        "PROCESS_OBSERVED_IN_EC2_RUNTIME",
+        "PROCESS_NOT_OBSERVED_IN_EC2_RUNTIME"
+      ]
+    },
+    "RuntimeReachabilityReasonFilter":{
+      "type":"structure",
+      "required":[
+        "comparison",
+        "value"
+      ],
+      "members":{
+        "comparison":{
+          "shape":"RuntimeReachabilityComparison",
+          "documentation":"<p>The operator to use when comparing values in the filter.</p>"
+        },
+        "value":{
+          "shape":"RuntimeReachabilityReason",
+          "documentation":"<p>The runtime reachability reason to filter on.</p>"
+        }
+      },
+      "documentation":"<p>An object that describes the details of a runtime reachability reason filter.</p>"
     },
     "SbomReportFormat":{
       "type":"string",
@@ -13513,6 +13633,18 @@
         "sourceLambdaLayerArn":{
           "shape":"LambdaLayerArn",
           "documentation":"<p>The Amazon Resource Number (ARN) of the Amazon Web Services Lambda function affected by a finding.</p>"
+        },
+        "runtimeReachability":{
+          "shape":"RuntimeReachability",
+          "documentation":"<p>The runtime reachability status of the vulnerable package. For more information, see <a href=\"https://docs.aws.amazon.com/inspector/latest/user/findings-understanding-runtime-reachability.html\">Understanding runtime reachability</a> in the Amazon Inspector user guide.</p>"
+        },
+        "runtimeReachabilityReason":{
+          "shape":"RuntimeReachabilityReason",
+          "documentation":"<p>The reason for the runtime reachability status of the vulnerable package. For more information, see <a href=\"https://docs.aws.amazon.com/inspector/latest/user/findings-understanding-runtime-reachability.html\">Understanding runtime reachability</a> in the Amazon Inspector user guide.</p>"
+        },
+        "purl":{
+          "shape":"PackageUrl",
+          "documentation":"<p>The package URL (purl) of the vulnerable package.</p>"
         }
       },
       "documentation":"<p>Information on the vulnerable package identified by a finding.</p>"

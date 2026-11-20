@@ -13,6 +13,45 @@
     "uid":"agent-registry-control-2025-12-01"
   },
   "operations":{
+    "AssociatePublisher":{
+      "name":"AssociatePublisher",
+      "http":{
+        "method":"POST",
+        "requestUri":"/associations",
+        "responseCode":201
+      },
+      "input":{"shape":"AssociatePublisherRequest"},
+      "output":{"shape":"AssociatePublisherResponse"},
+      "errors":[
+        {"shape":"InternalServerException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"DependencyException"},
+        {"shape":"ValidationException"},
+        {"shape":"ServiceQuotaExceededException"},
+        {"shape":"ConflictException"}
+      ],
+      "documentation":"<p>Associate a registry record with a publisher and assign the record a public identifier under the publisher's domain. The registry record must be APPROVED and the publisher must be ACTIVE. A registry record can have only one publisher association. The new association starts in PENDING_APPROVAL until a curator approves or rejects it. A ConflictException (HTTP 409) means the publisher is not ACTIVE yet, the registry record already has an association, or another registry record already holds the public identifier. To retry safely, repeat the request with the same clientToken; a retry returns the original association. If the publisher has reached its association quota, the request fails with ServiceQuotaExceededException (HTTP 402). Remove an unused association or request a quota increase.</p>"
+    },
+    "CreatePublisher":{
+      "name":"CreatePublisher",
+      "http":{
+        "method":"POST",
+        "requestUri":"/publishers",
+        "responseCode":201
+      },
+      "input":{"shape":"CreatePublisherRequest"},
+      "output":{"shape":"CreatePublisherResponse"},
+      "errors":[
+        {"shape":"InternalServerException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ValidationException"},
+        {"shape":"ServiceQuotaExceededException"},
+        {"shape":"ConflictException"}
+      ],
+      "documentation":"<p>Create a publisher for a domain you control. The publisher starts in ACTION_REQUIRED, and the response includes a domainChallenge. To verify the domain, create a DNS TXT record with the challenge's recordName and recordValue. When the registry finds the record, the publisher becomes ACTIVE and you can associate registry records with it. Your account can have one publisher per domain. Creating a second publisher for the same domain fails with ConflictException unless the request repeats the original clientToken, which returns the existing publisher. The request also fails with ConflictException when another account has already verified the domain. If your account has reached its Publisher quota, the request fails with ServiceQuotaExceededException (HTTP 402). Delete an unused Publisher or request a quota increase.</p>"
+    },
     "CreateRegistry":{
       "name":"CreateRegistry",
       "http":{
@@ -52,6 +91,25 @@
         {"shape":"ConflictException"}
       ],
       "documentation":"<p>Creates a registry record within a registry. A registry record describes a discoverable resource, such as an MCP server, an agent, an agent skill, or a custom resource. For an agent skill, you can upload a skill package in <code>artifact</code>, or synchronize the skill from an Amazon S3 or GitHub source. Creation is asynchronous: the operation returns the record with the <code>CREATING</code> status while the registry processes it. If a GitHub user must first authorize access to the source, the operation returns the record with the <code>CREATE_PENDING_AUTH</code> status instead.</p>",
+      "idempotent":true
+    },
+    "DeletePublisher":{
+      "name":"DeletePublisher",
+      "http":{
+        "method":"DELETE",
+        "requestUri":"/publishers/{publisherArn}",
+        "responseCode":204
+      },
+      "input":{"shape":"DeletePublisherRequest"},
+      "errors":[
+        {"shape":"InternalServerException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ValidationException"},
+        {"shape":"ConflictException"}
+      ],
+      "documentation":"<p>Delete a publisher. A successful call returns an empty response. You can't delete a publisher that has registry record associations; disassociate every registry record from it first. The request fails with ConflictException while the publisher has associations or another delete is in progress. Association removals can take a few seconds to be reflected, so a delete that follows a disassociation can briefly fail with ConflictException; retry after a short wait. If the publisher ARN names your account and the publisher doesn't exist, the request fails with ResourceNotFoundException.</p>",
       "idempotent":true
     },
     "DeleteRegistry":{
@@ -94,6 +152,42 @@
       "documentation":"<p>Deletes a registry record</p>",
       "idempotent":true
     },
+    "DisassociatePublisher":{
+      "name":"DisassociatePublisher",
+      "http":{
+        "method":"DELETE",
+        "requestUri":"/associations/{recordArn+}",
+        "responseCode":204
+      },
+      "input":{"shape":"DisassociatePublisherRequest"},
+      "errors":[
+        {"shape":"InternalServerException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ValidationException"}
+      ],
+      "documentation":"<p>Remove a registry record's publisher association and release its public identifier. A successful call returns an empty response. Disassociating a registry record that has no association succeeds. If another account created the association, the request fails with AccessDeniedException.</p>",
+      "idempotent":true
+    },
+    "GetPublisher":{
+      "name":"GetPublisher",
+      "http":{
+        "method":"GET",
+        "requestUri":"/publishers/{publisherArn}",
+        "responseCode":200
+      },
+      "input":{"shape":"GetPublisherRequest"},
+      "output":{"shape":"Publisher"},
+      "errors":[
+        {"shape":"InternalServerException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ValidationException"}
+      ],
+      "documentation":"<p>Get a publisher, including its verification status and the DNS challenge for its domain. If the publisher ARN names your account and the publisher doesn't exist, the request fails with ResourceNotFoundException.</p>",
+      "readonly":true
+    },
     "GetRegistry":{
       "name":"GetRegistry",
       "http":{
@@ -131,6 +225,42 @@
         {"shape":"ConflictException"}
       ],
       "documentation":"<p>Retrieves the details of a registry record. The response describes the record's latest revision, including a revision that isn't approved yet. For a skill record, the operation also returns the skill package in <code>artifact</code> and the source that the registry last synchronized the skill from in <code>synchronizedSource</code>.</p>",
+      "readonly":true
+    },
+    "ListPublisherAssociations":{
+      "name":"ListPublisherAssociations",
+      "http":{
+        "method":"GET",
+        "requestUri":"/associations",
+        "responseCode":200
+      },
+      "input":{"shape":"ListPublisherAssociationsRequest"},
+      "output":{"shape":"ListPublisherAssociationsResponse"},
+      "errors":[
+        {"shape":"InternalServerException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ValidationException"}
+      ],
+      "documentation":"<p>List the registry record associations your account created. Pass publisherArn to list only the associations for that publisher; omit it to list associations across all publishers. Results are eventually consistent, so an association you just created or removed can take a few seconds to appear in or disappear from the list.</p>",
+      "readonly":true
+    },
+    "ListPublishers":{
+      "name":"ListPublishers",
+      "http":{
+        "method":"GET",
+        "requestUri":"/publishers",
+        "responseCode":200
+      },
+      "input":{"shape":"ListPublishersRequest"},
+      "output":{"shape":"ListPublishersResponse"},
+      "errors":[
+        {"shape":"InternalServerException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ValidationException"}
+      ],
+      "documentation":"<p>List the publishers your account owns, followed by the ACTIVE publishers shared with your account.</p>",
       "readonly":true
     },
     "ListRegistries":{
@@ -248,6 +378,25 @@
       "documentation":"<p>Removes one or more tags from the specified Amazon Web Services Agent Registry resource. The operation removes only the tags whose keys you supply; other tags on the resource remain unchanged.</p>",
       "idempotent":true
     },
+    "UpdatePublisherAssociationApprovalStatus":{
+      "name":"UpdatePublisherAssociationApprovalStatus",
+      "http":{
+        "method":"PATCH",
+        "requestUri":"/associations/{recordArn+}",
+        "responseCode":200
+      },
+      "input":{"shape":"UpdatePublisherAssociationApprovalStatusRequest"},
+      "output":{"shape":"UpdatePublisherAssociationApprovalStatusResponse"},
+      "errors":[
+        {"shape":"InternalServerException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ValidationException"},
+        {"shape":"ConflictException"}
+      ],
+      "documentation":"<p>Record the curator's decision (APPROVED or REJECTED) on a registry record's publisher association. A successful call returns an empty response. Repeating the decision the association already holds changes nothing; the same approvalStatus with a different approvalStatusReason updates the reason. If the caller has no publisher association for the registry record, the request fails with AccessDeniedException. A ConflictException (HTTP 409) means the association is not in a state that accepts the decision (e.g. not PENDING_APPROVAL/APPROVED/REJECTED) or it changed while the request was being applied; read it again before deciding whether to resubmit.</p>",
+      "idempotent":true
+    },
     "UpdateRegistry":{
       "name":"UpdateRegistry",
       "http":{
@@ -305,6 +454,24 @@
         {"shape":"ConflictException"}
       ],
       "documentation":"<p>Updates the status of a registry record as part of the registry's curation workflow, for example to approve or reject a record that is pending approval, or to deprecate an approved record so that it is no longer discoverable</p>"
+    },
+    "ValidatePublisher":{
+      "name":"ValidatePublisher",
+      "http":{
+        "method":"POST",
+        "requestUri":"/publishers/{publisherArn}/verification",
+        "responseCode":200
+      },
+      "input":{"shape":"ValidatePublisherRequest"},
+      "output":{"shape":"ValidatePublisherResponse"},
+      "errors":[
+        {"shape":"InternalServerException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ValidationException"},
+        {"shape":"ConflictException"}
+      ],
+      "documentation":"<p>Restart domain verification for a publisher in FAILED or SUSPENDED. The publisher returns to ACTION_REQUIRED with a new domainChallenge, which the response includes. Update the DNS TXT record with the new recordValue; the previous value no longer verifies the domain. The request fails with ConflictException when the publisher is ACTIVE, verification is already in progress (ACTION_REQUIRED), or the publisher is being deleted.</p>"
     }
   },
   "shapes":{
@@ -538,6 +705,74 @@
       "documentation":"<p>The bytes of a skill package ZIP archive, up to 5 MiB (5,242,880 bytes) before base64 encoding.</p>",
       "sensitive":true
     },
+    "AssociatePublisherRequest":{
+      "type":"structure",
+      "required":[
+        "recordArn",
+        "publisherArn"
+      ],
+      "members":{
+        "recordArn":{
+          "shape":"RegistryRecordArn",
+          "documentation":"<p>The Record being associated.</p>"
+        },
+        "publisherArn":{
+          "shape":"PublisherIdentifierArn",
+          "documentation":"<p>The Publisher to associate the Record with.</p>"
+        },
+        "subdomain":{
+          "shape":"Subdomain",
+          "documentation":"<p>Optional single DNS label placed in front of the publisher domain (e.g. &quot;agents&quot; -&gt; agents.acme.com). Absent means the Record sits directly on the publisher domain.</p>"
+        },
+        "categories":{
+          "shape":"CategoryList",
+          "documentation":"<p>Optional categorization/hierarchy applied to the public identifier.</p>"
+        },
+        "clientToken":{
+          "shape":"ClientToken",
+          "documentation":"<p>Optional client-provided idempotency token. Retries carrying the same token return the originally-created association instead of creating a duplicate.</p>",
+          "idempotencyToken":true
+        }
+      }
+    },
+    "AssociatePublisherResponse":{
+      "type":"structure",
+      "required":[
+        "recordArn",
+        "publicIdentifier",
+        "publisher",
+        "status"
+      ],
+      "members":{
+        "recordArn":{"shape":"RegistryRecordArn"},
+        "publicIdentifier":{"shape":"PublicIdentifier"},
+        "publisher":{"shape":"PublisherIdentifierArn"},
+        "status":{"shape":"AssociationStatus"},
+        "statusReason":{
+          "shape":"StatusReason",
+          "documentation":"<p>The reason for the association's current status, such as why it is suspended. Present only when a reason is available.</p>"
+        }
+      },
+      "documentation":"<p>The new association between the registry record and the publisher, including the record's public identifier. A retry with the original clientToken returns the original association.</p>"
+    },
+    "AssociationApprovalStatus":{
+      "type":"string",
+      "documentation":"<p>The curator's decision on a Record's Publisher association.</p>",
+      "enum":[
+        "APPROVED",
+        "REJECTED"
+      ]
+    },
+    "AssociationStatus":{
+      "type":"string",
+      "documentation":"<p>The Record&lt;-&gt;Publisher association's status.</p>",
+      "enum":[
+        "PENDING_APPROVAL",
+        "APPROVED",
+        "REJECTED",
+        "SUSPENDED"
+      ]
+    },
     "AuthorizationAttemptId":{
       "type":"string",
       "documentation":"<p>The identifier of an OAuth 2.0 authorization attempt.</p>",
@@ -650,6 +885,54 @@
       "type":"boolean",
       "box":true
     },
+    "BotCategory":{
+      "type":"string",
+      "documentation":"<p>The category that describes a web bot's purpose. The categories follow AWS WAF Bot Control bot categories. Valid values:</p> <ul> <li> <p> <code>advertising</code> - Bots used for advertising, such as third-party ad services that access a website programmatically.</p> </li> <li> <p> <code>archiver</code> - Bots that crawl the web and capture content to create archives.</p> </li> <li> <p> <code>content_fetcher</code> - Bots that visit a website on behalf of a user to fetch content, such as RSS feeds, or to verify content.</p> </li> <li> <p> <code>email_client</code> - Bots that check links in emails, such as those run by email providers to flag suspicious emails.</p> </li> <li> <p> <code>http_library</code> - Requests generated by the HTTP libraries of programming languages, such as API clients.</p> </li> <li> <p> <code>link_checker</code> - Bots that check for broken links.</p> </li> <li> <p> <code>miscellaneous</code> - Bots that don't match another category.</p> </li> <li> <p> <code>monitoring</code> - Bots that periodically access a website to monitor performance and uptime.</p> </li> <li> <p> <code>page_preview</code> - Bots that generate page and link previews when content is shared on messaging, social media, or collaboration tools.</p> </li> <li> <p> <code>scraping_framework</code> - Bots from web scraping frameworks that automate crawling and extracting website content.</p> </li> <li> <p> <code>search_engine</code> - Bots that crawl websites to index content for search engine results.</p> </li> <li> <p> <code>security</code> - Bots that scan web applications for vulnerabilities or perform security audits.</p> </li> <li> <p> <code>seo</code> - Bots that crawl a website to help improve its search engine rankings.</p> </li> <li> <p> <code>social_media</code> - Bots that social media platforms use to provide content summaries when users share content.</p> </li> <li> <p> <code>ai_training</code> - AI bots that collect content to train AI models.</p> </li> <li> <p> <code>ai_search</code> - AI bots that retrieve content to answer AI search queries.</p> </li> <li> <p> <code>ai_assistant</code> - AI bots that access content on behalf of a user's AI assistant or agent.</p> </li> <li> <p> <code>ai_content_optimization</code> - AI bots that analyze content to optimize it for AI-generated results.</p> </li> </ul>",
+      "enum":[
+        "advertising",
+        "archiver",
+        "content_fetcher",
+        "email_client",
+        "http_library",
+        "link_checker",
+        "miscellaneous",
+        "monitoring",
+        "page_preview",
+        "scraping_framework",
+        "search_engine",
+        "security",
+        "seo",
+        "social_media",
+        "ai_training",
+        "ai_search",
+        "ai_assistant",
+        "ai_content_optimization"
+      ]
+    },
+    "Category":{
+      "type":"string",
+      "documentation":"<p>A single category token applied to a public identifier: lower-case letters, digits, <code>.</code>, <code>_</code> and <code>-</code>.</p>",
+      "max":64,
+      "min":1,
+      "pattern":"[a-z0-9._-]+"
+    },
+    "CategoryList":{
+      "type":"list",
+      "member":{"shape":"Category"},
+      "documentation":"<p>Ordered categories/hierarchy applied to a public identifier. Bounded to keep identifiers small.</p>",
+      "max":8,
+      "min":0
+    },
+    "ChallengeRecordName":{
+      "type":"string",
+      "max":512,
+      "min":1
+    },
+    "ChallengeRecordValue":{
+      "type":"string",
+      "max":1024,
+      "min":1
+    },
     "ClaimMatchOperatorType":{
       "type":"string",
       "documentation":"<p>The operator used to compare a claim value against the expected value during JWT validation.</p>",
@@ -692,6 +975,62 @@
         "senderFault":true
       },
       "exception":true
+    },
+    "CreatePublisherRequest":{
+      "type":"structure",
+      "required":["value"],
+      "members":{
+        "value":{"shape":"Identifier"},
+        "tags":{
+          "shape":"TagMap",
+          "documentation":"<p>The tags to attach to the publisher. Each tag is a key-value pair. You can attach up to 50 tags.</p>"
+        },
+        "clientToken":{
+          "shape":"ClientToken",
+          "documentation":"<p>Optional client-provided idempotency token. Retries of the same Create request carrying the same token return the originally-created resource instead of creating a duplicate. Forwarded to BelfryGlobalCP. Optional and backward-compatible.</p>",
+          "idempotencyToken":true
+        }
+      }
+    },
+    "CreatePublisherResponse":{
+      "type":"structure",
+      "required":[
+        "value",
+        "status",
+        "createdAt",
+        "updatedAt",
+        "publisherArn"
+      ],
+      "members":{
+        "value":{"shape":"Identifier"},
+        "identifierType":{
+          "shape":"IdentifierType",
+          "documentation":"<p>The identifier type. <code>DOMAIN</code> is the only supported value.</p>"
+        },
+        "status":{
+          "shape":"VerificationStatus",
+          "documentation":"<p>The domain verification status of the publisher:</p> <ul> <li><code>ACTION_REQUIRED</code>: The registry is waiting to find the DNS TXT record described by <code>domainChallenge</code>.</li> <li><code>ACTIVE</code>: The domain is verified. You can associate registry records with the publisher.</li> <li><code>SUSPENDED</code>: The domain was verified, but a later check found the TXT record missing or changed. The publisher returns to <code>ACTIVE</code> when the record is found again, and becomes <code>FAILED</code> if the record stays missing.</li> <li><code>FAILED</code>: Verification didn't succeed, for example because the TXT record wasn't found in time or another account verified the domain first. Call <code>ValidatePublisher</code> to try again.</li> <li><code>DELETING</code>: A delete is in progress.</li> </ul>"
+        },
+        "statusReason":{
+          "shape":"StatusReason",
+          "documentation":"<p>The reason for the publisher's current status, such as why verification failed. Present only when a reason is available.</p>"
+        },
+        "domainChallenge":{"shape":"DomainChallenge"},
+        "tags":{
+          "shape":"TagMap",
+          "documentation":"<p>The tags attached to the publisher.</p>"
+        },
+        "createdAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The date and time that the publisher was created.</p>"
+        },
+        "updatedAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The date and time that the publisher was last updated.</p>"
+        },
+        "publisherArn":{"shape":"PublisherIdentifierArn"}
+      },
+      "documentation":"<p>The new publisher, in ACTION_REQUIRED, with the domainChallenge to publish as a DNS TXT record. A retry with the original clientToken returns the existing publisher.</p>"
     },
     "CreateRegistryRecordRequest":{
       "type":"structure",
@@ -971,6 +1310,17 @@
       "documentation":"<p>Timestamp in ISO 8601 date-time format</p>",
       "timestampFormat":"iso8601"
     },
+    "DeletePublisherRequest":{
+      "type":"structure",
+      "required":["publisherArn"],
+      "members":{
+        "publisherArn":{
+          "shape":"PublisherIdentifierArn",
+          "location":"uri",
+          "locationName":"publisherArn"
+        }
+      }
+    },
     "DeleteRegistryRecordRequest":{
       "type":"structure",
       "required":[
@@ -1020,6 +1370,17 @@
         }
       },
       "documentation":"<p>Response structure for deleting a registry</p>"
+    },
+    "DependencyException":{
+      "type":"structure",
+      "members":{
+        "message":{"shape":"errorMessage"}
+      },
+      "documentation":"<p>This exception is thrown on a database (or other dependency) error. Modeled as a server error so SDKs retry it (5xx) and it feeds server-error alarming. Marked @retryable because it represents a transient downstream failure that is safe to retry (matches the forwarder's own retry-on-DependencyException behavior).</p>",
+      "error":{"httpStatusCode":503},
+      "exception":true,
+      "fault":true,
+      "retryable":{"throttling":false}
     },
     "Description":{
       "type":"string",
@@ -1093,9 +1454,24 @@
         "agui":{
           "shape":"AgUiDescriptor",
           "documentation":"<p>The AG-UI descriptor, populated for records detected from an AG-UI protocol source.</p>"
+        },
+        "signatureAgentCard":{
+          "shape":"SignatureAgentCardDescriptor",
+          "documentation":"<p>The signature agent card descriptor, populated when the record type is WEB_BOT.</p>"
         }
       },
       "documentation":"<p>The typed set of descriptors for a registry record. Exactly one descriptor field is populated based on the record type.</p>"
+    },
+    "DisassociatePublisherRequest":{
+      "type":"structure",
+      "required":["recordArn"],
+      "members":{
+        "recordArn":{
+          "shape":"RegistryRecordArn",
+          "location":"uri",
+          "locationName":"recordArn"
+        }
+      }
     },
     "DiscoveryConfiguration":{
       "type":"structure",
@@ -1117,6 +1493,31 @@
       "max":2048,
       "min":1,
       "pattern":"[^\\s?#]+/\\.well-known/(openid-configuration|oauth-authorization-server)(/[^\\s?#]+)?"
+    },
+    "DomainChallenge":{
+      "type":"structure",
+      "required":[
+        "recordName",
+        "recordValue"
+      ],
+      "members":{
+        "recordName":{
+          "shape":"ChallengeRecordName",
+          "documentation":"<p>The name of the DNS TXT record to create, such as <code>_acme-challenge.example.com</code>.</p>"
+        },
+        "recordValue":{
+          "shape":"ChallengeRecordValue",
+          "documentation":"<p>The value to publish in the DNS TXT record. A new value is issued each time verification restarts, and earlier values no longer verify the domain.</p>"
+        }
+      },
+      "documentation":"<p>Server-generated DNS-01 challenge the caller must publish to prove ownership.</p>"
+    },
+    "DomainName":{
+      "type":"string",
+      "documentation":"<p>FQDN per RFC-1035/1123, case-insensitive, at least two labels.</p>",
+      "max":253,
+      "min":1,
+      "pattern":"(?=.{1,253}$)([a-zA-Z0-9]([a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?\\.)+[a-zA-Z]{2,63}"
     },
     "EncryptionConfiguration":{
       "type":"structure",
@@ -1149,6 +1550,17 @@
       "documentation":"<p>The values supplied for a single filter.</p>",
       "max":1,
       "min":1
+    },
+    "GetPublisherRequest":{
+      "type":"structure",
+      "required":["publisherArn"],
+      "members":{
+        "publisherArn":{
+          "shape":"PublisherIdentifierArn",
+          "location":"uri",
+          "locationName":"publisherArn"
+        }
+      }
     },
     "GetRegistryRecordRequest":{
       "type":"structure",
@@ -1401,6 +1813,18 @@
       "min":1,
       "pattern":"[a-zA-Z0-9_-]+"
     },
+    "Identifier":{
+      "type":"structure",
+      "members":{
+        "domain":{"shape":"DomainName"}
+      },
+      "documentation":"<p>The identifier value. Discriminated union — exactly one member is set. GA supports <code>domain</code> only; other identifier types are added as new members (backward-compatible) in a later task.</p>",
+      "union":true
+    },
+    "IdentifierType":{
+      "type":"string",
+      "enum":["DOMAIN"]
+    },
     "InboundTokenClaimNameType":{
       "type":"string",
       "documentation":"<p>The name of a claim in an inbound JWT.</p>",
@@ -1432,6 +1856,63 @@
       "max":2048,
       "min":1,
       "pattern":"arn:aws(|-cn|-us-gov):kms:[a-zA-Z0-9-]*:[0-9]{12}:key/[a-zA-Z0-9-]{36}"
+    },
+    "ListPublisherAssociationsRequest":{
+      "type":"structure",
+      "members":{
+        "publisherArn":{
+          "shape":"PublisherIdentifierArn",
+          "location":"querystring",
+          "locationName":"publisherArn"
+        },
+        "maxResults":{
+          "shape":"MaxResults",
+          "location":"querystring",
+          "locationName":"maxResults"
+        },
+        "nextToken":{
+          "shape":"NextToken",
+          "location":"querystring",
+          "locationName":"nextToken"
+        }
+      }
+    },
+    "ListPublisherAssociationsResponse":{
+      "type":"structure",
+      "required":["items"],
+      "members":{
+        "items":{
+          "shape":"PublisherAssociationList",
+          "documentation":"<p>The publisher associations on this page of results.</p>"
+        },
+        "nextToken":{"shape":"NextToken"}
+      }
+    },
+    "ListPublishersRequest":{
+      "type":"structure",
+      "members":{
+        "maxResults":{
+          "shape":"MaxResults",
+          "location":"querystring",
+          "locationName":"maxResults"
+        },
+        "nextToken":{
+          "shape":"NextToken",
+          "location":"querystring",
+          "locationName":"nextToken"
+        }
+      }
+    },
+    "ListPublishersResponse":{
+      "type":"structure",
+      "required":["items"],
+      "members":{
+        "items":{
+          "shape":"PublisherSummaryList",
+          "documentation":"<p>Summaries of the publishers on this page of results.</p>"
+        },
+        "nextToken":{"shape":"NextToken"}
+      }
     },
     "ListRegistriesRequest":{
       "type":"structure",
@@ -1799,6 +2280,132 @@
       "max":1,
       "min":0
     },
+    "PublicIdentifier":{
+      "type":"string",
+      "documentation":"<p>Server-generated public identifier. This is a URN, NOT an ARN: the public identifier is a public-facing, provider-neutral name (a Record may be hosted outside AWS), so it deliberately does not use the arn: scheme.</p> <p>Layout: <code>urn:air:[&lt;subdomain&gt;.]&lt;domain&gt;:&lt;namespace&gt;:&lt;identity&gt;[;&lt;kind&gt;]</code></p> <ul> <li>authority <code>[&lt;subdomain&gt;.]&lt;domain&gt;</code> — the publisher FQDN, with the optional subdomain folded in as a leading label (e.g. <code>agents.acme.com</code>; without a subdomain, just <code>acme.com</code>).</li> <li><code>&lt;namespace&gt;</code> — the association's category values concatenated with <code>:</code> (zero-or-more segments; absent when no categories were supplied).</li> <li><code>&lt;identity&gt;</code> — the Record name: letters, digits, <code>.</code>, <code>_</code>, <code>/</code> and <code>-</code>, as Vestry allows.</li> <li><code>&lt;kind&gt;</code> — the artifact kind from the Record's <code>recordType</code> (ai-catalog issue 59): <code>MCP</code> is <code>mcp</code>, <code>AGENT</code> and <code>CUSTOM</code> are <code>agent</code>, <code>SKILL</code> is <code>skill</code>, <code>WEB_BOT</code> is <code>webbot</code>. Absent for <code>GATEWAY</code> and when the association carried no <code>recordType</code>. The kind is part of the identifier, so <code>urn:air:acme.com:x;mcp</code> and <code>urn:air:acme.com:x</code> are two identifiers. Belfry mints <code>;</code>; the pattern also admits <code>#</code>, <code>+</code>, <code>$</code> and <code>@</code>, so identifiers minted with <code>#</code> before the delimiter settled on <code>;</code> stay valid until they're re-minted. Examples: <code>urn:air:acme.com:finance-agent</code> (no subdomain/categories), <code>urn:air:agents.acme.com:financial:money:finance-agent</code>, <code>urn:air:acme.com:weather;mcp</code>.</li> </ul>",
+      "max":512,
+      "min":1,
+      "pattern":"urn:air:([a-zA-Z0-9]([a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?\\.)+[a-zA-Z]{2,63}(:[a-z0-9._-]+)*:[a-zA-Z0-9._/-]+([#;+$@][a-z][a-z0-9-]*)?"
+    },
+    "Publisher":{
+      "type":"structure",
+      "required":[
+        "value",
+        "status",
+        "createdAt",
+        "updatedAt",
+        "publisherArn"
+      ],
+      "members":{
+        "value":{"shape":"Identifier"},
+        "identifierType":{
+          "shape":"IdentifierType",
+          "documentation":"<p>The identifier type. <code>DOMAIN</code> is the only supported value.</p>"
+        },
+        "status":{
+          "shape":"VerificationStatus",
+          "documentation":"<p>The domain verification status of the publisher:</p> <ul> <li><code>ACTION_REQUIRED</code>: The registry is waiting to find the DNS TXT record described by <code>domainChallenge</code>.</li> <li><code>ACTIVE</code>: The domain is verified. You can associate registry records with the publisher.</li> <li><code>SUSPENDED</code>: The domain was verified, but a later check found the TXT record missing or changed. The publisher returns to <code>ACTIVE</code> when the record is found again, and becomes <code>FAILED</code> if the record stays missing.</li> <li><code>FAILED</code>: Verification didn't succeed, for example because the TXT record wasn't found in time or another account verified the domain first. Call <code>ValidatePublisher</code> to try again.</li> <li><code>DELETING</code>: A delete is in progress.</li> </ul>"
+        },
+        "statusReason":{
+          "shape":"StatusReason",
+          "documentation":"<p>The reason for the publisher's current status, such as why verification failed. Present only when a reason is available.</p>"
+        },
+        "domainChallenge":{"shape":"DomainChallenge"},
+        "tags":{
+          "shape":"TagMap",
+          "documentation":"<p>The tags attached to the publisher.</p>"
+        },
+        "createdAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The date and time that the publisher was created.</p>"
+        },
+        "updatedAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The date and time that the publisher was last updated.</p>"
+        },
+        "publisherArn":{"shape":"PublisherIdentifierArn"}
+      },
+      "documentation":"<p>A publisher, including its verification status and the DNS challenge for its domain.</p>"
+    },
+    "PublisherAssociation":{
+      "type":"structure",
+      "required":[
+        "recordArn",
+        "publicIdentifier",
+        "publisher",
+        "status"
+      ],
+      "members":{
+        "recordArn":{"shape":"RegistryRecordArn"},
+        "publicIdentifier":{"shape":"PublicIdentifier"},
+        "publisher":{"shape":"PublisherIdentifierArn"},
+        "status":{"shape":"AssociationStatus"},
+        "statusReason":{
+          "shape":"StatusReason",
+          "documentation":"<p>The reason for the association's current status, such as why it is suspended. Present only when a reason is available.</p>"
+        }
+      },
+      "documentation":"<p>An association between a registry record and a publisher, including the record's public identifier.</p>"
+    },
+    "PublisherAssociationList":{
+      "type":"list",
+      "member":{"shape":"PublisherAssociation"}
+    },
+    "PublisherIdentifierArn":{
+      "type":"string",
+      "documentation":"<p>ARN for an Identifier resource. Global (region-less) resource, so the region field is empty; the resource segment carries the identifier value, which may contain dots.</p> <p>Named <code>PublisherIdentifierArn</code> (RegionalCP's local name) so RegionalCP consumes it without a rename — which keeps its c2j/SDK model (generated from the un-projected source, where the top-level c2j plugin runs to preserve @idempotencyToken) showing the correct shape name. GlobalCP renames this to <code>identifierArn</code> in its own coral-export projection.</p>",
+      "max":2048,
+      "min":1,
+      "pattern":"arn:(aws|aws-cn|aws-us-gov):[a-z0-9-]+::[0-9]{12}:[a-zA-Z0-9._/-]+"
+    },
+    "PublisherSummary":{
+      "type":"structure",
+      "required":[
+        "value",
+        "status",
+        "createdAt",
+        "publisherArn"
+      ],
+      "members":{
+        "value":{"shape":"Identifier"},
+        "identifierType":{
+          "shape":"IdentifierType",
+          "documentation":"<p>The identifier type. <code>DOMAIN</code> is the only supported value.</p>"
+        },
+        "status":{
+          "shape":"VerificationStatus",
+          "documentation":"<p>The domain verification status of the publisher: <code>ACTION_REQUIRED</code>, <code>ACTIVE</code>, <code>SUSPENDED</code>, <code>FAILED</code>, or <code>DELETING</code>. Only an <code>ACTIVE</code> publisher accepts new registry record associations.</p>"
+        },
+        "createdAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The date and time that the publisher was created.</p>"
+        },
+        "publisherArn":{"shape":"PublisherIdentifierArn"},
+        "associationCount":{
+          "shape":"PublisherSummaryAssociationCountInteger",
+          "documentation":"<p>The number of registry records associated with the publisher, in any association status. Omitted when the count isn't available.</p>"
+        },
+        "pendingAssociationApprovalCount":{
+          "shape":"PublisherSummaryPendingAssociationApprovalCountInteger",
+          "documentation":"<p>The number of the publisher's associations that are in PENDING_APPROVAL. Omitted when the count isn't available.</p>"
+        }
+      },
+      "documentation":"<p>Lightweight projection for list results.</p>"
+    },
+    "PublisherSummaryAssociationCountInteger":{
+      "type":"integer",
+      "box":true,
+      "min":0
+    },
+    "PublisherSummaryList":{
+      "type":"list",
+      "member":{"shape":"PublisherSummary"}
+    },
+    "PublisherSummaryPendingAssociationApprovalCountInteger":{
+      "type":"integer",
+      "box":true,
+      "min":0
+    },
     "RecordIdentifier":{
       "type":"string",
       "documentation":"<p>Record identifier that accepts either ARN or ID format</p>",
@@ -1814,7 +2421,8 @@
         "AGENT",
         "CUSTOM",
         "SKILL",
-        "GATEWAY"
+        "GATEWAY",
+        "WEB_BOT"
       ]
     },
     "RecordTypeSchemaOverride":{
@@ -2426,6 +3034,38 @@
       "min":64,
       "pattern":"[0-9a-f]{64}"
     },
+    "SignatureAgentCardAdditionalData":{
+      "type":"structure",
+      "members":{
+        "category":{
+          "shape":"BotCategory",
+          "documentation":"<p>The bot category that describes the purpose of the web bot identified by the signature agent card descriptor.</p>"
+        }
+      },
+      "documentation":"<p>The additional data for a signature agent card descriptor, such as the bot category of the web bot.</p>"
+    },
+    "SignatureAgentCardDescriptor":{
+      "type":"structure",
+      "members":{
+        "data":{
+          "shape":"DescriptorData",
+          "documentation":"<p>The signature agent card content, serialized as descriptor payload data.</p>"
+        },
+        "dataSchemaVersion":{
+          "shape":"DataSchemaVersion",
+          "documentation":"<p>The schema version of the descriptor payload.</p>"
+        },
+        "source":{
+          "shape":"DescriptorSource",
+          "documentation":"<p>The optional source configuration used to synchronize the signature agent card descriptor content.</p>"
+        },
+        "additionalData":{
+          "shape":"SignatureAgentCardAdditionalData",
+          "documentation":"<p>Additional data associated with the signature agent card descriptor, such as the bot category.</p>"
+        }
+      },
+      "documentation":"<p>Descriptor that defines the content of a signature agent card, which identifies a web bot and references the JSON Web Key Set used to verify its HTTP message signatures.</p>"
+    },
     "SourceDetails":{
       "type":"structure",
       "members":{
@@ -2454,7 +3094,19 @@
         "AWS::BedrockAgentCore::Gateway"
       ]
     },
+    "StatusReason":{
+      "type":"string",
+      "max":255,
+      "min":0
+    },
     "String":{"type":"string"},
+    "Subdomain":{
+      "type":"string",
+      "documentation":"<p>A single DNS label (RFC-1035): letters, digits, hyphens; no leading/trailing hyphen.</p>",
+      "max":63,
+      "min":1,
+      "pattern":"[a-zA-Z0-9]([a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?"
+    },
     "SubmitRegistryRecordForApprovalRequest":{
       "type":"structure",
       "required":[
@@ -2542,6 +3194,13 @@
       "max":50,
       "min":1
     },
+    "TagMap":{
+      "type":"map",
+      "key":{"shape":"TagKey"},
+      "value":{"shape":"TagValue"},
+      "max":50,
+      "min":0
+    },
     "TagResourceRequest":{
       "type":"structure",
       "required":[
@@ -2592,6 +3251,7 @@
       },
       "exception":true
     },
+    "Timestamp":{"type":"timestamp"},
     "UntagResourceRequest":{
       "type":"structure",
       "required":[
@@ -2614,6 +3274,30 @@
       }
     },
     "UntagResourceResponse":{
+      "type":"structure",
+      "members":{}
+    },
+    "UpdatePublisherAssociationApprovalStatusRequest":{
+      "type":"structure",
+      "required":[
+        "recordArn",
+        "approvalStatus",
+        "approvalStatusReason"
+      ],
+      "members":{
+        "recordArn":{
+          "shape":"RegistryRecordArn",
+          "location":"uri",
+          "locationName":"recordArn"
+        },
+        "approvalStatus":{"shape":"AssociationApprovalStatus"},
+        "approvalStatusReason":{
+          "shape":"StatusReason",
+          "documentation":"<p>The curator's reason for the decision; may be empty.</p>"
+        }
+      }
+    },
+    "UpdatePublisherAssociationApprovalStatusResponse":{
       "type":"structure",
       "members":{}
     },
@@ -3147,6 +3831,16 @@
       },
       "documentation":"<p>A wrapper for updating the auto-detection configuration of a registry with PATCH semantics. Include this wrapper to replace the auto-detection configuration with the specified value. Omit it to leave the auto-detection configuration unchanged. To clear the configuration, include the wrapper with a null <code>optionalValue</code>.</p>"
     },
+    "UpdatedBotCategory":{
+      "type":"structure",
+      "members":{
+        "optionalValue":{
+          "shape":"BotCategory",
+          "documentation":"<p>The value to set for this field. Omit the wrapper to leave the field unchanged.</p>"
+        }
+      },
+      "documentation":"<p>Leaf patch wrapper for a bot category. Omit to leave unchanged; supply an empty object to unset; supply optionalValue to set.</p>"
+    },
     "UpdatedCustomDescriptor":{
       "type":"structure",
       "members":{
@@ -3263,6 +3957,10 @@
         "agui":{
           "shape":"UpdatedAgUiDescriptor",
           "documentation":"<p>The patch for the AG-UI descriptor.</p>"
+        },
+        "signatureAgentCard":{
+          "shape":"UpdatedSignatureAgentCardDescriptor",
+          "documentation":"<p>The patch for the signature agent card descriptor.</p>"
         }
       },
       "documentation":"<p>The patchable descriptor fields applied during an UpdateRegistryRecord call. Each field is independently patchable.</p>"
@@ -3393,6 +4091,109 @@
       },
       "documentation":"<p>The skill package patch wrapper. Omit to leave the package unchanged; supply an empty object to remove an uploaded package; supply optionalValue to upload a new package.</p>"
     },
+    "UpdatedSignatureAgentCardAdditionalData":{
+      "type":"structure",
+      "members":{
+        "optionalValue":{
+          "shape":"UpdatedSignatureAgentCardAdditionalDataFields",
+          "documentation":"<p>The value to set for this field. Omit the wrapper to leave the field unchanged.</p>"
+        }
+      },
+      "documentation":"<p>The signature agent card additional-data patch wrapper. Omit to leave the additional data unchanged; supply an empty object to remove it; supply optionalValue to patch its fields.</p>"
+    },
+    "UpdatedSignatureAgentCardAdditionalDataFields":{
+      "type":"structure",
+      "members":{
+        "category":{
+          "shape":"UpdatedBotCategory",
+          "documentation":"<p>The patch for the bot category field.</p>"
+        }
+      },
+      "documentation":"<p>The set of signature agent card additional-data fields that can be individually updated.</p>"
+    },
+    "UpdatedSignatureAgentCardDescriptor":{
+      "type":"structure",
+      "members":{
+        "optionalValue":{
+          "shape":"UpdatedSignatureAgentCardDescriptorFields",
+          "documentation":"<p>The value to set for this field. Omit the wrapper to leave the field unchanged.</p>"
+        }
+      },
+      "documentation":"<p>The signature agent card descriptor patch wrapper. Omit to leave the descriptor unchanged; supply an empty object to remove it; supply optionalValue to patch its fields.</p>"
+    },
+    "UpdatedSignatureAgentCardDescriptorFields":{
+      "type":"structure",
+      "members":{
+        "data":{
+          "shape":"UpdatedDescriptorData",
+          "documentation":"<p>The patch for the descriptor's data field.</p>"
+        },
+        "dataSchemaVersion":{
+          "shape":"UpdatedDataSchemaVersion",
+          "documentation":"<p>The patch for the descriptor's data schema version field.</p>"
+        },
+        "source":{
+          "shape":"UpdatedDescriptorSource",
+          "documentation":"<p>The patch for the descriptor's source field.</p>"
+        },
+        "additionalData":{
+          "shape":"UpdatedSignatureAgentCardAdditionalData",
+          "documentation":"<p>The patch for the descriptor's additional data field.</p>"
+        }
+      },
+      "documentation":"<p>The set of signature agent card descriptor fields that can be individually updated.</p>"
+    },
+    "ValidatePublisherRequest":{
+      "type":"structure",
+      "required":["publisherArn"],
+      "members":{
+        "publisherArn":{
+          "shape":"PublisherIdentifierArn",
+          "location":"uri",
+          "locationName":"publisherArn"
+        }
+      }
+    },
+    "ValidatePublisherResponse":{
+      "type":"structure",
+      "required":[
+        "value",
+        "status",
+        "createdAt",
+        "updatedAt",
+        "publisherArn"
+      ],
+      "members":{
+        "value":{"shape":"Identifier"},
+        "identifierType":{
+          "shape":"IdentifierType",
+          "documentation":"<p>The identifier type. <code>DOMAIN</code> is the only supported value.</p>"
+        },
+        "status":{
+          "shape":"VerificationStatus",
+          "documentation":"<p>The domain verification status of the publisher:</p> <ul> <li><code>ACTION_REQUIRED</code>: The registry is waiting to find the DNS TXT record described by <code>domainChallenge</code>.</li> <li><code>ACTIVE</code>: The domain is verified. You can associate registry records with the publisher.</li> <li><code>SUSPENDED</code>: The domain was verified, but a later check found the TXT record missing or changed. The publisher returns to <code>ACTIVE</code> when the record is found again, and becomes <code>FAILED</code> if the record stays missing.</li> <li><code>FAILED</code>: Verification didn't succeed, for example because the TXT record wasn't found in time or another account verified the domain first. Call <code>ValidatePublisher</code> to try again.</li> <li><code>DELETING</code>: A delete is in progress.</li> </ul>"
+        },
+        "statusReason":{
+          "shape":"StatusReason",
+          "documentation":"<p>The reason for the publisher's current status, such as why verification failed. Present only when a reason is available.</p>"
+        },
+        "domainChallenge":{"shape":"DomainChallenge"},
+        "tags":{
+          "shape":"TagMap",
+          "documentation":"<p>The tags attached to the publisher.</p>"
+        },
+        "createdAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The date and time that the publisher was created.</p>"
+        },
+        "updatedAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The date and time that the publisher was last updated.</p>"
+        },
+        "publisherArn":{"shape":"PublisherIdentifierArn"}
+      },
+      "documentation":"<p>The publisher after verification restarts, in ACTION_REQUIRED with a new domainChallenge.</p>"
+    },
     "ValidationException":{
       "type":"structure",
       "required":[
@@ -3450,6 +4251,16 @@
         "UnsupportedInRegion"
       ]
     },
+    "VerificationStatus":{
+      "type":"string",
+      "enum":[
+        "ACTION_REQUIRED",
+        "ACTIVE",
+        "FAILED",
+        "SUSPENDED",
+        "DELETING"
+      ]
+    },
     "VpcIdentifier":{
       "type":"string",
       "documentation":"<p>The identifier of a VPC.</p>",
@@ -3472,7 +4283,8 @@
       "type":"string",
       "max":1024,
       "min":1
-    }
+    },
+    "errorMessage":{"type":"string"}
   },
   "documentation":"<p>Amazon Web Services Agent Registry is a managed catalog for publishing and discovering resources such as MCP servers, agents, and agent skills. Agent Registry Control is its control-plane API: use it to create and manage registries and the records they contain, configure discovery and authorization, govern record approval and curation workflows, and manage automatic detection of resources. Data-plane search and MCP invocation operations are provided by the companion Agent Registry API.</p>"
 }

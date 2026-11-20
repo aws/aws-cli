@@ -1,0 +1,215 @@
+{
+    "version": "1.0",
+    "testCases": [
+        {
+            "documentation": "us-east-1 resolves to its own Regional endpoint and signs for us-east-1",
+            "params": {
+                "Region": "us-east-1",
+                "UseFIPS": false,
+                "UseDualStack": false
+            },
+            "expect": {
+                "endpoint": {
+                    "url": "https://agent-discovery.us-east-1.api.aws",
+                    "properties": {
+                        "authSchemes": [
+                            {
+                                "name": "sigv4",
+                                "signingName": "agent-discovery",
+                                "signingRegion": "us-east-1"
+                            }
+                        ]
+                    }
+                }
+            }
+        },
+        {
+            "documentation": "ap-northeast-1 resolves to its own Regional endpoint and signs for ap-northeast-1",
+            "params": {
+                "Region": "ap-northeast-1",
+                "UseFIPS": false,
+                "UseDualStack": false
+            },
+            "expect": {
+                "endpoint": {
+                    "url": "https://agent-discovery.ap-northeast-1.api.aws",
+                    "properties": {
+                        "authSchemes": [
+                            {
+                                "name": "sigv4",
+                                "signingName": "agent-discovery",
+                                "signingRegion": "ap-northeast-1"
+                            }
+                        ]
+                    }
+                }
+            }
+        },
+        {
+            "documentation": "An aws Region where Agent Discovery doesn't serve gets the standard pattern, not another Region's endpoint",
+            "params": {
+                "Region": "us-west-2",
+                "UseFIPS": false,
+                "UseDualStack": false
+            },
+            "expect": {
+                "endpoint": {
+                    "url": "https://agent-discovery.us-west-2.amazonaws.com"
+                }
+            }
+        },
+        {
+            "documentation": "eu-west-1 resolves to its own Regional endpoint and signs for eu-west-1",
+            "params": {
+                "Region": "eu-west-1"
+            },
+            "expect": {
+                "endpoint": {
+                    "url": "https://agent-discovery.eu-west-1.api.aws",
+                    "properties": {
+                        "authSchemes": [
+                            {
+                                "name": "sigv4",
+                                "signingName": "agent-discovery",
+                                "signingRegion": "eu-west-1"
+                            }
+                        ]
+                    }
+                }
+            }
+        },
+        {
+            "documentation": "A Region in the aws-cn partition gets the standard Regional pattern",
+            "params": {
+                "Region": "cn-north-1",
+                "UseFIPS": false,
+                "UseDualStack": false
+            },
+            "expect": {
+                "endpoint": {
+                    "url": "https://agent-discovery.cn-north-1.amazonaws.com.cn"
+                }
+            }
+        },
+        {
+            "documentation": "A Region in the aws-us-gov partition gets the standard Regional pattern, not the commercial global endpoint",
+            "params": {
+                "Region": "us-gov-west-1",
+                "UseFIPS": false,
+                "UseDualStack": false
+            },
+            "expect": {
+                "endpoint": {
+                    "url": "https://agent-discovery.us-gov-west-1.amazonaws.com"
+                }
+            }
+        },
+        {
+            "documentation": "FIPS is an error",
+            "params": {
+                "Region": "us-east-1",
+                "UseFIPS": true,
+                "UseDualStack": false
+            },
+            "expect": {
+                "error": "FIPS is enabled but Agent Discovery does not have a FIPS endpoint"
+            }
+        },
+        {
+            "documentation": "Dual-stack resolves to the same Regional endpoint, which is already dual-stack",
+            "params": {
+                "Region": "us-east-1",
+                "UseFIPS": false,
+                "UseDualStack": true
+            },
+            "expect": {
+                "endpoint": {
+                    "url": "https://agent-discovery.us-east-1.api.aws",
+                    "properties": {
+                        "authSchemes": [
+                            {
+                                "name": "sigv4",
+                                "signingName": "agent-discovery",
+                                "signingRegion": "us-east-1"
+                            }
+                        ]
+                    }
+                }
+            }
+        },
+        {
+            "documentation": "Dual-stack in a Region Agent Discovery doesn't serve gets the dual-stack standard pattern",
+            "params": {
+                "Region": "us-west-2",
+                "UseFIPS": false,
+                "UseDualStack": true
+            },
+            "expect": {
+                "endpoint": {
+                    "url": "https://agent-discovery.us-west-2.api.aws"
+                }
+            }
+        },
+        {
+            "documentation": "An endpoint override wins over the Region",
+            "params": {
+                "Region": "us-east-1",
+                "UseFIPS": false,
+                "UseDualStack": false,
+                "Endpoint": "https://example.com"
+            },
+            "expect": {
+                "endpoint": {
+                    "url": "https://example.com"
+                }
+            }
+        },
+        {
+            "documentation": "An endpoint override needs no Region",
+            "params": {
+                "UseFIPS": false,
+                "UseDualStack": false,
+                "Endpoint": "https://example.com"
+            },
+            "expect": {
+                "endpoint": {
+                    "url": "https://example.com"
+                }
+            }
+        },
+        {
+            "documentation": "An endpoint override with FIPS is an error",
+            "params": {
+                "Region": "us-east-1",
+                "UseFIPS": true,
+                "UseDualStack": false,
+                "Endpoint": "https://example.com"
+            },
+            "expect": {
+                "error": "Invalid Configuration: FIPS and custom endpoint are not supported"
+            }
+        },
+        {
+            "documentation": "An endpoint override with dual-stack is an error",
+            "params": {
+                "Region": "us-east-1",
+                "UseFIPS": false,
+                "UseDualStack": true,
+                "Endpoint": "https://example.com"
+            },
+            "expect": {
+                "error": "Invalid Configuration: Dualstack and custom endpoint are not supported"
+            }
+        },
+        {
+            "documentation": "No Region and no endpoint override is an error",
+            "params": {
+                "UseFIPS": false,
+                "UseDualStack": false
+            },
+            "expect": {
+                "error": "Invalid Configuration: Missing Region"
+            }
+        }
+    ]
+}

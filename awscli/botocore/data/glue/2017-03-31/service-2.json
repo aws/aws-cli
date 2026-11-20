@@ -1077,23 +1077,6 @@
       ],
       "documentation":"<p>Deletes an asset from Glue Data Catalog.</p>"
     },
-    "DeleteAssetType":{
-      "name":"DeleteAssetType",
-      "http":{
-        "method":"POST",
-        "requestUri":"/"
-      },
-      "input":{"shape":"DeleteAssetTypeRequest"},
-      "output":{"shape":"DeleteAssetTypeResponse"},
-      "errors":[
-        {"shape":"AccessDeniedException"},
-        {"shape":"InternalServiceException"},
-        {"shape":"InvalidInputException"},
-        {"shape":"ConcurrentModificationException"},
-        {"shape":"ThrottlingException"}
-      ],
-      "documentation":"<p>Deletes an asset type from Glue Data Catalog.</p>"
-    },
     "DeleteAttachment":{
       "name":"DeleteAttachment",
       "http":{
@@ -2220,6 +2203,7 @@
       "input":{"shape":"GetDataCatalogExportConfigurationInput"},
       "output":{"shape":"GetDataCatalogExportConfigurationOutput"},
       "errors":[
+        {"shape":"AccessDeniedException"},
         {"shape":"InvalidInputException"},
         {"shape":"EntityNotFoundException"},
         {"shape":"InternalServiceException"},
@@ -2490,6 +2474,7 @@
         {"shape":"AccessDeniedException"},
         {"shape":"EntityNotFoundException"},
         {"shape":"InternalServiceException"},
+        {"shape":"InvalidInputException"},
         {"shape":"ThrottlingException"}
       ],
       "documentation":"<p>Retrieves a business glossary in Glue Data Catalog by its identifier.</p>"
@@ -2506,6 +2491,7 @@
         {"shape":"AccessDeniedException"},
         {"shape":"EntityNotFoundException"},
         {"shape":"InternalServiceException"},
+        {"shape":"InvalidInputException"},
         {"shape":"ThrottlingException"}
       ],
       "documentation":"<p>Retrieves a glossary term in Glue Data Catalog by its identifier.</p>"
@@ -4006,24 +3992,6 @@
       ],
       "documentation":"<p>Creates or updates an asset in Glue Data Catalog. If the asset already exists, this operation updates it; otherwise, a new asset is created.</p>"
     },
-    "PutAssetType":{
-      "name":"PutAssetType",
-      "http":{
-        "method":"POST",
-        "requestUri":"/"
-      },
-      "input":{"shape":"PutAssetTypeRequest"},
-      "output":{"shape":"PutAssetTypeResponse"},
-      "errors":[
-        {"shape":"AccessDeniedException"},
-        {"shape":"InternalServiceException"},
-        {"shape":"InvalidInputException"},
-        {"shape":"EntityNotFoundException"},
-        {"shape":"ConcurrentModificationException"},
-        {"shape":"ThrottlingException"}
-      ],
-      "documentation":"<p>Creates or updates an asset type in Glue Data Catalog. An asset type defines the structure of assets by specifying which forms they include. If an asset type with the given name already exists, it is updated.</p>"
-    },
     "PutAttachment":{
       "name":"PutAttachment",
       "http":{
@@ -4295,7 +4263,7 @@
         {"shape":"InternalServiceException"},
         {"shape":"ThrottlingException"}
       ],
-      "documentation":"<p>Searches for assets in Glue Data Catalog using full-text search, filters, sorting, and aggregations. Returns matching assets with relevance-ranked results.</p>"
+      "documentation":"<p>Searches for assets in Glue Data Catalog using full-text search, filters, and sorting. Returns matching assets with relevance-ranked results.</p>"
     },
     "SearchTables":{
       "name":"SearchTables",
@@ -5809,7 +5777,11 @@
       "max":2048,
       "min":20
     },
-    "AssetDescription":{"type":"string"},
+    "AssetDescription":{
+      "type":"string",
+      "max":2048,
+      "min":0
+    },
     "AssetFormEntry":{
       "type":"structure",
       "members":{
@@ -5824,7 +5796,30 @@
       },
       "documentation":"<p>A form on an asset, consisting of the form type identifier and its JSON content.</p>"
     },
-    "AssetFormKey":{"type":"string"},
+    "AssetFormInput":{
+      "type":"structure",
+      "members":{
+        "FormTypeIdentifier":{
+          "shape":"FormTypeId",
+          "documentation":"<p>The identifier of the form type that defines this form's schema. This field is required.</p>"
+        },
+        "Content":{
+          "shape":"FormContent",
+          "documentation":"<p>The JSON content of the form, conforming to the schema of the specified form type.</p>"
+        }
+      },
+      "documentation":"<p>A form to set on an asset, consisting of the form type identifier and its JSON content.</p>"
+    },
+    "AssetFormInputMap":{
+      "type":"map",
+      "key":{"shape":"AssetFormKey"},
+      "value":{"shape":"AssetFormInput"}
+    },
+    "AssetFormKey":{
+      "type":"string",
+      "max":128,
+      "min":1
+    },
     "AssetFormMap":{
       "type":"map",
       "key":{"shape":"AssetFormKey"},
@@ -5836,30 +5831,31 @@
       "min":1,
       "pattern":"[a-zA-Z0-9\\-\\:\\/\\.\\_\\*]+"
     },
-    "AssetName":{"type":"string"},
+    "AssetName":{
+      "type":"string",
+      "max":256,
+      "min":1
+    },
     "AssetTypeFormKey":{
       "type":"string",
       "max":128,
       "min":1,
       "pattern":"^(?![0-9_])\\w+$|^_\\w*[a-zA-Z0-9]\\w*$"
     },
-    "AssetTypeFormReference":{
+    "AssetTypeFormOutput":{
       "type":"structure",
-      "required":["FormTypeIdentifier"],
       "members":{
-        "FormTypeIdentifier":{
+        "FormTypeId":{
           "shape":"FormTypeId",
-          "documentation":"<p>The identifier of the referenced form type.</p>"
+          "documentation":"<p>The identifier of the form type that defines the form's schema.</p>"
         }
       },
-      "documentation":"<p>A reference to a form type that is included in an asset type.</p>"
+      "documentation":"<p>A form that is included in an asset type, identified by the form type that defines its schema.</p>"
     },
-    "AssetTypeFormsMap":{
+    "AssetTypeFormOutputMap":{
       "type":"map",
       "key":{"shape":"AssetTypeFormKey"},
-      "value":{"shape":"AssetTypeFormReference"},
-      "max":100,
-      "min":1
+      "value":{"shape":"AssetTypeFormOutput"}
     },
     "AssetTypeId":{
       "type":"string",
@@ -5884,11 +5880,41 @@
       "type":"list",
       "member":{"shape":"AssetTypeItem"}
     },
+    "AssetTypeMaxResults":{
+      "type":"integer",
+      "box":true,
+      "max":100,
+      "min":1
+    },
     "AssetTypeName":{
       "type":"string",
       "max":128,
       "min":1,
       "pattern":"^(?![0-9_])\\w+$|^_\\w*[a-zA-Z0-9]\\w*$"
+    },
+    "AssetsExport":{
+      "type":"structure",
+      "members":{
+        "S3TablesExport":{
+          "shape":"ExportSetting",
+          "documentation":"<p>Whether asset metadata is exported to S3 Tables. Valid values are <code>ENABLED</code> and <code>DISABLED</code>.</p>"
+        }
+      },
+      "documentation":"<p>The export setting for asset metadata.</p>"
+    },
+    "AssetsExportResult":{
+      "type":"structure",
+      "members":{
+        "S3TablesExport":{
+          "shape":"ExportSetting",
+          "documentation":"<p>Whether asset metadata is exported to S3 Tables. Valid values are <code>ENABLED</code> and <code>DISABLED</code>.</p>"
+        },
+        "S3TablesExportState":{
+          "shape":"S3TablesExportState",
+          "documentation":"<p>The current state of the asset metadata export to S3 Tables.</p>"
+        }
+      },
+      "documentation":"<p>The export setting and current export state for asset metadata.</p>"
     },
     "AssociateGlossaryTermsRequest":{
       "type":"structure",
@@ -5923,7 +5949,7 @@
     "AssociateGlossaryTermsResponse":{
       "type":"structure",
       "members":{
-        "AssetIdentifier":{
+        "AssetId":{
           "shape":"AssetId",
           "documentation":"<p>The unique identifier of the asset.</p>"
         },
@@ -5931,12 +5957,12 @@
           "shape":"IterableFormName",
           "documentation":"<p>The name of the iterable form, if the association targets an item.</p>"
         },
-        "ItemIdentifier":{
-          "shape":"ItemIdentifier",
+        "ItemId":{
+          "shape":"ItemId",
           "documentation":"<p>The identifier of the item within the iterable form, if applicable.</p>"
         },
         "GlossaryTerms":{
-          "shape":"GlossaryTermIdList",
+          "shape":"GlossaryTermIdOutputList",
           "documentation":"<p>The glossary terms now associated with the asset.</p>"
         }
       }
@@ -10916,11 +10942,11 @@
           "documentation":"<p>The name of the glossary term.</p>"
         },
         "ShortDescription":{
-          "shape":"GlossaryShortDescription",
+          "shape":"GlossaryTermShortDescription",
           "documentation":"<p>A short description of the glossary term.</p>"
         },
         "LongDescription":{
-          "shape":"GlossaryLongDescription",
+          "shape":"GlossaryTermLongDescription",
           "documentation":"<p>A long description of the glossary term.</p>"
         },
         "ClientToken":{
@@ -10946,11 +10972,11 @@
           "documentation":"<p>The name of the glossary term.</p>"
         },
         "ShortDescription":{
-          "shape":"GlossaryShortDescription",
+          "shape":"GlossaryTermShortDescription",
           "documentation":"<p>The short description of the glossary term.</p>"
         },
         "LongDescription":{
-          "shape":"GlossaryLongDescription",
+          "shape":"GlossaryTermLongDescription",
           "documentation":"<p>The long description of the glossary term.</p>"
         }
       }
@@ -13917,20 +13943,6 @@
       "type":"structure",
       "members":{}
     },
-    "DeleteAssetTypeRequest":{
-      "type":"structure",
-      "required":["Identifier"],
-      "members":{
-        "Identifier":{
-          "shape":"AssetTypeId",
-          "documentation":"<p>The identifier of the asset type to delete.</p>"
-        }
-      }
-    },
-    "DeleteAssetTypeResponse":{
-      "type":"structure",
-      "members":{}
-    },
     "DeleteAttachmentRequest":{
       "type":"structure",
       "required":[
@@ -13959,7 +13971,7 @@
     "DeleteAttachmentResponse":{
       "type":"structure",
       "members":{
-        "AssetIdentifier":{
+        "AssetId":{
           "shape":"AssetId",
           "documentation":"<p>The unique identifier of the asset.</p>"
         },
@@ -13967,8 +13979,8 @@
           "shape":"IterableFormName",
           "documentation":"<p>The name of the iterable form, if the deletion targets an item.</p>"
         },
-        "ItemIdentifier":{
-          "shape":"ItemIdentifier",
+        "ItemId":{
+          "shape":"ItemId",
           "documentation":"<p>The identifier of the item within the iterable form, if applicable.</p>"
         }
       }
@@ -15317,7 +15329,7 @@
     "DisassociateGlossaryTermsResponse":{
       "type":"structure",
       "members":{
-        "AssetIdentifier":{
+        "AssetId":{
           "shape":"AssetId",
           "documentation":"<p>The unique identifier of the asset.</p>"
         },
@@ -15325,12 +15337,12 @@
           "shape":"IterableFormName",
           "documentation":"<p>The name of the iterable form, if the disassociation targets an item.</p>"
         },
-        "ItemIdentifier":{
-          "shape":"ItemIdentifier",
+        "ItemId":{
+          "shape":"ItemId",
           "documentation":"<p>The identifier of the item within the iterable form, if applicable.</p>"
         },
         "GlossaryTerms":{
-          "shape":"GlossaryTermIdList",
+          "shape":"GlossaryTermIdOutputList",
           "documentation":"<p>The remaining glossary terms associated with the asset.</p>"
         }
       }
@@ -16654,7 +16666,8 @@
     "FormTypeId":{
       "type":"string",
       "max":256,
-      "min":1
+      "min":1,
+      "pattern":"^(?![\\.:])([\\w.]+(::))?[A-Z]\\w*$"
     },
     "FormTypeItem":{
       "type":"structure",
@@ -16673,6 +16686,12 @@
     "FormTypeItemList":{
       "type":"list",
       "member":{"shape":"FormTypeItem"}
+    },
+    "FormTypeMaxResults":{
+      "type":"integer",
+      "box":true,
+      "max":100,
+      "min":1
     },
     "FormTypeName":{
       "type":"string",
@@ -16761,7 +16780,7 @@
           "documentation":"<p>The identifier of the asset type for this asset.</p>"
         },
         "GlossaryTerms":{
-          "shape":"GlossaryTermIdList",
+          "shape":"GlossaryTermIdOutputList",
           "documentation":"<p>The identifiers of the glossary terms associated with the asset.</p>"
         },
         "Forms":{
@@ -16801,7 +16820,7 @@
           "documentation":"<p>The name of the asset type.</p>"
         },
         "Forms":{
-          "shape":"AssetTypeFormsMap",
+          "shape":"AssetTypeFormOutputMap",
           "documentation":"<p>The forms that make up the asset type, keyed by form name.</p>"
         }
       }
@@ -17440,22 +17459,6 @@
     "GetDataCatalogExportConfigurationOutput":{
       "type":"structure",
       "members":{
-        "ExportSetting":{
-          "shape":"ExportSetting",
-          "documentation":"<p>The export setting for the data catalog. Valid values are <code>ENABLED</code> and <code>DISABLED</code>.</p>"
-        },
-        "Status":{
-          "shape":"ExportStatus",
-          "documentation":"<p>The current status of the export. Valid values are <code>ENABLING</code>, <code>ENABLED</code>, <code>DISABLING</code>, <code>DISABLED</code>, and <code>FAILED</code>.</p>"
-        },
-        "EncryptionConfiguration":{
-          "shape":"ExportEncryptionConfiguration",
-          "documentation":"<p>The encryption configuration for the exported data.</p>"
-        },
-        "S3TableBucketArn":{
-          "shape":"S3TableBucketArn",
-          "documentation":"<p>The ARN of the S3 Tables bucket where catalog metadata is exported.</p>"
-        },
         "CreatedAt":{
           "shape":"CreatedAt",
           "documentation":"<p>The timestamp at which the export configuration was created.</p>"
@@ -17463,6 +17466,14 @@
         "UpdatedAt":{
           "shape":"UpdatedAt",
           "documentation":"<p>The timestamp at which the export configuration was last updated.</p>"
+        },
+        "S3TablesConfiguration":{
+          "shape":"S3TablesConfigurationResult",
+          "documentation":"<p>The S3 Tables configuration for the export, including the table bucket that holds the exported catalog metadata and its encryption configuration.</p>"
+        },
+        "Assets":{
+          "shape":"AssetsExportResult",
+          "documentation":"<p>The export setting and current export state for asset metadata.</p>"
         }
       },
       "documentation":"<p>The export configuration returned by the <code>GetDataCatalogExportConfiguration</code> operation.</p>"
@@ -18264,11 +18275,11 @@
           "documentation":"<p>The name of the glossary term.</p>"
         },
         "ShortDescription":{
-          "shape":"GlossaryShortDescription",
+          "shape":"GlossaryTermShortDescription",
           "documentation":"<p>The short description of the glossary term.</p>"
         },
         "LongDescription":{
-          "shape":"GlossaryLongDescription",
+          "shape":"GlossaryTermLongDescription",
           "documentation":"<p>The long description of the glossary term.</p>"
         }
       }
@@ -20249,7 +20260,12 @@
         }
       }
     },
-    "GlossaryId":{"type":"string"},
+    "GlossaryId":{
+      "type":"string",
+      "max":36,
+      "min":1,
+      "pattern":"^[a-z0-9]+$"
+    },
     "GlossaryItem":{
       "type":"structure",
       "members":{
@@ -20272,9 +20288,10 @@
       "type":"list",
       "member":{"shape":"GlossaryItem"}
     },
-    "GlossaryLongDescription":{
-      "type":"string",
-      "max":4096,
+    "GlossaryMaxResults":{
+      "type":"integer",
+      "box":true,
+      "max":100,
       "min":1
     },
     "GlossaryName":{
@@ -20282,17 +20299,21 @@
       "max":256,
       "min":1
     },
-    "GlossaryShortDescription":{
+    "GlossaryTermId":{
       "type":"string",
-      "max":1024,
-      "min":1
+      "max":36,
+      "min":1,
+      "pattern":"^[a-z0-9]+$"
     },
-    "GlossaryTermId":{"type":"string"},
     "GlossaryTermIdList":{
       "type":"list",
       "member":{"shape":"GlossaryTermId"},
       "max":10,
       "min":1
+    },
+    "GlossaryTermIdOutputList":{
+      "type":"list",
+      "member":{"shape":"GlossaryTermId"}
     },
     "GlossaryTermItem":{
       "type":"structure",
@@ -20306,7 +20327,7 @@
           "documentation":"<p>The name of the glossary term.</p>"
         },
         "ShortDescription":{
-          "shape":"GlossaryShortDescription",
+          "shape":"GlossaryTermShortDescription",
           "documentation":"<p>The short description of the glossary term.</p>"
         }
       },
@@ -20316,9 +20337,25 @@
       "type":"list",
       "member":{"shape":"GlossaryTermItem"}
     },
+    "GlossaryTermLongDescription":{
+      "type":"string",
+      "max":4096,
+      "min":1
+    },
+    "GlossaryTermMaxResults":{
+      "type":"integer",
+      "box":true,
+      "max":100,
+      "min":1
+    },
     "GlossaryTermName":{
       "type":"string",
       "max":256,
+      "min":1
+    },
+    "GlossaryTermShortDescription":{
+      "type":"string",
+      "max":1024,
       "min":1
     },
     "GlueEncryptionException":{
@@ -21867,7 +21904,7 @@
       "type":"structure",
       "members":{
         "FormTypeId":{
-          "shape":"FormTypeId",
+          "shape":"IterableFormTypeId",
           "documentation":"<p>The form type identifier of the iterable form (for example, <code>columns</code>), used to retrieve its items via <code>ListIterableForms</code> or <code>BatchGetIterableForms</code>.</p>"
         }
       },
@@ -21885,7 +21922,7 @@
           "documentation":"<p>The name of the item.</p>"
         },
         "GlossaryTerms":{
-          "shape":"GlossaryTermIdList",
+          "shape":"GlossaryTermIdOutputList",
           "documentation":"<p>The identifiers of the glossary terms associated with the item.</p>"
         },
         "Forms":{
@@ -21920,7 +21957,7 @@
           "documentation":"<p>The description of the item.</p>"
         },
         "GlossaryTerms":{
-          "shape":"GlossaryTermIdList",
+          "shape":"GlossaryTermIdOutputList",
           "documentation":"<p>The identifiers of the glossary terms associated with the item.</p>"
         }
       },
@@ -21940,6 +21977,11 @@
       "max":256,
       "min":1,
       "pattern":"^[a-zA-Z][a-zA-Z0-9_]*(::[a-zA-Z][a-zA-Z0-9_]*)?$"
+    },
+    "IterableFormTypeId":{
+      "type":"string",
+      "max":256,
+      "min":1
     },
     "JDBCConnectionType":{
       "type":"string",
@@ -23131,7 +23173,7 @@
       "type":"structure",
       "members":{
         "MaxResults":{
-          "shape":"PageSize",
+          "shape":"AssetTypeMaxResults",
           "documentation":"<p>The maximum number of results to return in the response.</p>"
         },
         "NextToken":{
@@ -23668,7 +23710,7 @@
       "type":"structure",
       "members":{
         "MaxResults":{
-          "shape":"PageSize",
+          "shape":"FormTypeMaxResults",
           "documentation":"<p>The maximum number of results to return in the response.</p>"
         },
         "NextToken":{
@@ -23695,7 +23737,7 @@
       "type":"structure",
       "members":{
         "MaxResults":{
-          "shape":"PageSize",
+          "shape":"GlossaryMaxResults",
           "documentation":"<p>The maximum number of results to return in the response.</p>"
         },
         "NextToken":{
@@ -23726,7 +23768,7 @@
           "documentation":"<p>The unique identifier of the glossary whose terms to list.</p>"
         },
         "MaxResults":{
-          "shape":"PageSize",
+          "shape":"GlossaryTermMaxResults",
           "documentation":"<p>The maximum number of results to return in the response.</p>"
         },
         "NextToken":{
@@ -26452,15 +26494,14 @@
     "PutAssetRequest":{
       "type":"structure",
       "required":[
-        "AssetTypeId",
         "Identifier",
         "Name",
         "Forms"
       ],
       "members":{
-        "AssetTypeId":{
+        "AssetTypeIdentifier":{
           "shape":"AssetTypeId",
-          "documentation":"<p>The identifier of the asset type for the asset.</p>"
+          "documentation":"<p>The identifier of the asset type for the asset. This field is required.</p>"
         },
         "Identifier":{
           "shape":"AssetId",
@@ -26475,7 +26516,7 @@
           "documentation":"<p>The description of the asset.</p>"
         },
         "Forms":{
-          "shape":"AssetFormMap",
+          "shape":"AssetFormInputMap",
           "documentation":"<p>The forms to set on the asset, keyed by form name. Each entry specifies the form type and its JSON content.</p>"
         },
         "ClientToken":{
@@ -26489,7 +26530,8 @@
       "type":"structure",
       "required":[
         "Id",
-        "Name"
+        "Name",
+        "AssetTypeId"
       ],
       "members":{
         "Id":{
@@ -26504,6 +26546,10 @@
           "shape":"AssetDescription",
           "documentation":"<p>The description of the asset.</p>"
         },
+        "AssetTypeId":{
+          "shape":"AssetTypeId",
+          "documentation":"<p>The identifier of the asset type for this asset.</p>"
+        },
         "CreatedAt":{
           "shape":"CreatedAt",
           "documentation":"<p>The timestamp at which the asset was created.</p>"
@@ -26514,52 +26560,12 @@
         }
       }
     },
-    "PutAssetTypeRequest":{
-      "type":"structure",
-      "required":[
-        "Name",
-        "Forms"
-      ],
-      "members":{
-        "Name":{
-          "shape":"AssetTypeName",
-          "documentation":"<p>The name of the asset type.</p>"
-        },
-        "Forms":{
-          "shape":"AssetTypeFormsMap",
-          "documentation":"<p>The forms that make up the asset type, keyed by form name. Each entry references the form type that defines the form's schema.</p>"
-        },
-        "ClientToken":{
-          "shape":"HashString",
-          "documentation":"<p>A unique, case-sensitive identifier that you provide to ensure the idempotency of the request.</p>",
-          "idempotencyToken":true
-        }
-      }
-    },
-    "PutAssetTypeResponse":{
-      "type":"structure",
-      "members":{
-        "Id":{
-          "shape":"AssetTypeId",
-          "documentation":"<p>The identifier of the asset type.</p>"
-        },
-        "Name":{
-          "shape":"AssetTypeName",
-          "documentation":"<p>The name of the asset type.</p>"
-        },
-        "Forms":{
-          "shape":"AssetTypeFormsMap",
-          "documentation":"<p>The forms that make up the asset type, keyed by form name.</p>"
-        }
-      }
-    },
     "PutAttachmentRequest":{
       "type":"structure",
       "required":[
         "AssetIdentifier",
         "AttachmentName",
-        "Content",
-        "FormTypeId"
+        "Content"
       ],
       "members":{
         "AssetIdentifier":{
@@ -26582,9 +26588,9 @@
           "shape":"FormContent",
           "documentation":"<p>The JSON content of the form, conforming to the schema of the specified form type.</p>"
         },
-        "FormTypeId":{
+        "FormTypeIdentifier":{
           "shape":"FormTypeId",
-          "documentation":"<p>The identifier of the form type for this attachment.</p>"
+          "documentation":"<p>The identifier of the form type for this attachment. This field is required.</p>"
         },
         "ClientToken":{
           "shape":"HashString",
@@ -26596,7 +26602,7 @@
     "PutAttachmentResponse":{
       "type":"structure",
       "members":{
-        "AssetIdentifier":{
+        "AssetId":{
           "shape":"AssetId",
           "documentation":"<p>The unique identifier of the asset.</p>"
         },
@@ -26604,8 +26610,8 @@
           "shape":"IterableFormName",
           "documentation":"<p>The name of the iterable form, if the attachment targets an item.</p>"
         },
-        "ItemIdentifier":{
-          "shape":"ItemIdentifier",
+        "ItemId":{
+          "shape":"ItemId",
           "documentation":"<p>The identifier of the item within the iterable form, if applicable.</p>"
         },
         "AttachmentName":{
@@ -26638,33 +26644,32 @@
     },
     "PutDataCatalogExportConfigurationInput":{
       "type":"structure",
-      "required":["ExportSetting"],
       "members":{
-        "ExportSetting":{
-          "shape":"ExportSetting",
-          "documentation":"<p>The export setting for the data catalog. Specify <code>ENABLED</code> to start exporting catalog metadata to S3 Tables, or <code>DISABLED</code> to stop exporting. This field is required.</p>"
-        },
-        "EncryptionConfiguration":{
-          "shape":"ExportEncryptionConfiguration",
-          "documentation":"<p>The encryption configuration for the exported data. If not specified, the default encryption settings are used.</p>"
-        },
         "ClientToken":{
           "shape":"HashString",
           "documentation":"<p>A unique, case-sensitive identifier that you provide to ensure the idempotency of the request.</p>",
           "idempotencyToken":true
+        },
+        "S3TablesConfiguration":{
+          "shape":"S3TablesConfiguration",
+          "documentation":"<p>The S3 Tables configuration for the export. The encryption configuration applies only when Glue creates the table bucket that holds the exported catalog metadata. If not specified, the default encryption settings are used.</p>"
+        },
+        "Assets":{
+          "shape":"AssetsExport",
+          "documentation":"<p>The export setting for asset metadata. Set <code>S3TablesExport</code> to <code>ENABLED</code> to start exporting asset metadata to S3 Tables, or to <code>DISABLED</code> to stop exporting.</p>"
         }
       }
     },
     "PutDataCatalogExportConfigurationOutput":{
       "type":"structure",
       "members":{
-        "ExportSetting":{
-          "shape":"ExportSetting",
-          "documentation":"<p>The export setting for the data catalog.</p>"
+        "S3TablesConfiguration":{
+          "shape":"S3TablesConfiguration",
+          "documentation":"<p>The S3 Tables configuration for the export.</p>"
         },
-        "EncryptionConfiguration":{
-          "shape":"ExportEncryptionConfiguration",
-          "documentation":"<p>The encryption configuration for the exported data.</p>"
+        "Assets":{
+          "shape":"AssetsExport",
+          "documentation":"<p>The export setting for asset metadata.</p>"
         }
       },
       "documentation":"<p>The export configuration returned by the <code>PutDataCatalogExportConfiguration</code> operation.</p>"
@@ -28768,6 +28773,40 @@
       "documentation":"<p>Specifies additional connection options for the Amazon S3 data store.</p>"
     },
     "S3TableBucketArn":{"type":"string"},
+    "S3TablesConfiguration":{
+      "type":"structure",
+      "members":{
+        "EncryptionConfiguration":{
+          "shape":"ExportEncryptionConfiguration",
+          "documentation":"<p>The encryption configuration for the table bucket that holds the exported catalog metadata. It applies only when Glue creates the table bucket.</p>"
+        }
+      },
+      "documentation":"<p>The S3 Tables configuration for a data catalog export.</p>"
+    },
+    "S3TablesConfigurationResult":{
+      "type":"structure",
+      "members":{
+        "TableBucketArn":{
+          "shape":"S3TableBucketArn",
+          "documentation":"<p>The ARN of the S3 table bucket that holds the exported catalog metadata.</p>"
+        },
+        "EncryptionConfiguration":{
+          "shape":"ExportEncryptionConfiguration",
+          "documentation":"<p>The encryption configuration for the table bucket that holds the exported catalog metadata.</p>"
+        }
+      },
+      "documentation":"<p>The S3 Tables configuration for a data catalog export, including the table bucket that holds the exported catalog metadata.</p>"
+    },
+    "S3TablesExportState":{
+      "type":"structure",
+      "members":{
+        "Status":{
+          "shape":"ExportStatus",
+          "documentation":"<p>The current status of the export. Valid values are <code>ENABLING</code>, <code>ENABLED</code>, <code>DISABLING</code>, <code>DISABLED</code>, and <code>FAILED</code>.</p>"
+        }
+      },
+      "documentation":"<p>The state of an export to S3 Tables. Glue sets this state.</p>"
+    },
     "S3Target":{
       "type":"structure",
       "members":{
@@ -29142,18 +29181,15 @@
     },
     "SearchAttributeFilter":{
       "type":"structure",
-      "required":[
-        "Attribute",
-        "Operator"
-      ],
+      "required":["Attribute"],
       "members":{
         "Attribute":{
           "shape":"SearchAttribute",
           "documentation":"<p>The attribute name to filter on.</p>"
         },
-        "Operator":{
-          "shape":"SearchFilterOperator",
-          "documentation":"<p>The comparison operator. Valid values are <code>equals</code>, <code>greaterThan</code>, <code>greaterThanOrEquals</code>, <code>lessThan</code>, <code>lessThanOrEquals</code>, and <code>notExists</code>.</p>"
+        "Comparator":{
+          "shape":"SearchFilterComparator",
+          "documentation":"<p>The comparison operator. Valid values are <code>EQUALS</code>, <code>GREATER_THAN</code>, <code>GREATER_THAN_OR_EQUALS</code>, <code>LESS_THAN</code>, <code>LESS_THAN_OR_EQUALS</code>, and <code>NOT_EXISTS</code>. This field is required.</p>"
         },
         "Value":{
           "shape":"SearchFilterValue",
@@ -29191,18 +29227,18 @@
       "max":10,
       "min":1
     },
-    "SearchFilterLongValue":{"type":"long"},
-    "SearchFilterOperator":{
+    "SearchFilterComparator":{
       "type":"string",
       "enum":[
-        "equals",
-        "greaterThan",
-        "greaterThanOrEquals",
-        "lessThan",
-        "lessThanOrEquals",
-        "notExists"
+        "EQUALS",
+        "GREATER_THAN",
+        "GREATER_THAN_OR_EQUALS",
+        "LESS_THAN",
+        "LESS_THAN_OR_EQUALS",
+        "NOT_EXISTS"
       ]
     },
+    "SearchFilterLongValue":{"type":"long"},
     "SearchFilterStringValue":{
       "type":"string",
       "max":256,
@@ -29280,13 +29316,17 @@
           "shape":"AssetId",
           "documentation":"<p>The unique identifier of the matched asset.</p>"
         },
-        "AssetName":{
-          "shape":"SearchResultName",
+        "Name":{
+          "shape":"AssetName",
           "documentation":"<p>The name of the matched asset.</p>"
         },
-        "AssetDescription":{
+        "Description":{
           "shape":"AssetDescription",
           "documentation":"<p>The description of the matched asset.</p>"
+        },
+        "CreatedAt":{
+          "shape":"CreatedAt",
+          "documentation":"<p>The timestamp at which the matched asset was created.</p>"
         },
         "UpdatedAt":{
           "shape":"UpdatedAt",
@@ -29303,7 +29343,6 @@
       "type":"list",
       "member":{"shape":"SearchResultItem"}
     },
-    "SearchResultName":{"type":"string"},
     "SearchSort":{
       "type":"structure",
       "required":["Attribute"],
@@ -33315,6 +33354,11 @@
       "type":"structure",
       "members":{}
     },
+    "UpdateGlossaryDescription":{
+      "type":"string",
+      "max":2048,
+      "min":0
+    },
     "UpdateGlossaryRequest":{
       "type":"structure",
       "required":["Identifier"],
@@ -33328,8 +33372,8 @@
           "documentation":"<p>The updated name of the glossary.</p>"
         },
         "Description":{
-          "shape":"MetadataDescription",
-          "documentation":"<p>The updated description of the glossary.</p>"
+          "shape":"UpdateGlossaryDescription",
+          "documentation":"The new description. Omit it to keep the current description; set it to an empty string to clear it."
         },
         "ClientToken":{
           "shape":"HashString",
@@ -33355,6 +33399,11 @@
         }
       }
     },
+    "UpdateGlossaryTermLongDescription":{
+      "type":"string",
+      "max":4096,
+      "min":0
+    },
     "UpdateGlossaryTermRequest":{
       "type":"structure",
       "required":["Identifier"],
@@ -33368,12 +33417,12 @@
           "documentation":"<p>The updated name of the glossary term.</p>"
         },
         "ShortDescription":{
-          "shape":"GlossaryShortDescription",
-          "documentation":"<p>The updated short description of the glossary term.</p>"
+          "shape":"UpdateGlossaryTermShortDescription",
+          "documentation":"The new short description. Omit it to keep the current one; set it to an empty string to clear it."
         },
         "LongDescription":{
-          "shape":"GlossaryLongDescription",
-          "documentation":"<p>The updated long description of the glossary term.</p>"
+          "shape":"UpdateGlossaryTermLongDescription",
+          "documentation":"The new long description. Omit it to keep the current one; set it to an empty string to clear it."
         },
         "ClientToken":{
           "shape":"HashString",
@@ -33398,14 +33447,19 @@
           "documentation":"<p>The name of the glossary term.</p>"
         },
         "ShortDescription":{
-          "shape":"GlossaryShortDescription",
+          "shape":"GlossaryTermShortDescription",
           "documentation":"<p>The short description of the glossary term.</p>"
         },
         "LongDescription":{
-          "shape":"GlossaryLongDescription",
+          "shape":"GlossaryTermLongDescription",
           "documentation":"<p>The long description of the glossary term.</p>"
         }
       }
+    },
+    "UpdateGlossaryTermShortDescription":{
+      "type":"string",
+      "max":1024,
+      "min":0
     },
     "UpdateGlueIdentityCenterConfigurationRequest":{
       "type":"structure",

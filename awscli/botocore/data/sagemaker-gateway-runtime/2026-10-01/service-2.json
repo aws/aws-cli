@@ -1,0 +1,406 @@
+{
+  "version":"2.0",
+  "metadata":{
+    "apiVersion":"2026-10-01",
+    "auth":["aws.auth#sigv4"],
+    "endpointPrefix":"gateway-runtime.sagemaker",
+    "protocol":"rest-json",
+    "protocols":["rest-json"],
+    "serviceFullName":"Amazon SageMaker Gateway Runtime",
+    "serviceId":"SageMaker Gateway Runtime",
+    "signatureVersion":"v4",
+    "signingName":"sagemaker",
+    "uid":"sagemaker-gateway-runtime-2026-10-01"
+  },
+  "operations":{
+    "InvokeGlobalInferenceGateway":{
+      "name":"InvokeGlobalInferenceGateway",
+      "http":{
+        "method":"POST",
+        "requestUri":"/global-inference-gateway/{GatewayId}/invocations",
+        "responseCode":200
+      },
+      "input":{"shape":"InvokeGlobalInferenceGatewayInput"},
+      "output":{"shape":"InvokeGlobalInferenceGatewayOutput"},
+      "errors":[
+        {"shape":"GatewayTimeoutException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"BadGatewayException"},
+        {"shape":"PayloadTooLargeException"},
+        {"shape":"ServiceUnavailableException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"AccessDeniedException"}
+      ],
+      "documentation":"<p>Buffered (non-streaming) inference. Returns the full OpenAI completion body.</p> <p>Errors carry their origin in the <code>Message</code> prefix. Every typed error's text is in the <code>Message</code> member (JSON key <code>Message</code>), and starts with one of these prefixes:</p> <ul> <li><code>Global Inference Gateway:</code> -- the gateway rejected or failed the request itself: validation, authorization, throttling, routing (the gateway or model was not found, or no capacity is available), a gateway limit or time limit, or failing to reach the inference gateway (<code>Global Inference Gateway: could not reach the inference gateway: &lt;reason&gt;</code>, or <code>Global Inference Gateway: timed out waiting for the inference gateway</code>). This includes the 400 for an invalid request and the 413 for a request body that is too large.</li> <li><code>inference gateway:</code> -- the inference gateway serving the model returned an error status. The message gives that status code and up to 256 bytes of its error message, for example <code>inference gateway: 503 &lt;message&gt;</code>. A BadGatewayException can instead read <code>inference gateway: response ended unexpectedly</code>, with no status, when the inference gateway's connection failed while it was sending the response.</li> <li><code>inference gateway (&lt;component&gt;):</code> -- the same, when the inference gateway reports which of its components produced the error, for example <code>inference gateway (model server): 502 &lt;message&gt;</code>. The component is one of: <ul> <li><code>config</code> -- the inference gateway's configuration and proxy layer.</li> <li><code>scheduler</code> -- the inference gateway's request scheduler.</li> <li><code>model selector</code> -- the inference gateway's model selector.</li> <li><code>model server</code> -- the model server.</li> </ul> </li> </ul> <p>Every error status the inference gateway returns is a typed error, chosen by that status:</p> <ul> <li>400 and any other 4xx not listed here -- a 400 validation error.</li> <li>401 and 403 -- AccessDeniedException (403).</li> <li>404 -- ResourceNotFoundException.</li> <li>408 -- GatewayTimeoutException (504).</li> <li>429 -- ThrottlingException, with the <code>Retry-After</code> header.</li> <li>502, and 500, 503 or any other 5xx not listed here -- BadGatewayException (502). A 500 or 503 from the inference gateway comes after the request was dispatched, so it is not modeled as retryable, and the gateway may already have tried another inference gateway. Standard SDK retry modes may still retry a 5xx status; set max attempts to 1 if a repeated inference is unacceptable.</li> <li>504 -- GatewayTimeoutException.</li> </ul>"
+    },
+    "InvokeGlobalInferenceGatewayWithResponseStream":{
+      "name":"InvokeGlobalInferenceGatewayWithResponseStream",
+      "http":{
+        "method":"POST",
+        "requestUri":"/global-inference-gateway/{GatewayId}/invocations-response-stream",
+        "responseCode":200
+      },
+      "input":{"shape":"InvokeGlobalInferenceGatewayWithResponseStreamInput"},
+      "output":{"shape":"InvokeGlobalInferenceGatewayWithResponseStreamOutput"},
+      "errors":[
+        {"shape":"GatewayTimeoutException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"BadGatewayException"},
+        {"shape":"ModelStreamError"},
+        {"shape":"PayloadTooLargeException"},
+        {"shape":"InternalStreamFailure"},
+        {"shape":"ServiceUnavailableException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"AccessDeniedException"}
+      ],
+      "documentation":"<p>Streaming inference. Returns an AWS event stream of PayloadPart events that carry the model server's server-sent event (SSE) bytes, so SDKs decode the stream into events for you.</p> <p>The errors listed for this operation, other than ModelStreamError and InternalStreamFailure, are returned before the response starts (before the 200 status), so they end the request, not the stream. None of them can occur after the 200. ModelStreamError and InternalStreamFailure appear only as events in the stream, after the 200. Once the 200 is sent, the stream carries the response as PayloadPart events. If reading the inference gateway's response fails, the stream carries one InternalStreamFailure event and then ends. ModelStreamError is reserved and is not currently sent.</p> <p>Errors carry their origin in the <code>Message</code> prefix. Every typed error's text is in the <code>Message</code> member (JSON key <code>Message</code>), and starts with one of these prefixes:</p> <ul> <li><code>Global Inference Gateway:</code> -- the gateway rejected or failed the request itself: validation, authorization, throttling, routing (the gateway or model was not found, or no capacity is available), a gateway limit or time limit, or failing to reach the inference gateway (<code>Global Inference Gateway: could not reach the inference gateway: &lt;reason&gt;</code>, or <code>Global Inference Gateway: timed out waiting for the inference gateway</code>). This includes the 400 for an invalid request and the 413 for a request body that is too large.</li> <li><code>inference gateway:</code> -- the inference gateway serving the model returned an error status. The message gives that status code and up to 256 bytes of its error message, for example <code>inference gateway: 503 &lt;message&gt;</code>.</li> <li><code>inference gateway (&lt;component&gt;):</code> -- the same, when the inference gateway reports which of its components produced the error, for example <code>inference gateway (model server): 502 &lt;message&gt;</code>. The component is one of: <ul> <li><code>config</code> -- the inference gateway's configuration and proxy layer.</li> <li><code>scheduler</code> -- the inference gateway's request scheduler.</li> <li><code>model selector</code> -- the inference gateway's model selector.</li> <li><code>model server</code> -- the model server.</li> </ul> </li> </ul> <p>An InternalStreamFailure event's <code>Message</code> uses the same prefixes, with the same text the buffered operation uses for the same failure. Its <code>inference gateway:</code> message carries no status: <code>inference gateway: response ended unexpectedly</code> when the inference gateway's connection failed while it was sending the response.</p> <p>Every error status the inference gateway returns before the 200 is a typed error, chosen by that status as for InvokeGlobalInferenceGateway:</p> <ul> <li>400 and any other 4xx not listed here -- a 400 validation error.</li> <li>401 and 403 -- AccessDeniedException (403).</li> <li>404 -- ResourceNotFoundException.</li> <li>408 -- GatewayTimeoutException (504).</li> <li>429 -- ThrottlingException, with the <code>Retry-After</code> header.</li> <li>502, and 500, 503 or any other 5xx not listed here -- BadGatewayException (502). A 500 or 503 from the inference gateway comes after the request was dispatched, so it is not modeled as retryable, and the gateway may already have tried another inference gateway. Standard SDK retry modes may still retry a 5xx status; set max attempts to 1 if a repeated inference is unacceptable.</li> <li>504 -- GatewayTimeoutException.</li> </ul>"
+    }
+  },
+  "shapes":{
+    "AccessDeniedException":{
+      "type":"structure",
+      "required":["Message"],
+      "members":{
+        "Message":{
+          "shape":"String",
+          "documentation":"<p>A description of the error. It starts with a prefix such as <code>Global Inference Gateway:</code> or <code>inference gateway:</code> that says where the error came from.</p>"
+        }
+      },
+      "documentation":"<p>The caller is not authorized to invoke this gateway. Invoking requires the <code>sagemaker:InvokeGlobalInferenceGateway</code> permission, or <code>sagemaker:InvokeGlobalInferenceGatewayWithResponseStream</code> for the streaming operation, on the gateway ARN. A message starting <code>inference gateway</code> means the inference gateway serving the model refused the request with a 401 or 403, for example for its customer identity token. Its status code is in the message (the response status is 403), and up to 256 bytes of its error message are quoted.</p>",
+      "error":{
+        "httpStatusCode":403,
+        "senderFault":true
+      },
+      "exception":true
+    },
+    "BadGatewayException":{
+      "type":"structure",
+      "required":["Message"],
+      "members":{
+        "Message":{
+          "shape":"String",
+          "documentation":"<p>A description of the error. It starts with a prefix such as <code>Global Inference Gateway:</code> or <code>inference gateway:</code> that says where the error came from.</p>"
+        }
+      },
+      "documentation":"<p>502 -- The gateway could not get a usable response from the inference gateway. The <code>Message</code> prefix says why:</p> <ul> <li><code>Global Inference Gateway: could not reach the inference gateway: &lt;reason&gt;</code> -- the request could not be sent, or the connection closed before a response arrived (for example, the connection failed, or the inference gateway closed it after reading the request).</li> <li><code>Global Inference Gateway: timed out waiting for the inference gateway</code> -- on the buffered operation, the inference gateway stopped sending partway through the response body and the gateway's read timeout expired. (The same text on a GatewayTimeoutException means no response arrived.)</li> <li>Any other <code>Global Inference Gateway:</code> message -- the gateway ended a response before it was complete, for example because it exceeded the 10 MiB limit of the buffered operation, the request exceeded its maximum duration, or the inference gateway was taken out of service.</li> <li><code>inference gateway: &lt;status&gt; &lt;message&gt;</code> -- the inference gateway serving the model returned a 502, 500, 503 or another 5xx error. Its status code is in the message (the response status is 502), and up to 256 bytes of its error message are quoted.</li> <li><code>inference gateway: response ended unexpectedly</code> -- the inference gateway's connection failed while it was sending the response.</li> </ul> <p>The inference gateway names a component in the prefix when it reports one: <code>inference gateway (&lt;component&gt;):</code>, where the component is <code>config</code> (the inference gateway's configuration and proxy layer), <code>scheduler</code> (its request scheduler), <code>model selector</code> (its model selector) or <code>model server</code> (the model server).</p> <p>Not modeled as retryable: a 502 can mean the inference already ran, and the gateway may already have tried another inference gateway. Standard SDK retry modes may still retry a 5xx status, which would run (and bill) the inference again; set max attempts to 1 if a repeated inference is unacceptable.</p>",
+      "error":{"httpStatusCode":502},
+      "exception":true,
+      "fault":true
+    },
+    "CustomerIdentityToken":{
+      "type":"string",
+      "documentation":"<p>Per-caller customer identity token (a JWT), forwarded unchanged to the inference gateway. Redacted from logs, metrics and traces.</p>",
+      "sensitive":true
+    },
+    "GatewayId":{
+      "type":"string",
+      "documentation":"<p>The ID of a Global Inference Gateway: 1 to 64 lowercase letters and digits.</p>",
+      "max":64,
+      "min":1,
+      "pattern":"[a-z0-9]+"
+    },
+    "GatewayTimeoutException":{
+      "type":"structure",
+      "required":["Message"],
+      "members":{
+        "Message":{
+          "shape":"String",
+          "documentation":"<p>A description of the error. It starts with a prefix such as <code>Global Inference Gateway:</code> or <code>inference gateway:</code> that says where the error came from.</p>"
+        }
+      },
+      "documentation":"<p>504 -- The inference gateway did not respond in time. The <code>Message</code> prefix says whose time limit expired:</p> <ul> <li><code>Global Inference Gateway: timed out waiting for the inference gateway</code> -- the gateway's limit on the wait for the first part of the response.</li> <li><code>inference gateway: &lt;status&gt; &lt;message&gt;</code> -- the inference gateway serving the model returned a 504, or a 408 because it timed out waiting for the request to arrive. Its status code is in the message (the response status is 504), and up to 256 bytes of its error message are quoted.</li> </ul> <p>The inference gateway names a component in the prefix when it reports one: <code>inference gateway (&lt;component&gt;):</code>, where the component is <code>config</code> (the inference gateway's configuration and proxy layer), <code>scheduler</code> (its request scheduler), <code>model selector</code> (its model selector) or <code>model server</code> (the model server).</p> <p>Not modeled as retryable: a timeout does not prove the inference did not run, and the gateway may already have tried another inference gateway. Standard SDK retry modes may still retry a 5xx status, which could run (and bill) the inference again; set max attempts to 1 if a repeated inference is unacceptable.</p>",
+      "error":{"httpStatusCode":504},
+      "exception":true,
+      "fault":true
+    },
+    "InternalServerException":{
+      "type":"structure",
+      "required":["Message"],
+      "members":{
+        "Message":{
+          "shape":"String",
+          "documentation":"<p>A description of the error. It starts with <code>Global Inference Gateway:</code>, because the Global Inference Gateway returns this error itself.</p>"
+        }
+      },
+      "documentation":"<p>An unexpected internal failure occurred.</p>",
+      "error":{"httpStatusCode":500},
+      "exception":true,
+      "fault":true,
+      "retryable":{"throttling":false}
+    },
+    "InternalStreamFailure":{
+      "type":"structure",
+      "required":["Message"],
+      "members":{
+        "Message":{
+          "shape":"String",
+          "documentation":"<p>A description of the failure. It starts with <code>Global Inference Gateway:</code> or <code>inference gateway:</code>, which says where the failure came from.</p>"
+        }
+      },
+      "documentation":"<p>A failure after the stream started. The <code>Message</code> says where it came from: <code>Global Inference Gateway:</code> when a gateway time limit expired or the inference gateway was taken out of service, or <code>inference gateway: response ended unexpectedly</code> when the inference gateway's connection failed while it was sending the response. The stream ends after this event.</p>",
+      "exception":true,
+      "fault":true
+    },
+    "InvokeGlobalInferenceGatewayInput":{
+      "type":"structure",
+      "required":[
+        "GatewayId",
+        "ContentType",
+        "Body"
+      ],
+      "members":{
+        "GatewayId":{
+          "shape":"GatewayId",
+          "documentation":"<p>The ID of the Global Inference Gateway to invoke. IAM policies refer to the gateway by its ARN, <code>arn:&lt;partition&gt;:sagemaker:&lt;region&gt;:&lt;account&gt;:global-inference-gateway/&lt;id&gt;</code>.</p>",
+          "location":"uri",
+          "locationName":"GatewayId"
+        },
+        "Accept":{
+          "shape":"String",
+          "documentation":"<p>The MIME type you want for the response. It is passed to the model server.</p>",
+          "location":"header",
+          "locationName":"Accept"
+        },
+        "ContentType":{
+          "shape":"RequestContentType",
+          "documentation":"<p>The MIME type of the request body. Pass <code>application/json</code> (parameters such as <code>charset=utf-8</code> are allowed): the body is one OpenAI JSON object. The Global Inference Gateway rejects other content types with a 415 error.</p>",
+          "location":"header",
+          "locationName":"Content-Type"
+        },
+        "CustomerIdentityToken":{
+          "shape":"CustomerIdentityToken",
+          "documentation":"<p>Per-caller customer identity token (a JWT), forwarded unchanged to the inference gateway, which validates it. The gateway does not use it to authorize the request. Include it in the SigV4 signed headers so it cannot be altered in transit. Redacted from logs, metrics and traces.</p>",
+          "location":"header",
+          "locationName":"X-Amzn-SageMaker-Customer-Identity-Token"
+        },
+        "Body":{
+          "shape":"RequestPayloadBlob",
+          "documentation":"<p>The inference request body: one OpenAI JSON object, at most 10 MiB. Its content is passed to the model server unchanged, except that the request is always sent with <code>&quot;stream&quot;: false</code>: this operation returns one JSON document, so a <code>&quot;stream&quot;: true</code> in the body is overridden (use InvokeGlobalInferenceGatewayWithResponseStream to stream). A body that is not one JSON object, or that repeats the top-level <code>model</code> key with different values, is rejected with a 400 validation error. A body larger than 10 MiB is rejected with PayloadTooLargeException (413). The gateway reads only <code>model</code> and <code>stream</code>, and does not store the body.</p>",
+          "jsonvalue":true
+        }
+      },
+      "documentation":"<p>The request for InvokeGlobalInferenceGateway.</p>",
+      "payload":"Body"
+    },
+    "InvokeGlobalInferenceGatewayOutput":{
+      "type":"structure",
+      "members":{
+        "Body":{
+          "shape":"ResponsePayloadBlob",
+          "documentation":"<p>The model server's OpenAI completion JSON, returned unchanged. A response larger than 10 MiB fails with BadGatewayException (502).</p>",
+          "jsonvalue":true
+        }
+      },
+      "documentation":"<p>The response from InvokeGlobalInferenceGateway.</p>",
+      "payload":"Body"
+    },
+    "InvokeGlobalInferenceGatewayWithResponseStreamInput":{
+      "type":"structure",
+      "required":[
+        "GatewayId",
+        "ContentType",
+        "Body"
+      ],
+      "members":{
+        "GatewayId":{
+          "shape":"GatewayId",
+          "documentation":"<p>The ID of the Global Inference Gateway to invoke, as for InvokeGlobalInferenceGateway.</p>",
+          "location":"uri",
+          "locationName":"GatewayId"
+        },
+        "Accept":{
+          "shape":"String",
+          "documentation":"<p>The MIME type you want for the response. It is passed to the model server.</p>",
+          "location":"header",
+          "locationName":"Accept"
+        },
+        "ContentType":{
+          "shape":"RequestContentType",
+          "documentation":"<p>The MIME type of the request body, as for InvokeGlobalInferenceGateway. Pass <code>application/json</code>.</p>",
+          "location":"header",
+          "locationName":"Content-Type"
+        },
+        "CustomerIdentityToken":{
+          "shape":"CustomerIdentityToken",
+          "documentation":"<p>The customer identity token (a JWT), as for InvokeGlobalInferenceGateway. It is passed unchanged to the inference gateway, which validates it.</p>",
+          "location":"header",
+          "locationName":"X-Amzn-SageMaker-Customer-Identity-Token"
+        },
+        "Body":{
+          "shape":"RequestPayloadBlob",
+          "documentation":"<p>The inference request body, as for InvokeGlobalInferenceGateway, except that the request is always sent with <code>&quot;stream&quot;: true</code>: this operation returns an event stream, so a <code>&quot;stream&quot;: false</code> in the body (or no <code>stream</code> key) is overridden. A body larger than 10 MiB is rejected with PayloadTooLargeException (413).</p>",
+          "jsonvalue":true
+        }
+      },
+      "documentation":"<p>The request for InvokeGlobalInferenceGatewayWithResponseStream. It has the same members as the InvokeGlobalInferenceGateway request.</p>",
+      "payload":"Body"
+    },
+    "InvokeGlobalInferenceGatewayWithResponseStreamOutput":{
+      "type":"structure",
+      "members":{
+        "Body":{
+          "shape":"ResponseStream",
+          "documentation":"<p>The response as an AWS event stream (application/vnd.amazon.eventstream).</p>"
+        }
+      },
+      "documentation":"<p>The response from InvokeGlobalInferenceGatewayWithResponseStream.</p>",
+      "payload":"Body"
+    },
+    "ModelStreamError":{
+      "type":"structure",
+      "required":["Message"],
+      "members":{
+        "Message":{
+          "shape":"String",
+          "documentation":"<p>A description of the error.</p>"
+        },
+        "ErrorCode":{
+          "shape":"StreamErrorCode",
+          "documentation":"<p>The error code: <code>StreamBroken</code> if the model server's stream broke before it completed, or <code>ModelInvocationTimeExceeded</code> if the model exceeded its allowed invocation time.</p>"
+        }
+      },
+      "documentation":"<p>Reserved for a model error during the stream. Not currently sent; a failure after the stream starts is reported as InternalStreamFailure.</p>",
+      "exception":true
+    },
+    "PayloadPart":{
+      "type":"structure",
+      "members":{
+        "Bytes":{
+          "shape":"StreamChunkBlob",
+          "documentation":"<p>The bytes of this part: a chunk of the model server's server-sent event (SSE) stream.</p>",
+          "eventpayload":true
+        }
+      },
+      "documentation":"<p>A part of the streamed response.</p>",
+      "event":true
+    },
+    "PayloadTooLargeException":{
+      "type":"structure",
+      "required":["Message"],
+      "members":{
+        "Message":{
+          "shape":"String",
+          "documentation":"<p>A description of the error. It starts with <code>Global Inference Gateway:</code>, because the Global Inference Gateway returns this error itself.</p>"
+        }
+      },
+      "documentation":"<p>The request body exceeds the 10 MiB limit. Reduce the size of the payload and send the request again.</p>",
+      "error":{
+        "httpStatusCode":413,
+        "senderFault":true
+      },
+      "exception":true
+    },
+    "RequestContentType":{
+      "type":"string",
+      "documentation":"<p>The MIME type of an Invoke request body. Pass <code>application/json</code>; parameters such as <code>charset=utf-8</code> are allowed.</p>",
+      "max":1024,
+      "min":1
+    },
+    "RequestPayloadBlob":{
+      "type":"blob",
+      "documentation":"<p>Inference request payload, at most 10 MiB. A larger request is rejected with PayloadTooLargeException (413). Redacted from logs, metrics and traces.</p>",
+      "max":10485760,
+      "min":0,
+      "sensitive":true
+    },
+    "ResourceNotFoundException":{
+      "type":"structure",
+      "required":["Message"],
+      "members":{
+        "Message":{
+          "shape":"String",
+          "documentation":"<p>A description of the error. It starts with a prefix such as <code>Global Inference Gateway:</code> or <code>inference gateway:</code> that says where the error came from.</p>"
+        },
+        "ResourceId":{
+          "shape":"String",
+          "documentation":"<p>The ID of the resource that was not found: the gateway ID, or the model name.</p>"
+        },
+        "ResourceType":{
+          "shape":"String",
+          "documentation":"<p>The kind of resource that was not found: the gateway, or the model.</p>"
+        }
+      },
+      "documentation":"<p>No gateway with this ID exists in this account and Region, or no target of the gateway serves the model named in the request body. A model that is served but has no available target right now returns ServiceUnavailableException instead. A message starting <code>inference gateway</code> means the inference gateway serving the model returned a 404; up to 256 bytes of its error message are quoted.</p>",
+      "error":{
+        "httpStatusCode":404,
+        "senderFault":true
+      },
+      "exception":true
+    },
+    "ResponsePayloadBlob":{
+      "type":"blob",
+      "documentation":"<p>Buffered inference response payload, at most 10 MiB. A larger response fails with BadGatewayException (502); use InvokeGlobalInferenceGatewayWithResponseStream for larger output. Redacted from logs, metrics and traces.</p>",
+      "max":10485760,
+      "min":0,
+      "sensitive":true
+    },
+    "ResponseStream":{
+      "type":"structure",
+      "members":{
+        "PayloadPart":{
+          "shape":"PayloadPart",
+          "documentation":"<p>A part of the model server's response.</p>"
+        },
+        "ModelStreamError":{
+          "shape":"ModelStreamError",
+          "documentation":"<p>Reserved for a model error during the stream. Not currently sent.</p>"
+        },
+        "InternalStreamFailure":{
+          "shape":"InternalStreamFailure",
+          "documentation":"<p>A failure after the stream started. The stream ends after this event.</p>"
+        }
+      },
+      "documentation":"<p>The events in the response stream. The response arrives as PayloadPart events. A failure after the stream starts arrives as one InternalStreamFailure event, and then the stream ends.</p>",
+      "eventstream":true
+    },
+    "ServiceUnavailableException":{
+      "type":"structure",
+      "required":["Message"],
+      "members":{
+        "Message":{
+          "shape":"String",
+          "documentation":"<p>A description of the error. It starts with <code>Global Inference Gateway:</code>, because the Global Inference Gateway returns this error itself.</p>"
+        }
+      },
+      "documentation":"<p>The service is temporarily unable to serve the request, for example because no capacity is available for the requested model. The request was not dispatched for inference. A 503 returned by the inference gateway serving the model after dispatch is reported as BadGatewayException, with the 503 in its <code>Message</code>, not as this error.</p>",
+      "error":{"httpStatusCode":503},
+      "exception":true,
+      "fault":true,
+      "retryable":{"throttling":false}
+    },
+    "StreamChunkBlob":{
+      "type":"blob",
+      "documentation":"<p>One chunk of the streaming response, carried in a PayloadPart event. A streaming response has no total size limit. Redacted from logs, metrics and traces.</p>",
+      "sensitive":true
+    },
+    "StreamErrorCode":{
+      "type":"string",
+      "documentation":"<p>The error codes a ModelStreamError can carry.</p>",
+      "enum":[
+        "StreamBroken",
+        "ModelInvocationTimeExceeded"
+      ]
+    },
+    "String":{"type":"string"},
+    "ThrottlingException":{
+      "type":"structure",
+      "required":["Message"],
+      "members":{
+        "Message":{
+          "shape":"String",
+          "documentation":"<p>A description of the error. It starts with a prefix such as <code>Global Inference Gateway:</code> or <code>inference gateway:</code> that says where the error came from.</p>"
+        }
+      },
+      "documentation":"<p>The request was throttled before it was dispatched for inference. Retry the request with backoff, after the <code>Retry-After</code> seconds when the response carries one. A message starting <code>inference gateway</code> means the last inference gateway tried for the model returned a 429. The gateway may have tried others first, and they may have failed for other reasons. Up to 256 bytes of its error message are quoted.</p>",
+      "error":{
+        "httpStatusCode":429,
+        "senderFault":true
+      },
+      "exception":true,
+      "retryable":{"throttling":true}
+    }
+  },
+  "documentation":"<p>Use the Amazon SageMaker Gateway Runtime API to run inference through a Global Inference Gateway. A Global Inference Gateway routes each request to an inference gateway that serves the model named in the request.</p> <p>The request body is an OpenAI-compatible JSON object, sent with <code>Content-Type: application/json</code>, and the model is selected by the <code>model</code> key in that body. The content of the body is passed to the model server unchanged, except for the <code>stream</code> flag, which each operation sets.</p> <p>Requests are signed with Signature Version 4 under the <code>sagemaker</code> signing name. IAM actions are in the <code>sagemaker</code> namespace, for example <code>sagemaker:InvokeGlobalInferenceGateway</code>. The default regional endpoint is <code>gateway-runtime.sagemaker.{region}.amazonaws.com</code>.</p>"
+}

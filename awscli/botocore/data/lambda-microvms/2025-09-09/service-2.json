@@ -711,6 +711,10 @@
           "shape":"EnvironmentVariableMap",
           "documentation":"<p>Environment variables set in the MicroVM runtime environment.</p>"
         },
+        "kmsKeyIdentifier":{
+          "shape":"KmsKeyIdentifier",
+          "documentation":"<p>The customer managed Amazon Web Services Key Management Service (Amazon Web Services KMS) key that encrypts the contents and metadata of your MicroVM image version. You must have permission to use the key. Specify the key in one of the following formats:</p> <ul> <li> <p>Key ARN</p> </li> <li> <p>Alias ARN</p> </li> </ul> <p>If you don't specify a key, your MicroVM image version uses an Amazon Web Services owned key.</p>"
+        },
         "name":{
           "shape":"ImageName",
           "documentation":"<p>The name of the MicroVM image. Must be unique within the AWS account.</p>"
@@ -818,6 +822,10 @@
         "environmentVariables":{
           "shape":"EnvironmentVariableMap",
           "documentation":"<p>Environment variables set in the MicroVM runtime environment.</p>"
+        },
+        "kmsKeyIdentifier":{
+          "shape":"KmsKeyIdentifier",
+          "documentation":"<p>The customer managed Amazon Web Services Key Management Service (Amazon Web Services KMS) key that encrypts the contents and metadata of your MicroVM image version. If you don't specify a key, your MicroVM image version uses an Amazon Web Services owned key.</p>"
         },
         "tags":{
           "shape":"Tags",
@@ -1176,6 +1184,10 @@
           "shape":"EnvironmentVariableMap",
           "documentation":"<p>Environment variables set in the MicroVM runtime environment.</p>"
         },
+        "kmsKeyIdentifier":{
+          "shape":"KmsKeyIdentifier",
+          "documentation":"<p>The customer managed Amazon Web Services Key Management Service (Amazon Web Services KMS) key that encrypts the contents and metadata of your MicroVM image version. If you don't specify a key, your MicroVM image version uses an Amazon Web Services owned key.</p>"
+        },
         "imageArn":{
           "shape":"NonBlankString",
           "documentation":"<p>The ARN of the MicroVM image.</p>"
@@ -1283,6 +1295,10 @@
         "stateReason":{
           "shape":"NonBlankString",
           "documentation":"<p>The reason for why the MicroVM is in the current state.</p>"
+        },
+        "kmsKeyIdentifier":{
+          "shape":"KmsKeyIdentifier",
+          "documentation":"<p>The customer managed Amazon Web Services Key Management Service (Amazon Web Services KMS) key that encrypts your MicroVM configuration at rest. If you don't specify a key, your MicroVM uses an Amazon Web Services owned key.</p>"
         },
         "ingressNetworkConnectors":{
           "shape":"NetworkConnectorList",
@@ -1418,6 +1434,13 @@
         "senderFault":true
       },
       "exception":true
+    },
+    "KmsKeyIdentifier":{
+      "type":"string",
+      "documentation":"<p>An identifier for a KMS key: a key ARN, alias ARN, alias name, or key ID.</p>",
+      "max":2048,
+      "min":1,
+      "pattern":"(arn:aws[a-z-]*:kms:[a-z0-9-]+:[0-9]{12}:(key|alias)/[a-zA-Z0-9:/_-]+|alias/[a-zA-Z0-9:/_-]+|[a-zA-Z0-9-]+)"
     },
     "ListManagedMicrovmImageVersionsInput":{
       "type":"structure",
@@ -2135,6 +2158,10 @@
           "shape":"EnvironmentVariableMap",
           "documentation":"<p>Environment variables set in the MicroVM runtime environment.</p>"
         },
+        "kmsKeyIdentifier":{
+          "shape":"KmsKeyIdentifier",
+          "documentation":"<p>The customer managed Amazon Web Services Key Management Service (Amazon Web Services KMS) key that encrypts the contents and metadata of your MicroVM image version. If you don't specify a key, your MicroVM image version uses an Amazon Web Services owned key.</p>"
+        },
         "imageArn":{
           "shape":"NonBlankString",
           "documentation":"<p>The ARN of the MicroVM image.</p>"
@@ -2413,6 +2440,10 @@
           "shape":"Logging",
           "documentation":"<p>The logging configuration for this MicroVM instance. Specify {\"cloudWatch\": {\"logGroup\": \"...\"}} to stream application logs to a custom CloudWatch log group, or {\"disabled\": {}} to turn off logging.</p>"
         },
+        "kmsKeyIdentifier":{
+          "shape":"KmsKeyIdentifier",
+          "documentation":"<p>The customer managed Amazon Web Services Key Management Service (Amazon Web Services KMS) key that encrypts your MicroVM configuration at rest. To use this operation, you must have permission to use the key. Specify the key ARN or the alias ARN.</p> <p>If you don't specify a key, your MicroVM uses an Amazon Web Services owned key.</p>"
+        },
         "runHookPayload":{
           "shape":"RunHookPayload",
           "documentation":"<p>Per-MicroVM initialization data delivered as the request body of the /run lifecycle hook. Use to pass tenant-specific configuration such as session IDs or secret references. Maximum: 16,384 bytes.</p>"
@@ -2494,6 +2525,10 @@
         "stateReason":{
           "shape":"NonBlankString",
           "documentation":"<p>The reason for why the MicroVM is in the current state.</p>"
+        },
+        "kmsKeyIdentifier":{
+          "shape":"KmsKeyIdentifier",
+          "documentation":"<p>The customer managed Amazon Web Services Key Management Service (Amazon Web Services KMS) key that encrypts your MicroVM configuration at rest. If you don't specify a key, your MicroVM uses an Amazon Web Services owned key.</p>"
         },
         "ingressNetworkConnectors":{
           "shape":"NetworkConnectorList",
@@ -2781,6 +2816,10 @@
           "shape":"EnvironmentVariableMap",
           "documentation":"<p>Environment variables set in the MicroVM runtime environment.</p>"
         },
+        "kmsKeyIdentifier":{
+          "shape":"KmsKeyIdentifier",
+          "documentation":"<p>The customer managed Amazon Web Services Key Management Service (Amazon Web Services KMS) key that encrypts the contents and metadata of your MicroVM image version. You must have permission to use the key. Specify the key in one of the following formats:</p> <ul> <li> <p>Key ARN</p> </li> <li> <p>Alias ARN</p> </li> </ul> <p>If you don't specify a key, your MicroVM image version uses an Amazon Web Services owned key.</p>"
+        },
         "imageIdentifier":{
           "shape":"MicrovmImageIdentifier",
           "documentation":"<p>The unique identifier (ARN or ID) of the MicroVM image to update.</p>",
@@ -2888,6 +2927,10 @@
           "shape":"EnvironmentVariableMap",
           "documentation":"<p>Environment variables set in the MicroVM runtime environment.</p>"
         },
+        "kmsKeyIdentifier":{
+          "shape":"KmsKeyIdentifier",
+          "documentation":"<p>The customer managed Amazon Web Services Key Management Service (Amazon Web Services KMS) key that encrypts the contents and metadata of your MicroVM image version. If you don't specify a key, your MicroVM image version uses an Amazon Web Services owned key.</p>"
+        },
         "updatedAt":{
           "shape":"Timestamp",
           "documentation":"<p>The timestamp when the MicroVM image was last updated.</p>"
@@ -2987,6 +3030,10 @@
         "environmentVariables":{
           "shape":"EnvironmentVariableMap",
           "documentation":"<p>Environment variables set in the MicroVM runtime environment.</p>"
+        },
+        "kmsKeyIdentifier":{
+          "shape":"KmsKeyIdentifier",
+          "documentation":"<p>The customer managed Amazon Web Services Key Management Service (Amazon Web Services KMS) key that encrypts the contents and metadata of your MicroVM image version. If you don't specify a key, your MicroVM image version uses an Amazon Web Services owned key.</p>"
         },
         "imageArn":{
           "shape":"NonBlankString",

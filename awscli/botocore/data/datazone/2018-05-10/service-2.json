@@ -3550,6 +3550,28 @@
       "documentation":"<p>Updates an asset filter.</p> <p>Prerequisites:</p> <ul> <li> <p>The domain, asset, and asset filter identifier must all exist. </p> </li> <li> <p>The asset must contain the columns being referenced in the update.</p> </li> <li> <p>If applying a row filter, ensure the column referenced in the expression exists in the asset schema.</p> </li> </ul>",
       "idempotent":true
     },
+    "UpdateAssetOwner":{
+      "name":"UpdateAssetOwner",
+      "http":{
+        "method":"PATCH",
+        "requestUri":"/v2/domains/{domainIdentifier}/assets/{identifier}",
+        "responseCode":202
+      },
+      "input":{"shape":"UpdateAssetOwnerInput"},
+      "output":{"shape":"UpdateAssetOwnerOutput"},
+      "errors":[
+        {"shape":"InternalServerException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"ServiceQuotaExceededException"},
+        {"shape":"ConflictException"},
+        {"shape":"ValidationException"},
+        {"shape":"UnauthorizedException"}
+      ],
+      "documentation":"<p>Transfers the ownership of an asset to another project in the same Amazon DataZone domain. The transfer changes the asset's owning project and moves its published listing, subscriptions, and subscription grants to the target project.</p> <p>The transfer runs asynchronously, and the operation returns HTTP status code 202. To follow the transfer, call <code>GetAsset</code> and check <code>ownershipTransfer.status</code> until it is <code>SUCCEEDED</code> or <code>FAILED</code>.</p> <p>You need to be an owner of the project that currently owns the asset. You can transfer an asset from the domain's administration project to any project. You can also transfer an asset from any project to the administration project.</p> <p>An asset can have only one ownership transfer in progress at a time. While a transfer is in progress, requests that change the asset or its listing fail with a <code>ConflictException</code>.</p>",
+      "idempotent":true
+    },
     "UpdateConnection":{
       "name":"UpdateConnection",
       "http":{
@@ -5019,6 +5041,46 @@
       "max":256,
       "min":1,
       "sensitive":true
+    },
+    "AssetOwnershipTransfer":{
+      "type":"structure",
+      "required":[
+        "status",
+        "sourceProjectId",
+        "targetProjectId"
+      ],
+      "members":{
+        "status":{
+          "shape":"AssetOwnershipTransferStatus",
+          "documentation":"<p>The status of the ownership transfer. Valid values:</p> <ul> <li> <p> <code>IN_PROGRESS</code> — The transfer is in progress. Requests that change the asset or its listing fail until the transfer completes.</p> </li> <li> <p> <code>SUCCEEDED</code> — The transfer completed. The target project owns the asset, its listing, and the subscriptions to the asset.</p> </li> <li> <p> <code>FAILED</code> — The transfer didn't complete, and the service rolled back its changes. The source project owns the asset.</p> </li> </ul>"
+        },
+        "sourceProjectId":{
+          "shape":"ProjectId",
+          "documentation":"<p>The ID of the project that owned the asset when the transfer started.</p>"
+        },
+        "targetProjectId":{
+          "shape":"ProjectId",
+          "documentation":"<p>The ID of the project that the asset is transferred to.</p>"
+        },
+        "startedAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The timestamp of when the transfer started.</p>"
+        },
+        "updatedAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The timestamp of when the status of the transfer was last updated.</p>"
+        }
+      },
+      "documentation":"<p>The details of an asset ownership transfer.</p>"
+    },
+    "AssetOwnershipTransferStatus":{
+      "type":"string",
+      "documentation":"<p>The state of an asset ownership transfer, which indicates whether the transfer is in progress, succeeded, or failed.</p>",
+      "enum":[
+        "IN_PROGRESS",
+        "SUCCEEDED",
+        "FAILED"
+      ]
     },
     "AssetPermission":{
       "type":"structure",
@@ -12302,6 +12364,10 @@
           "shape":"EnvironmentId",
           "documentation":"<p>The ID of the environment.</p>"
         },
+        "environmentBlueprintId":{
+          "shape":"EnvironmentBlueprintId",
+          "documentation":"<p>The ID of the environment blueprint.</p>"
+        },
         "environmentResolvedAccount":{
           "shape":"EnvironmentResolvedAccount",
           "documentation":"<p>Specifies the account/Region that is to be used during project creation for a particular blueprint.</p>"
@@ -13288,6 +13354,10 @@
         "latestTimeSeriesDataPointFormsOutput":{
           "shape":"TimeSeriesDataPointSummaryFormOutputList",
           "documentation":"<p>The latest data point that was imported into the time series form for the asset. </p>"
+        },
+        "ownershipTransfer":{
+          "shape":"AssetOwnershipTransfer",
+          "documentation":"<p>The most recent ownership transfer of the asset. The response omits this member if the asset has never had an ownership transfer.</p>"
         }
       }
     },
@@ -22162,6 +22232,10 @@
       },
       "documentation":"<p>The project policy grant principal.</p>"
     },
+    "ProjectProfileAction":{
+      "type":"string",
+      "enum":["DISASSOCIATE"]
+    },
     "ProjectProfileId":{
       "type":"string",
       "pattern":"[a-zA-Z0-9_-]{1,36}"
@@ -27284,6 +27358,59 @@
         }
       }
     },
+    "UpdateAssetOwnerInput":{
+      "type":"structure",
+      "required":[
+        "domainIdentifier",
+        "identifier",
+        "targetProjectIdentifier"
+      ],
+      "members":{
+        "domainIdentifier":{
+          "shape":"DomainId",
+          "documentation":"<p>The ID of the Amazon DataZone domain that contains the asset.</p>",
+          "location":"uri",
+          "locationName":"domainIdentifier"
+        },
+        "identifier":{
+          "shape":"AssetIdentifier",
+          "documentation":"<p>The ID of the asset whose ownership is transferred.</p>",
+          "location":"uri",
+          "locationName":"identifier"
+        },
+        "targetProjectIdentifier":{
+          "shape":"ProjectId",
+          "documentation":"<p>The ID of the project that the asset is transferred to. The project must be in the same domain and must be different from the project that currently owns the asset.</p> <p>If the domain's administration project owns the asset, the target can be any project. Otherwise, the target must be the administration project.</p>"
+        },
+        "clientToken":{
+          "shape":"ClientToken",
+          "documentation":"<p>A unique, case-sensitive identifier to ensure that the operation completes no more than one time. If this token matches a previous request while its transfer is in progress, the service returns that transfer and doesn't start a new one. This field is automatically populated if not provided.</p>",
+          "idempotencyToken":true
+        }
+      }
+    },
+    "UpdateAssetOwnerOutput":{
+      "type":"structure",
+      "required":[
+        "id",
+        "revision",
+        "ownershipTransfer"
+      ],
+      "members":{
+        "id":{
+          "shape":"AssetId",
+          "documentation":"<p>The ID of the asset.</p>"
+        },
+        "revision":{
+          "shape":"Revision",
+          "documentation":"<p>The revision of the asset that was created when the transfer started.</p>"
+        },
+        "ownershipTransfer":{
+          "shape":"AssetOwnershipTransfer",
+          "documentation":"<p>The state of the ownership transfer that the request started.</p>"
+        }
+      }
+    },
     "UpdateConnectionInput":{
       "type":"structure",
       "required":[
@@ -28645,6 +28772,10 @@
         "projectProfileVersion":{
           "shape":"String",
           "documentation":"<p>The project profile version to which the project should be updated. You can only specify the following string for this parameter: <code>latest</code>.</p>"
+        },
+        "projectProfileAction":{
+          "shape":"ProjectProfileAction",
+          "documentation":"<p>The action to perform on the project profile of the project. Specify <code>DISASSOCIATE</code> to disassociate the project from its project profile.</p>"
         }
       }
     },

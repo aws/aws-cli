@@ -803,6 +803,22 @@
       ],
       "documentation":"<p>Gets information about a specified hosted zone including the four name servers assigned to the hosted zone.</p> <p> <code/> returns the VPCs associated with the specified hosted zone and does not reflect the VPC associations by Route 53 Profiles. To get the associations to a Profile, call the <a href=\"https://docs.aws.amazon.com/Route53/latest/APIReference/API_route53profiles_ListProfileAssociations.html\">ListProfileAssociations</a> API.</p>"
     },
+    "GetHostedZoneChangeBatch":{
+      "name":"GetHostedZoneChangeBatch",
+      "http":{
+        "method":"GET",
+        "requestUri":"/2013-04-01/hostedzone/{Id}/changebatches/{ChangeId}"
+      },
+      "input":{"shape":"GetHostedZoneChangeBatchRequest"},
+      "output":{"shape":"GetHostedZoneChangeBatchResponse"},
+      "errors":[
+        {"shape":"NoSuchHostedZone"},
+        {"shape":"NoSuchChange"},
+        {"shape":"FeatureNotEnabled"},
+        {"shape":"InvalidInput"}
+      ],
+      "documentation":"<p>Returns one change batch from the change history of a hosted zone, including every change in the batch. Each resource record set is in the same form that <code>ListResourceRecordSets</code> returns. For example, the name is in lowercase and ends with a dot. For an <code>UPSERT</code> or a <code>DELETE</code>, the response doesn't contain the values that the resource record set had before the change.</p> <p>If the change batch isn't in the hosted zone's retained change history, for example because it's in another hosted zone, it expired, or it's from before <code>RetentionStartsAt</code>, Route 53 returns a <code>NoSuchChange</code> error. If Change History isn't turned on for the hosted zone, Route 53 returns a <code>FeatureNotEnabled</code> error.</p>"
+    },
     "GetHostedZoneCount":{
       "name":"GetHostedZoneCount",
       "http":{
@@ -1008,6 +1024,22 @@
       ],
       "documentation":"<p>Retrieves a list of the health checks that use a specified health check source.</p> <p>Results are paginated. If <code>IsTruncated</code> is <code>true</code>, specify the <code>NextMarker</code> value for <code>marker</code> to get more results.</p>"
     },
+    "ListHostedZoneChangeBatches":{
+      "name":"ListHostedZoneChangeBatches",
+      "http":{
+        "method":"GET",
+        "requestUri":"/2013-04-01/hostedzone/{Id}/changebatches"
+      },
+      "input":{"shape":"ListHostedZoneChangeBatchesRequest"},
+      "output":{"shape":"ListHostedZoneChangeBatchesResponse"},
+      "errors":[
+        {"shape":"NoSuchHostedZone"},
+        {"shape":"FeatureNotEnabled"},
+        {"shape":"InvalidInput"},
+        {"shape":"InvalidPaginationToken"}
+      ],
+      "documentation":"<p>Lists the change batches in an Amazon Route 53 hosted zone. For each change batch, the response contains its change ID, the operation that submitted it, and when and by whom it was submitted. It also contains the request ID, the comment if there is one, and the number of changes. Use this list to review who changed the hosted zone and when.</p> <p>Each change batch records one <code>ChangeResourceRecordSets</code> or <code>CreateHostedZone</code> request. A <code>CreateHostedZone</code> change batch has a <code>ChangeCount</code> of 0.</p> <p>You can read a change batch for 365 days after it was submitted, but not from before the <code>RetentionStartsAt</code> time that <code>GetHostedZone</code> returns in <code>Features/ChangeHistory</code>. If Change History isn't turned on for the hosted zone, Route 53 returns a <code>FeatureNotEnabled</code> error.</p> <p>Results are paginated. To get the next page, use the <code>NextToken</code> value from the response. To get the changes in a change batch, use <code>GetHostedZoneChangeBatch</code>.</p>"
+    },
     "ListHostedZones":{
       "name":"ListHostedZones",
       "http":{
@@ -1065,6 +1097,22 @@
         {"shape":"NoSuchHostedZone"}
       ],
       "documentation":"<p>Lists the configurations for DNS query logging that are associated with the current Amazon Web Services account or the configuration that is associated with a specified hosted zone.</p> <p>For more information about DNS query logs, see <a href=\"https://docs.aws.amazon.com/Route53/latest/APIReference/API_CreateQueryLoggingConfig.html\">CreateQueryLoggingConfig</a>. Additional information, including the format of DNS query logs, appears in <a href=\"https://docs.aws.amazon.com/Route53/latest/DeveloperGuide/query-logs.html\">Logging DNS Queries</a> in the <i>Amazon Route 53 Developer Guide</i>.</p>"
+    },
+    "ListResourceRecordSetChanges":{
+      "name":"ListResourceRecordSetChanges",
+      "http":{
+        "method":"GET",
+        "requestUri":"/2013-04-01/hostedzone/{Id}/rrsetchanges"
+      },
+      "input":{"shape":"ListResourceRecordSetChangesRequest"},
+      "output":{"shape":"ListResourceRecordSetChangesResponse"},
+      "errors":[
+        {"shape":"NoSuchHostedZone"},
+        {"shape":"FeatureNotEnabled"},
+        {"shape":"InvalidInput"},
+        {"shape":"InvalidPaginationToken"}
+      ],
+      "documentation":"<p>Lists the individual changes in the change history of a hosted zone. Each entry is one change, with the full resource record set that the change wrote or deleted. To list only the changes to the resource record sets that have a specific name and type, specify <code>RecordName</code> and <code>RecordType</code>. Weighted, latency, and other resource record sets that have the same name and type appear as separate entries, each with its <code>SetIdentifier</code>.</p> <p>A change can take a few seconds to appear in <code>ListResourceRecordSetChanges</code> after it appears in <code>ListHostedZoneChangeBatches</code>. For a complete, ordered list of changes, use <code>ListHostedZoneChangeBatches</code>.</p> <p>Results are paginated. To get the next page, use the <code>NextToken</code> value from the response.</p> <p>If Change History isn't turned on for the hosted zone, Route 53 returns a <code>FeatureNotEnabled</code> error.</p>"
     },
     "ListResourceRecordSetProtections":{
       "name":"ListResourceRecordSetProtections",
@@ -1304,7 +1352,26 @@
         {"shape":"PriorRequestNotComplete"},
         {"shape":"LimitsExceeded"}
       ],
-      "documentation":"<p>Updates the features configuration for a hosted zone. This operation allows you to enable or disable specific features for your hosted zone, such as accelerated recovery.</p> <p>Accelerated recovery enables you to update DNS records in your public hosted zone even when the us-east-1 region is unavailable.</p>"
+      "documentation":"<p>Updates the features configuration for a hosted zone. This operation allows you to enable or disable specific features for your hosted zone, such as accelerated recovery and public DNS fallback.</p> <p>Accelerated recovery enables you to update DNS records in your public hosted zone even when the us-east-1 region is unavailable.</p> <p>Public DNS fallback enables Route 53 to retry a query against public DNS when a query for a domain name in a private hosted zone matches no existing name (<code>NXDOMAIN</code>). Fallback does not occur when the name exists but has no record of the requested type. Public DNS fallback is supported only for private hosted zones.</p>"
+    },
+    "UpdateHostedZoneTier":{
+      "name":"UpdateHostedZoneTier",
+      "http":{
+        "method":"POST",
+        "requestUri":"/2013-04-01/hostedzone/{Id}/tier"
+      },
+      "input":{
+        "shape":"UpdateHostedZoneTierRequest",
+        "locationName":"UpdateHostedZoneTierRequest",
+        "xmlNamespace":{"uri":"https://route53.amazonaws.com/doc/2013-04-01/"}
+      },
+      "output":{"shape":"UpdateHostedZoneTierResponse"},
+      "errors":[
+        {"shape":"NoSuchHostedZone"},
+        {"shape":"InvalidInput"},
+        {"shape":"PriorRequestNotComplete"}
+      ],
+      "documentation":"<p>Changes the tier of a hosted zone. The tier determines which features the hosted zone includes and which optional features you can turn on. For pricing information, see <a href=\"https://aws.amazon.com/route53/pricing/\">Amazon Route 53 pricing</a> on the AWS website.</p> <p>When the hosted zone moves to a new tier, Route 53 turns on the features that the new tier includes. Route 53 also disables any enabled features that the new tier doesn't include.</p> <p>Before you move a hosted zone to a tier that doesn't offer an optional feature that you turned on, turn off that feature. You can't change the tier of a hosted zone that uses a CloudFront flat-rate pricing plan.</p>"
     },
     "UpdateTrafficPolicyComment":{
       "name":"UpdateTrafficPolicyComment",
@@ -1360,6 +1427,35 @@
       "max":64,
       "min":1
     },
+    "AZAffinity":{
+      "type":"structure",
+      "members":{
+        "LocationType":{
+          "shape":"AZAffinityLocationType",
+          "documentation":"<p>The level of the location that <code>LocationId</code> identifies. Valid values, from most to least specific:</p> <ul> <li> <p> <code>AvailabilityZone</code>: A single Availability Zone.</p> </li> <li> <p> <code>AvailabilityZoneGroup</code>: A Zone Group, which is a group of Availability Zones in an Amazon Web Services Region.</p> </li> <li> <p> <code>Region</code>: An entire Amazon Web Services Region.</p> </li> <li> <p> <code>Partition</code>: An entire Amazon Web Services partition.</p> </li> <li> <p> <code>Global</code>: All locations.</p> </li> </ul> <p>We recommend that you create a record for the <code>Global</code> location type so that every query gets an answer. Route 53 responds with it when a query matches no more specific record, or when it's the only healthy record that matches. Without a <code>Global</code> record, Route 53 returns a \"no answer\" response to queries that don't match any other record.</p>"
+        },
+        "LocationId":{
+          "shape":"AZAffinityLocationId",
+          "documentation":"<p>The ID of the location. You can specify only generally available Availability Zones and Zone Groups. Zone Group, Region, and partition IDs must belong to a partition that you can use. Specify the ID in lowercase, in the format that corresponds to <code>LocationType</code>:</p> <ul> <li> <p>For <code>AvailabilityZone</code>, the Availability Zone ID (not the Availability Zone name or a Local Zone ID), such as <code>use1-az1</code>.</p> </li> <li> <p>For <code>AvailabilityZoneGroup</code>, the Zone Group that an Availability Zone belongs to (not a Local Zone group), such as <code>us-east-1-zg-1</code>.</p> </li> <li> <p>For <code>Region</code>, the Region code, such as <code>us-east-1</code>.</p> </li> <li> <p>For <code>Partition</code>, the partition name, such as <code>aws</code>.</p> </li> <li> <p>For <code>Global</code>, the value <code>global</code>.</p> </li> </ul>"
+        }
+      },
+      "documentation":"<p>Specifies the location that an AZ-affinity resource record set answers DNS queries from. For the location types, from most to least specific, see <code>LocationType</code>. A query matches a location when Route 53 VPC Resolver reports that the query came from an Availability Zone (AZ) in that location. If Route 53 doesn't know which AZ a query came from, the query matches only the record for the <code>Global</code> location type. AZ-affinity routing chooses which record to return. It doesn't restrict which clients can get a record. You must specify both <code>LocationType</code> and <code>LocationId</code>.</p> <p>To have Route 53 fall back to a less specific location when a resource is unhealthy, associate a health check with each record, or set <code>EvaluateTargetHealth</code> to <code>true</code> for alias records. If every record that matches a query is unhealthy, Route 53 responds with the most specific one.</p>"
+    },
+    "AZAffinityLocationId":{
+      "type":"string",
+      "max":64,
+      "min":1
+    },
+    "AZAffinityLocationType":{
+      "type":"string",
+      "enum":[
+        "AvailabilityZone",
+        "AvailabilityZoneGroup",
+        "Region",
+        "Partition",
+        "Global"
+      ]
+    },
     "AcceleratedRecoveryEnabled":{"type":"boolean"},
     "AcceleratedRecoveryStatus":{
       "type":"string",
@@ -1383,7 +1479,7 @@
       "members":{
         "Type":{
           "shape":"AccountLimitType",
-          "documentation":"<p>The limit that you requested. Valid values include the following:</p> <ul> <li> <p> <b>MAX_HEALTH_CHECKS_BY_OWNER</b>: The maximum number of health checks that you can create using the current account.</p> </li> <li> <p> <b>MAX_HEALTH_CHECK_SOURCES_BY_OWNER</b> The maximum number of health check sources that you can create using the current account.</p> </li> <li> <p> <b>MAX_HOSTED_ZONES_BY_OWNER</b>: The maximum number of hosted zones that you can create using the current account.</p> </li> <li> <p> <b>MAX_REUSABLE_DELEGATION_SETS_BY_OWNER</b>: The maximum number of reusable delegation sets that you can create using the current account.</p> </li> <li> <p> <b>MAX_TRAFFIC_POLICIES_BY_OWNER</b>: The maximum number of traffic policies that you can create using the current account.</p> </li> <li> <p> <b>MAX_TRAFFIC_POLICY_INSTANCES_BY_OWNER</b>: The maximum number of traffic policy instances that you can create using the current account. (Traffic policy instances are referred to as traffic flow policy records in the Amazon Route 53 console.)</p> </li> </ul>"
+          "documentation":"<p>The limit that you requested. Valid values include the following:</p> <ul> <li> <p> <b>MAX_HEALTH_CHECKS_BY_OWNER</b>: The maximum number of health checks that you can create using the current account.</p> </li> <li> <p> <b>MAX_HEALTH_CHECK_SOURCES_BY_OWNER</b>: The maximum number of health check sources that you can create using the current account.</p> </li> <li> <p> <b>MAX_HOSTED_ZONES_BY_OWNER</b>: The maximum number of hosted zones that you can create using the current account.</p> </li> <li> <p> <b>MAX_REUSABLE_DELEGATION_SETS_BY_OWNER</b>: The maximum number of reusable delegation sets that you can create using the current account.</p> </li> <li> <p> <b>MAX_TRAFFIC_POLICIES_BY_OWNER</b>: The maximum number of traffic policies that you can create using the current account.</p> </li> <li> <p> <b>MAX_TRAFFIC_POLICY_INSTANCES_BY_OWNER</b>: The maximum number of traffic policy instances that you can create using the current account. (Traffic policy instances are referred to as traffic flow policy records in the Amazon Route 53 console.)</p> </li> </ul>"
         },
         "Value":{
           "shape":"LimitValue",
@@ -1473,7 +1569,7 @@
         },
         "EvaluateTargetHealth":{
           "shape":"AliasHealthEnabled",
-          "documentation":"<p> <i>Applies only to alias, failover alias, geolocation alias, latency alias, and weighted alias resource record sets:</i> When <code>EvaluateTargetHealth</code> is <code>true</code>, an alias resource record set inherits the health of the referenced Amazon Web Services resource, such as an ELB load balancer or another resource record set in the hosted zone.</p> <p>Note the following:</p> <dl> <dt>CloudFront distributions</dt> <dd> <p>You can't set <code>EvaluateTargetHealth</code> to <code>true</code> when the alias target is a CloudFront distribution.</p> </dd> <dt>Elastic Beanstalk environments that have regionalized subdomains</dt> <dd> <p>If you specify an Elastic Beanstalk environment in <code>DNSName</code> and the environment contains an ELB load balancer, Elastic Load Balancing routes queries only to the healthy Amazon EC2 instances that are registered with the load balancer. (An environment automatically contains an ELB load balancer if it includes more than one Amazon EC2 instance.) If you set <code>EvaluateTargetHealth</code> to <code>true</code> and either no Amazon EC2 instances are healthy or the load balancer itself is unhealthy, Route 53 routes queries to other available resources that are healthy, if any. </p> <p>If the environment contains a single Amazon EC2 instance, there are no special requirements.</p> </dd> <dt>ELB load balancers</dt> <dd> <p>Health checking behavior depends on the type of load balancer:</p> <ul> <li> <p> <b>Classic Load Balancers</b>: If you specify an ELB Classic Load Balancer in <code>DNSName</code>, Elastic Load Balancing routes queries only to the healthy Amazon EC2 instances that are registered with the load balancer. If you set <code>EvaluateTargetHealth</code> to <code>true</code> and either no EC2 instances are healthy or the load balancer itself is unhealthy, Route 53 routes queries to other resources.</p> </li> <li> <p> <b>Application and Network Load Balancers</b>: If you specify an ELB Application or Network Load Balancer and you set <code>EvaluateTargetHealth</code> to <code>true</code>, Route 53 routes queries to the load balancer based on the health of the target groups that are associated with the load balancer:</p> <ul> <li> <p>For an Application or Network Load Balancer to be considered healthy, every target group that contains targets must contain at least one healthy target. If any target group contains only unhealthy targets, the load balancer is considered unhealthy, and Route 53 routes queries to other resources.</p> </li> <li> <p>A target group that has no registered targets is considered unhealthy.</p> </li> </ul> </li> </ul> <note> <p>When you create a load balancer, you configure settings for Elastic Load Balancing health checks; they're not Route 53 health checks, but they perform a similar function. Do not create Route 53 health checks for the EC2 instances that you register with an ELB load balancer. </p> </note> </dd> <dt>API Gateway APIs</dt> <dd> <p>There are no special requirements for setting <code>EvaluateTargetHealth</code> to <code>true</code> when the alias target is an API Gateway API. However, because API Gateway is highly available by design, <code>EvaluateTargetHealth</code> provides no operational benefit and <a href=\"https://docs.aws.amazon.com/Route53/latest/DeveloperGuide/dns-failover.html\">Route 53 health checks</a> are recommended instead for failover scenarios.</p> </dd> <dt>S3 buckets</dt> <dd> <p>There are no special requirements for setting <code>EvaluateTargetHealth</code> to <code>true</code> when the alias target is an S3 bucket. However, because S3 buckets are highly available by design, <code>EvaluateTargetHealth</code> provides no operational benefit and <a href=\"https://docs.aws.amazon.com/Route53/latest/DeveloperGuide/dns-failover.html\">Route 53 health checks</a> are recommended instead for failover scenarios.</p> </dd> <dt>VPC interface endpoints</dt> <dd> <p>There are no special requirements for setting <code>EvaluateTargetHealth</code> to <code>true</code> when the alias target is a VPC interface endpoint. However, because VPC interface endpoints are highly available by design, <code>EvaluateTargetHealth</code> provides no operational benefit and <a href=\"https://docs.aws.amazon.com/Route53/latest/DeveloperGuide/dns-failover.html\">Route 53 health checks</a> are recommended instead for failover scenarios.</p> </dd> <dt>Other records in the same hosted zone</dt> <dd> <p>If the Amazon Web Services resource that you specify in <code>DNSName</code> is a record or a group of records (for example, a group of weighted records) but is not another alias record, we recommend that you associate a health check with all of the records in the alias target. For more information, see <a href=\"https://docs.aws.amazon.com/Route53/latest/DeveloperGuide/dns-failover-complex-configs.html#dns-failover-complex-configs-hc-omitting\">What Happens When You Omit Health Checks?</a> in the <i>Amazon Route 53 Developer Guide</i>.</p> </dd> </dl> <note> <p>While <code>EvaluateTargetHealth</code> can be set to <code>true</code> for highly available Amazon Web Services services (such as S3 buckets, VPC interface endpoints, and API Gateway), these services are designed for high availability and rarely experience outages that would be detected by this feature. For failover scenarios with these services, consider using <a href=\"https://docs.aws.amazon.com/Route53/latest/DeveloperGuide/dns-failover.html\">Route 53 health checks</a> that monitor your application's ability to access the service instead.</p> </note> <p>For more information and examples, see <a href=\"https://docs.aws.amazon.com/Route53/latest/DeveloperGuide/dns-failover.html\">Amazon Route 53 Health Checks and DNS Failover</a> in the <i>Amazon Route 53 Developer Guide</i>.</p>"
+          "documentation":"<p> <i>Applies only to alias, az-affinity alias, failover alias, geolocation alias, latency alias, and weighted alias resource record sets:</i> When <code>EvaluateTargetHealth</code> is <code>true</code>, an alias resource record set inherits the health of the referenced Amazon Web Services resource, such as an ELB load balancer or another resource record set in the hosted zone.</p> <p>Note the following:</p> <dl> <dt>CloudFront distributions</dt> <dd> <p>You can't set <code>EvaluateTargetHealth</code> to <code>true</code> when the alias target is a CloudFront distribution.</p> </dd> <dt>Elastic Beanstalk environments that have regionalized subdomains</dt> <dd> <p>If you specify an Elastic Beanstalk environment in <code>DNSName</code> and the environment contains an ELB load balancer, Elastic Load Balancing routes queries only to the healthy Amazon EC2 instances that are registered with the load balancer. (An environment automatically contains an ELB load balancer if it includes more than one Amazon EC2 instance.) If you set <code>EvaluateTargetHealth</code> to <code>true</code> and either no Amazon EC2 instances are healthy or the load balancer itself is unhealthy, Route 53 routes queries to other available resources that are healthy, if any. </p> <p>If the environment contains a single Amazon EC2 instance, there are no special requirements.</p> </dd> <dt>ELB load balancers</dt> <dd> <p>Health checking behavior depends on the type of load balancer:</p> <ul> <li> <p> <b>Classic Load Balancers</b>: If you specify an ELB Classic Load Balancer in <code>DNSName</code>, Elastic Load Balancing routes queries only to the healthy Amazon EC2 instances that are registered with the load balancer. If you set <code>EvaluateTargetHealth</code> to <code>true</code> and either no EC2 instances are healthy or the load balancer itself is unhealthy, Route 53 routes queries to other resources.</p> </li> <li> <p> <b>Application and Network Load Balancers</b>: If you specify an ELB Application or Network Load Balancer and you set <code>EvaluateTargetHealth</code> to <code>true</code>, Route 53 routes queries to the load balancer based on the health of the target groups that are associated with the load balancer:</p> <ul> <li> <p>For an Application or Network Load Balancer to be considered healthy, every target group that contains targets must contain at least one healthy target. If any target group contains only unhealthy targets, the load balancer is considered unhealthy, and Route 53 routes queries to other resources.</p> </li> <li> <p>A target group that has no registered targets is considered unhealthy.</p> </li> </ul> </li> </ul> <note> <p>When you create a load balancer, you configure settings for Elastic Load Balancing health checks; they're not Route 53 health checks, but they perform a similar function. Do not create Route 53 health checks for the EC2 instances that you register with an ELB load balancer. </p> </note> </dd> <dt>API Gateway APIs</dt> <dd> <p>There are no special requirements for setting <code>EvaluateTargetHealth</code> to <code>true</code> when the alias target is an API Gateway API. However, because API Gateway is highly available by design, <code>EvaluateTargetHealth</code> provides no operational benefit and <a href=\"https://docs.aws.amazon.com/Route53/latest/DeveloperGuide/dns-failover.html\">Route 53 health checks</a> are recommended instead for failover scenarios.</p> </dd> <dt>S3 buckets</dt> <dd> <p>There are no special requirements for setting <code>EvaluateTargetHealth</code> to <code>true</code> when the alias target is an S3 bucket. However, because S3 buckets are highly available by design, <code>EvaluateTargetHealth</code> provides no operational benefit and <a href=\"https://docs.aws.amazon.com/Route53/latest/DeveloperGuide/dns-failover.html\">Route 53 health checks</a> are recommended instead for failover scenarios.</p> </dd> <dt>VPC interface endpoints</dt> <dd> <p>There are no special requirements for setting <code>EvaluateTargetHealth</code> to <code>true</code> when the alias target is a VPC interface endpoint. However, because VPC interface endpoints are highly available by design, <code>EvaluateTargetHealth</code> provides no operational benefit and <a href=\"https://docs.aws.amazon.com/Route53/latest/DeveloperGuide/dns-failover.html\">Route 53 health checks</a> are recommended instead for failover scenarios.</p> </dd> <dt>Other records in the same hosted zone</dt> <dd> <p>If the Amazon Web Services resource that you specify in <code>DNSName</code> is a record or a group of records (for example, a group of weighted records) but is not another alias record, we recommend that you associate a health check with all of the records in the alias target. For more information, see <a href=\"https://docs.aws.amazon.com/Route53/latest/DeveloperGuide/dns-failover-complex-configs.html#dns-failover-complex-configs-hc-omitting\">What Happens When You Omit Health Checks?</a> in the <i>Amazon Route 53 Developer Guide</i>.</p> </dd> </dl> <note> <p>While <code>EvaluateTargetHealth</code> can be set to <code>true</code> for highly available Amazon Web Services services (such as S3 buckets, VPC interface endpoints, and API Gateway), these services are designed for high availability and rarely experience outages that would be detected by this feature. For failover scenarios with these services, consider using <a href=\"https://docs.aws.amazon.com/Route53/latest/DeveloperGuide/dns-failover.html\">Route 53 health checks</a> that monitor your application's ability to access the service instead.</p> </note> <p>For more information and examples, see <a href=\"https://docs.aws.amazon.com/Route53/latest/DeveloperGuide/dns-failover.html\">Amazon Route 53 Health Checks and DNS Failover</a> in the <i>Amazon Route 53 Developer Guide</i>.</p>"
         }
       },
       "documentation":"<p> <i>Alias resource record sets only:</i> Information about the Amazon Web Services resource, such as a CloudFront distribution or an Amazon S3 bucket, that you want to route traffic to.</p> <p>When creating resource record sets for a private hosted zone, note the following:</p> <ul> <li> <p>For information about creating failover resource record sets in a private hosted zone, see <a href=\"https://docs.aws.amazon.com/Route53/latest/DeveloperGuide/dns-failover-private-hosted-zones.html\">Configuring Failover in a Private Hosted Zone</a>.</p> </li> </ul>"
@@ -1565,6 +1661,53 @@
       },
       "documentation":"<p>The information for a change request.</p>"
     },
+    "ChangeBatchSummaries":{
+      "type":"list",
+      "member":{
+        "shape":"ChangeBatchSummary",
+        "locationName":"ChangeBatchSummary"
+      }
+    },
+    "ChangeBatchSummary":{
+      "type":"structure",
+      "required":[
+        "ChangeId",
+        "Operation",
+        "SubmittedAt",
+        "ChangeCount"
+      ],
+      "members":{
+        "ChangeId":{
+          "shape":"ResourceId",
+          "documentation":"<p>The ID of the change batch. This is the same ID that <code>ChangeResourceRecordSets</code> returns in <code>ChangeInfo/Id</code> and that you pass to <code>GetChange</code>.</p>"
+        },
+        "Operation":{
+          "shape":"ChangeHistoryOperation",
+          "documentation":"<p>The Route 53 API operation that submitted the change batch: <code>ChangeResourceRecordSets</code> or <code>CreateHostedZone</code>. New values might be added, so ignore values that your code doesn't recognize.</p>"
+        },
+        "SubmittedAt":{
+          "shape":"TimeStamp",
+          "documentation":"<p>The date and time, in UTC, when the change batch was submitted.</p>"
+        },
+        "SubmittedBy":{
+          "shape":"ChangeSubmitter",
+          "documentation":"<p>The Amazon Resource Name of the principal that submitted the request, for example, <code>arn:aws:sts::111122223333:assumed-role/Admin/my-session</code>. This element is absent when Route 53 has no principal to record for the change.</p>"
+        },
+        "RequestId":{
+          "shape":"ChangeRequestId",
+          "documentation":"<p>The request ID of the call that submitted the change batch. CloudTrail records the same value in <code>requestID</code>, so you can use it to find the CloudTrail event for the change. This element is absent when there was no request.</p>"
+        },
+        "Comment":{
+          "shape":"ResourceDescription",
+          "documentation":"<p>The comment that was submitted with the change batch, if any.</p>"
+        },
+        "ChangeCount":{
+          "shape":"ChangeCount",
+          "documentation":"<p>The number of changes in the change batch. For <code>CreateHostedZone</code>, the value is 0.</p>"
+        }
+      },
+      "documentation":"<p>A summary of one change batch in the change history of a hosted zone.</p>"
+    },
     "ChangeCidrCollectionRequest":{
       "type":"structure",
       "required":[
@@ -1598,6 +1741,88 @@
         }
       }
     },
+    "ChangeCount":{
+      "type":"long",
+      "min":0
+    },
+    "ChangeGuardrail":{
+      "type":"structure",
+      "required":[
+        "Name",
+        "Status"
+      ],
+      "members":{
+        "Name":{
+          "shape":"ChangeGuardrailName",
+          "documentation":"<p>The name of the guardrail. Valid values are the following:</p> <dl> <dt>NS_FORMAT_CHECK</dt> <dd> <p>This guardrail rejects an NS record whose value looks like a Route 53 name server but isn't one.</p> </dd> <dt>NS_DELEGATION_AUTHORITY_CHECK</dt> <dd> <p>This guardrail rejects an NS record that delegates a subdomain to Route 53 name servers that don't host it.</p> <p>This guardrail applies only to public hosted zones.</p> </dd> <dt>NS_OCCLUSION_CHECK</dt> <dd> <p>This guardrail rejects a change that leaves records under a delegated subdomain, where resolvers never use them.</p> </dd> <dt>ALIAS_TARGET_CHECK</dt> <dd> <p>This guardrail rejects deleting a record that an alias record in the same hosted zone points to.</p> </dd> <dt>ACTIVE_RECORD_CHECK</dt> <dd> <p>This guardrail rejects deleting a record that still receives DNS queries, if no other record with the same name and type remains to answer them.</p> </dd> <dt>ACTIVE_DELEGATION_CHECK</dt> <dd> <p>This guardrail rejects deleting the NS record for a subdomain while resolvers are still referred to it.</p> </dd> </dl> <p>The tier of the hosted zone determines which guardrails it includes and which ones you can turn on.</p>"
+        },
+        "Status":{
+          "shape":"ChangeGuardrailStatus",
+          "documentation":"<p>The status of the guardrail. Valid values are the following:</p> <dl> <dt>ENABLED</dt> <dd> <p> <code>ENABLED</code> means that the guardrail is turned on.</p> </dd> <dt>DISABLED</dt> <dd> <p> <code>DISABLED</code> means that the guardrail is turned off.</p> </dd> </dl>"
+        }
+      },
+      "documentation":"<p>A Change Guardrail and its status. A Change Guardrail checks each change to the records in a hosted zone, and rejects the change if the check fails.</p> <p>When you submit a <code>ChangeResourceRecordSets</code> request, Route 53 checks each change against every guardrail that is turned on. If a check fails, Route 53 rejects the whole request and returns an error that identifies the guardrail. If every check passes, Route 53 applies the changes.</p> <p>For example, suppose that <code>ALIAS_TARGET_CHECK</code> is turned on, and an alias record points to <code>www.example.com</code>. If you try to delete <code>www.example.com</code>, Route 53 rejects the request. To delete the record, first delete or change the alias record.</p>"
+    },
+    "ChangeGuardrailName":{
+      "type":"string",
+      "enum":[
+        "NS_FORMAT_CHECK",
+        "NS_DELEGATION_AUTHORITY_CHECK",
+        "NS_OCCLUSION_CHECK",
+        "ALIAS_TARGET_CHECK",
+        "ACTIVE_RECORD_CHECK",
+        "ACTIVE_DELEGATION_CHECK"
+      ]
+    },
+    "ChangeGuardrailStatus":{
+      "type":"string",
+      "enum":[
+        "ENABLED",
+        "DISABLED"
+      ]
+    },
+    "ChangeGuardrails":{
+      "type":"list",
+      "member":{
+        "shape":"ChangeGuardrail",
+        "locationName":"ChangeGuardrail"
+      },
+      "min":1
+    },
+    "ChangeHistoryFeature":{
+      "type":"structure",
+      "members":{
+        "Status":{
+          "shape":"FeatureEnablement",
+          "documentation":"<p>Indicates whether Change History is turned on for the hosted zone. Valid values are the following:</p> <ul> <li> <p> <code>ENABLED</code>: Change History is turned on for the hosted zone.</p> </li> <li> <p> <code>DISABLED</code>: Change History is turned off for the hosted zone.</p> </li> </ul> <p>Route 53 turns Change History on or off when the hosted zone moves to or from a tier that includes it.</p>"
+        },
+        "RetentionStartsAt":{
+          "shape":"TimeStamp",
+          "documentation":"<p>The earliest date and time from which you can read the change history of the hosted zone. Route 53 returns this value only when <code>Status</code> is <code>ENABLED</code>.</p>"
+        }
+      },
+      "documentation":"<p>The status of Change History for the hosted zone.</p>"
+    },
+    "ChangeHistoryOperation":{
+      "type":"string",
+      "enum":[
+        "CreateHostedZone",
+        "DeleteHostedZone",
+        "ChangeResourceRecordSets"
+      ]
+    },
+    "ChangeHistorySortOrder":{
+      "type":"string",
+      "enum":[
+        "ASCENDING",
+        "DESCENDING"
+      ]
+    },
+    "ChangeHistoryTimeBound":{
+      "type":"string",
+      "max":35,
+      "pattern":"^[0-9]{4}-(0[1-9]|1[0-2])-(0[1-9]|[12][0-9]|3[01])T([01][0-9]|2[0-3]):[0-5][0-9]:[0-5][0-9](\\.[0-9]{1,9})?(Z|[+-]([01][0-9]|2[0-3]):[0-5][0-9])$"
+    },
     "ChangeId":{
       "type":"string",
       "max":6500,
@@ -1629,6 +1854,11 @@
         }
       },
       "documentation":"<p>A complex type that describes change information about changes made to your hosted zone.</p>"
+    },
+    "ChangeRequestId":{
+      "type":"string",
+      "max":64,
+      "min":1
     },
     "ChangeResourceRecordSetsRequest":{
       "type":"structure",
@@ -1668,6 +1898,11 @@
         "INSYNC"
       ]
     },
+    "ChangeSubmitter":{
+      "type":"string",
+      "max":2048,
+      "min":1
+    },
     "ChangeTagsForResourceRequest":{
       "type":"structure",
       "required":[
@@ -1689,7 +1924,7 @@
         },
         "AddTags":{
           "shape":"TagList",
-          "documentation":"<p>A complex type that contains a list of the tags that you want to add to the specified health check or hosted zone and/or the tags that you want to edit <code>Value</code> for.</p> <p>You can add a maximum of 10 tags to a health check, a health check source, or a hosted zone.</p>"
+          "documentation":"<p>A complex type that contains a list of the tags that you want to add to the specified health check, health check source, or hosted zone and/or the tags that you want to edit <code>Value</code> for.</p> <p>You can add a maximum of 10 tags to a health check, a health check source, or a hosted zone.</p>"
         },
         "RemoveTagKeys":{
           "shape":"TagKeyList",
@@ -2222,6 +2457,14 @@
         "DelegationSetId":{
           "shape":"ResourceId",
           "documentation":"<p>If you want to associate a reusable delegation set with this hosted zone, the ID that Amazon Route 53 assigned to the reusable delegation set when you created it. For more information about reusable delegation sets, see <a href=\"https://docs.aws.amazon.com/Route53/latest/APIReference/API_CreateReusableDelegationSet.html\">CreateReusableDelegationSet</a>.</p> <p>If you are using a reusable delegation set to create a public hosted zone for a subdomain, make sure that the parent hosted zone doesn't use one or more of the same name servers. If you have overlapping nameservers, the operation will cause a <code>ConflictingDomainsExist</code> error.</p>"
+        },
+        "EnablePublicDNSFallback":{
+          "shape":"PublicDNSFallbackEnabled",
+          "documentation":"<p>Specifies whether to enable public DNS fallback for the hosted zone. When public DNS fallback is enabled and a query for a domain name in the private hosted zone matches no existing name (<code>NXDOMAIN</code>), Route 53 retries the query against public DNS instead of returning a negative response. Fallback does not occur when the name exists but has no record of the requested type.</p> <p>Set to <code>true</code> to enable public DNS fallback, or <code>false</code> to disable it. The default is <code>false</code>.</p> <p>Public DNS fallback is supported only for private hosted zones. If you specify <code>true</code> for a public hosted zone, the request fails with an <code>InvalidInput</code> error.</p>"
+        },
+        "ChangeGuardrails":{
+          "shape":"ChangeGuardrails",
+          "documentation":"<p>Specify the optional Change Guardrails to turn on for the hosted zone. Each entry specifies the name and status of a guardrail. For the guardrail names and statuses, see <code>ChangeGuardrail</code>.</p> <p>Route 53 turns on the guardrails that the tier of the hosted zone includes, so you don't need to specify them. If you turn on a guardrail that the tier doesn't offer, Route 53 returns an <code>InvalidInput</code> error.</p>"
         }
       },
       "documentation":"<p>A complex type that contains information about the request to create a public or private hosted zone.</p>"
@@ -3058,6 +3301,7 @@
       },
       "documentation":"<p>A complex type that contains the response information for the disassociate request.</p>"
     },
+    "DryRun":{"type":"boolean"},
     "EnableHostedZoneDNSSECRequest":{
       "type":"structure",
       "required":["HostedZoneId"],
@@ -3102,6 +3346,34 @@
       "type":"integer",
       "max":10,
       "min":1
+    },
+    "FeatureEnablement":{
+      "type":"string",
+      "enum":[
+        "ENABLED",
+        "DISABLED"
+      ]
+    },
+    "FeatureNotEnabled":{
+      "type":"structure",
+      "members":{
+        "message":{
+          "shape":"ErrorMessage",
+          "documentation":"<p>A message that explains which feature isn't turned on.</p>"
+        }
+      },
+      "documentation":"<p>This error occurs when a feature that the operation requires isn't turned on for the hosted zone. For example, the tier of the hosted zone doesn't include Change History. To resolve this error, turn on the feature, or move the hosted zone to a tier that includes it.</p>",
+      "error":{"httpStatusCode":403},
+      "exception":true
+    },
+    "FeatureStatus":{
+      "type":"string",
+      "enum":[
+        "ENABLED",
+        "DISABLED",
+        "ENABLING",
+        "DISABLING"
+      ]
     },
     "FullyQualifiedDomainName":{
       "type":"string",
@@ -3220,7 +3492,7 @@
       "members":{
         "Type":{
           "shape":"AccountLimitType",
-          "documentation":"<p>The limit that you want to get. Valid values include the following:</p> <ul> <li> <p> <b>MAX_HEALTH_CHECKS_BY_OWNER</b>: The maximum number of health checks that you can create using the current account.</p> </li> <li> <p> <b>MAX_HEALTH_CHECK_SOURCES_BY_OWNER</b> The maximum number of health check sources that you can create using the current account.</p> </li> <li> <p> <b>MAX_HOSTED_ZONES_BY_OWNER</b>: The maximum number of hosted zones that you can create using the current account.</p> </li> <li> <p> <b>MAX_REUSABLE_DELEGATION_SETS_BY_OWNER</b>: The maximum number of reusable delegation sets that you can create using the current account.</p> </li> <li> <p> <b>MAX_TRAFFIC_POLICIES_BY_OWNER</b>: The maximum number of traffic policies that you can create using the current account.</p> </li> <li> <p> <b>MAX_TRAFFIC_POLICY_INSTANCES_BY_OWNER</b>: The maximum number of traffic policy instances that you can create using the current account. (Traffic policy instances are referred to as traffic flow policy records in the Amazon Route 53 console.)</p> </li> </ul>",
+          "documentation":"<p>The limit that you want to get. Valid values include the following:</p> <ul> <li> <p> <b>MAX_HEALTH_CHECKS_BY_OWNER</b>: The maximum number of health checks that you can create using the current account.</p> </li> <li> <p> <b>MAX_HEALTH_CHECK_SOURCES_BY_OWNER</b>: The maximum number of health check sources that you can create using the current account.</p> </li> <li> <p> <b>MAX_HOSTED_ZONES_BY_OWNER</b>: The maximum number of hosted zones that you can create using the current account.</p> </li> <li> <p> <b>MAX_REUSABLE_DELEGATION_SETS_BY_OWNER</b>: The maximum number of reusable delegation sets that you can create using the current account.</p> </li> <li> <p> <b>MAX_TRAFFIC_POLICIES_BY_OWNER</b>: The maximum number of traffic policies that you can create using the current account.</p> </li> <li> <p> <b>MAX_TRAFFIC_POLICY_INSTANCES_BY_OWNER</b>: The maximum number of traffic policy instances that you can create using the current account. (Traffic policy instances are referred to as traffic flow policy records in the Amazon Route 53 console.)</p> </li> </ul>",
           "location":"uri",
           "locationName":"Type"
         }
@@ -3460,6 +3732,44 @@
         }
       },
       "documentation":"<p>A complex type that contains the response to a <code>GetHealthCheck</code> request.</p>"
+    },
+    "GetHostedZoneChangeBatchRequest":{
+      "type":"structure",
+      "required":[
+        "HostedZoneId",
+        "ChangeId"
+      ],
+      "members":{
+        "HostedZoneId":{
+          "shape":"ResourceId",
+          "documentation":"<p>The ID of the hosted zone that contains the change batch.</p>",
+          "location":"uri",
+          "locationName":"Id"
+        },
+        "ChangeId":{
+          "shape":"ResourceId",
+          "documentation":"<p>The ID of the change batch that you want to get. This is the ID that <code>ChangeResourceRecordSets</code> returns in <code>ChangeInfo/Id</code>. You can specify the ID with or without the <code>/change/</code> prefix.</p>",
+          "location":"uri",
+          "locationName":"ChangeId"
+        }
+      }
+    },
+    "GetHostedZoneChangeBatchResponse":{
+      "type":"structure",
+      "required":[
+        "ChangeBatchSummary",
+        "ChangeBatch"
+      ],
+      "members":{
+        "ChangeBatchSummary":{
+          "shape":"ChangeBatchSummary",
+          "documentation":"<p>A summary of the change batch, including who submitted it and when.</p>"
+        },
+        "ChangeBatch":{
+          "shape":"ChangeBatch",
+          "documentation":"<p>The changes in the change batch. Each resource record set is in the same form that <code>ListResourceRecordSets</code> returns. For example, the name is in lowercase and ends with a dot.</p>"
+        }
+      }
     },
     "GetHostedZoneCountRequest":{
       "type":"structure",
@@ -4110,6 +4420,10 @@
         "PrivateZone":{
           "shape":"IsPrivateZone",
           "documentation":"<p>A value that indicates whether this is a private hosted zone.</p>"
+        },
+        "HostedZoneTier":{
+          "shape":"HostedZoneTier",
+          "documentation":"<p>The tier of the hosted zone. The tier controls which features you get and which optional features you can turn on. Valid values are the following:</p> <dl> <dt>STANDARD</dt> <dd> <p> <code>STANDARD</code> is the default tier for new hosted zones.</p> </dd> <dt>ADVANCED</dt> <dd> <p> <code>ADVANCED</code> is a tier that includes Change History and offers more optional features.</p> </dd> </dl> <p>If you don't specify a tier when you create a hosted zone, Route 53 uses <code>STANDARD</code>. Route 53 always returns this value. For pricing information, see Amazon Route 53 pricing on the <a href=\"https://aws.amazon.com/route53/pricing/\">AWS website</a>.</p>"
         }
       },
       "documentation":"<p>A complex type that contains an optional comment about your hosted zone. If you don't want to specify a comment, omit both the <code>HostedZoneConfig</code> and <code>Comment</code> elements.</p>"
@@ -4132,9 +4446,21 @@
           "shape":"AcceleratedRecoveryStatus",
           "documentation":"<p>The current status of accelerated recovery for the hosted zone.</p>"
         },
+        "PublicDNSFallbackStatus":{
+          "shape":"FeatureStatus",
+          "documentation":"<p>The current status of public DNS fallback for the hosted zone. Valid values:</p> <ul> <li> <p> <code>ENABLED</code>: Public DNS fallback is enabled.</p> </li> <li> <p> <code>DISABLED</code>: Public DNS fallback is disabled.</p> </li> <li> <p> <code>ENABLING</code>: A request to enable public DNS fallback is still propagating.</p> </li> <li> <p> <code>DISABLING</code>: A request to disable public DNS fallback is still propagating.</p> </li> </ul>"
+        },
+        "ChangeHistory":{
+          "shape":"ChangeHistoryFeature",
+          "documentation":"<p>The status of Change History for the hosted zone, and the earliest time from which you can read its change history.</p>"
+        },
         "FailureReasons":{
           "shape":"HostedZoneFailureReasons",
           "documentation":"<p>Information about any failures that occurred when attempting to enable or configure features for the hosted zone.</p>"
+        },
+        "ChangeGuardrails":{
+          "shape":"ChangeGuardrails",
+          "documentation":"<p>The name and status of each Change Guardrail for the hosted zone. For the guardrail names and statuses, see <code>ChangeGuardrail</code>.</p>"
         }
       },
       "documentation":"<p>Represents the features configuration for a hosted zone, including the status of various features and any associated failure reasons.</p>"
@@ -4254,6 +4580,13 @@
         }
       },
       "documentation":"<p>In the response to a <code>ListHostedZonesByVPC</code> request, the <code>HostedZoneSummaries</code> element contains one <code>HostedZoneSummary</code> element for each hosted zone that the specified Amazon VPC is associated with. Each <code>HostedZoneSummary</code> element contains the hosted zone name and ID, and information about who owns the hosted zone.</p>"
+    },
+    "HostedZoneTier":{
+      "type":"string",
+      "enum":[
+        "STANDARD",
+        "ADVANCED"
+      ]
     },
     "HostedZoneType":{
       "type":"string",
@@ -4900,6 +5233,68 @@
       },
       "documentation":"<p>A complex type that contains the response to a <code>ListHealthChecks</code> request.</p>"
     },
+    "ListHostedZoneChangeBatchesRequest":{
+      "type":"structure",
+      "required":["HostedZoneId"],
+      "members":{
+        "HostedZoneId":{
+          "shape":"ResourceId",
+          "documentation":"<p>The ID of the hosted zone that you want to list change batches for.</p>",
+          "location":"uri",
+          "locationName":"Id"
+        },
+        "SubmittedAfter":{
+          "shape":"ChangeHistoryTimeBound",
+          "documentation":"<p>The start of the time range, in ISO 8601 format with a UTC offset, for example <code>2026-12-01T00:00:00Z</code> or <code>2026-12-01T05:30:00.123+05:30</code>. You can specify up to nine fractional digits. Route 53 rounds a value with more than millisecond precision up to the next millisecond. The range includes <code>SubmittedAfter</code>.</p> <p>If you don't specify a value, the range starts at <code>RetentionStartsAt</code>. If you specify a value that's earlier than <code>RetentionStartsAt</code>, Route 53 returns an <code>InvalidInput</code> error that includes the earliest time that you can specify.</p> <p>Because submit times can be slightly out of order, a returned <code>SubmittedAt</code> can fall just outside the range that you requested.</p>",
+          "location":"querystring",
+          "locationName":"submittedafter"
+        },
+        "SubmittedBefore":{
+          "shape":"ChangeHistoryTimeBound",
+          "documentation":"<p>The end of the time range, in ISO 8601 format with a UTC offset, for example <code>2026-12-02T00:00:00Z</code> or <code>2026-12-02T05:30:00.123+05:30</code>. You can specify up to nine fractional digits. Route 53 rounds a value with more than millisecond precision up to the next millisecond. The range excludes <code>SubmittedBefore</code>. The value must be at least one millisecond later than <code>SubmittedAfter</code>, or later than <code>RetentionStartsAt</code> if you omit <code>SubmittedAfter</code>.</p> <p>If the range ends within a few seconds of the current time, a later request for the same range might return more change batches.</p>",
+          "location":"querystring",
+          "locationName":"submittedbefore"
+        },
+        "StartAfterChangeId":{
+          "shape":"ResourceId",
+          "documentation":"<p>Returns the change batches after the specified change batch, not including it. Use this to read new change batches since the last change batch that you processed.</p> <p>If you specify <code>StartAfterChangeId</code>, you must also specify <code>SortOrder</code> <code>ASCENDING</code>, and you can't specify <code>SubmittedAfter</code> or <code>SubmittedBefore</code>. If the change batch has expired, is from before <code>RetentionStartsAt</code>, or isn't in the hosted zone, Route 53 returns an <code>InvalidInput</code> error.</p>",
+          "location":"querystring",
+          "locationName":"startafterchangeid"
+        },
+        "SortOrder":{
+          "shape":"ChangeHistorySortOrder",
+          "documentation":"<p>The order in which you want Route 53 to return change batches. Valid values:</p> <ul> <li> <p> <code>DESCENDING</code> – Newest first. This is the default.</p> </li> <li> <p> <code>ASCENDING</code> – Oldest first.</p> </li> </ul>",
+          "location":"querystring",
+          "locationName":"sortorder"
+        },
+        "MaxResults":{
+          "shape":"MaxResults",
+          "documentation":"<p>The maximum number of change batches that you want Route 53 to return in this response. Specify a value from 1 to 1,000. If you don't specify a value, Route 53 returns up to 100 change batches.</p>",
+          "location":"querystring",
+          "locationName":"maxresults"
+        },
+        "NextToken":{
+          "shape":"PaginationToken",
+          "documentation":"<p>If the response to a previous <code>ListHostedZoneChangeBatches</code> request included a <code>NextToken</code> element, specify that value here to get the next page of results. If the previous request included any of the following parameters, include them with exactly the same values: <code>SubmittedAfter</code>, <code>SubmittedBefore</code>, <code>SortOrder</code>, and <code>StartAfterChangeId</code>. If you don't, Route 53 returns an <code>InvalidInput</code> error. If you don't specify <code>NextToken</code>, Route 53 returns the first page of results.</p> <p>A <code>NextToken</code> expires 24 hours after Route 53 returns it, and you can use it only with the hosted zone that it was returned for.</p>",
+          "location":"querystring",
+          "locationName":"nexttoken"
+        }
+      }
+    },
+    "ListHostedZoneChangeBatchesResponse":{
+      "type":"structure",
+      "required":["ChangeBatchSummaries"],
+      "members":{
+        "ChangeBatchSummaries":{
+          "shape":"ChangeBatchSummaries",
+          "documentation":"<p>A summary of each change batch on this page of results. The list is empty if there are no change batches in the range that you specified.</p>"
+        },
+        "NextToken":{
+          "shape":"PaginationToken",
+          "documentation":"<p>If there might be more change batches to list, a token that you can specify in the <code>NextToken</code> parameter of another request to get the next page of results. If there are no more change batches to list, the response doesn't include <code>NextToken</code>.</p>"
+        }
+      }
+    },
     "ListHostedZonesByNameRequest":{
       "type":"structure",
       "members":{
@@ -5113,6 +5508,74 @@
         "NextToken":{
           "shape":"PaginationToken",
           "documentation":"<p>If a response includes the last of the query logging configurations that are associated with the current Amazon Web Services account, <code>NextToken</code> doesn't appear in the response.</p> <p>If a response doesn't include the last of the configurations, you can get more configurations by submitting another <a href=\"https://docs.aws.amazon.com/Route53/latest/APIReference/API_ListQueryLoggingConfigs.html\">ListQueryLoggingConfigs</a> request. Get the value of <code>NextToken</code> that Amazon Route 53 returned in the previous response and include it in <code>NextToken</code> in the next request.</p>"
+        }
+      }
+    },
+    "ListResourceRecordSetChangesRequest":{
+      "type":"structure",
+      "required":["HostedZoneId"],
+      "members":{
+        "HostedZoneId":{
+          "shape":"ResourceId",
+          "documentation":"<p>The ID of the hosted zone that you want to list changes for.</p>",
+          "location":"uri",
+          "locationName":"Id"
+        },
+        "RecordName":{
+          "shape":"DNSName",
+          "documentation":"<p>The name of the resource record sets that you want to list changes for, for example, <code>www.example.com</code>. The name must be the name of the hosted zone or a subdomain of it. If you specify <code>RecordName</code>, you must also specify <code>RecordType</code>. If you specify neither, the results include every change in the hosted zone.</p>",
+          "location":"querystring",
+          "locationName":"recordname"
+        },
+        "RecordType":{
+          "shape":"RRType",
+          "documentation":"<p>The DNS record type of the resource record sets that you want to list changes for. If you specify <code>RecordType</code>, you must also specify <code>RecordName</code>.</p>",
+          "location":"querystring",
+          "locationName":"recordtype"
+        },
+        "SubmittedAfter":{
+          "shape":"ChangeHistoryTimeBound",
+          "documentation":"<p>The start of the time range, in ISO 8601 format with a UTC offset, for example <code>2026-12-01T00:00:00Z</code> or <code>2026-12-01T05:30:00.123+05:30</code>. You can specify up to nine fractional digits. Route 53 rounds a value with more than millisecond precision up to the next millisecond. The range includes <code>SubmittedAfter</code>.</p> <p>If you don't specify a value, the range starts at <code>RetentionStartsAt</code>. If you specify a value that's earlier than <code>RetentionStartsAt</code>, Route 53 returns an <code>InvalidInput</code> error that includes the earliest time that you can specify.</p> <p>Because submit times can be slightly out of order, a returned <code>SubmittedAt</code> can fall just outside the range that you requested.</p>",
+          "location":"querystring",
+          "locationName":"submittedafter"
+        },
+        "SubmittedBefore":{
+          "shape":"ChangeHistoryTimeBound",
+          "documentation":"<p>The end of the time range, in ISO 8601 format with a UTC offset, for example <code>2026-12-02T00:00:00Z</code> or <code>2026-12-02T05:30:00.123+05:30</code>. You can specify up to nine fractional digits. Route 53 rounds a value with more than millisecond precision up to the next millisecond. The range excludes <code>SubmittedBefore</code>. The value must be at least one millisecond later than <code>SubmittedAfter</code>, or later than <code>RetentionStartsAt</code> if you omit <code>SubmittedAfter</code>.</p> <p>If the range ends within a few seconds of the current time, a later request for the same range might return more changes.</p>",
+          "location":"querystring",
+          "locationName":"submittedbefore"
+        },
+        "SortOrder":{
+          "shape":"ChangeHistorySortOrder",
+          "documentation":"<p>The order in which you want Route 53 to return changes. Valid values:</p> <ul> <li> <p> <code>DESCENDING</code> – Newest first. This is the default.</p> </li> <li> <p> <code>ASCENDING</code> – Oldest first.</p> </li> </ul>",
+          "location":"querystring",
+          "locationName":"sortorder"
+        },
+        "MaxResults":{
+          "shape":"MaxResults",
+          "documentation":"<p>The maximum number of changes that you want Route 53 to return in this response. Specify a value from 1 to 100. If you don't specify a value, Route 53 returns up to 100 changes.</p>",
+          "location":"querystring",
+          "locationName":"maxresults"
+        },
+        "NextToken":{
+          "shape":"PaginationToken",
+          "documentation":"<p>If the response to a previous <code>ListResourceRecordSetChanges</code> request included a <code>NextToken</code> element, specify that value here to get the next page of results. If the previous request included any of the following parameters, include them with exactly the same values: <code>SubmittedAfter</code>, <code>SubmittedBefore</code>, <code>SortOrder</code>, <code>RecordName</code>, and <code>RecordType</code>. If you don't, Route 53 returns an <code>InvalidInput</code> error. If you don't specify <code>NextToken</code>, Route 53 returns the first page of results.</p> <p>A <code>NextToken</code> expires 24 hours after Route 53 returns it, and you can use it only with the hosted zone that it was returned for.</p>",
+          "location":"querystring",
+          "locationName":"nexttoken"
+        }
+      }
+    },
+    "ListResourceRecordSetChangesResponse":{
+      "type":"structure",
+      "required":["ResourceRecordSetChanges"],
+      "members":{
+        "ResourceRecordSetChanges":{
+          "shape":"ResourceRecordSetChanges",
+          "documentation":"<p>The changes on this page of results. The list is empty if there are no changes that match the request.</p>"
+        },
+        "NextToken":{
+          "shape":"PaginationToken",
+          "documentation":"<p>If there might be more changes to list, a token that you can specify in the <code>NextToken</code> parameter of another request to get the next page of results. If there are no more changes to list, the response doesn't include <code>NextToken</code>.</p>"
         }
       }
     },
@@ -5984,6 +6447,7 @@
         "locationName":"ProtectionError"
       }
     },
+    "PublicDNSFallbackEnabled":{"type":"boolean"},
     "PublicZoneVPCAssociation":{
       "type":"structure",
       "members":{
@@ -6189,9 +6653,61 @@
         "GeoProximityLocation":{
           "shape":"GeoProximityLocation",
           "documentation":"<p> <i> GeoproximityLocation resource record sets only:</i> A complex type that lets you control how Route 53 responds to DNS queries based on the geographic origin of the query and your resources. </p>"
+        },
+        "AZAffinity":{
+          "shape":"AZAffinity",
+          "documentation":"<p> <i>AZ-affinity resource record sets only:</i> The location that this resource record set answers DNS queries from, such as an Availability Zone (AZ) or an Amazon Web Services Region. For each query, Route 53 starts with the most specific location that the query matches and falls back to a less specific location when there's no record for that location or the record is unhealthy (its health check fails or, for an alias record that has <code>EvaluateTargetHealth</code> set to <code>true</code>, its target is unhealthy). You must also specify <code>SetIdentifier</code>, and you can't specify another routing policy element, such as <code>Weight</code>, in the same resource record set.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/Route53/latest/DeveloperGuide/routing-policy-azaffinity.html\">AZ-affinity routing</a> in the <i>Amazon Route 53 Developer Guide</i>.</p>"
         }
       },
       "documentation":"<p>Information about the resource record set to create or delete.</p>"
+    },
+    "ResourceRecordSetChange":{
+      "type":"structure",
+      "required":[
+        "ChangeId",
+        "Operation",
+        "SubmittedAt",
+        "Action",
+        "ResourceRecordSet"
+      ],
+      "members":{
+        "ChangeId":{
+          "shape":"ResourceId",
+          "documentation":"<p>The ID of the change batch that contains the change. To get every change in the change batch, specify this ID in <code>GetHostedZoneChangeBatch</code>.</p>"
+        },
+        "Operation":{
+          "shape":"ChangeHistoryOperation",
+          "documentation":"<p>The Route 53 API operation that submitted the change. New values might be added, so ignore values that your code doesn't recognize.</p>"
+        },
+        "SubmittedAt":{
+          "shape":"TimeStamp",
+          "documentation":"<p>The date and time, in UTC, when the change batch that contains the change was submitted.</p>"
+        },
+        "SubmittedBy":{
+          "shape":"ChangeSubmitter",
+          "documentation":"<p>The Amazon Resource Name of the principal that submitted the request. This element is absent when Route 53 has no principal to record for the change.</p>"
+        },
+        "RequestId":{
+          "shape":"ChangeRequestId",
+          "documentation":"<p>The request ID of the call that submitted the change. CloudTrail records the same value in <code>requestID</code>. This element is absent when there was no request.</p>"
+        },
+        "Action":{
+          "shape":"ChangeAction",
+          "documentation":"<p>The action in the change: <code>CREATE</code>, <code>DELETE</code>, or <code>UPSERT</code>.</p>"
+        },
+        "ResourceRecordSet":{
+          "shape":"ResourceRecordSet",
+          "documentation":"<p>The resource record set that the change wrote or deleted, in the same form that <code>ListResourceRecordSets</code> returns. For example, the name is in lowercase and ends with a dot. For an <code>UPSERT</code> or a <code>DELETE</code>, the response doesn't contain the values that the resource record set had before the change.</p>"
+        }
+      },
+      "documentation":"<p>One change to a resource record set in the change history of a hosted zone, with the resource record set that the change wrote or deleted.</p>"
+    },
+    "ResourceRecordSetChanges":{
+      "type":"list",
+      "member":{
+        "shape":"ResourceRecordSetChange",
+        "locationName":"ResourceRecordSetChange"
+      }
     },
     "ResourceRecordSetFailover":{
       "type":"string",
@@ -6704,7 +7220,7 @@
       "members":{
         "message":{"shape":"ErrorMessage"}
       },
-      "documentation":"<p>This health check can't be created because the current account has reached the limit on the number of active health checks, or because the health check source for a private health check has reached its limit on active health checks. In the second case, specify a different health check source.</p> <p>For information about default limits, see <a href=\"https://docs.aws.amazon.com/Route53/latest/DeveloperGuide/DNSLimitations.html\">Limits</a> in the <i>Amazon Route 53 Developer Guide</i>.</p> <p>For information about how to get the current limit for an account, see <a href=\"https://docs.aws.amazon.com/Route53/latest/APIReference/API_GetAccountLimit.html\">GetAccountLimit</a>. To request a higher limit, <a href=\"http://aws.amazon.com/route53-request\">create a case</a> with the Amazon Web Services Support Center.</p> <p>You have reached the maximum number of active health checks for an Amazon Web Services account. To request a higher limit, <a href=\"http://aws.amazon.com/route53-request\">create a case</a> with the Amazon Web Services Support Center.</p>",
+      "documentation":"<p>This health check can't be created because the current account has reached the limit on the number of active health checks, or because the health check source for a private health check has reached its limit on active health checks. In the second case, specify a different health check source.</p> <p>For information about default limits, see <a href=\"https://docs.aws.amazon.com/Route53/latest/DeveloperGuide/DNSLimitations.html\">Limits</a> in the <i>Amazon Route 53 Developer Guide</i>.</p> <p>For information about how to get the current limit for an account, see <a href=\"https://docs.aws.amazon.com/Route53/latest/APIReference/API_GetAccountLimit.html\">GetAccountLimit</a>. To request a higher limit, <a href=\"http://aws.amazon.com/route53-request\">create a case</a> with the Amazon Web Services Support Center.</p>",
       "exception":true
     },
     "TooManyHostedZones":{
@@ -7126,10 +7642,49 @@
         "EnableAcceleratedRecovery":{
           "shape":"AcceleratedRecoveryEnabled",
           "documentation":"<p>Specifies whether to enable accelerated recovery for the hosted zone. Set to <code>true</code> to enable accelerated recovery, or <code>false</code> to disable it.</p>"
+        },
+        "EnablePublicDNSFallback":{
+          "shape":"PublicDNSFallbackEnabled",
+          "documentation":"<p>Specifies whether to enable public DNS fallback for the hosted zone. Set to <code>true</code> to enable public DNS fallback, or <code>false</code> to disable it.</p> <p>Public DNS fallback applies to the entire hosted zone and to all VPCs that are associated with it. To check whether a change has propagated, call <code>GetHostedZone</code> and review <code>PublicDNSFallbackStatus</code> in the response.</p> <p>Public DNS fallback is supported only for private hosted zones.</p>"
+        },
+        "ChangeGuardrails":{
+          "shape":"ChangeGuardrails",
+          "documentation":"<p>Specify the Change Guardrails to turn on or off for the hosted zone. Each entry specifies the name of a guardrail and one of the following statuses:</p> <ul> <li> <p> <code>ENABLED</code>: Turns on the guardrail.</p> </li> <li> <p> <code>DISABLED</code>: Turns off the guardrail.</p> </li> </ul> <p>Guardrails that aren't in the request keep their current status.</p> <p>You can turn on an optional guardrail only if the tier of the hosted zone offers it. You can't turn off a guardrail that the tier includes, such as <code>NS_FORMAT_CHECK</code>. In either case, Route 53 returns an <code>InvalidInput</code> error.</p>"
+        },
+        "DryRun":{
+          "shape":"DryRun",
+          "documentation":"<p>Specifies whether to validate the request without changing any features. Route 53 returns the same errors as for a real request, but doesn't change the hosted zone. The default is <code>false</code>.</p>"
         }
       }
     },
     "UpdateHostedZoneFeaturesResponse":{
+      "type":"structure",
+      "members":{}
+    },
+    "UpdateHostedZoneTierRequest":{
+      "type":"structure",
+      "required":[
+        "HostedZoneId",
+        "HostedZoneTier"
+      ],
+      "members":{
+        "HostedZoneId":{
+          "shape":"ResourceId",
+          "documentation":"<p>Specify the ID of the hosted zone whose tier you want to change.</p>",
+          "location":"uri",
+          "locationName":"Id"
+        },
+        "HostedZoneTier":{
+          "shape":"HostedZoneTier",
+          "documentation":"<p>Specify the tier to move the hosted zone to. Valid values are the following:</p> <ul> <li> <p> <code>STANDARD</code>: The default tier for new hosted zones.</p> </li> <li> <p> <code>ADVANCED</code>: A tier that includes Change History and offers more optional features.</p> </li> </ul>"
+        },
+        "DryRun":{
+          "shape":"DryRun",
+          "documentation":"<p>Specifies whether to validate the request without changing the tier. Route 53 returns the same errors as for a real request, but doesn't change the hosted zone. The default is <code>false</code>.</p>"
+        }
+      }
+    },
+    "UpdateHostedZoneTierResponse":{
       "type":"structure",
       "members":{}
     },
@@ -7319,5 +7874,5 @@
       "min":1
     }
   },
-  "documentation":"<p>Amazon Route 53 is a highly available and scalable Domain Name System (DNS) web service.</p> <p>You can use Route 53 to:</p> <ul> <li> <p>Register domain names.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/Route53/latest/DeveloperGuide/welcome-domain-registration.html\">How domain registration works</a>.</p> </li> <li> <p>Route internet traffic to the resources for your domain</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/Route53/latest/DeveloperGuide/welcome-dns-service.html\">How internet traffic is routed to your website or web application</a>.</p> </li> <li> <p>Check the health of your resources.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/Route53/latest/DeveloperGuide/welcome-health-checks.html\">How Route 53 checks the health of your resources</a>.</p> </li> </ul>"
+  "documentation":"<p>Amazon Route 53 is a highly available and scalable Domain Name System (DNS) web service. Route 53 performs four main functions:</p> <ul> <li> <p> <b>Domain registration</b> – Route 53 lets you register domain names such as example.com.</p> </li> <li> <p> <b>Domain Name System (DNS) service</b> – Route 53 translates friendly domain names into IP addresses using a global network of authoritative DNS servers, and provides DNS resolution within your VPCs for private hosted zones.</p> </li> <li> <p> <b>Health checking</b> – Route 53 sends automated requests to your application, over the internet or from within your VPC for private endpoints, to verify that it's reachable, available, and functional.</p> </li> <li> <p> <b>Resolver</b> – Route 53 Resolver lets you forward DNS queries from a VPC that you created using Amazon VPC to DNS resolvers in your network, and from your network to resolvers in your VPC.</p> </li> </ul> <p>You can use the API to create and manage the following resources:</p> <dl> <dt>Public and Private Hosted Zones</dt> <dd> <p>A <i>public hosted zone</i> is a container that holds information about how you want to route traffic on the internet for a domain, such as example.com, and its subdomains.</p> <p>A <i>private hosted zone</i> is a container that holds information about how you want to route traffic for a domain and its subdomains within one or more VPCs that you created with the Amazon VPC service.</p> </dd> <dt>Reusable Delegation Sets</dt> <dd> <p>By default, each hosted zone that you create gets a different set of four name servers—a different delegation set. If you create a lot of hosted zones, maintaining different delegation sets can be difficult and time consuming. Route 53 lets you create a delegation set that you can reuse with multiple hosted zones.</p> </dd> <dt>Resource Record Sets</dt> <dd> <p>After you create a hosted zone for your domain, such as example.com, you create resource record sets to tell the Domain Name System (DNS) how to route traffic for that domain.</p> </dd> <dt>Traffic Policies and Traffic Policy Instances</dt> <dd> <p>You can create complex routing configurations, known as traffic policies, that use weighted, latency, failover, and geolocation resource record sets. You can then associate a traffic policy with a domain name or subdomain name, such as www.example.com, by creating a traffic policy instance. When users submit DNS queries for the domain or subdomain, Route 53 responds based on the traffic policy that you used to create the traffic policy instance.</p> </dd> <dt>Health Checks</dt> <dd> <p>Route 53 health checks monitor the health and performance of your web applications, web servers, and other resources. At regular intervals that you specify, Route 53 submits automated requests to your application, server, or other resource, over the internet or from within your VPC for private endpoints, to verify that it's reachable, available, and functional.</p> </dd> <dt>Domain Registrations</dt> <dd> <p>When you want to get a new domain name, such as example.com, you can register it with Route 53. You can also transfer the registration for existing domains from other registrars to Route 53.</p> </dd> <dt>DNS–DNSSEC</dt> <dd> <p>You can protect your domain from DNS spoofing or a man-in-the-middle attack, by configuring Domain Name System Security Extensions (DNSSEC).</p> </dd> <dt>Query Logs</dt> <dd> <p>You can configure Route 53 to log information about the DNS queries that Route 53 receives, such as the domain or subdomain that was requested, the date and time of the request, and the DNS record type (such as A or AAAA).</p> <p>You can also configure Route 53 Resolver to log information about the DNS queries that originate in Amazon VPCs.</p> </dd> <dt>Outbound and Inbound Endpoints, and Rules</dt> <dd> <p>You can configure Route 53 Resolver to forward DNS queries from your VPC to your network or vice versa. DNS queries pass through an outbound endpoint on their way from a VPC to your network, and they pass through an inbound endpoint on their way from your network to a VPC. For outbound queries, rules let you specify the domain names that you want to forward to your network and the IP addresses of the DNS resolvers in your network.</p> </dd> <dt>Tags</dt> <dd> <p>A tag is a label that you assign to an Amazon Web Services resource. Each tag consists of a key and a value, both of which you define. You can use tags for a variety of purposes; one common use is to categorize and track your Route 53 costs.</p> </dd> <dt>Profiles</dt> <dd> <p>A <i>profile</i> is a named container that groups DNS configurations—such as private hosted zone associations, Resolver rules, and DNS Firewall rule groups—into a single reusable unit. You can associate a profile with multiple VPCs and share it across Amazon Web Services accounts so that each VPC inherits the same DNS settings without requiring individual configuration.</p> </dd> <dt>DNS Firewall</dt> <dd> <p>A <i>DNS Firewall rule group</i> is an ordered collection of rules that each pair a domain list with an action—allow, block, or alert. You associate rule groups with your VPCs to filter outbound DNS queries made by VPC resources, preventing connections to known-malicious domains or restricting access to only approved domains.</p> </dd> </dl> <p>You can also use the Route 53 API to get the current limit on Route 53 objects that you can create, such as hosted zones and health checks.</p> <p>For information about Route 53 concepts and about how to use the Route 53 console, see the <a href=\"https://docs.aws.amazon.com/Route53/latest/DeveloperGuide/\">Amazon Route 53 Developer Guide</a>.</p>"
 }

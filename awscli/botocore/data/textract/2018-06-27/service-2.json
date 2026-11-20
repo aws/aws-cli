@@ -130,6 +130,68 @@
       "documentation":"<p>Creates a new version of an adapter. Operates on a provided AdapterId and a specified dataset provided via the DatasetConfig argument. Requires that you specify an Amazon S3 bucket with the OutputConfig argument. You can provide an optional KMSKeyId, an optional ClientRequestToken, and optional tags.</p>",
       "idempotent":true
     },
+    "CreateBlueprint":{
+      "name":"CreateBlueprint",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"CreateBlueprintRequest"},
+      "output":{"shape":"CreateBlueprintResponse"},
+      "errors":[
+        {"shape":"InvalidParameterException"},
+        {"shape":"ValidationException"},
+        {"shape":"ConflictException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"LimitExceededException"},
+        {"shape":"ProvisionedThroughputExceededException"},
+        {"shape":"InternalServerError"}
+      ],
+      "documentation":"<p>Creates a blueprint that defines the schema Amazon Textract uses to extract structured data from a document during a document insights job. A blueprint describes the fields to extract and how to normalize them.</p>",
+      "idempotent":true
+    },
+    "CreateBlueprintVersion":{
+      "name":"CreateBlueprintVersion",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"CreateBlueprintVersionRequest"},
+      "output":{"shape":"CreateBlueprintVersionResponse"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InvalidParameterException"},
+        {"shape":"ValidationException"},
+        {"shape":"ConflictException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"LimitExceededException"},
+        {"shape":"ProvisionedThroughputExceededException"},
+        {"shape":"InternalServerError"}
+      ],
+      "documentation":"<p>Creates a new, immutable version of an existing blueprint so that projects can pin to a specific version.</p>",
+      "idempotent":true
+    },
+    "CreateProject":{
+      "name":"CreateProject",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"CreateProjectRequest"},
+      "output":{"shape":"CreateProjectResponse"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InvalidParameterException"},
+        {"shape":"ValidationException"},
+        {"shape":"ConflictException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"LimitExceededException"},
+        {"shape":"ProvisionedThroughputExceededException"},
+        {"shape":"InternalServerError"}
+      ],
+      "documentation":"<p>Creates a project that groups the configuration used to run document insights jobs.</p>",
+      "idempotent":true
+    },
     "DeleteAdapter":{
       "name":"DeleteAdapter",
       "http":{
@@ -170,6 +232,45 @@
         {"shape":"ResourceNotFoundException"}
       ],
       "documentation":"<p>Deletes an Amazon Textract adapter version. Requires that you specify both an AdapterId and a AdapterVersion. Deletes the adapter version specified by the AdapterId and the AdapterVersion.</p>",
+      "idempotent":true
+    },
+    "DeleteBlueprint":{
+      "name":"DeleteBlueprint",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"DeleteBlueprintRequest"},
+      "output":{"shape":"DeleteBlueprintResponse"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InvalidParameterException"},
+        {"shape":"ValidationException"},
+        {"shape":"ConflictException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ProvisionedThroughputExceededException"},
+        {"shape":"InternalServerError"}
+      ],
+      "documentation":"<p>Deletes a blueprint, or a specific version of a blueprint.</p>",
+      "idempotent":true
+    },
+    "DeleteProject":{
+      "name":"DeleteProject",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"DeleteProjectRequest"},
+      "output":{"shape":"DeleteProjectResponse"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InvalidParameterException"},
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ProvisionedThroughputExceededException"},
+        {"shape":"InternalServerError"}
+      ],
+      "documentation":"<p>Deletes a project.</p>",
       "idempotent":true
     },
     "DetectDocumentText":{
@@ -231,6 +332,24 @@
       ],
       "documentation":"<p>Gets configuration information for the specified adapter version, including: AdapterId, AdapterVersion, FeatureTypes, Status, StatusMessage, DatasetConfig, KMSKeyId, OutputConfig, Tags and EvaluationMetrics.</p>"
     },
+    "GetBlueprint":{
+      "name":"GetBlueprint",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"GetBlueprintRequest"},
+      "output":{"shape":"GetBlueprintResponse"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InvalidParameterException"},
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ProvisionedThroughputExceededException"},
+        {"shape":"InternalServerError"}
+      ],
+      "documentation":"<p>Gets the details of a blueprint, including its schema, encryption settings, and timestamps.</p>"
+    },
     "GetDocumentAnalysis":{
       "name":"GetDocumentAnalysis",
       "http":{
@@ -250,6 +369,24 @@
         {"shape":"InvalidKMSKeyException"}
       ],
       "documentation":"<p>Gets the results for an Amazon Textract asynchronous operation that analyzes text in a document.</p> <p>You start asynchronous text analysis by calling <a>StartDocumentAnalysis</a>, which returns a job identifier (<code>JobId</code>). When the text analysis operation finishes, Amazon Textract publishes a completion status to the Amazon Simple Notification Service (Amazon SNS) topic that's registered in the initial call to <code>StartDocumentAnalysis</code>. To get the results of the text-detection operation, first check that the status value published to the Amazon SNS topic is <code>SUCCEEDED</code>. If so, call <code>GetDocumentAnalysis</code>, and pass the job identifier (<code>JobId</code>) from the initial call to <code>StartDocumentAnalysis</code>.</p> <p> <code>GetDocumentAnalysis</code> returns an array of <a>Block</a> objects. The following types of information are returned: </p> <ul> <li> <p>Form data (key-value pairs). The related information is returned in two <a>Block</a> objects, each of type <code>KEY_VALUE_SET</code>: a KEY <code>Block</code> object and a VALUE <code>Block</code> object. For example, <i>Name: Ana Silva Carolina</i> contains a key and value. <i>Name:</i> is the key. <i>Ana Silva Carolina</i> is the value.</p> </li> <li> <p>Table and table cell data. A TABLE <code>Block</code> object contains information about a detected table. A CELL <code>Block</code> object is returned for each cell in a table.</p> </li> <li> <p>Lines and words of text. A LINE <code>Block</code> object contains one or more WORD <code>Block</code> objects. All lines and words that are detected in the document are returned (including text that doesn't have a relationship with the value of the <code>StartDocumentAnalysis</code> <code>FeatureTypes</code> input parameter). </p> </li> <li> <p>Query. A QUERY Block object contains the query text, alias and link to the associated Query results block object.</p> </li> <li> <p>Query Results. A QUERY_RESULT Block object contains the answer to the query and an ID that connects it to the query asked. This Block also contains a confidence score.</p> </li> </ul> <note> <p>While processing a document with queries, look out for <code>INVALID_REQUEST_PARAMETERS</code> output. This indicates that either the per page query limit has been exceeded or that the operation is trying to query a page in the document which doesn’t exist. </p> </note> <p>Selection elements such as check boxes and option buttons (radio buttons) can be detected in form data and in tables. A SELECTION_ELEMENT <code>Block</code> object contains information about a selection element, including the selection status.</p> <p>Use the <code>MaxResults</code> parameter to limit the number of blocks that are returned. If there are more results than specified in <code>MaxResults</code>, the value of <code>NextToken</code> in the operation response contains a pagination token for getting the next set of results. To get the next page of results, call <code>GetDocumentAnalysis</code>, and populate the <code>NextToken</code> request parameter with the token value that's returned from the previous call to <code>GetDocumentAnalysis</code>.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/textract/latest/dg/how-it-works-analyzing.html\">Document Text Analysis</a>.</p>"
+    },
+    "GetDocumentInsights":{
+      "name":"GetDocumentInsights",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"GetDocumentInsightsRequest"},
+      "output":{"shape":"GetDocumentInsightsResponse"},
+      "errors":[
+        {"shape":"InvalidJobIdException"},
+        {"shape":"InvalidParameterException"},
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ProvisionedThroughputExceededException"},
+        {"shape":"InternalServerError"}
+      ],
+      "documentation":"<p>Gets the status and results of a document insights job that was started by <a>StartDocumentInsights</a>.</p>"
     },
     "GetDocumentTextDetection":{
       "name":"GetDocumentTextDetection",
@@ -331,6 +468,24 @@
       ],
       "documentation":"<p>Gets summarized results for the <code>StartLendingAnalysis</code> operation, which analyzes text in a lending document. The returned summary consists of information about documents grouped together by a common document type. Information like detected signatures, page numbers, and split documents is returned with respect to the type of grouped document. </p> <p>You start asynchronous text analysis by calling <code>StartLendingAnalysis</code>, which returns a job identifier (<code>JobId</code>). When the text analysis operation finishes, Amazon Textract publishes a completion status to the Amazon Simple Notification Service (Amazon SNS) topic that's registered in the initial call to <code>StartLendingAnalysis</code>. </p> <p>To get the results of the text analysis operation, first check that the status value published to the Amazon SNS topic is SUCCEEDED. If so, call <code>GetLendingAnalysisSummary</code>, and pass the job identifier (<code>JobId</code>) from the initial call to <code>StartLendingAnalysis</code>.</p>"
     },
+    "GetProject":{
+      "name":"GetProject",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"GetProjectRequest"},
+      "output":{"shape":"GetProjectResponse"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InvalidParameterException"},
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ProvisionedThroughputExceededException"},
+        {"shape":"InternalServerError"}
+      ],
+      "documentation":"<p>Gets the details of a project, including its configuration, status, and timestamps.</p>"
+    },
     "ListAdapterVersions":{
       "name":"ListAdapterVersions",
       "http":{
@@ -367,6 +522,42 @@
         {"shape":"ValidationException"}
       ],
       "documentation":"<p>Lists all adapters that match the specified filtration criteria.</p>"
+    },
+    "ListBlueprints":{
+      "name":"ListBlueprints",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"ListBlueprintsRequest"},
+      "output":{"shape":"ListBlueprintsResponse"},
+      "errors":[
+        {"shape":"InvalidParameterException"},
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ProvisionedThroughputExceededException"},
+        {"shape":"InternalServerError"}
+      ],
+      "documentation":"<p>Lists the blueprints that are available to the caller, with optional filtering by project and resource owner. The results are paginated. If the response includes a <code>NextToken</code> value, pass it in a subsequent call to retrieve the next page of results.</p>"
+    },
+    "ListProjects":{
+      "name":"ListProjects",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"ListProjectsRequest"},
+      "output":{"shape":"ListProjectsResponse"},
+      "errors":[
+        {"shape":"InvalidParameterException"},
+        {"shape":"ValidationException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"ProvisionedThroughputExceededException"},
+        {"shape":"InternalServerError"}
+      ],
+      "documentation":"<p>Lists the projects that are available to the caller, with optional filtering by blueprint. The results are paginated. If the response includes a <code>NextToken</code> value, pass it in a subsequent call to retrieve the next page of results.</p>"
     },
     "ListTagsForResource":{
       "name":"ListTagsForResource",
@@ -410,6 +601,25 @@
         {"shape":"LimitExceededException"}
       ],
       "documentation":"<p>Starts the asynchronous analysis of an input document for relationships between detected items such as key-value pairs, tables, and selection elements.</p> <p> <code>StartDocumentAnalysis</code> can analyze text in documents that are in JPEG, PNG, TIFF, and PDF format. The documents are stored in an Amazon S3 bucket. Use <a>DocumentLocation</a> to specify the bucket name and file name of the document. </p> <p> <code>StartDocumentAnalysis</code> returns a job identifier (<code>JobId</code>) that you use to get the results of the operation. When text analysis is finished, Amazon Textract publishes a completion status to the Amazon Simple Notification Service (Amazon SNS) topic that you specify in <code>NotificationChannel</code>. To get the results of the text analysis operation, first check that the status value published to the Amazon SNS topic is <code>SUCCEEDED</code>. If so, call <a>GetDocumentAnalysis</a>, and pass the job identifier (<code>JobId</code>) from the initial call to <code>StartDocumentAnalysis</code>.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/textract/latest/dg/how-it-works-analyzing.html\">Document Text Analysis</a>.</p>"
+    },
+    "StartDocumentInsights":{
+      "name":"StartDocumentInsights",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"StartDocumentInsightsRequest"},
+      "output":{"shape":"StartDocumentInsightsResponse"},
+      "errors":[
+        {"shape":"InvalidParameterException"},
+        {"shape":"ValidationException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ProvisionedThroughputExceededException"},
+        {"shape":"LimitExceededException"},
+        {"shape":"InternalServerError"}
+      ],
+      "documentation":"<p>Starts an asynchronous job that analyzes a document using the configuration defined by a project or a set of blueprints. Use <a>GetDocumentInsights</a> to retrieve the results of the job.</p>"
     },
     "StartDocumentTextDetection":{
       "name":"StartDocumentTextDetection",
@@ -541,6 +751,47 @@
         {"shape":"ResourceNotFoundException"}
       ],
       "documentation":"<p>Update the configuration for an adapter. FeatureTypes configurations cannot be updated. At least one new parameter must be specified as an argument.</p>"
+    },
+    "UpdateBlueprint":{
+      "name":"UpdateBlueprint",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"UpdateBlueprintRequest"},
+      "output":{"shape":"UpdateBlueprintResponse"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InvalidParameterException"},
+        {"shape":"ValidationException"},
+        {"shape":"ConflictException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ProvisionedThroughputExceededException"},
+        {"shape":"InternalServerError"}
+      ],
+      "documentation":"<p>Updates an existing blueprint, replacing its schema and, optionally, its encryption configuration.</p>",
+      "idempotent":true
+    },
+    "UpdateProject":{
+      "name":"UpdateProject",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"UpdateProjectRequest"},
+      "output":{"shape":"UpdateProjectResponse"},
+      "errors":[
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InvalidParameterException"},
+        {"shape":"ValidationException"},
+        {"shape":"ConflictException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"LimitExceededException"},
+        {"shape":"ProvisionedThroughputExceededException"},
+        {"shape":"InternalServerError"}
+      ],
+      "documentation":"<p>Updates the configuration of an existing project. If you omit a configuration, UpdateProject leaves it unchanged. A configuration that you supply replaces the stored one, so include every setting that you want to keep.</p>",
+      "idempotent":true
     }
   },
   "shapes":{
@@ -955,6 +1206,104 @@
         "LAYOUT_KEY_VALUE"
       ]
     },
+    "BlueprintArn":{
+      "type":"string",
+      "max":128,
+      "min":1,
+      "pattern":"^arn:aws(|-cn|-iso|-iso-[a-z]|-us-gov):textract:[a-zA-Z0-9-]*:(aws|[0-9]{12}):blueprint/(public-[a-zA-Z0-9-_]{1,30}|[a-zA-Z0-9-]{12,36})$"
+    },
+    "BlueprintFilter":{
+      "type":"structure",
+      "required":["BlueprintArn"],
+      "members":{
+        "BlueprintArn":{
+          "shape":"BlueprintArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the blueprint to filter by.</p>"
+        },
+        "BlueprintVersion":{
+          "shape":"BlueprintVersion",
+          "documentation":"<p>The version of the blueprint to filter by.</p>"
+        }
+      },
+      "documentation":"<p>A filter used to limit results to a specific blueprint, and optionally a specific version.</p>"
+    },
+    "BlueprintItem":{
+      "type":"structure",
+      "required":["BlueprintArn"],
+      "members":{
+        "BlueprintArn":{
+          "shape":"BlueprintArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the blueprint.</p>"
+        },
+        "BlueprintVersion":{
+          "shape":"BlueprintVersion",
+          "documentation":"<p>The version of the blueprint. If omitted, the latest version is used.</p>"
+        }
+      },
+      "documentation":"<p>Associates a blueprint, and optionally a specific blueprint version, with a project for custom output extraction.</p>"
+    },
+    "BlueprintItems":{
+      "type":"list",
+      "member":{"shape":"BlueprintItem"},
+      "max":1000,
+      "min":0
+    },
+    "BlueprintName":{
+      "type":"string",
+      "max":128,
+      "min":1,
+      "pattern":"^[a-zA-Z0-9-_]+$"
+    },
+    "BlueprintSchema":{
+      "type":"string",
+      "max":100000,
+      "min":1,
+      "pattern":"^[a-zA-Z0-9\\s!\"\\#\\$%'&\\(\\)\\*\\+\\,\\-\\./:;=\\?@\\[\\\\\\]\\^_`\\{\\|\\}~><À-ÖØ-Üßà-öø-üẞ¿¡Œ-œ°£¥₹€§©ª®™¹±-µ✓⑆-⑉฿₽₱₦₣₩₫₺\\u4E00-\\u9FFF\\u3040-\\u309F\\u30A0-\\u30FF\\uAC00-\\uD7AF\\u3400-\\u4DBF]+$"
+    },
+    "BlueprintSummary":{
+      "type":"structure",
+      "required":[
+        "BlueprintArn",
+        "CreationTime"
+      ],
+      "members":{
+        "BlueprintArn":{
+          "shape":"BlueprintArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the blueprint.</p>"
+        },
+        "BlueprintName":{
+          "shape":"BlueprintName",
+          "documentation":"<p>The name of the blueprint.</p>"
+        },
+        "BlueprintVersion":{
+          "shape":"BlueprintVersion",
+          "documentation":"<p>The version of the blueprint.</p>"
+        },
+        "ResourceOwner":{
+          "shape":"ResourceOwner",
+          "documentation":"<p>Whether the blueprint is owned by your account or provided by Amazon Textract.</p>"
+        },
+        "CreationTime":{
+          "shape":"DateTime",
+          "documentation":"<p>The date and time that the blueprint was created.</p>"
+        },
+        "LastModifiedTime":{
+          "shape":"DateTime",
+          "documentation":"<p>The date and time that the blueprint was last modified.</p>"
+        }
+      },
+      "documentation":"<p>A summary of a blueprint, returned in the results of <code>ListBlueprints</code>.</p>"
+    },
+    "BlueprintSummaryList":{
+      "type":"list",
+      "member":{"shape":"BlueprintSummary"}
+    },
+    "BlueprintVersion":{
+      "type":"string",
+      "max":128,
+      "min":1,
+      "pattern":"^[0-9]*$"
+    },
     "BoundingBox":{
       "type":"structure",
       "members":{
@@ -976,6 +1325,17 @@
         }
       },
       "documentation":"<p>The bounding box around the detected page, text, key-value pair, table, table cell, or selection element on a document page. The <code>left</code> (x-coordinate) and <code>top</code> (y-coordinate) are coordinates that represent the top and left sides of the bounding box. Note that the upper-left corner of the image is the origin (0,0). </p> <p>The <code>top</code> and <code>left</code> values returned are ratios of the overall document page size. For example, if the input image is 700 x 200 pixels, and the top-left coordinate of the bounding box is 350 x 50 pixels, the API returns a <code>left</code> value of 0.5 (350/700) and a <code>top</code> value of 0.25 (50/200).</p> <p>The <code>width</code> and <code>height</code> values represent the dimensions of the bounding box as a ratio of the overall document page dimension. For example, if the document page size is 700 x 200 pixels, and the bounding box width is 70 pixels, the width returned is 0.1. </p>"
+    },
+    "BoundingBoxConfiguration":{
+      "type":"structure",
+      "required":["State"],
+      "members":{
+        "State":{
+          "shape":"State",
+          "documentation":"<p>Set to <code>ENABLED</code> to return bounding box geometry, or <code>DISABLED</code> to omit it.</p>"
+        }
+      },
+      "documentation":"<p>Controls whether bounding box geometry is returned in the extraction output.</p>"
     },
     "ClientRequestToken":{
       "type":"string",
@@ -1089,6 +1449,157 @@
         }
       }
     },
+    "CreateBlueprintRequest":{
+      "type":"structure",
+      "required":[
+        "BlueprintName",
+        "Schema"
+      ],
+      "members":{
+        "ClientRequestToken":{
+          "shape":"ClientRequestToken",
+          "documentation":"<p>A unique, case-sensitive identifier that you provide to ensure that the operation completes no more than one time. If you use the same token for a request that matches a previous request, the service ignores the request, but does not return an error.</p>",
+          "idempotencyToken":true
+        },
+        "BlueprintName":{
+          "shape":"BlueprintName",
+          "documentation":"<p>A unique name for the blueprint.</p>"
+        },
+        "Schema":{
+          "shape":"BlueprintSchema",
+          "documentation":"<p>The schema of the blueprint, which defines the fields to extract and their expected structure.</p>"
+        },
+        "EncryptionConfiguration":{
+          "shape":"EncryptionConfiguration",
+          "documentation":"<p>The AWS KMS encryption configuration used to encrypt the blueprint at rest.</p>"
+        },
+        "Tags":{
+          "shape":"TagMap",
+          "documentation":"<p>A set of tags (key-value pairs) to assign to the blueprint.</p>"
+        }
+      }
+    },
+    "CreateBlueprintResponse":{
+      "type":"structure",
+      "required":["BlueprintArn"],
+      "members":{
+        "BlueprintArn":{
+          "shape":"BlueprintArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the blueprint that was created.</p>"
+        }
+      }
+    },
+    "CreateBlueprintVersionRequest":{
+      "type":"structure",
+      "required":["BlueprintArn"],
+      "members":{
+        "BlueprintArn":{
+          "shape":"BlueprintArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the blueprint to create a new version of.</p>"
+        },
+        "ClientRequestToken":{
+          "shape":"ClientRequestToken",
+          "documentation":"<p>A unique, case-sensitive identifier that you provide to ensure that the operation completes no more than one time. If you use the same token for a request that matches a previous request, the service ignores the request, but does not return an error.</p>",
+          "idempotencyToken":true
+        }
+      }
+    },
+    "CreateBlueprintVersionResponse":{
+      "type":"structure",
+      "required":[
+        "BlueprintArn",
+        "BlueprintVersion"
+      ],
+      "members":{
+        "BlueprintArn":{
+          "shape":"BlueprintArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the blueprint.</p>"
+        },
+        "BlueprintVersion":{
+          "shape":"BlueprintVersion",
+          "documentation":"<p>The version of the blueprint that was created.</p>"
+        }
+      }
+    },
+    "CreateProjectRequest":{
+      "type":"structure",
+      "required":[
+        "ProjectName",
+        "ExtractionConfiguration"
+      ],
+      "members":{
+        "ClientRequestToken":{
+          "shape":"ClientRequestToken",
+          "documentation":"<p>A unique, case-sensitive identifier that you provide to ensure that the operation completes no more than one time. If you use the same token for a request that matches a previous request, the service ignores the request, but does not return an error.</p>",
+          "idempotencyToken":true
+        },
+        "ProjectName":{
+          "shape":"ProjectName",
+          "documentation":"<p>A unique name for the project.</p>"
+        },
+        "ProjectDescription":{
+          "shape":"ProjectDescription",
+          "documentation":"<p>A description of the project.</p>"
+        },
+        "ExtractionConfiguration":{
+          "shape":"ExtractionConfiguration",
+          "documentation":"<p>The configuration that controls how Amazon Textract extracts content from the document, including bounding boxes, granularity, and output format.</p>"
+        },
+        "GenerativeConfiguration":{
+          "shape":"GenerativeConfiguration",
+          "documentation":"<p>The configuration that controls generative capabilities such as summarization and figure captioning.</p>"
+        },
+        "CustomConfiguration":{
+          "shape":"CustomConfiguration",
+          "documentation":"<p>The configuration that associates blueprints with the project for custom output extraction.</p>"
+        },
+        "SplitterConfiguration":{
+          "shape":"SplitterConfiguration",
+          "documentation":"<p>The configuration that controls whether multi-document packets are split into individual documents.</p>"
+        },
+        "SensitiveDataConfiguration":{
+          "shape":"SensitiveDataConfiguration",
+          "documentation":"<p>The configuration that controls detection and redaction of sensitive data, such as personally identifiable information (PII).</p>"
+        },
+        "EncryptionConfiguration":{
+          "shape":"EncryptionConfiguration",
+          "documentation":"<p>The AWS KMS encryption configuration used to encrypt the project at rest. If you don't specify a value, Amazon Textract encrypts the project using an AWS owned key.</p>"
+        },
+        "Tags":{
+          "shape":"TagMap",
+          "documentation":"<p>A set of tags (key-value pairs) to assign to the project.</p>"
+        }
+      }
+    },
+    "CreateProjectResponse":{
+      "type":"structure",
+      "required":["ProjectArn"],
+      "members":{
+        "ProjectArn":{
+          "shape":"ProjectArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the project that was created.</p>"
+        },
+        "Status":{
+          "shape":"ProjectStatus",
+          "documentation":"<p>The status of the project, indicating whether creation completed successfully or failed.</p>"
+        }
+      }
+    },
+    "CustomConfiguration":{
+      "type":"structure",
+      "required":["Blueprints"],
+      "members":{
+        "Blueprints":{
+          "shape":"BlueprintItems",
+          "documentation":"<p>The blueprints used to extract custom structured output.</p>"
+        },
+        "FallbackBlueprints":{
+          "shape":"FallbackBlueprintItems",
+          "documentation":"<p>The blueprint used when a document does not match any of the primary blueprints. Requires at least one blueprint in <code>Blueprints</code>.</p>"
+        }
+      },
+      "documentation":"<p>Associates blueprints with a project to produce custom structured output. A fallback blueprint can be supplied for documents that do not match a primary blueprint.</p>"
+    },
     "DateTime":{"type":"timestamp"},
     "DeleteAdapterRequest":{
       "type":"structure",
@@ -1122,6 +1633,38 @@
       }
     },
     "DeleteAdapterVersionResponse":{
+      "type":"structure",
+      "members":{}
+    },
+    "DeleteBlueprintRequest":{
+      "type":"structure",
+      "required":["BlueprintArn"],
+      "members":{
+        "BlueprintArn":{
+          "shape":"BlueprintArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the blueprint to delete.</p>"
+        },
+        "BlueprintVersion":{
+          "shape":"BlueprintVersion",
+          "documentation":"<p>The version of the blueprint to delete. If omitted, the entire blueprint and all of its versions are deleted.</p>"
+        }
+      }
+    },
+    "DeleteBlueprintResponse":{
+      "type":"structure",
+      "members":{}
+    },
+    "DeleteProjectRequest":{
+      "type":"structure",
+      "required":["ProjectArn"],
+      "members":{
+        "ProjectArn":{
+          "shape":"ProjectArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the project to delete.</p>"
+        }
+      }
+    },
+    "DeleteProjectResponse":{
       "type":"structure",
       "members":{}
     },
@@ -1238,6 +1781,38 @@
       "documentation":"<p>The document can't be processed because it's too large. The maximum document size for synchronous operations 10 MB. The maximum document size for asynchronous operations is 500 MB for PDF files.</p>",
       "exception":true
     },
+    "EncryptionConfiguration":{
+      "type":"structure",
+      "required":["KmsKeyId"],
+      "members":{
+        "KmsKeyId":{
+          "shape":"EncryptionKmsKeyId",
+          "documentation":"<p>The identifier of the AWS KMS key to use for encryption. This can be a key ID, key ARN, alias name, or alias ARN.</p>"
+        },
+        "KmsEncryptionContext":{
+          "shape":"KmsEncryptionContext",
+          "documentation":"<p>A set of key-value pairs that Amazon Textract includes as the AWS KMS encryption context when encrypting and decrypting the resource.</p> <p>On <code>UpdateProject</code> and <code>UpdateBlueprint</code>, this member is the one exception to replacing a supplied configuration whole. If you omit it, the stored encryption context is kept. To clear a custom encryption context, specify an empty map (<code>{}</code>).</p>"
+        }
+      },
+      "documentation":"<p>Specifies the AWS Key Management Service (AWS KMS) key and encryption context used to encrypt a resource at rest. When omitted, Amazon Textract encrypts the resource using an AWS owned key.</p>"
+    },
+    "EncryptionContextKey":{
+      "type":"string",
+      "max":2000,
+      "min":1,
+      "pattern":"^.*\\S.*$"
+    },
+    "EncryptionContextValue":{
+      "type":"string",
+      "max":2000,
+      "min":1,
+      "pattern":"^.*\\S.*$"
+    },
+    "EncryptionKmsKeyId":{
+      "type":"string",
+      "max":2048,
+      "pattern":"^([A-Za-z0-9][A-Za-z0-9:_/+=,@.-]{0,2047})?$"
+    },
     "EntityType":{
       "type":"string",
       "enum":[
@@ -1257,6 +1832,8 @@
       "member":{"shape":"EntityType"}
     },
     "ErrorCode":{"type":"string"},
+    "ErrorMessage":{"type":"string"},
+    "ErrorType":{"type":"string"},
     "EvaluationMetric":{
       "type":"structure",
       "members":{
@@ -1274,6 +1851,17 @@
         }
       },
       "documentation":"<p>The evaluation metrics (F1 score, Precision, and Recall) for an adapter version.</p>"
+    },
+    "EventBridgeConfiguration":{
+      "type":"structure",
+      "required":["State"],
+      "members":{
+        "State":{
+          "shape":"State",
+          "documentation":"<p>Set to <code>ENABLED</code> to send events to an event bus, or <code>DISABLED</code> to not send them.</p>"
+        }
+      },
+      "documentation":"<p>Event bus settings for a job.</p>"
     },
     "ExpenseCurrency":{
       "type":"structure",
@@ -1408,9 +1996,64 @@
       },
       "documentation":"<p>Contains information extracted by an analysis operation after using StartLendingAnalysis.</p>"
     },
+    "ExtractionConfiguration":{
+      "type":"structure",
+      "required":[
+        "BoundingBox",
+        "Granularity",
+        "OutputFormat"
+      ],
+      "members":{
+        "BoundingBox":{
+          "shape":"BoundingBoxConfiguration",
+          "documentation":"<p>Controls whether bounding box geometry is included in the extraction output.</p>"
+        },
+        "Granularity":{
+          "shape":"ExtractionGranularity",
+          "documentation":"<p>Controls the granularity levels at which content is extracted.</p>"
+        },
+        "OutputFormat":{
+          "shape":"OutputFormat",
+          "documentation":"<p>Controls the format of the extraction output.</p>"
+        }
+      },
+      "documentation":"<p>Controls how Amazon Textract extracts content from a document, including whether bounding boxes are returned, the granularity of extraction, and the output format.</p>"
+    },
+    "ExtractionGranularity":{
+      "type":"structure",
+      "members":{
+        "Types":{
+          "shape":"ExtractionGranularityTypes",
+          "documentation":"<p>The granularity levels at which Amazon Textract extracts content, from the whole document down to individual lines of text. Each type can appear only once.</p>"
+        }
+      },
+      "documentation":"<p>Specifies the granularity levels at which Amazon Textract extracts content from a document.</p>"
+    },
+    "ExtractionGranularityType":{
+      "type":"string",
+      "enum":[
+        "DOCUMENT",
+        "PAGE",
+        "ELEMENT",
+        "WORD",
+        "LINE"
+      ]
+    },
+    "ExtractionGranularityTypes":{
+      "type":"list",
+      "member":{"shape":"ExtractionGranularityType"},
+      "max":5,
+      "min":1
+    },
     "ExtractionList":{
       "type":"list",
       "member":{"shape":"Extraction"}
+    },
+    "FallbackBlueprintItems":{
+      "type":"list",
+      "member":{"shape":"BlueprintItem"},
+      "max":1,
+      "min":0
     },
     "FeatureType":{
       "type":"string",
@@ -1426,10 +2069,35 @@
       "type":"list",
       "member":{"shape":"FeatureType"}
     },
+    "FigureCaptionConfiguration":{
+      "type":"structure",
+      "required":["State"],
+      "members":{
+        "State":{
+          "shape":"State",
+          "documentation":"<p>Set to <code>ENABLED</code> to produce figure captions, or <code>DISABLED</code> to omit them.</p>"
+        }
+      },
+      "documentation":"<p>Controls whether generative captions are produced for figures detected in the document.</p>"
+    },
     "Float":{"type":"float"},
     "FlowDefinitionArn":{
       "type":"string",
       "max":256
+    },
+    "GenerativeConfiguration":{
+      "type":"structure",
+      "members":{
+        "Summarization":{
+          "shape":"SummarizationConfiguration",
+          "documentation":"<p>Controls whether a generative summary of the document is produced. If you omit it, no summary is produced.</p>"
+        },
+        "FigureCaption":{
+          "shape":"FigureCaptionConfiguration",
+          "documentation":"<p>Controls whether generative captions are produced for figures detected in the document. If you omit it, no figure captions are produced.</p>"
+        }
+      },
+      "documentation":"<p>Controls the generative capabilities applied during a document insights job, such as summarization and figure captioning.</p>"
     },
     "Geometry":{
       "type":"structure",
@@ -1555,6 +2223,64 @@
         }
       }
     },
+    "GetBlueprintRequest":{
+      "type":"structure",
+      "required":["BlueprintArn"],
+      "members":{
+        "BlueprintArn":{
+          "shape":"BlueprintArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the blueprint to retrieve.</p>"
+        },
+        "BlueprintVersion":{
+          "shape":"BlueprintVersion",
+          "documentation":"<p>The version of the blueprint to retrieve. If omitted, the latest version is returned.</p>"
+        }
+      }
+    },
+    "GetBlueprintResponse":{
+      "type":"structure",
+      "required":[
+        "BlueprintArn",
+        "BlueprintName",
+        "Schema",
+        "CreationTime",
+        "LastModifiedTime"
+      ],
+      "members":{
+        "BlueprintArn":{
+          "shape":"BlueprintArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the blueprint.</p>"
+        },
+        "BlueprintName":{
+          "shape":"BlueprintName",
+          "documentation":"<p>The name of the blueprint.</p>"
+        },
+        "BlueprintVersion":{
+          "shape":"BlueprintVersion",
+          "documentation":"<p>The version of the blueprint.</p>"
+        },
+        "Schema":{
+          "shape":"BlueprintSchema",
+          "documentation":"<p>The schema of the blueprint, which defines the fields to extract and their expected structure.</p>"
+        },
+        "KmsKeyId":{
+          "shape":"KMSKeyId",
+          "documentation":"<p>The identifier of the AWS KMS key used to encrypt the blueprint.</p>"
+        },
+        "KmsEncryptionContext":{
+          "shape":"KmsEncryptionContext",
+          "documentation":"<p>The AWS KMS encryption context used when encrypting the blueprint.</p>"
+        },
+        "CreationTime":{
+          "shape":"DateTime",
+          "documentation":"<p>The date and time that the blueprint was created.</p>"
+        },
+        "LastModifiedTime":{
+          "shape":"DateTime",
+          "documentation":"<p>The date and time that the blueprint was last modified.</p>"
+        }
+      }
+    },
     "GetDocumentAnalysisRequest":{
       "type":"structure",
       "required":["JobId"],
@@ -1603,6 +2329,38 @@
         "AnalyzeDocumentModelVersion":{
           "shape":"String",
           "documentation":"<p/>"
+        }
+      }
+    },
+    "GetDocumentInsightsRequest":{
+      "type":"structure",
+      "required":["JobArn"],
+      "members":{
+        "JobArn":{
+          "shape":"JobArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the document insights job to retrieve.</p>"
+        }
+      }
+    },
+    "GetDocumentInsightsResponse":{
+      "type":"structure",
+      "required":["Status"],
+      "members":{
+        "Status":{
+          "shape":"JobStatus",
+          "documentation":"<p>The current status of the document insights job, indicating whether it is still running, has completed, or has failed. When the job has failed, inspect <code>ErrorType</code> and <code>ErrorMessage</code> for details.</p>"
+        },
+        "OutputConfiguration":{
+          "shape":"OutputConfiguration",
+          "documentation":"<p>The Amazon S3 location where the analysis results are written.</p>"
+        },
+        "ErrorType":{
+          "shape":"ErrorType",
+          "documentation":"<p>The type of error that caused the job to fail. Present only when the job status is a failure state.</p>"
+        },
+        "ErrorMessage":{
+          "shape":"ErrorMessage",
+          "documentation":"<p>A human-readable description of the error that caused the job to fail. Present only when the job status is a failure state.</p>"
         }
       }
     },
@@ -1792,6 +2550,76 @@
         }
       }
     },
+    "GetProjectRequest":{
+      "type":"structure",
+      "required":["ProjectArn"],
+      "members":{
+        "ProjectArn":{
+          "shape":"ProjectArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the project to retrieve.</p>"
+        }
+      }
+    },
+    "GetProjectResponse":{
+      "type":"structure",
+      "required":[
+        "ProjectArn",
+        "ProjectName",
+        "Status",
+        "CreationTime",
+        "LastModifiedTime"
+      ],
+      "members":{
+        "ProjectArn":{
+          "shape":"ProjectArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the project.</p>"
+        },
+        "ProjectName":{
+          "shape":"ProjectName",
+          "documentation":"<p>The name of the project.</p>"
+        },
+        "ProjectDescription":{
+          "shape":"ProjectDescription",
+          "documentation":"<p>The description of the project.</p>"
+        },
+        "Status":{
+          "shape":"ProjectStatus",
+          "documentation":"<p>The status of the project, indicating whether it was created successfully or failed.</p>"
+        },
+        "ExtractionConfiguration":{
+          "shape":"ExtractionConfiguration",
+          "documentation":"<p>The configuration that controls how Amazon Textract extracts content from the document, including bounding boxes, granularity, and output format.</p>"
+        },
+        "GenerativeConfiguration":{
+          "shape":"GenerativeConfiguration",
+          "documentation":"<p>The configuration that controls generative capabilities such as summarization and figure captioning.</p>"
+        },
+        "CustomConfiguration":{
+          "shape":"CustomConfiguration",
+          "documentation":"<p>The configuration that associates blueprints with the project for custom output extraction.</p>"
+        },
+        "SplitterConfiguration":{
+          "shape":"SplitterConfiguration",
+          "documentation":"<p>The configuration that controls whether multi-document packets are split into individual documents.</p>"
+        },
+        "SensitiveDataConfiguration":{
+          "shape":"SensitiveDataConfiguration",
+          "documentation":"<p>The configuration that controls detection and redaction of sensitive data, such as personally identifiable information (PII).</p>"
+        },
+        "EncryptionConfiguration":{
+          "shape":"EncryptionConfiguration",
+          "documentation":"<p>The AWS KMS encryption configuration used to encrypt the project at rest.</p>"
+        },
+        "CreationTime":{
+          "shape":"DateTime",
+          "documentation":"<p>The date and time that the project was created.</p>"
+        },
+        "LastModifiedTime":{
+          "shape":"DateTime",
+          "documentation":"<p>The date and time that the project was last modified.</p>"
+        }
+      }
+    },
     "HumanLoopActivationConditionsEvaluationResults":{
       "type":"string",
       "max":10240
@@ -1932,6 +2760,23 @@
       "max":10485760,
       "min":1
     },
+    "InputConfiguration":{
+      "type":"structure",
+      "required":["S3Uri"],
+      "members":{
+        "S3Uri":{
+          "shape":"S3Uri",
+          "documentation":"<p>The Amazon S3 URI of the input document.</p>"
+        }
+      },
+      "documentation":"<p>The Amazon S3 location of the input document for a document insights job.</p>"
+    },
+    "IntelligencePaginationToken":{
+      "type":"string",
+      "max":2048,
+      "min":1,
+      "pattern":".*\\S.*"
+    },
     "InternalServerError":{
       "type":"structure",
       "members":{},
@@ -1963,6 +2808,12 @@
       "documentation":"<p>Amazon Textract is unable to access the S3 object that's specified in the request. for more information, <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/dev/s3-access-control.html\">Configure Access to Amazon S3</a> For troubleshooting information, see <a href=\"https://docs.aws.amazon.com/AmazonS3/latest/dev/troubleshooting.html\">Troubleshooting Amazon S3</a> </p>",
       "exception":true
     },
+    "JobArn":{
+      "type":"string",
+      "max":128,
+      "min":1,
+      "pattern":"^arn:aws(|-cn|-iso|-iso-[a-z]|-us-gov):textract:[a-zA-Z0-9-]*:[0-9]{12}:job/[a-zA-Z0-9-_]+$"
+    },
     "JobId":{
       "type":"string",
       "max":64,
@@ -1989,6 +2840,12 @@
       "max":2048,
       "min":1,
       "pattern":"^[A-Za-z0-9][A-Za-z0-9:_/+=,@.-]{0,2048}$"
+    },
+    "KmsEncryptionContext":{
+      "type":"map",
+      "key":{"shape":"EncryptionContextKey"},
+      "value":{"shape":"EncryptionContextValue"},
+      "max":10
     },
     "LendingDetection":{
       "type":"structure",
@@ -2192,6 +3049,76 @@
         }
       }
     },
+    "ListBlueprintsRequest":{
+      "type":"structure",
+      "members":{
+        "MaxResults":{
+          "shape":"MaxResults",
+          "documentation":"<p>The maximum number of blueprints to return in each page of results. If you don't specify a value, the service selects a default page size. Use the <code>NextToken</code> value in the response to retrieve any remaining results.</p>"
+        },
+        "NextToken":{
+          "shape":"IntelligencePaginationToken",
+          "documentation":"<p>A pagination token returned from a previous call to <code>ListBlueprints</code>. Use it to retrieve the next page of results.</p>"
+        },
+        "BlueprintArn":{
+          "shape":"BlueprintArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of a blueprint to filter the results by.</p>"
+        },
+        "ProjectFilter":{
+          "shape":"ProjectFilter",
+          "documentation":"<p>A filter that limits the results to blueprints associated with the specified project.</p>"
+        },
+        "ResourceOwner":{
+          "shape":"ResourceOwner",
+          "documentation":"<p>A filter that limits the results to blueprints owned by your account or to blueprints provided by Amazon Textract.</p>"
+        }
+      }
+    },
+    "ListBlueprintsResponse":{
+      "type":"structure",
+      "required":["Blueprints"],
+      "members":{
+        "Blueprints":{
+          "shape":"BlueprintSummaryList",
+          "documentation":"<p>A list of blueprint summaries that match the request.</p>"
+        },
+        "NextToken":{
+          "shape":"IntelligencePaginationToken",
+          "documentation":"<p>A pagination token to use in a subsequent call to <code>ListBlueprints</code> to retrieve the next page of results. This value is <code>null</code> when there are no more results to return.</p>"
+        }
+      }
+    },
+    "ListProjectsRequest":{
+      "type":"structure",
+      "members":{
+        "MaxResults":{
+          "shape":"MaxResults",
+          "documentation":"<p>The maximum number of projects to return in each page of results. If you don't specify a value, the service selects a default page size. Use the <code>NextToken</code> value in the response to retrieve any remaining results.</p>"
+        },
+        "NextToken":{
+          "shape":"IntelligencePaginationToken",
+          "documentation":"<p>A pagination token returned from a previous call to <code>ListProjects</code>. Use it to retrieve the next page of results.</p>"
+        },
+        "BlueprintFilter":{
+          "shape":"BlueprintFilter",
+          "documentation":"<p>A filter that limits the results to projects associated with the specified blueprint.</p>"
+        }
+      }
+    },
+    "ListProjectsResponse":{
+      "type":"structure",
+      "required":["Projects"],
+      "members":{
+        "Projects":{
+          "shape":"ProjectSummaryList",
+          "documentation":"<p>A list of project summaries that match the request.</p>"
+        },
+        "NextToken":{
+          "shape":"IntelligencePaginationToken",
+          "documentation":"<p>A pagination token to use in a subsequent call to <code>ListProjects</code> to retrieve the next page of results. This value is <code>null</code> when there are no more results to return.</p>"
+        }
+      }
+    },
     "ListTagsForResourceRequest":{
       "type":"structure",
       "required":["ResourceARN"],
@@ -2251,6 +3178,28 @@
       },
       "documentation":"<p>The Amazon Simple Notification Service (Amazon SNS) topic to which Amazon Textract publishes the completion status of an asynchronous document operation. </p>"
     },
+    "NotificationConfiguration":{
+      "type":"structure",
+      "required":["EventBridgeConfiguration"],
+      "members":{
+        "EventBridgeConfiguration":{
+          "shape":"EventBridgeConfiguration",
+          "documentation":"<p>Event bus settings.</p>"
+        }
+      },
+      "documentation":"<p>Notification settings for a job.</p>"
+    },
+    "OutputAdditionalFileFormat":{
+      "type":"structure",
+      "required":["State"],
+      "members":{
+        "State":{
+          "shape":"State",
+          "documentation":"<p>Set to <code>ENABLED</code> to produce an additional file format, or <code>DISABLED</code> to omit it.</p>"
+        }
+      },
+      "documentation":"<p>Controls whether an additional file format is produced alongside the primary extraction output.</p>"
+    },
     "OutputConfig":{
       "type":"structure",
       "required":["S3Bucket"],
@@ -2265,6 +3214,128 @@
         }
       },
       "documentation":"<p>Sets whether or not your output will go to a user created bucket. Used to set the name of the bucket, and the prefix on the output file.</p> <p> <code>OutputConfig</code> is an optional parameter which lets you adjust where your output will be placed. By default, Amazon Textract will store the results internally and can only be accessed by the Get API operations. With <code>OutputConfig</code> enabled, you can set the name of the bucket the output will be sent to the file prefix of the results where you can download your results. Additionally, you can set the <code>KMSKeyID</code> parameter to a customer master key (CMK) to encrypt your output. Without this parameter set Amazon Textract will encrypt server-side using the AWS managed CMK for Amazon S3.</p> <p>Decryption of Customer Content is necessary for processing of the documents by Amazon Textract. If your account is opted out under an AI services opt out policy then all unencrypted Customer Content is immediately and permanently deleted after the Customer Content has been processed by the service. No copy of of the output is retained by Amazon Textract. For information about how to opt out, see <a href=\"https://docs.aws.amazon.com/organizations/latest/userguide/orgs_manage_policies_ai-opt-out.html\"> Managing AI services opt-out policy. </a> </p> <p>For more information on data privacy, see the <a href=\"https://aws.amazon.com/compliance/data-privacy-faq/\">Data Privacy FAQ</a>.</p>"
+    },
+    "OutputConfiguration":{
+      "type":"structure",
+      "required":["S3Uri"],
+      "members":{
+        "S3Uri":{
+          "shape":"S3Uri",
+          "documentation":"<p>The Amazon S3 URI where the analysis results are written.</p>"
+        }
+      },
+      "documentation":"<p>The Amazon S3 location where the results of a document insights job are written.</p>"
+    },
+    "OutputFormat":{
+      "type":"structure",
+      "required":[
+        "AdditionalFileFormat",
+        "TextFormat"
+      ],
+      "members":{
+        "AdditionalFileFormat":{
+          "shape":"OutputAdditionalFileFormat",
+          "documentation":"<p>Controls whether an additional file format is produced alongside the primary output.</p>"
+        },
+        "TextFormat":{
+          "shape":"OutputTextFormat",
+          "documentation":"<p>Controls the text formats produced in the extraction output.</p>"
+        }
+      },
+      "documentation":"<p>Controls the format of the extraction output, including the text format and any additional file formats.</p>"
+    },
+    "OutputTextFormat":{
+      "type":"structure",
+      "members":{
+        "Types":{
+          "shape":"OutputTextFormatTypes",
+          "documentation":"<p>The text formats produced in the extraction output. Each type can appear only once, and <code>CSV</code> can't be the only type.</p>"
+        }
+      },
+      "documentation":"<p>Specifies the text formats produced in the extraction output.</p>"
+    },
+    "OutputTextFormatType":{
+      "type":"string",
+      "enum":[
+        "PLAIN_TEXT",
+        "MARKDOWN",
+        "HTML",
+        "CSV"
+      ]
+    },
+    "OutputTextFormatTypes":{
+      "type":"list",
+      "member":{"shape":"OutputTextFormatType"},
+      "max":4,
+      "min":1
+    },
+    "PIIEntitiesConfiguration":{
+      "type":"structure",
+      "required":[
+        "PiiEntityTypes",
+        "RedactionMaskMode"
+      ],
+      "members":{
+        "PiiEntityTypes":{
+          "shape":"PIIEntityTypes",
+          "documentation":"<p>The list of PII entity types to detect. Each type can appear only once.</p>"
+        },
+        "RedactionMaskMode":{
+          "shape":"PIIRedactionMaskMode",
+          "documentation":"<p>How detected PII is masked in the redacted output.</p>"
+        }
+      },
+      "documentation":"<p>Specifies which personally identifiable information (PII) entity types to detect and how to mask them.</p>"
+    },
+    "PIIEntityType":{
+      "type":"string",
+      "enum":[
+        "ALL",
+        "ADDRESS",
+        "AGE",
+        "NAME",
+        "EMAIL",
+        "PHONE",
+        "USERNAME",
+        "PASSWORD",
+        "DRIVER_ID",
+        "LICENSE_PLATE",
+        "VEHICLE_IDENTIFICATION_NUMBER",
+        "CREDIT_DEBIT_CARD_CVV",
+        "CREDIT_DEBIT_CARD_EXPIRY",
+        "CREDIT_DEBIT_CARD_NUMBER",
+        "PIN",
+        "INTERNATIONAL_BANK_ACCOUNT_NUMBER",
+        "SWIFT_CODE",
+        "IP_ADDRESS",
+        "MAC_ADDRESS",
+        "URL",
+        "AWS_ACCESS_KEY",
+        "AWS_SECRET_KEY",
+        "US_BANK_ACCOUNT_NUMBER",
+        "US_BANK_ROUTING_NUMBER",
+        "US_INDIVIDUAL_TAX_IDENTIFICATION_NUMBER",
+        "US_PASSPORT_NUMBER",
+        "US_SOCIAL_SECURITY_NUMBER",
+        "CA_HEALTH_NUMBER",
+        "CA_SOCIAL_INSURANCE_NUMBER",
+        "UK_NATIONAL_HEALTH_SERVICE_NUMBER",
+        "UK_NATIONAL_INSURANCE_NUMBER",
+        "UK_UNIQUE_TAXPAYER_REFERENCE_NUMBER"
+      ]
+    },
+    "PIIEntityTypes":{
+      "type":"list",
+      "member":{"shape":"PIIEntityType"},
+      "max":32,
+      "min":1
+    },
+    "PIIRedactionMaskMode":{
+      "type":"string",
+      "enum":[
+        "PII",
+        "ENTITY_TYPE"
+      ]
     },
     "PageClassification":{
       "type":"structure",
@@ -2338,6 +3409,72 @@
     "PredictionList":{
       "type":"list",
       "member":{"shape":"Prediction"}
+    },
+    "ProjectArn":{
+      "type":"string",
+      "max":128,
+      "min":1,
+      "pattern":"^arn:aws(|-cn|-iso|-iso-[a-z]|-us-gov):textract:[a-zA-Z0-9-]*:(aws|[0-9]{12}):project/[a-zA-Z0-9-]{12,36}$"
+    },
+    "ProjectDescription":{
+      "type":"string",
+      "max":300,
+      "min":0,
+      "pattern":"^[a-zA-Z0-9\\s!\"\\#\\$%'&\\(\\)\\*\\+\\,\\-\\./:;=\\?@\\[\\\\\\]\\^_`\\{\\|\\}~><À-ÖØ-Üßà-öø-üẞ¿¡Œ-œ°£¥₹€§©ª®™¹±-µ✓⑆-⑉฿₽₱₦₣₩₫₺]*$"
+    },
+    "ProjectFilter":{
+      "type":"structure",
+      "required":["ProjectArn"],
+      "members":{
+        "ProjectArn":{
+          "shape":"ProjectArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the project to filter by.</p>"
+        }
+      },
+      "documentation":"<p>A filter used to limit results to a specific project.</p>"
+    },
+    "ProjectName":{
+      "type":"string",
+      "max":128,
+      "min":1,
+      "pattern":"^[a-zA-Z0-9-_]+$"
+    },
+    "ProjectStatus":{
+      "type":"string",
+      "enum":[
+        "COMPLETED",
+        "FAILED"
+      ]
+    },
+    "ProjectSummary":{
+      "type":"structure",
+      "required":[
+        "ProjectArn",
+        "CreationTime"
+      ],
+      "members":{
+        "ProjectArn":{
+          "shape":"ProjectArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the project.</p>"
+        },
+        "ProjectName":{
+          "shape":"ProjectName",
+          "documentation":"<p>The name of the project.</p>"
+        },
+        "CreationTime":{
+          "shape":"DateTime",
+          "documentation":"<p>The date and time that the project was created.</p>"
+        },
+        "LastModifiedTime":{
+          "shape":"DateTime",
+          "documentation":"<p>The date and time that the project was last modified.</p>"
+        }
+      },
+      "documentation":"<p>A summary of a project, returned in the results of <code>ListProjects</code>.</p>"
+    },
+    "ProjectSummaryList":{
+      "type":"list",
+      "member":{"shape":"ProjectSummary"}
     },
     "ProvisionedThroughputExceededException":{
       "type":"structure",
@@ -2435,6 +3572,13 @@
       "documentation":"<p> Returned when an operation tried to access a nonexistent resource. </p>",
       "exception":true
     },
+    "ResourceOwner":{
+      "type":"string",
+      "enum":[
+        "ACCOUNT",
+        "SERVICE"
+      ]
+    },
     "RoleArn":{
       "type":"string",
       "max":2048,
@@ -2477,6 +3621,12 @@
       "min":1,
       "pattern":".*\\S.*"
     },
+    "S3Uri":{
+      "type":"string",
+      "max":1024,
+      "min":1,
+      "pattern":"^s3://[a-z0-9][\\.\\-a-z0-9]{1,61}[a-z0-9](/.*)?$"
+    },
     "SNSTopicArn":{
       "type":"string",
       "max":1024,
@@ -2488,6 +3638,29 @@
       "enum":[
         "SELECTED",
         "NOT_SELECTED"
+      ]
+    },
+    "SensitiveDataConfiguration":{
+      "type":"structure",
+      "required":["DetectionMode"],
+      "members":{
+        "DetectionMode":{
+          "shape":"SensitiveDataDetectionMode",
+          "documentation":"<p>The detection mode. Valid values:</p> <ul> <li> <p> <code>DETECTION</code> - Only detects sensitive data.</p> </li> <li> <p> <code>DETECTION_AND_REDACTION</code> - Detects and redacts sensitive data in the output.</p> </li> <li> <p> <code>DISABLED</code> - Does not detect sensitive data.</p> </li> </ul>"
+        },
+        "PiiEntitiesConfiguration":{
+          "shape":"PIIEntitiesConfiguration",
+          "documentation":"<p>The configuration that specifies which PII entity types to detect and how to mask them. If you omit it, Amazon Textract detects all PII entity types (<code>ALL</code>) and masks them with <code>ENTITY_TYPE</code>.</p>"
+        }
+      },
+      "documentation":"<p>Controls detection and redaction of sensitive data, such as personally identifiable information (PII), in the output.</p>"
+    },
+    "SensitiveDataDetectionMode":{
+      "type":"string",
+      "enum":[
+        "DETECTION",
+        "DETECTION_AND_REDACTION",
+        "DISABLED"
       ]
     },
     "ServiceQuotaExceededException":{
@@ -2528,6 +3701,17 @@
     "SplitDocumentList":{
       "type":"list",
       "member":{"shape":"SplitDocument"}
+    },
+    "SplitterConfiguration":{
+      "type":"structure",
+      "required":["State"],
+      "members":{
+        "State":{
+          "shape":"State",
+          "documentation":"<p>Set to <code>ENABLED</code> to split multi-document packets, or <code>DISABLED</code> to treat the input as a single document.</p>"
+        }
+      },
+      "documentation":"<p>Controls whether a multi-document packet is split into individual documents before analysis.</p>"
     },
     "StartDocumentAnalysisRequest":{
       "type":"structure",
@@ -2577,6 +3761,53 @@
         "JobId":{
           "shape":"JobId",
           "documentation":"<p>The identifier for the document text detection job. Use <code>JobId</code> to identify the job in a subsequent call to <code>GetDocumentAnalysis</code>. A <code>JobId</code> value is only valid for 7 days.</p>"
+        }
+      }
+    },
+    "StartDocumentInsightsRequest":{
+      "type":"structure",
+      "required":[
+        "InputConfiguration",
+        "OutputConfiguration"
+      ],
+      "members":{
+        "InputConfiguration":{
+          "shape":"InputConfiguration",
+          "documentation":"<p>The Amazon S3 location of the input document to analyze.</p>"
+        },
+        "OutputConfiguration":{
+          "shape":"OutputConfiguration",
+          "documentation":"<p>The Amazon S3 location where the analysis results are written.</p>"
+        },
+        "ProjectArn":{
+          "shape":"ProjectArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the project whose configuration is used to analyze the document.</p>"
+        },
+        "Blueprints":{
+          "shape":"BlueprintItems",
+          "documentation":"<p>The blueprints used to extract custom structured output from the document.</p>"
+        },
+        "EncryptionConfiguration":{
+          "shape":"EncryptionConfiguration",
+          "documentation":"<p>The AWS KMS encryption configuration used to encrypt the analysis output. If you don't specify a value, Amazon Textract encrypts the output using an AWS owned key.</p>"
+        },
+        "NotificationConfiguration":{
+          "shape":"NotificationConfiguration",
+          "documentation":"<p>Notification settings for the job.</p>"
+        },
+        "Tags":{
+          "shape":"TagMap",
+          "documentation":"<p>A set of tags (key-value pairs) to assign to the document insights job.</p>"
+        }
+      }
+    },
+    "StartDocumentInsightsResponse":{
+      "type":"structure",
+      "required":["JobArn"],
+      "members":{
+        "JobArn":{
+          "shape":"JobArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the document insights job that was started. Use it with <a>GetDocumentInsights</a> to retrieve the results.</p>"
         }
       }
     },
@@ -2688,17 +3919,35 @@
         }
       }
     },
+    "State":{
+      "type":"string",
+      "enum":[
+        "ENABLED",
+        "DISABLED"
+      ]
+    },
     "StatusMessage":{"type":"string"},
     "String":{"type":"string"},
     "StringList":{
       "type":"list",
       "member":{"shape":"String"}
     },
+    "SummarizationConfiguration":{
+      "type":"structure",
+      "required":["State"],
+      "members":{
+        "State":{
+          "shape":"State",
+          "documentation":"<p>Set to <code>ENABLED</code> to produce a summary, or <code>DISABLED</code> to omit it.</p>"
+        }
+      },
+      "documentation":"<p>Controls whether a generative summary of the document is produced.</p>"
+    },
     "TagKey":{
       "type":"string",
       "max":128,
       "min":1,
-      "pattern":"^(?!aws:)[\\p{L}\\p{Z}\\p{N}_.:/=+\\-@]*$"
+      "pattern":"^[\\p{L}\\p{Z}\\p{N}_.:/=+\\-@]*$"
     },
     "TagKeyList":{
       "type":"list",
@@ -2851,6 +4100,86 @@
         "AutoUpdate":{
           "shape":"AutoUpdate",
           "documentation":"<p>The auto-update status of the adapter that has been updated.</p>"
+        }
+      }
+    },
+    "UpdateBlueprintRequest":{
+      "type":"structure",
+      "required":["BlueprintArn"],
+      "members":{
+        "BlueprintArn":{
+          "shape":"BlueprintArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the blueprint to update.</p>"
+        },
+        "Schema":{
+          "shape":"BlueprintSchema",
+          "documentation":"<p>The updated schema of the blueprint, which defines the fields to extract and their expected structure.</p>"
+        },
+        "EncryptionConfiguration":{
+          "shape":"EncryptionConfiguration",
+          "documentation":"<p>The AWS KMS encryption configuration used to encrypt the blueprint at rest.</p>"
+        }
+      }
+    },
+    "UpdateBlueprintResponse":{
+      "type":"structure",
+      "required":["BlueprintArn"],
+      "members":{
+        "BlueprintArn":{
+          "shape":"BlueprintArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the blueprint that was updated.</p>"
+        }
+      }
+    },
+    "UpdateProjectRequest":{
+      "type":"structure",
+      "required":["ProjectArn"],
+      "members":{
+        "ProjectArn":{
+          "shape":"ProjectArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the project to update.</p>"
+        },
+        "ProjectDescription":{
+          "shape":"ProjectDescription",
+          "documentation":"<p>The updated description of the project.</p>"
+        },
+        "ExtractionConfiguration":{
+          "shape":"ExtractionConfiguration",
+          "documentation":"<p>The configuration that controls how Amazon Textract extracts content from the document, including bounding boxes, granularity, and output format. Replaces the stored extraction configuration.</p>"
+        },
+        "GenerativeConfiguration":{
+          "shape":"GenerativeConfiguration",
+          "documentation":"<p>The configuration that controls generative capabilities such as summarization and figure captioning. Replaces the stored generative configuration, so a capability that you omit is turned off.</p>"
+        },
+        "CustomConfiguration":{
+          "shape":"CustomConfiguration",
+          "documentation":"<p>The configuration that associates blueprints with the project for custom output extraction. Replaces the stored custom configuration. To disable custom configuration, specify an empty <code>Blueprints</code> list.</p>"
+        },
+        "SplitterConfiguration":{
+          "shape":"SplitterConfiguration",
+          "documentation":"<p>The configuration that controls whether multi-document packets are split into individual documents. Replaces the stored splitter configuration.</p>"
+        },
+        "SensitiveDataConfiguration":{
+          "shape":"SensitiveDataConfiguration",
+          "documentation":"<p>The configuration that controls detection and redaction of sensitive data, such as personally identifiable information (PII). Replaces the stored sensitive data configuration. To turn off detection, set <code>DetectionMode</code> to <code>DISABLED</code>.</p>"
+        },
+        "EncryptionConfiguration":{
+          "shape":"EncryptionConfiguration",
+          "documentation":"<p>The AWS KMS encryption configuration used to encrypt the project at rest.</p>"
+        }
+      }
+    },
+    "UpdateProjectResponse":{
+      "type":"structure",
+      "required":["ProjectArn"],
+      "members":{
+        "ProjectArn":{
+          "shape":"ProjectArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the project that was updated.</p>"
+        },
+        "Status":{
+          "shape":"ProjectStatus",
+          "documentation":"<p>The status of the project after the update.</p>"
         }
       }
     },

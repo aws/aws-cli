@@ -90,7 +90,7 @@
         {"shape":"ResourceNotFoundException"},
         {"shape":"InternalServerException"}
       ],
-      "documentation":"<p>Returns the terms attached to an offer, such as pricing terms (usage-based, contract, BYOL, free trial), legal terms, payment schedules, validity terms, support terms, and renewal terms.</p>",
+      "documentation":"<p>Retrieves the terms attached to an offer, such as pricing terms (usage-based, contract, Bring Your Own License (BYOL), free trial), legal terms, payment schedules, validity terms, support terms, and renewal terms. The operation returns results in pages. Use <code>nextToken</code> to retrieve the next page.</p>",
       "readonly":true
     },
     "GetProduct":{
@@ -128,7 +128,26 @@
         {"shape":"ResourceNotFoundException"},
         {"shape":"InternalServerException"}
       ],
-      "documentation":"<p>Returns the fulfillment options available for a product, including deployment details such as version information, operating systems, usage instructions, and release notes.</p>",
+      "documentation":"<p>Retrieves the fulfillment options available for a product, including deployment details such as version information, operating systems, usage instructions, and release notes. The operation returns results in pages. Use <code>nextToken</code> to retrieve the next page.</p>",
+      "readonly":true
+    },
+    "ListListingAttributes":{
+      "name":"ListListingAttributes",
+      "http":{
+        "method":"POST",
+        "requestUri":"/2026-02-05/listListingAttributes",
+        "responseCode":200
+      },
+      "input":{"shape":"ListListingAttributesInput"},
+      "output":{"shape":"ListListingAttributesOutput"},
+      "errors":[
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ValidationException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Retrieves the requested attributes for a listing, including case studies and trust center information. The operation returns results in pages. Use <code>nextToken</code> to retrieve the next page.</p>",
       "readonly":true
     },
     "ListPurchaseOptions":{
@@ -146,7 +165,7 @@
         {"shape":"ValidationException"},
         {"shape":"InternalServerException"}
       ],
-      "documentation":"<p>Returns the purchase options (offers and offer sets) available to the buyer. You can filter results by product, seller, purchase option type, visibility scope, and availability status.</p> <note> <p>You must include at least one of the following filters in the request: a <code>PRODUCT_ID</code> filter to specify the product for which to retrieve purchase options, or a <code>VISIBILITY_SCOPE</code> filter to retrieve purchase options by visibility.</p> </note>",
+      "documentation":"<p>Retrieves the purchase options (offers and offer sets) available to you. You can filter results by product, seller, purchase option type, visibility scope, and availability status. The operation returns results in pages. Use <code>nextToken</code> to retrieve the next page.</p> <note> <p>You must include at least one of the following filters in the request: a <code>PRODUCT_ID</code> filter to specify the product for which to retrieve purchase options, or a <code>VISIBILITY_SCOPE</code> filter to retrieve purchase options by visibility.</p> </note>",
       "readonly":true
     },
     "SearchFacets":{
@@ -164,7 +183,7 @@
         {"shape":"ValidationException"},
         {"shape":"InternalServerException"}
       ],
-      "documentation":"<p>Returns available facet values for filtering listings, such as categories, pricing models, fulfillment option types, publishers, and customer ratings. Each facet value includes a count of matching listings.</p>",
+      "documentation":"<p>Retrieves the available facet values for filtering listings, such as categories, pricing models, fulfillment option types, publishers, and customer ratings. Each facet value includes a count of matching listings.</p>",
       "readonly":true
     },
     "SearchListings":{
@@ -182,7 +201,7 @@
         {"shape":"ValidationException"},
         {"shape":"InternalServerException"}
       ],
-      "documentation":"<p>Returns a list of product listings based on search criteria and filters. You can search by keyword, filter by category, pricing model, fulfillment type, and other attributes, and sort results by relevance or customer rating.</p>",
+      "documentation":"<p>Searches for listings that match your search criteria and filters. You can search by keyword, filter by category, pricing model, fulfillment type, and other attributes, and sort results by relevance or customer rating. The operation returns results in pages. Use <code>nextToken</code> to retrieve the next page.</p>",
       "readonly":true
     }
   },
@@ -192,7 +211,7 @@
       "members":{
         "message":{"shape":"ExceptionMessage"}
       },
-      "documentation":"<p>You don't have sufficient access to perform this action.</p>",
+      "documentation":"<p>You don't have sufficient access to perform this action. Verify that you have the required permissions.</p>",
       "error":{
         "httpStatusCode":403,
         "senderFault":true
@@ -219,7 +238,7 @@
         },
         "iops":{
           "shape":"AmazonMachineImageEbsVolumeIopsInteger",
-          "documentation":"<p>The total number of provisioned IOPS supported.</p>"
+          "documentation":"<p>The total number of provisioned input/output operations per second (IOPS) that the volume supports.</p>"
         }
       },
       "documentation":"<p>Contains supported Amazon EBS volume information for an AMI fulfillment option.</p>"
@@ -277,11 +296,11 @@
         },
         "recommendation":{
           "shape":"AmazonMachineImageRecommendation",
-          "documentation":"<p>Recommended instance types for running this AMI.</p>"
+          "documentation":"<p>The recommended instance types for running this AMI.</p>"
         },
         "releaseNotes":{
           "shape":"String",
-          "documentation":"<p>Release notes describing changes in this version of the fulfillment option.</p>"
+          "documentation":"<p>Release notes that describe the changes in this version of the fulfillment option.</p>"
         },
         "usageInstructions":{
           "shape":"String",
@@ -305,7 +324,7 @@
         },
         "ebsVolume":{
           "shape":"AmazonMachineImageEbsVolume",
-          "documentation":"<p>The supported Amazon EBS volume configuration for the AMI.</p>"
+          "documentation":"<p>The supported Amazon Elastic Block Store (Amazon EBS) volume configuration for the AMI.</p>"
         },
         "shortDescription":{
           "shape":"AmazonMachineImageFulfillmentOptionShortDescriptionString",
@@ -354,7 +373,7 @@
           "documentation":"<p>The version of the operating system.</p>"
         }
       },
-      "documentation":"<p>Describes an operating system supported by an AMI fulfillment option.</p>"
+      "documentation":"<p>Describes an operating system that an AMI fulfillment option supports.</p>"
     },
     "AmazonMachineImageOperatingSystemList":{
       "type":"list",
@@ -366,14 +385,14 @@
       "members":{
         "instanceType":{
           "shape":"String",
-          "documentation":"<p>The recommended EC2 instance type for this AMI.</p>"
+          "documentation":"<p>The recommended Amazon Elastic Compute Cloud (Amazon EC2) instance type for this AMI.</p>"
         },
         "securityGroups":{
           "shape":"AmazonMachineImageSecurityGroupList",
           "documentation":"<p>The recommended security group configurations for this AMI.</p>"
         }
       },
-      "documentation":"<p>Recommended instance types for running an AMI fulfillment option.</p>"
+      "documentation":"<p>The recommended instance types for running an AMI fulfillment option.</p>"
     },
     "AmazonMachineImageSecurityGroup":{
       "type":"structure",
@@ -398,7 +417,7 @@
         },
         "cidrIpAddresses":{
           "shape":"AmazonMachineImageCidrIpAddressList",
-          "documentation":"<p>The IP address ranges in CIDR format.</p>"
+          "documentation":"<p>The IP address ranges in Classless Inter-Domain Routing (CIDR) format.</p>"
         }
       },
       "documentation":"<p>Contains a recommended security group configuration for an AMI fulfillment option.</p>"
@@ -437,7 +456,7 @@
           "documentation":"<p>The AWS services supported by this API integration.</p>"
         }
       },
-      "documentation":"<p>Describes an API-based fulfillment option, where the product is accessed through an API integration.</p>"
+      "documentation":"<p>Describes an API-based fulfillment option, where you access the product through an API integration.</p>"
     },
     "AwsSupportedService":{
       "type":"structure",
@@ -492,7 +511,147 @@
           "documentation":"<p>The category of the term.</p>"
         }
       },
-      "documentation":"<p>Defines a Bring Your Own License (BYOL) pricing term, where buyers use their existing license for the product.</p>"
+      "documentation":"<p>Describes a Bring Your Own License (BYOL) pricing term. With this term, you use your existing license for the product.</p>"
+    },
+    "CaseStudiesSummary":{
+      "type":"structure",
+      "required":["caseStudyCount"],
+      "members":{
+        "caseStudyCount":{
+          "shape":"NonNegativeCount",
+          "documentation":"<p>The total number of case studies associated with the listing.</p>"
+        }
+      },
+      "documentation":"<p>A summary of the case studies associated with a listing.</p>"
+    },
+    "CaseStudy":{
+      "type":"structure",
+      "required":[
+        "caseStudyId",
+        "caseStudyName",
+        "shortDescription"
+      ],
+      "members":{
+        "caseStudyId":{
+          "shape":"CaseStudyId",
+          "documentation":"<p>The unique identifier of the case study.</p>"
+        },
+        "caseStudyName":{
+          "shape":"NonEmptyString",
+          "documentation":"<p>The case study name displayed to you.</p>"
+        },
+        "shortDescription":{
+          "shape":"NonEmptyString",
+          "documentation":"<p>A brief value proposition for the case study.</p>"
+        },
+        "engagementDates":{
+          "shape":"EngagementDates",
+          "documentation":"<p>The key implementation dates for the engagement.</p>"
+        },
+        "challenge":{
+          "shape":"CaseStudyChallengeString",
+          "documentation":"<p>The business challenge that the engagement addresses.</p>"
+        },
+        "resolution":{
+          "shape":"CaseStudyResolutionString",
+          "documentation":"<p>How the partner resolved the challenge.</p>"
+        },
+        "implementationApproach":{
+          "shape":"CaseStudyImplementationApproachString",
+          "documentation":"<p>The implementation approach used for the engagement.</p>"
+        },
+        "outcome":{
+          "shape":"CaseStudyOutcomeString",
+          "documentation":"<p>The results and outcomes achieved by the engagement.</p>"
+        },
+        "resources":{
+          "shape":"CaseStudyResourceList",
+          "documentation":"<p>Resources related to the case study.</p>"
+        }
+      },
+      "documentation":"<p>A case study associated with a listing.</p>"
+    },
+    "CaseStudyChallengeString":{
+      "type":"string",
+      "max":5000,
+      "min":0
+    },
+    "CaseStudyId":{
+      "type":"string",
+      "max":255,
+      "min":1,
+      "pattern":"[\\w\\-]+"
+    },
+    "CaseStudyIdList":{
+      "type":"list",
+      "member":{"shape":"CaseStudyId"},
+      "documentation":"<p>The identifiers of the case studies that a specialization cites.</p>",
+      "max":25,
+      "min":0
+    },
+    "CaseStudyImplementationApproachString":{
+      "type":"string",
+      "max":5000,
+      "min":0
+    },
+    "CaseStudyOutcomeString":{
+      "type":"string",
+      "max":3000,
+      "min":0
+    },
+    "CaseStudyResolutionString":{
+      "type":"string",
+      "max":5000,
+      "min":0
+    },
+    "CaseStudyResource":{
+      "type":"structure",
+      "required":[
+        "contentType",
+        "value",
+        "resourceType"
+      ],
+      "members":{
+        "contentType":{
+          "shape":"ResourceContentType",
+          "documentation":"<p>The format of the resource value.</p>"
+        },
+        "value":{
+          "shape":"CaseStudyResourceValueString",
+          "documentation":"<p>The resource value, such as a URL.</p>"
+        },
+        "displayName":{
+          "shape":"CaseStudyResourceDisplayNameString",
+          "documentation":"<p>The resource name displayed to you.</p>"
+        },
+        "resourceType":{
+          "shape":"CaseStudyResourceType",
+          "documentation":"<p>The type of case study resource.</p>"
+        }
+      },
+      "documentation":"<p>A resource that a case study cites, such as supporting documentation or a web page.</p>"
+    },
+    "CaseStudyResourceDisplayNameString":{
+      "type":"string",
+      "max":255,
+      "min":1
+    },
+    "CaseStudyResourceList":{
+      "type":"list",
+      "member":{"shape":"CaseStudyResource"},
+      "documentation":"<p>Resources related to a case study.</p>",
+      "max":10,
+      "min":1
+    },
+    "CaseStudyResourceType":{
+      "type":"string",
+      "documentation":"<p>The type of a case study resource. This field has one of the following values:</p> <dl> <dt>CASE_STUDY_WEBSITE</dt> <dd> <p>A link to a public web page about the case study.</p> </dd> </dl>",
+      "enum":["CASE_STUDY_WEBSITE"]
+    },
+    "CaseStudyResourceValueString":{
+      "type":"string",
+      "max":8192,
+      "min":1
     },
     "Catalog":{
       "type":"string",
@@ -516,7 +675,7 @@
           "documentation":"<p>The human-readable name of the category.</p>"
         }
       },
-      "documentation":"<p>A category used to classify a listing or product into a logical group.</p>"
+      "documentation":"<p>A category that classifies a listing or product into a logical group.</p>"
     },
     "CategoryList":{
       "type":"list",
@@ -555,7 +714,7 @@
         },
         "releaseNotes":{
           "shape":"String",
-          "documentation":"<p>Release notes describing changes in this version of the fulfillment option.</p>"
+          "documentation":"<p>Release notes that describe the changes in this version of the fulfillment option.</p>"
         },
         "usageInstructions":{
           "shape":"String",
@@ -564,6 +723,14 @@
         "availableFromTime":{
           "shape":"Timestamp",
           "documentation":"<p>The date and time when the CloudFormation fulfillment option became available for fulfillment.</p>"
+        },
+        "architectureDiagramUrl":{
+          "shape":"String",
+          "documentation":"<p>The URL of the architecture diagram for the CloudFormation template.</p>"
+        },
+        "deploymentTemplateUrl":{
+          "shape":"String",
+          "documentation":"<p>The URL of the CloudFormation template.</p>"
         },
         "shortDescription":{
           "shape":"CloudFormationFulfillmentOptionShortDescriptionString",
@@ -611,7 +778,7 @@
           "documentation":"<p>The rate cards available for selection, each with a selector, constraints, and per-unit rates.</p>"
         }
       },
-      "documentation":"<p>Defines a configurable upfront pricing term with selectable rate cards, where buyers choose from predefined pricing configurations.</p>"
+      "documentation":"<p>Describes a configurable upfront pricing term with selectable rate cards. You choose from predefined pricing configurations.</p>"
     },
     "ConfigurableUpfrontRateCardItem":{
       "type":"structure",
@@ -627,7 +794,7 @@
         },
         "constraints":{
           "shape":"Constraints",
-          "documentation":"<p>Constraints on how the buyer can configure this rate card, such as whether multiple dimensions can be selected.</p>"
+          "documentation":"<p>Constraints on how you can configure this rate card, such as whether you can select multiple dimensions.</p>"
         },
         "rateCard":{
           "shape":"RateCardList",
@@ -649,14 +816,14 @@
       "members":{
         "multipleDimensionSelection":{
           "shape":"RateCardConstraintType",
-          "documentation":"<p>Whether the buyer can select multiple dimensions. Values are <code>Allowed</code> or <code>Disallowed</code>.</p>"
+          "documentation":"<p>Specifies whether you can select multiple dimensions. This field has one of the following values:</p> <dl> <dt>Allowed</dt> <dd> <p>You can select more than one dimension.</p> </dd> <dt>Disallowed</dt> <dd> <p>You can select only one dimension.</p> </dd> </dl>"
         },
         "quantityConfiguration":{
           "shape":"RateCardConstraintType",
-          "documentation":"<p>Whether the buyer can configure quantities. Values are <code>Allowed</code> or <code>Disallowed</code>.</p>"
+          "documentation":"<p>Specifies whether you can configure quantities. This field has one of the following values:</p> <dl> <dt>Allowed</dt> <dd> <p>You can set the quantity of each dimension.</p> </dd> <dt>Disallowed</dt> <dd> <p>You cannot change the quantity.</p> </dd> </dl>"
         }
       },
-      "documentation":"<p>Constraints that control how a buyer can configure a rate card.</p>"
+      "documentation":"<p>Constraints that control how you can configure a rate card.</p>"
     },
     "ContainerFulfillmentOption":{
       "type":"structure",
@@ -697,7 +864,7 @@
         },
         "releaseNotes":{
           "shape":"String",
-          "documentation":"<p>Release notes describing changes in this version of the fulfillment option.</p>"
+          "documentation":"<p>Release notes that describe the changes in this version of the fulfillment option.</p>"
         },
         "usageInstructions":{
           "shape":"String",
@@ -722,7 +889,7 @@
           "documentation":"<p>The specific operating system name.</p>"
         }
       },
-      "documentation":"<p>Describes an operating system supported by a container fulfillment option.</p>"
+      "documentation":"<p>Describes an operating system that a container fulfillment option supports.</p>"
     },
     "ContainerOperatingSystemList":{
       "type":"list",
@@ -808,7 +975,7 @@
       "members":{
         "labelType":{
           "shape":"DimensionLabelType",
-          "documentation":"<p>The type of the dimension label, such as <code>Region</code> or <code>SagemakerOption</code>.</p>"
+          "documentation":"<p>The type of the dimension label. This field has one of the following values:</p> <dl> <dt>Region</dt> <dd> <p>The label groups dimensions by AWS Region.</p> </dd> <dt>SagemakerOption</dt> <dd> <p>The label groups dimensions by Amazon SageMaker option.</p> </dd> </dl>"
         },
         "labelValue":{
           "shape":"BoundedString",
@@ -819,7 +986,7 @@
           "documentation":"<p>The human-readable display name of the label.</p>"
         }
       },
-      "documentation":"<p>A label used to group or categorize pricing dimensions, such as by region or SageMaker option.</p>"
+      "documentation":"<p>A label that groups or categorizes pricing dimensions, such as by region or SageMaker option.</p>"
     },
     "DimensionLabelList":{
       "type":"list",
@@ -852,7 +1019,7 @@
           "documentation":"<p>The version of the standard contract, if applicable.</p>"
         }
       },
-      "documentation":"<p>A legal document associated with a legal term, such as a EULA or data subscription agreement.</p>"
+      "documentation":"<p>A legal document associated with a legal term, such as an End User License Agreement (EULA) or a data subscription agreement.</p>"
     },
     "DocumentList":{
       "type":"list",
@@ -893,18 +1060,18 @@
         },
         "awsSupportedServices":{
           "shape":"AwsSupportedServiceList",
-          "documentation":"<p>The AWS services supported by this EC2 Image Builder component.</p>"
+          "documentation":"<p>The AWS services that this EC2 Image Builder component supports.</p>"
         },
         "releaseNotes":{
           "shape":"String",
-          "documentation":"<p>Release notes describing changes in this version of the fulfillment option.</p>"
+          "documentation":"<p>Release notes that describe the changes in this version of the fulfillment option.</p>"
         },
         "usageInstructions":{
           "shape":"String",
           "documentation":"<p>Instructions on how to deploy and use this EC2 Image Builder component.</p>"
         }
       },
-      "documentation":"<p>Describes an EC2 Image Builder component fulfillment option.</p>"
+      "documentation":"<p>Describes an Amazon Elastic Compute Cloud (Amazon EC2) Image Builder component fulfillment option.</p>"
     },
     "EksAddOnFulfillmentOption":{
       "type":"structure",
@@ -941,7 +1108,7 @@
         },
         "releaseNotes":{
           "shape":"String",
-          "documentation":"<p>Release notes describing changes in this version of the fulfillment option.</p>"
+          "documentation":"<p>Release notes that describe the changes in this version of the fulfillment option.</p>"
         },
         "usageInstructions":{
           "shape":"String",
@@ -952,7 +1119,7 @@
           "documentation":"<p>The AWS services supported by this EKS add-on.</p>"
         }
       },
-      "documentation":"<p>Describes an Amazon EKS add-on fulfillment option.</p>"
+      "documentation":"<p>Describes an Amazon Elastic Kubernetes Service (Amazon EKS) add-on fulfillment option.</p>"
     },
     "EksAddOnOperatingSystem":{
       "type":"structure",
@@ -970,11 +1137,26 @@
           "documentation":"<p>The specific operating system name.</p>"
         }
       },
-      "documentation":"<p>Describes an operating system supported by an EKS add-on fulfillment option.</p>"
+      "documentation":"<p>Describes an operating system that an Amazon EKS add-on fulfillment option supports.</p>"
     },
     "EksAddOnOperatingSystemList":{
       "type":"list",
       "member":{"shape":"EksAddOnOperatingSystem"}
+    },
+    "EngagementDates":{
+      "type":"structure",
+      "required":["startDate"],
+      "members":{
+        "startDate":{
+          "shape":"Timestamp",
+          "documentation":"<p>The implementation start date.</p>"
+        },
+        "completionDate":{
+          "shape":"Timestamp",
+          "documentation":"<p>The implementation completion date. The service omits this field for an engagement in progress.</p>"
+        }
+      },
+      "documentation":"<p>Key implementation dates for a case study.</p>"
     },
     "ExceptionMessage":{"type":"string"},
     "FacetTypeList":{
@@ -1026,10 +1208,10 @@
         },
         "grants":{
           "shape":"GrantList",
-          "documentation":"<p>The entitlements granted to the buyer as part of this term.</p>"
+          "documentation":"<p>The entitlements that you receive as part of this term.</p>"
         }
       },
-      "documentation":"<p>Defines a fixed upfront pricing term with a pre-paid amount and granted entitlements.</p>"
+      "documentation":"<p>Describes a fixed upfront pricing term with a pre-paid amount and granted entitlements.</p>"
     },
     "FreeTrialPricingTerm":{
       "type":"structure",
@@ -1053,17 +1235,17 @@
         },
         "grants":{
           "shape":"GrantList",
-          "documentation":"<p>The entitlements granted to the buyer during the free trial.</p>"
+          "documentation":"<p>The entitlements that you receive during the free trial.</p>"
         }
       },
-      "documentation":"<p>Defines a free trial pricing term that enables customers to try the product before purchasing.</p>"
+      "documentation":"<p>Describes a free trial pricing term. With this term, you can try the product before you purchase it.</p>"
     },
     "FulfillmentOption":{
       "type":"structure",
       "members":{
         "amazonMachineImageFulfillmentOption":{
           "shape":"AmazonMachineImageFulfillmentOption",
-          "documentation":"<p>An Amazon Machine Image (AMI) fulfillment option for EC2 deployment.</p>"
+          "documentation":"<p>An Amazon Machine Image (AMI) fulfillment option for Amazon Elastic Compute Cloud (Amazon EC2) deployment.</p>"
         },
         "apiFulfillmentOption":{
           "shape":"ApiFulfillmentOption",
@@ -1087,7 +1269,7 @@
         },
         "ec2ImageBuilderComponentFulfillmentOption":{
           "shape":"Ec2ImageBuilderComponentFulfillmentOption",
-          "documentation":"<p>An EC2 Image Builder component fulfillment option.</p>"
+          "documentation":"<p>An Amazon Elastic Compute Cloud (Amazon EC2) Image Builder component fulfillment option.</p>"
         },
         "dataExchangeFulfillmentOption":{
           "shape":"DataExchangeFulfillmentOption",
@@ -1139,6 +1321,7 @@
     },
     "FulfillmentOptionType":{
       "type":"string",
+      "documentation":"<p>The type of a fulfillment option, which is how you deploy or access the product. This field has one of the following values:</p> <dl> <dt>AMAZON_MACHINE_IMAGE</dt> <dd> <p>An Amazon Machine Image (AMI) that you launch on Amazon EC2.</p> </dd> <dt>API</dt> <dd> <p>An API that you call, such as an agent, a guardrail, a knowledge base, or a Model Context Protocol (MCP) server.</p> </dd> <dt>CLOUDFORMATION_TEMPLATE</dt> <dd> <p>An AWS CloudFormation template that you deploy.</p> </dd> <dt>CONTAINER</dt> <dd> <p>A container image.</p> </dd> <dt>DATA_EXCHANGE</dt> <dd> <p>A data set that you access through AWS Data Exchange.</p> </dd> <dt>EC2_IMAGE_BUILDER_COMPONENT</dt> <dd> <p>An EC2 Image Builder component.</p> </dd> <dt>EKS_ADD_ON</dt> <dd> <p>An Amazon EKS add-on.</p> </dd> <dt>HELM</dt> <dd> <p>A Helm chart.</p> </dd> <dt>PROFESSIONAL_SERVICES</dt> <dd> <p>A professional service that the seller delivers to you.</p> </dd> <dt>SAAS</dt> <dd> <p>A Software as a Service (SaaS) product that you access through the seller's website.</p> </dd> <dt>SAGEMAKER_ALGORITHM</dt> <dd> <p>An Amazon SageMaker algorithm.</p> </dd> <dt>SAGEMAKER_MODEL</dt> <dd> <p>An Amazon SageMaker model.</p> </dd> </dl>",
       "enum":[
         "AMAZON_MACHINE_IMAGE",
         "API",
@@ -1164,7 +1347,7 @@
       "members":{
         "locale":{
           "shape":"Locale",
-          "documentation":"<p>A BCP 47 language tag or comma-separated priority list specifying the preferred locale for response content. See <code>Locale</code> for supported values, constraints, fallback behavior, and the default locale. If omitted, the service returns content in the default locale.</p>"
+          "documentation":"<p>The preferred locale for response content, as a Best Current Practice 47 (BCP 47) language tag or a comma-separated priority list of language tags. See <code>Locale</code> for supported values, constraints, fallback behavior, and the default locale. If you omit this field, the service returns content in the default locale.</p>"
         },
         "listingId":{
           "shape":"ListingId",
@@ -1192,12 +1375,13 @@
         "resources",
         "sellerEngagements",
         "shortDescription",
-        "useCases"
+        "useCases",
+        "purchaseIndicators"
       ],
       "members":{
         "locale":{
           "shape":"Locale",
-          "documentation":"<p>The locale of the returned content. Indicates whether the response contains content in the requested locale, or fell back to the default locale. See <code>Locale</code> for details.</p>"
+          "documentation":"<p>The locale of the returned content. This value indicates whether the response contains content in the requested locale or fell back to the default locale. See <code>Locale</code> for details.</p>"
         },
         "associatedEntities":{
           "shape":"ListingAssociatedEntityList",
@@ -1213,11 +1397,11 @@
         },
         "categories":{
           "shape":"CategoryList",
-          "documentation":"<p>The categories used to classify this listing into logical groups.</p>"
+          "documentation":"<p>The categories that classify this listing into logical groups.</p>"
         },
         "fulfillmentOptionSummaries":{
           "shape":"FulfillmentOptionSummaryList",
-          "documentation":"<p>A summary of fulfillment options available for deploying or accessing the listing, such as AMI, SaaS, or Container.</p>"
+          "documentation":"<p>A summary of fulfillment options available for deploying or accessing the listing, such as Amazon Machine Image (AMI), Software as a Service (SaaS), or Container.</p>"
         },
         "highlights":{
           "shape":"HighlightList",
@@ -1245,7 +1429,7 @@
         },
         "pricingModels":{
           "shape":"PricingModelList",
-          "documentation":"<p>The pricing models for offers associated with this listing, such as usage-based, contract, BYOL, or free.</p>"
+          "documentation":"<p>The pricing models for offers associated with this listing, such as usage-based, contract, Bring Your Own License (BYOL), or free.</p>"
         },
         "pricingUnits":{
           "shape":"PricingUnitList",
@@ -1269,7 +1453,7 @@
         },
         "sellerEngagements":{
           "shape":"SellerEngagementList",
-          "documentation":"<p>Engagement options available to potential buyers, such as requesting a private offer or requesting a demo.</p>"
+          "documentation":"<p>The engagement options available to you, such as buying now, requesting a private offer, or requesting a demo.</p>"
         },
         "shortDescription":{
           "shape":"NonEmptyString",
@@ -1277,7 +1461,11 @@
         },
         "useCases":{
           "shape":"UseCaseList",
-          "documentation":"<p>Use cases associated with the listing, describing scenarios where the product can be applied.</p>"
+          "documentation":"<p>Use cases associated with the listing, describing scenarios where you can apply the product.</p>"
+        },
+        "purchaseIndicators":{
+          "shape":"PurchaseIndicatorList",
+          "documentation":"<p>Indicators describing purchase characteristics of this listing, such as whether you can subscribe to it or use it without a subscription. The list is empty when no special purchase conditions apply.</p>"
         }
       }
     },
@@ -1293,7 +1481,7 @@
       "members":{
         "locale":{
           "shape":"Locale",
-          "documentation":"<p>A BCP 47 language tag or comma-separated priority list specifying the preferred locale for response content. See <code>Locale</code> for supported values, constraints, fallback behavior, and the default locale. If omitted, the service returns content in the default locale.</p>"
+          "documentation":"<p>The preferred locale for response content, as a Best Current Practice 47 (BCP 47) language tag or a comma-separated priority list of language tags. See <code>Locale</code> for supported values, constraints, fallback behavior, and the default locale. If you omit this field, the service returns content in the default locale.</p>"
         },
         "offerId":{
           "shape":"OfferId",
@@ -1315,7 +1503,7 @@
       "members":{
         "locale":{
           "shape":"Locale",
-          "documentation":"<p>The locale of the returned content. Indicates whether the response contains content in the requested locale, or fell back to the default locale. See <code>Locale</code> for details.</p>"
+          "documentation":"<p>The locale of the returned content. This value indicates whether the response contains content in the requested locale or fell back to the default locale. See <code>Locale</code> for details.</p>"
         },
         "offerId":{
           "shape":"OfferId",
@@ -1327,15 +1515,15 @@
         },
         "offerName":{
           "shape":"NullableString",
-          "documentation":"<p>The display name of the offer. This is free-form text provided by the seller.</p>"
+          "documentation":"<p>The display name of the offer. The seller provides this free-form text.</p>"
         },
         "expirationTime":{
           "shape":"Timestamp",
-          "documentation":"<p>The date and time until when the offer can be procured. This value is null for offers that never expire.</p>"
+          "documentation":"<p>The date and time until which you can procure the offer. This value is null for offers that never expire.</p>"
         },
         "availableFromTime":{
           "shape":"Timestamp",
-          "documentation":"<p>The date and time when the offer became available to the buyer.</p>"
+          "documentation":"<p>The date and time when the offer became available to you.</p>"
         },
         "sellerOfRecord":{
           "shape":"SellerInformation",
@@ -1347,19 +1535,19 @@
         },
         "agreementProposalId":{
           "shape":"AgreementResourceId",
-          "documentation":"<p>An encoded string to be passed by the acceptor of the terms when creating an agreement.</p>"
+          "documentation":"<p>An encoded string that you pass when you accept the terms and create an agreement.</p>"
         },
         "replacementAgreementId":{
           "shape":"AgreementResourceId",
-          "documentation":"<p>The identifier of the existing agreement that this offer would replace. Enables agreement-based offer functionality.</p>"
+          "documentation":"<p>The identifier of the existing agreement that this offer would replace.</p>"
         },
         "pricingModel":{
           "shape":"PricingModel",
-          "documentation":"<p>The pricing model that determines how buyers are charged, such as usage-based, contract, BYOL, or free.</p>"
+          "documentation":"<p>The pricing model that determines how you are charged, such as usage-based, contract, Bring Your Own License (BYOL), or free.</p>"
         },
         "badges":{
           "shape":"PurchaseOptionBadgeList",
-          "documentation":"<p>Badges indicating special attributes of the offer, such as private pricing, future dated, or replacement offer.</p>"
+          "documentation":"<p>Badges indicating special attributes of the offer, such as private pricing, future-dated, or replacement offer.</p>"
         }
       }
     },
@@ -1369,7 +1557,7 @@
       "members":{
         "locale":{
           "shape":"Locale",
-          "documentation":"<p>A BCP 47 language tag or comma-separated priority list specifying the preferred locale for response content. See <code>Locale</code> for supported values, constraints, fallback behavior, and the default locale. If omitted, the service returns content in the default locale.</p>"
+          "documentation":"<p>The preferred locale for response content, as a Best Current Practice 47 (BCP 47) language tag or a comma-separated priority list of language tags. See <code>Locale</code> for supported values, constraints, fallback behavior, and the default locale. If you omit this field, the service returns content in the default locale.</p>"
         },
         "offerSetId":{
           "shape":"OfferSetId",
@@ -1389,7 +1577,7 @@
       "members":{
         "locale":{
           "shape":"Locale",
-          "documentation":"<p>The locale of the returned content. Indicates whether the response contains content in the requested locale, or fell back to the default locale. See <code>Locale</code> for details.</p>"
+          "documentation":"<p>The locale of the returned content. This value indicates whether the response contains content in the requested locale or fell back to the default locale. See <code>Locale</code> for details.</p>"
         },
         "offerSetId":{
           "shape":"OfferSetId",
@@ -1405,7 +1593,7 @@
         },
         "availableFromTime":{
           "shape":"Timestamp",
-          "documentation":"<p>The date and time when the offer set became available to the buyer.</p>"
+          "documentation":"<p>The date and time when the offer set became available to you.</p>"
         },
         "expirationTime":{
           "shape":"Timestamp",
@@ -1413,7 +1601,7 @@
         },
         "buyerNotes":{
           "shape":"NullableString",
-          "documentation":"<p>Detailed information about the offer set that helps buyers understand its purpose and contents.</p>"
+          "documentation":"<p>Detailed information about the offer set that helps you understand its purpose and contents.</p>"
         },
         "sellerOfRecord":{
           "shape":"SellerInformation",
@@ -1421,7 +1609,7 @@
         },
         "badges":{
           "shape":"PurchaseOptionBadgeList",
-          "documentation":"<p>Badges indicating special attributes of the offer set, such as private pricing or future dated.</p>"
+          "documentation":"<p>Badges indicating special attributes of the offer set, such as private pricing or future-dated.</p>"
         },
         "associatedEntities":{
           "shape":"OfferSetAssociatedEntityList",
@@ -1435,7 +1623,7 @@
       "members":{
         "locale":{
           "shape":"Locale",
-          "documentation":"<p>A BCP 47 language tag or comma-separated priority list specifying the preferred locale for response content. See <code>Locale</code> for supported values, constraints, fallback behavior, and the default locale. If omitted, the service returns content in the default locale.</p>"
+          "documentation":"<p>The preferred locale for response content, as a Best Current Practice 47 (BCP 47) language tag or a comma-separated priority list of language tags. See <code>Locale</code> for supported values, constraints, fallback behavior, and the default locale. If you omit this field, the service returns content in the default locale.</p>"
         },
         "offerId":{
           "shape":"OfferId",
@@ -1443,11 +1631,11 @@
         },
         "maxResults":{
           "shape":"GetOfferTermsInputMaxResultsInteger",
-          "documentation":"<p>The maximum number of results that are returned per call. You can use <code>nextToken</code> to get more results.</p>"
+          "documentation":"<p>The maximum number of terms to return in each call. If you omit this field, the default is 10. Use <code>nextToken</code> to retrieve the next page.</p>"
         },
         "nextToken":{
           "shape":"NextToken",
-          "documentation":"<p>If <code>nextToken</code> is returned, there are more results available. Make the call again using the returned token to retrieve the next page.</p>"
+          "documentation":"<p>If the service returns <code>nextToken</code>, more results are available. The value of <code>nextToken</code> is a unique pagination token for each page. Make the call again with the returned token to retrieve the next page. Keep all other arguments unchanged. Each pagination token expires after 24 hours. An expired pagination token returns a <code>ValidationException</code>.</p>"
         }
       }
     },
@@ -1463,7 +1651,7 @@
       "members":{
         "locale":{
           "shape":"Locale",
-          "documentation":"<p>The locale of the returned content. Indicates whether the response contains content in the requested locale, or fell back to the default locale. See <code>Locale</code> for details.</p>"
+          "documentation":"<p>The locale of the returned content. This value indicates whether the response contains content in the requested locale or fell back to the default locale. See <code>Locale</code> for details.</p>"
         },
         "offerTerms":{
           "shape":"OfferTermsList",
@@ -1471,7 +1659,7 @@
         },
         "nextToken":{
           "shape":"NextToken",
-          "documentation":"<p>If <code>nextToken</code> is returned, there are more results available. Make the call again using the returned token to retrieve the next page.</p>"
+          "documentation":"<p>If the service returns <code>nextToken</code>, more results are available. The value of <code>nextToken</code> is a unique pagination token for each page. Make the call again with the returned token to retrieve the next page. Keep all other arguments unchanged. Each pagination token expires after 24 hours. An expired pagination token returns a <code>ValidationException</code>.</p>"
         }
       }
     },
@@ -1481,7 +1669,7 @@
       "members":{
         "locale":{
           "shape":"Locale",
-          "documentation":"<p>A BCP 47 language tag or comma-separated priority list specifying the preferred locale for response content. See <code>Locale</code> for supported values, constraints, fallback behavior, and the default locale. If omitted, the service returns content in the default locale.</p>"
+          "documentation":"<p>The preferred locale for response content, as a Best Current Practice 47 (BCP 47) language tag or a comma-separated priority list of language tags. See <code>Locale</code> for supported values, constraints, fallback behavior, and the default locale. If you omit this field, the service returns content in the default locale.</p>"
         },
         "productId":{
           "shape":"ProductId",
@@ -1506,12 +1694,13 @@
         "promotionalMedia",
         "resources",
         "sellerEngagements",
-        "listingId"
+        "listingId",
+        "purchaseIndicators"
       ],
       "members":{
         "locale":{
           "shape":"Locale",
-          "documentation":"<p>The locale of the returned content. Indicates whether the response contains content in the requested locale, or fell back to the default locale. See <code>Locale</code> for details.</p>"
+          "documentation":"<p>The locale of the returned content. This value indicates whether the response contains content in the requested locale or fell back to the default locale. See <code>Locale</code> for details.</p>"
         },
         "productId":{
           "shape":"ProductId",
@@ -1531,7 +1720,7 @@
         },
         "deployedOnAws":{
           "shape":"DeployedOnAwsStatus",
-          "documentation":"<p>Indicates whether the product is deployed on AWS infrastructure.</p>"
+          "documentation":"<p>Specifies whether the product is deployed on AWS infrastructure.</p>"
         },
         "shortDescription":{
           "shape":"NonEmptyString",
@@ -1547,11 +1736,11 @@
         },
         "fulfillmentOptionSummaries":{
           "shape":"FulfillmentOptionSummaryList",
-          "documentation":"<p>A summary of fulfillment options available for deploying or accessing the product, such as AMI, SaaS, or Container.</p>"
+          "documentation":"<p>A summary of fulfillment options available for deploying or accessing the product, such as Amazon Machine Image (AMI), Software as a Service (SaaS), or Container.</p>"
         },
         "categories":{
           "shape":"CategoryList",
-          "documentation":"<p>The categories used to classify this product into logical groups.</p>"
+          "documentation":"<p>The categories that classify this product into logical groups.</p>"
         },
         "highlights":{
           "shape":"HighlightList",
@@ -1567,11 +1756,15 @@
         },
         "sellerEngagements":{
           "shape":"SellerEngagementList",
-          "documentation":"<p>Engagement options available to potential buyers, such as requesting a private offer or requesting a demo.</p>"
+          "documentation":"<p>The engagement options available to you, such as buying now, requesting a private offer, or requesting a demo.</p>"
         },
         "listingId":{
           "shape":"ListingId",
           "documentation":"<p>The default listing identifier associated with the product.</p>"
+        },
+        "purchaseIndicators":{
+          "shape":"PurchaseIndicatorList",
+          "documentation":"<p>Indicators describing purchase characteristics of this product, such as whether you can subscribe to it or use it without a subscription. The list is empty when no special purchase conditions apply.</p>"
         }
       }
     },
@@ -1603,7 +1796,7 @@
         },
         "dimensionLabels":{
           "shape":"DimensionLabelList",
-          "documentation":"<p>Labels used to categorize this entitlement, such as by region.</p>"
+          "documentation":"<p>Labels that categorize this entitlement, such as by region.</p>"
         },
         "unit":{
           "shape":"BoundedString",
@@ -1611,10 +1804,10 @@
         },
         "maxQuantity":{
           "shape":"Integer",
-          "documentation":"<p>The maximum quantity of the entitlement that can be granted.</p>"
+          "documentation":"<p>The maximum quantity of the entitlement that you can receive.</p>"
         }
       },
-      "documentation":"<p>An entitlement granted to the buyer as part of a pricing term.</p>"
+      "documentation":"<p>An entitlement that you receive as part of a pricing term.</p>"
     },
     "GrantList":{
       "type":"list",
@@ -1655,7 +1848,7 @@
         },
         "releaseNotes":{
           "shape":"String",
-          "documentation":"<p>Release notes describing changes in this version of the fulfillment option.</p>"
+          "documentation":"<p>Release notes that describe the changes in this version of the fulfillment option.</p>"
         },
         "awsSupportedServices":{
           "shape":"AwsSupportedServiceList",
@@ -1684,7 +1877,7 @@
           "documentation":"<p>The specific operating system name.</p>"
         }
       },
-      "documentation":"<p>Describes an operating system supported by a Helm chart fulfillment option.</p>"
+      "documentation":"<p>Describes an operating system that a Helm chart fulfillment option supports.</p>"
     },
     "HelmOperatingSystemList":{
       "type":"list",
@@ -1738,10 +1931,10 @@
         },
         "documents":{
           "shape":"DocumentList",
-          "documentation":"<p>The legal documents proposed to the buyer as part of this term.</p>"
+          "documentation":"<p>The legal documents proposed to you as part of this term.</p>"
         }
       },
-      "documentation":"<p>Defines a legal term containing documents proposed to buyers, such as EULAs and data subscription agreements.</p>"
+      "documentation":"<p>Describes a legal term containing documents proposed to you, such as End User License Agreements (EULAs) and data subscription agreements.</p>"
     },
     "ListFulfillmentOptionsInput":{
       "type":"structure",
@@ -1749,7 +1942,7 @@
       "members":{
         "locale":{
           "shape":"Locale",
-          "documentation":"<p>A BCP 47 language tag or comma-separated priority list specifying the preferred locale for response content. See <code>Locale</code> for supported values, constraints, fallback behavior, and the default locale. If omitted, the service returns content in the default locale.</p>"
+          "documentation":"<p>The preferred locale for response content, as a Best Current Practice 47 (BCP 47) language tag or a comma-separated priority list of language tags. See <code>Locale</code> for supported values, constraints, fallback behavior, and the default locale. If you omit this field, the service returns content in the default locale.</p>"
         },
         "productId":{
           "shape":"ProductId",
@@ -1757,11 +1950,11 @@
         },
         "maxResults":{
           "shape":"ListFulfillmentOptionsInputMaxResultsInteger",
-          "documentation":"<p>The maximum number of results that are returned per call. You can use <code>nextToken</code> to get more results.</p>"
+          "documentation":"<p>The maximum number of fulfillment options to return in each call. If you omit this field, the default is 25. Use <code>nextToken</code> to retrieve the next page.</p>"
         },
         "nextToken":{
           "shape":"NextToken",
-          "documentation":"<p>If <code>nextToken</code> is returned, there are more results available. Make the call again using the returned token to retrieve the next page.</p>"
+          "documentation":"<p>If the service returns <code>nextToken</code>, more results are available. The value of <code>nextToken</code> is a unique pagination token for each page. Make the call again with the returned token to retrieve the next page. Keep all other arguments unchanged. Each pagination token expires after 24 hours. An expired pagination token returns a <code>ValidationException</code>.</p>"
         }
       }
     },
@@ -1778,32 +1971,81 @@
         "locale":{"shape":"Locale"},
         "fulfillmentOptions":{
           "shape":"FulfillmentOptionsList",
-          "documentation":"<p>The fulfillment options available for the product. Each option describes how the buyer can deploy or access the product.</p>"
+          "documentation":"<p>The fulfillment options available for the product. Each option describes how you can deploy or access the product.</p>"
         },
         "nextToken":{
           "shape":"NextToken",
-          "documentation":"<p>If <code>nextToken</code> is returned, there are more results available. Make the call again using the returned token to retrieve the next page.</p>"
+          "documentation":"<p>If the service returns <code>nextToken</code>, more results are available. The value of <code>nextToken</code> is a unique pagination token for each page. Make the call again with the returned token to retrieve the next page. Keep all other arguments unchanged. Each pagination token expires after 24 hours. An expired pagination token returns a <code>ValidationException</code>.</p>"
         }
       }
+    },
+    "ListListingAttributesInput":{
+      "type":"structure",
+      "required":[
+        "listingId",
+        "attributeTypes"
+      ],
+      "members":{
+        "locale":{
+          "shape":"Locale",
+          "documentation":"<p>The preferred locale for response content, as a Best Current Practice 47 (BCP 47) language tag or a comma-separated priority list of language tags. See <code>Locale</code> for supported values, constraints, fallback behavior, and the default locale. If you omit this field, the service returns content in the default locale.</p>"
+        },
+        "listingId":{
+          "shape":"ListingId",
+          "documentation":"<p>The unique identifier of the listing whose attributes are requested.</p>"
+        },
+        "attributeTypes":{
+          "shape":"ListingAttributeTypeList",
+          "documentation":"<p>The attribute types to retrieve. Specify one or more of the following values:</p> <dl> <dt>CASE_STUDY</dt> <dd> <p>Case studies associated with the listing.</p> </dd> <dt>SPECIALIZATION_DETAIL</dt> <dd> <p>Specializations earned for the listing.</p> </dd> <dt>TRUST_CENTER_CERTIFICATION</dt> <dd> <p>Trust center certifications associated with the listing.</p> </dd> <dt>TRUST_CENTER_CONTROL</dt> <dd> <p>Trust center controls associated with the listing.</p> </dd> <dt>TRUST_CENTER_DOCUMENT</dt> <dd> <p>Trust center documents associated with the listing.</p> </dd> <dt>TRUST_CENTER_FAQ</dt> <dd> <p>The trust center FAQ associated with the listing.</p> </dd> <dt>TRUST_CENTER_SOURCE</dt> <dd> <p>Trust center sources associated with the listing.</p> </dd> <dt>TRUST_CENTER_UPDATE</dt> <dd> <p>Trust center updates associated with the listing.</p> </dd> </dl>"
+        },
+        "maxResults":{
+          "shape":"MaxResults",
+          "documentation":"<p>The maximum number of attributes to return in each call. If you omit this field, the default is 25. Use <code>nextToken</code> to retrieve the next page.</p>"
+        },
+        "nextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>If the service returns <code>nextToken</code>, more results are available. The value of <code>nextToken</code> is a unique pagination token for each page. Make the call again with the returned token to retrieve the next page. Keep all other arguments unchanged. Each pagination token expires after 24 hours. An expired pagination token returns a <code>ValidationException</code>.</p>"
+        }
+      },
+      "documentation":"<p>Contains the listing and attribute types to retrieve.</p>"
+    },
+    "ListListingAttributesOutput":{
+      "type":"structure",
+      "required":["listingAttributes"],
+      "members":{
+        "locale":{
+          "shape":"Locale",
+          "documentation":"<p>The locale of the returned content. See <code>Locale</code> for details.</p>"
+        },
+        "listingAttributes":{
+          "shape":"ListingAttributeResultsList",
+          "documentation":"<p>The requested attributes. Each entry contains one attribute type.</p>"
+        },
+        "nextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>If the service returns <code>nextToken</code>, more results are available. The value of <code>nextToken</code> is a unique pagination token for each page. Make the call again with the returned token to retrieve the next page. Keep all other arguments unchanged. Each pagination token expires after 24 hours. An expired pagination token returns a <code>ValidationException</code>.</p>"
+        }
+      },
+      "documentation":"<p>Contains the requested listing attributes and pagination information.</p>"
     },
     "ListPurchaseOptionsInput":{
       "type":"structure",
       "members":{
         "locale":{
           "shape":"Locale",
-          "documentation":"<p>A BCP 47 language tag or comma-separated priority list specifying the preferred locale for response content. See <code>Locale</code> for supported values, constraints, fallback behavior, and the default locale. If omitted, the service returns content in the default locale.</p>"
+          "documentation":"<p>The preferred locale for response content, as a Best Current Practice 47 (BCP 47) language tag or a comma-separated priority list of language tags. See <code>Locale</code> for supported values, constraints, fallback behavior, and the default locale. If you omit this field, the service returns content in the default locale.</p>"
         },
         "filters":{
           "shape":"PurchaseOptionFilterList",
-          "documentation":"<p>Filters to narrow the results. Multiple filters are combined with AND logic. Multiple values within the same filter are combined with OR logic.</p>"
+          "documentation":"<p>Filters to narrow the results. A result must match every filter. Within one filter, a result matches if it has any of the values.</p>"
         },
         "maxResults":{
           "shape":"ListPurchaseOptionsInputMaxResultsInteger",
-          "documentation":"<p>The maximum number of results that are returned per call. You can use <code>nextToken</code> to get more results.</p>"
+          "documentation":"<p>The maximum number of purchase options to return in each call. If you omit this field, the default is 25. Use <code>nextToken</code> to retrieve the next page.</p>"
         },
         "nextToken":{
           "shape":"NextToken",
-          "documentation":"<p>If <code>nextToken</code> is returned, there are more results available. Make the call again using the returned token to retrieve the next page.</p>"
+          "documentation":"<p>If the service returns <code>nextToken</code>, more results are available. The value of <code>nextToken</code> is a unique pagination token for each page. Make the call again with the returned token to retrieve the next page. Keep all other arguments unchanged. Each pagination token expires after 24 hours. An expired pagination token returns a <code>ValidationException</code>.</p>"
         }
       }
     },
@@ -1818,11 +2060,11 @@
       "members":{
         "purchaseOptions":{
           "shape":"PurchaseOptionSummaryList",
-          "documentation":"<p>The purchase options available to the buyer. Each option is either an offer for a single product or an offer set spanning multiple products.</p>"
+          "documentation":"<p>The purchase options available to you. Each option is either an offer for a single product or an offer set spanning multiple products.</p>"
         },
         "nextToken":{
           "shape":"NextToken",
-          "documentation":"<p>If <code>nextToken</code> is returned, there are more results available. Make the call again using the returned token to retrieve the next page.</p>"
+          "documentation":"<p>If the service returns <code>nextToken</code>, more results are available. The value of <code>nextToken</code> is a unique pagination token for each page. Make the call again with the returned token to retrieve the next page. Keep all other arguments unchanged. Each pagination token expires after 24 hours. An expired pagination token returns a <code>ValidationException</code>.</p>"
         }
       }
     },
@@ -1846,6 +2088,71 @@
       "max":100,
       "min":0
     },
+    "ListingAttributeResults":{
+      "type":"structure",
+      "members":{
+        "caseStudy":{
+          "shape":"CaseStudy",
+          "documentation":"<p>A case study associated with the listing.</p>"
+        },
+        "specializationDetail":{
+          "shape":"SpecializationDetail",
+          "documentation":"<p>A specialization earned for the listing. Each result is either a specialization or a category under a specialization.</p>"
+        },
+        "trustCenterSource":{
+          "shape":"TrustCenterSource",
+          "documentation":"<p>A trust center source associated with the listing.</p>"
+        },
+        "trustCenterCertification":{
+          "shape":"TrustCenterCertificationAttribute",
+          "documentation":"<p>A trust center certification associated with the listing.</p>"
+        },
+        "trustCenterDocument":{
+          "shape":"TrustCenterDocumentAttribute",
+          "documentation":"<p>A trust center document associated with the listing.</p>"
+        },
+        "trustCenterControl":{
+          "shape":"TrustCenterControl",
+          "documentation":"<p>A trust center control associated with the listing.</p>"
+        },
+        "trustCenterFaq":{
+          "shape":"TrustCenterFaqAttribute",
+          "documentation":"<p>A trust center frequently asked question associated with the listing.</p>"
+        },
+        "trustCenterUpdate":{
+          "shape":"TrustCenterUpdateAttribute",
+          "documentation":"<p>A trust center update associated with the listing.</p>"
+        }
+      },
+      "documentation":"<p>An attribute associated with a listing. Each entry contains one attribute type.</p>",
+      "union":true
+    },
+    "ListingAttributeResultsList":{
+      "type":"list",
+      "member":{"shape":"ListingAttributeResults"},
+      "documentation":"<p>The requested listing attributes.</p>"
+    },
+    "ListingAttributeType":{
+      "type":"string",
+      "documentation":"<p>The type of a listing attribute. This field has one of the following values:</p> <dl> <dt>CASE_STUDY</dt> <dd> <p>Case studies associated with the listing.</p> </dd> <dt>SPECIALIZATION_DETAIL</dt> <dd> <p>Specializations earned for the listing.</p> </dd> <dt>TRUST_CENTER_CERTIFICATION</dt> <dd> <p>Trust center certifications associated with the listing.</p> </dd> <dt>TRUST_CENTER_CONTROL</dt> <dd> <p>Trust center controls associated with the listing.</p> </dd> <dt>TRUST_CENTER_DOCUMENT</dt> <dd> <p>Trust center documents associated with the listing.</p> </dd> <dt>TRUST_CENTER_FAQ</dt> <dd> <p>The trust center FAQ associated with the listing.</p> </dd> <dt>TRUST_CENTER_SOURCE</dt> <dd> <p>Trust center sources associated with the listing.</p> </dd> <dt>TRUST_CENTER_UPDATE</dt> <dd> <p>Trust center updates associated with the listing.</p> </dd> </dl>",
+      "enum":[
+        "CASE_STUDY",
+        "SPECIALIZATION_DETAIL",
+        "TRUST_CENTER_SOURCE",
+        "TRUST_CENTER_CERTIFICATION",
+        "TRUST_CENTER_DOCUMENT",
+        "TRUST_CENTER_CONTROL",
+        "TRUST_CENTER_FAQ",
+        "TRUST_CENTER_UPDATE"
+      ]
+    },
+    "ListingAttributeTypeList":{
+      "type":"list",
+      "member":{"shape":"ListingAttributeType"},
+      "documentation":"<p>The attribute types to retrieve.</p>",
+      "max":10,
+      "min":1
+    },
     "ListingBadge":{
       "type":"structure",
       "required":[
@@ -1859,7 +2166,7 @@
         },
         "badgeType":{
           "shape":"ListingBadgeType",
-          "documentation":"<p>The machine-readable type of the badge.</p>"
+          "documentation":"<p>The machine-readable type of the badge. See <code>ListingBadgeType</code> for the values.</p>"
         }
       },
       "documentation":"<p>A badge indicating a special attribute of a listing, such as free tier eligibility or Quick Launch support.</p>"
@@ -1872,6 +2179,7 @@
     },
     "ListingBadgeType":{
       "type":"string",
+      "documentation":"<p>The type of a listing badge. This field has one of the following values:</p> <dl> <dt>AWS_FREE_TIER</dt> <dd> <p>The listing is eligible for the AWS Free Tier.</p> </dd> <dt>DEPLOYED_ON_AWS</dt> <dd> <p>The products in the listing are deployed on AWS infrastructure.</p> </dd> <dt>FREE_TRIAL</dt> <dd> <p>The listing offers a free trial.</p> </dd> <dt>MULTI_PRODUCT</dt> <dd> <p>The listing is a multi-product solution.</p> </dd> <dt>QUICK_LAUNCH</dt> <dd> <p>The listing supports Quick Launch, an AWS Marketplace deployment option that reduces the time, resources, and steps required to configure, deploy, and launch the software.</p> </dd> </dl>",
       "enum":[
         "AWS_FREE_TIER",
         "FREE_TRIAL",
@@ -1967,7 +2275,7 @@
         },
         "categories":{
           "shape":"CategoryList",
-          "documentation":"<p>The categories used to classify this listing into logical groups.</p>"
+          "documentation":"<p>The categories that classify this listing into logical groups.</p>"
         },
         "badges":{
           "shape":"ListingBadgeList",
@@ -1988,6 +2296,22 @@
         "associatedEntities":{
           "shape":"ListingSummaryAssociatedEntityList",
           "documentation":"<p>The products associated with this listing.</p>"
+        },
+        "trustCenterSummary":{
+          "shape":"TrustCenterSummary",
+          "documentation":"<p>A summary of trust center sources and certifications associated with the listing.</p>"
+        },
+        "caseStudiesSummary":{
+          "shape":"CaseStudiesSummary",
+          "documentation":"<p>A summary of the case studies associated with the listing. Retrieve the case studies with <code>ListListingAttributes</code>.</p>"
+        },
+        "useCaseSummary":{
+          "shape":"UseCaseSummary",
+          "documentation":"<p>A summary of the use cases the listing is written for: the name and identifier of each, without descriptions. The summary is empty when the listing has none.</p>"
+        },
+        "sellerEngagements":{
+          "shape":"SellerEngagementList",
+          "documentation":"<p>The seller engagement options available for this listing, such as buying now, requesting a private offer, or requesting a demo.</p>"
         }
       },
       "documentation":"<p>Summary information about a listing returned by search operations, including the listing name, description, badges, categories, pricing models, reviews, and associated products.</p>"
@@ -2014,7 +2338,7 @@
     },
     "Locale":{
       "type":"string",
-      "documentation":"<p>A BCP 47 language tag or comma-separated priority list of language tags that specifies the preferred locale for response content. The field accepts a maximum of two language tags.</p> <p>The service resolves a locale string to the nearest supported locale. If no supported locale matches, the service applies the fallback behavior described below.</p> <ul> <li> <p> <b>Preferred locale</b> (first tag) – The locale you want the service to return content in.</p> </li> <li> <p> <b>Fallback locale</b> (optional, second tag) – The service default locale (<code>en-US</code> or <code>en</code>). The service returns content in this locale when translated content for the preferred locale is unavailable.</p> </li> </ul> <p>The field is optional. If omitted or null, the service returns content in the default locale (<code>en-US</code>).</p> <p> <b>Supported locales:</b> </p> <ul> <li> <p> <code>en-US</code> – English (service default, also resolves from <code>en</code>)</p> </li> <li> <p> <code>fr</code> – French</p> </li> <li> <p> <code>es</code> – Spanish</p> </li> <li> <p> <code>ko</code> – Korean</p> </li> <li> <p> <code>ja</code> – Japanese</p> </li> </ul> <p> <b>Fallback behavior:</b> </p> <ul> <li> <p>If translated content for the preferred locale is unavailable, the service returns content in the default locale.</p> </li> <li> <p>If the preferred locale is not supported and no fallback is provided, the service returns a <code>ValidationException</code>.</p> </li> <li> <p>If you provide an unsupported locale with the default locale as fallback (for example, <code>xx, en-US</code>), the service returns content in the default locale.</p> </li> </ul> <p> <b>Response locale field (Get APIs):</b> The <code>locale</code> field in Get API responses indicates the locale of the returned content. You can use this field to determine whether the response contains content in the requested locale or the default locale.</p> <p> <b>Examples:</b> </p> <ul> <li> <p> <code>fr</code> – Request French content. If unavailable, falls back to <code>en-US</code>.</p> </li> <li> <p> <code>fr, en-US</code> – Request French content with explicit fallback to English.</p> </li> <li> <p> <code>en-US</code> – Request content in the default locale.</p> </li> </ul>",
+      "documentation":"<p>A Best Current Practice 47 (BCP 47) language tag or comma-separated priority list of language tags that specifies the preferred locale for response content. The field accepts a maximum of two language tags.</p> <p>The service resolves a locale string to the nearest supported locale. If no supported locale matches, the service applies the fallback behavior described in the following lists.</p> <ul> <li> <p> <b>Preferred locale</b> (first tag) – The locale you want the service to return content in.</p> </li> <li> <p> <b>Fallback locale</b> (optional, second tag) – The service default locale (<code>en-US</code> or <code>en</code>). The service returns content in this locale when translated content for the preferred locale is unavailable.</p> </li> </ul> <p>The field is optional. If you omit this field or set it to null, the service returns content in the default locale (<code>en-US</code>).</p> <p>The service supports the following locales:</p> <dl> <dt>en-US</dt> <dd> <p>English (service default, also resolves from <code>en</code>)</p> </dd> <dt>fr</dt> <dd> <p>French</p> </dd> <dt>es</dt> <dd> <p>Spanish</p> </dd> <dt>ko</dt> <dd> <p>Korean</p> </dd> <dt>ja</dt> <dd> <p>Japanese</p> </dd> </dl> <p>The fallback behavior is as follows:</p> <ul> <li> <p>If translated content for the preferred locale is unavailable, the service returns content in the default locale.</p> </li> <li> <p>If the preferred locale is not supported and you provide no fallback, the service returns a <code>ValidationException</code>.</p> </li> <li> <p>If you provide an unsupported locale with the default locale as fallback (for example, <code>xx, en-US</code>), the service returns content in the default locale.</p> </li> </ul> <p>The <code>locale</code> field in Get API responses indicates the locale of the returned content. You can use this field to determine whether the response contains content in the requested locale or the default locale.</p> <p>The following examples show how the field works:</p> <dl> <dt>fr</dt> <dd> <p>Request French content. If unavailable, falls back to <code>en-US</code>.</p> </dd> <dt>fr, en-US</dt> <dd> <p>Request French content with explicit fallback to English.</p> </dd> <dt>en-US</dt> <dd> <p>Request content in the default locale.</p> </dd> </dl>",
       "max":256,
       "min":1,
       "pattern":"[^;,]+(\\s*,\\s*[^;,]+){0,1}"
@@ -2046,7 +2370,7 @@
           "documentation":"<p>The duration after invoice date by which payment is due.</p>"
         }
       },
-      "documentation":"<p>Defines a net payment term that sets how many days after the invoice date the payment is due.</p>"
+      "documentation":"<p>Describes a net payment term that sets how many days after the invoice date the payment is due.</p>"
     },
     "NextToken":{
       "type":"string",
@@ -2254,7 +2578,7 @@
           "documentation":"<p>The payment schedule installments, each with a charge date and amount.</p>"
         }
       },
-      "documentation":"<p>Defines a payment schedule term with installment payments at specified dates.</p>"
+      "documentation":"<p>Describes a payment schedule term with installment payments at specified dates.</p>"
     },
     "PaymentScheduleTermTemplate":{
       "type":"structure",
@@ -2302,7 +2626,7 @@
           "documentation":"<p>A percentage band with minimum, maximum, and default values that bound the price increase at each renewal cycle.</p>"
         }
       },
-      "documentation":"<p>The pricing adjustment that applies at each renewal cycle, expressed as either a fixed percentage or a percentage range. Exactly one variant is present.</p>",
+      "documentation":"<p>The pricing adjustment that applies at each renewal cycle, expressed as either a fixed percentage or a percentage range. Exactly one of the following members is present:</p> <dl> <dt>fixedPercentage</dt> <dd> <p>A single fixed percentage applied uniformly at every renewal cycle.</p> </dd> <dt>percentageRange</dt> <dd> <p>A percentage range with minimum, maximum, and default values that bound the price increase at each renewal cycle.</p> </dd> </dl>",
       "union":true
     },
     "PricingModel":{
@@ -2314,14 +2638,14 @@
       "members":{
         "pricingModelType":{
           "shape":"PricingModelType",
-          "documentation":"<p>The machine-readable type of the pricing model.</p>"
+          "documentation":"<p>The machine-readable type of the pricing model. See <code>PricingModelType</code> for the values.</p>"
         },
         "displayName":{
           "shape":"NonEmptyString",
           "documentation":"<p>The human-readable name of the pricing model.</p>"
         }
       },
-      "documentation":"<p>A pricing model that determines how buyers are charged for a listing, such as usage-based, contract, BYOL, or free.</p>"
+      "documentation":"<p>A pricing model that determines how you are charged for a listing, such as usage-based, contract, Bring Your Own License (BYOL), or free.</p>"
     },
     "PricingModelList":{
       "type":"list",
@@ -2331,6 +2655,7 @@
     },
     "PricingModelType":{
       "type":"string",
+      "documentation":"<p>The type of a pricing model. This field has one of the following values:</p> <dl> <dt>BYOL</dt> <dd> <p>You bring your own license to use the product.</p> </dd> <dt>CONTRACT</dt> <dd> <p>You pay in advance for the use of the product, or on a flexible payment schedule. You can also pay for additional usage beyond the contract.</p> </dd> <dt>FREE</dt> <dd> <p>You pay nothing for the product. No pricing term or payment schedule term has a non-zero rate.</p> </dd> <dt>USAGE</dt> <dd> <p>You pay for your usage of the product.</p> </dd> </dl>",
       "enum":[
         "USAGE",
         "CONTRACT",
@@ -2495,6 +2820,32 @@
       "max":100,
       "min":0
     },
+    "PurchaseIndicator":{
+      "type":"structure",
+      "required":["indicatorType"],
+      "members":{
+        "indicatorType":{
+          "shape":"PurchaseIndicatorType",
+          "documentation":"<p>The type of purchase indicator.</p>"
+        }
+      },
+      "documentation":"<p>An indicator describing a purchase characteristic, such as availability for use without a subscription.</p>"
+    },
+    "PurchaseIndicatorList":{
+      "type":"list",
+      "member":{"shape":"PurchaseIndicator"},
+      "documentation":"<p>A collection of indicators describing the purchase characteristics of a product or listing.</p>",
+      "max":20,
+      "min":0
+    },
+    "PurchaseIndicatorType":{
+      "type":"string",
+      "documentation":"<p>The type of purchase condition that applies to a product or listing.</p> <dl> <dt>AVAILABLE_FOR_USE_WITHOUT_SUBSCRIPTION</dt> <dd> <p>Indicates the product can be used without a subscription.</p> </dd> <dt>NOT_AVAILABLE_FOR_SUBSCRIPTION</dt> <dd> <p>Indicates the product is not available for new subscriptions.</p> </dd> </dl>",
+      "enum":[
+        "NOT_AVAILABLE_FOR_SUBSCRIPTION",
+        "AVAILABLE_FOR_USE_WITHOUT_SUBSCRIPTION"
+      ]
+    },
     "PurchaseOptionAssociatedEntity":{
       "type":"structure",
       "required":[
@@ -2536,10 +2887,10 @@
         },
         "badgeType":{
           "shape":"PurchaseOptionBadgeType",
-          "documentation":"<p>The machine-readable type of the badge.</p>"
+          "documentation":"<p>The machine-readable type of the badge. See <code>PurchaseOptionBadgeType</code> for the values.</p>"
         }
       },
-      "documentation":"<p>A badge indicating a special attribute of a purchase option, such as private pricing or future dated.</p>"
+      "documentation":"<p>A badge indicating a special attribute of a purchase option, such as private pricing or future-dated.</p>"
     },
     "PurchaseOptionBadgeList":{
       "type":"list",
@@ -2549,6 +2900,7 @@
     },
     "PurchaseOptionBadgeType":{
       "type":"string",
+      "documentation":"<p>The type of a purchase option badge. This field has one of the following values:</p> <dl> <dt>AUTO_RENEW</dt> <dd> <p>The purchase option includes auto-renewal terms that the seller configured.</p> </dd> <dt>FUTURE_DATED</dt> <dd> <p>The purchase option is future-dated.</p> </dd> <dt>PRIVATE_PRICING</dt> <dd> <p>The purchase option has private pricing.</p> </dd> <dt>REPLACEMENT_OFFER</dt> <dd> <p>The purchase option replaces an existing agreement.</p> </dd> </dl>",
       "enum":[
         "PRIVATE_PRICING",
         "FUTURE_DATED",
@@ -2565,11 +2917,11 @@
       "members":{
         "filterType":{
           "shape":"PurchaseOptionFilterType",
-          "documentation":"<p>The type of filter to apply, such as <code>PRODUCT_ID</code>, <code>VISIBILITY_SCOPE</code>, or <code>PURCHASE_OPTION_TYPE</code>.</p>"
+          "documentation":"<p>The type of filter to apply. This field has one of the following values:</p> <dl> <dt>AVAILABILITY_STATUS</dt> <dd> <p>Filters by whether the purchase option is available or expired.</p> </dd> <dt>PRODUCT_ID</dt> <dd> <p>Filters by product.</p> </dd> <dt>PURCHASE_OPTION_TYPE</dt> <dd> <p>Filters by offer or offer set.</p> </dd> <dt>SELLER_OF_RECORD_PROFILE_ID</dt> <dd> <p>Filters by seller.</p> </dd> <dt>VISIBILITY_SCOPE</dt> <dd> <p>Filters by visibility.</p> </dd> </dl> <p>See <code>filterValues</code> for the values that each type accepts.</p>"
         },
         "filterValues":{
           "shape":"PurchaseOptionFilterValueList",
-          "documentation":"<p>The values to filter by. Supported values depend on <code>filterType</code>:</p> <ul> <li> <p> <code>PRODUCT_ID</code> – One or more product identifiers to filter by.</p> </li> <li> <p> <code>SELLER_OF_RECORD_PROFILE_ID</code> – One or more seller profile identifiers to filter by.</p> </li> <li> <p> <code>PURCHASE_OPTION_TYPE</code> – One or more purchase option types to filter by: <code>OFFER</code> or <code>OFFERSET</code>.</p> </li> <li> <p> <code>VISIBILITY_SCOPE</code> – The visibility scope to filter by: <code>PRIVATE</code>.</p> </li> <li> <p> <code>AVAILABILITY_STATUS</code> – One or more availability statuses to filter by: <code>AVAILABLE</code> or <code>EXPIRED</code>.</p> </li> </ul> <p>To retrieve private offers and offer sets visible to you, use <code>VISIBILITY_SCOPE</code> with <code>PRIVATE</code>. OR logic combines multiple values within the same filter.</p>"
+          "documentation":"<p>The values to filter by. Supported values depend on <code>filterType</code>:</p> <dl> <dt>AVAILABILITY_STATUS</dt> <dd> <p>One or more availability statuses to filter by: <code>AVAILABLE</code> or <code>EXPIRED</code>.</p> </dd> <dt>PRODUCT_ID</dt> <dd> <p>One or more product identifiers to filter by.</p> </dd> <dt>PURCHASE_OPTION_TYPE</dt> <dd> <p>One or more purchase option types to filter by: <code>OFFER</code> or <code>OFFERSET</code>.</p> </dd> <dt>SELLER_OF_RECORD_PROFILE_ID</dt> <dd> <p>One or more seller profile identifiers to filter by.</p> </dd> <dt>VISIBILITY_SCOPE</dt> <dd> <p>The visibility scope to filter by: <code>PRIVATE</code>.</p> </dd> </dl> <p>To retrieve private offers and offer sets visible to you, use <code>VISIBILITY_SCOPE</code> with <code>PRIVATE</code>. Within one filter, a result matches if it has any of the values.</p>"
         }
       },
       "documentation":"<p>A filter used to narrow purchase option results by product, seller, type, visibility, or availability.</p>"
@@ -2622,7 +2974,7 @@
         },
         "purchaseOptionType":{
           "shape":"PurchaseOptionType",
-          "documentation":"<p>The type of purchase option. Values are <code>OFFER</code> for a single-product offer or <code>OFFERSET</code> for a bundled offer set.</p>"
+          "documentation":"<p>The type of purchase option. This field has one of the following values:</p> <dl> <dt>OFFER</dt> <dd> <p>An offer for a single product.</p> </dd> <dt>OFFERSET</dt> <dd> <p>An offer set that bundles offers for several products.</p> </dd> </dl>"
         },
         "purchaseOptionName":{
           "shape":"NonEmptyString",
@@ -2630,7 +2982,7 @@
         },
         "availableFromTime":{
           "shape":"Timestamp",
-          "documentation":"<p>The date and time when the purchase option became available to the buyer.</p>"
+          "documentation":"<p>The date and time when the purchase option became available to you.</p>"
         },
         "expirationTime":{
           "shape":"Timestamp",
@@ -2642,14 +2994,14 @@
         },
         "badges":{
           "shape":"PurchaseOptionBadgeList",
-          "documentation":"<p>Badges indicating special attributes of the purchase option, such as private pricing or future dated.</p>"
+          "documentation":"<p>Badges indicating special attributes of the purchase option, such as private pricing or future-dated.</p>"
         },
         "associatedEntities":{
           "shape":"PurchaseOptionAssociatedEntityList",
           "documentation":"<p>The products, offers, and offer sets associated with this purchase option.</p>"
         }
       },
-      "documentation":"<p>Summary information about a purchase option (offer or offer set) available to the buyer, including the seller, badges, and associated products.</p>"
+      "documentation":"<p>Summary information about a purchase option (offer or offer set) available to you, including the seller, badges, and associated products.</p>"
     },
     "PurchaseOptionSummaryList":{
       "type":"list",
@@ -2677,7 +3029,8 @@
         "dimensionKey",
         "displayName",
         "unit",
-        "price"
+        "price",
+        "regionalPrices"
       ],
       "members":{
         "dimensionKey":{
@@ -2694,7 +3047,7 @@
         },
         "dimensionLabels":{
           "shape":"DimensionLabelList",
-          "documentation":"<p>Labels used to categorize this dimension, such as by region.</p>"
+          "documentation":"<p>Labels that categorize this dimension, such as by region.</p>"
         },
         "unit":{
           "shape":"BoundedString",
@@ -2703,6 +3056,10 @@
         "price":{
           "shape":"BoundedString",
           "documentation":"<p>The price per unit for the dimension.</p>"
+        },
+        "regionalPrices":{
+          "shape":"RegionalPriceList",
+          "documentation":"<p>The price overrides for the dimension in individual AWS Regions. When a Regional price is present for an AWS Region, it replaces the default price.</p>"
         }
       },
       "documentation":"<p>A per-unit rate within a rate card, defining the price for a specific dimension.</p>"
@@ -2742,7 +3099,42 @@
           "documentation":"<p>The amount charged each billing period.</p>"
         }
       },
-      "documentation":"<p>Defines a recurring payment term with fixed charges at regular billing intervals.</p>"
+      "documentation":"<p>Describes a recurring payment term with fixed charges at regular billing intervals.</p>"
+    },
+    "RegionalPrice":{
+      "type":"structure",
+      "required":[
+        "region",
+        "displayName",
+        "price"
+      ],
+      "members":{
+        "region":{
+          "shape":"RegionalPriceRegionString",
+          "documentation":"<p>The AWS Region the override applies to.</p>"
+        },
+        "displayName":{
+          "shape":"BoundedString",
+          "documentation":"<p>The human-readable display name of the Region.</p>"
+        },
+        "price":{
+          "shape":"BoundedString",
+          "documentation":"<p>The per-unit price for the dimension in this Region.</p>"
+        }
+      },
+      "documentation":"<p>A price override for a pricing dimension in one AWS Region.</p>"
+    },
+    "RegionalPriceList":{
+      "type":"list",
+      "member":{"shape":"RegionalPrice"},
+      "max":50,
+      "min":0
+    },
+    "RegionalPriceRegionString":{
+      "type":"string",
+      "max":64,
+      "min":1,
+      "pattern":"[a-z0-9-]+"
     },
     "RenewalTerm":{
       "type":"structure",
@@ -2769,7 +3161,7 @@
         },
         "adjustmentDeadline":{
           "shape":"BoundedString",
-          "documentation":"<p>The duration before the agreement end date by which the renewal price is finalized, represented in ISO 8601 format (for example, P30D). Only applicable with <code>PercentageRange</code>.</p>"
+          "documentation":"<p>The duration before the agreement end date by which the renewal price is finalized, represented in ISO 8601 format (for example, P30D). This field applies only with <code>PercentageRange</code>.</p>"
         },
         "priceIncrease":{
           "shape":"PriceIncrease",
@@ -2780,7 +3172,7 @@
           "documentation":"<p>Structural templates defining how specific terms are reshaped on each renewal cycle. Absent for upfront-only offers.</p>"
         }
       },
-      "documentation":"<p>Defines a renewal term that enables automatic agreement renewal.</p>"
+      "documentation":"<p>Describes a renewal term that renews the agreement automatically.</p>"
     },
     "RenewalTermMaxRenewalsInteger":{
       "type":"integer",
@@ -2797,11 +3189,11 @@
       "members":{
         "resourceType":{
           "shape":"ResourceType",
-          "documentation":"<p>The category of the resource, such as manufacturer support or usage instructions.</p>"
+          "documentation":"<p>The category of the resource, such as manufacturer support or usage instructions. This field has one of the following values:</p> <dl> <dt>MANUFACTURER_INSTRUCTIONS</dt> <dd> <p>Usage instructions from the seller.</p> </dd> <dt>MANUFACTURER_SUPPORT</dt> <dd> <p>Support information from the seller.</p> </dd> </dl>"
         },
         "contentType":{
           "shape":"ResourceContentType",
-          "documentation":"<p>The format of the resource content, such as a URL, email address, or text.</p>"
+          "documentation":"<p>The format of the resource content, such as a URL, email address, or text. This field has one of the following values:</p> <dl> <dt>EMAIL</dt> <dd> <p>An email address.</p> </dd> <dt>LINK</dt> <dd> <p>A URL.</p> </dd> <dt>OTHER</dt> <dd> <p>Text in another format.</p> </dd> <dt>PHONE_NUMBER</dt> <dd> <p>A phone number.</p> </dd> </dl>"
         },
         "value":{
           "shape":"NonEmptyString",
@@ -2816,6 +3208,7 @@
     },
     "ResourceContentType":{
       "type":"string",
+      "documentation":"<p>The format of a resource value. This field has one of the following values:</p> <dl> <dt>EMAIL</dt> <dd> <p>An email address.</p> </dd> <dt>LINK</dt> <dd> <p>A URL.</p> </dd> <dt>OTHER</dt> <dd> <p>Text in another format.</p> </dd> <dt>PHONE_NUMBER</dt> <dd> <p>A phone number.</p> </dd> </dl>",
       "enum":[
         "EMAIL",
         "PHONE_NUMBER",
@@ -2834,7 +3227,7 @@
       "members":{
         "message":{"shape":"ExceptionMessage"}
       },
-      "documentation":"<p>The specified resource doesn't exist.</p>",
+      "documentation":"<p>The specified resource doesn't exist. Verify that the identifier is correct.</p>",
       "error":{
         "httpStatusCode":404,
         "senderFault":true
@@ -2843,6 +3236,7 @@
     },
     "ResourceType":{
       "type":"string",
+      "documentation":"<p>The category of a resource. This field has one of the following values:</p> <dl> <dt>MANUFACTURER_INSTRUCTIONS</dt> <dd> <p>Usage instructions from the seller.</p> </dd> <dt>MANUFACTURER_SUPPORT</dt> <dd> <p>Support information from the seller.</p> </dd> </dl>",
       "enum":[
         "MANUFACTURER_SUPPORT",
         "MANUFACTURER_INSTRUCTIONS"
@@ -2871,11 +3265,11 @@
         },
         "sourceId":{
           "shape":"ReviewSourceId",
-          "documentation":"<p>The machine-readable identifier of the review source. This field has one of the following values:</p> <ul> <li> <p> <code>AWS_MARKETPLACE</code> – The reviews come from AWS Marketplace.</p> </li> <li> <p> <code>G2</code> – The reviews come from G2.</p> </li> <li> <p> <code>PEERSPOT</code> – The reviews come from PeerSpot.</p> </li> </ul>"
+          "documentation":"<p>The machine-readable identifier of the review source. This field has one of the following values:</p> <dl> <dt>AWS_MARKETPLACE</dt> <dd> <p>The reviews come from AWS Marketplace.</p> </dd> <dt>G2</dt> <dd> <p>The reviews come from G2.</p> </dd> <dt>PEERSPOT</dt> <dd> <p>The reviews come from PeerSpot.</p> </dd> </dl>"
         },
         "sourceUrl":{
           "shape":"URL",
-          "documentation":"<p>The URL where the reviews can be accessed at the source.</p>"
+          "documentation":"<p>The URL where you can read the reviews at their source.</p>"
         },
         "averageRating":{
           "shape":"NonEmptyString",
@@ -2905,13 +3299,73 @@
       },
       "documentation":"<p>A summary of customer reviews available for a listing, aggregated by review source.</p>"
     },
+    "SaasCloudFormationDeploymentTemplate":{
+      "type":"structure",
+      "required":[
+        "templateName",
+        "defaultStackName",
+        "templateUrl",
+        "iamPolicy"
+      ],
+      "members":{
+        "templateName":{
+          "shape":"String",
+          "documentation":"<p>The display name of the deployment template.</p>"
+        },
+        "description":{
+          "shape":"SaasCloudFormationDeploymentTemplateDescriptionString",
+          "documentation":"<p>A description of the deployment template.</p>"
+        },
+        "defaultStackName":{
+          "shape":"String",
+          "documentation":"<p>The default CloudFormation stack name used when deploying this template.</p>"
+        },
+        "templateUrl":{
+          "shape":"URL",
+          "documentation":"<p>The URL of the CloudFormation deployment template.</p>"
+        },
+        "iamPolicy":{
+          "shape":"SaasCloudFormationDeploymentTemplateIamPolicyString",
+          "documentation":"<p>The AWS Identity and Access Management (IAM) policy that you need to deploy this template.</p>"
+        }
+      },
+      "documentation":"<p>Contains a single AWS CloudFormation deployment template for a Software as a Service (SaaS) product.</p>"
+    },
+    "SaasCloudFormationDeploymentTemplateDescriptionString":{
+      "type":"string",
+      "max":8192,
+      "min":0
+    },
+    "SaasCloudFormationDeploymentTemplateIamPolicyString":{
+      "type":"string",
+      "max":8192,
+      "min":0
+    },
+    "SaasDeploymentTemplate":{
+      "type":"structure",
+      "members":{
+        "cloudFormationDeploymentTemplate":{
+          "shape":"SaasCloudFormationDeploymentTemplate",
+          "documentation":"<p>An AWS CloudFormation deployment template.</p>"
+        }
+      },
+      "documentation":"<p>Contains a deployment template for a SaaS product. Exactly one member is set, indicating the deployment template type.</p>",
+      "union":true
+    },
+    "SaasDeploymentTemplateList":{
+      "type":"list",
+      "member":{"shape":"SaasDeploymentTemplate"},
+      "max":50,
+      "min":0
+    },
     "SaasFulfillmentOption":{
       "type":"structure",
       "required":[
         "fulfillmentOptionId",
         "fulfillmentOptionType",
         "fulfillmentOptionDisplayName",
-        "quickLaunch"
+        "quickLaunch",
+        "deploymentTemplates"
       ],
       "members":{
         "fulfillmentOptionId":{
@@ -2932,7 +3386,7 @@
         },
         "usageInstructions":{
           "shape":"String",
-          "documentation":"<p>Instructions on how to access and use this SaaS product.</p>"
+          "documentation":"<p>Instructions on how you access and use this SaaS product.</p>"
         },
         "availableFromTime":{
           "shape":"Timestamp",
@@ -2940,11 +3394,15 @@
         },
         "launchUrl":{
           "shape":"URL",
-          "documentation":"<p>The URL that a buyer uses to launch the seller's SaaS product. This URL is distinct from <code>fulfillmentUrl</code>, which is the seller's software registration landing page.</p>"
+          "documentation":"<p>The URL that you use to launch the seller's SaaS product. This URL is distinct from <code>fulfillmentUrl</code>, which is the seller's software registration landing page.</p>"
         },
         "quickLaunch":{
           "shape":"SaasQuickLaunchStatus",
-          "documentation":"<p>Specifies whether the SaaS product supports quick-launch deployment.</p>"
+          "documentation":"<p>Specifies whether the SaaS product supports Quick Launch deployment. This field has one of the following values:</p> <dl> <dt>DISABLED</dt> <dd> <p>The product does not support Quick Launch.</p> </dd> <dt>ENABLED</dt> <dd> <p>The product supports Quick Launch.</p> </dd> </dl>"
+        },
+        "deploymentTemplates":{
+          "shape":"SaasDeploymentTemplateList",
+          "documentation":"<p>The AWS CloudFormation deployment templates available for this SaaS product. The list is empty when no deployment templates are available.</p>"
         }
       },
       "documentation":"<p>Describes a Software as a Service (SaaS) fulfillment option.</p>"
@@ -2982,7 +3440,7 @@
         },
         "releaseNotes":{
           "shape":"String",
-          "documentation":"<p>Release notes describing changes in this version of the fulfillment option.</p>"
+          "documentation":"<p>Release notes that describe the changes in this version of the fulfillment option.</p>"
         },
         "usageInstructions":{
           "shape":"String",
@@ -2990,7 +3448,7 @@
         },
         "recommendation":{
           "shape":"SageMakerAlgorithmRecommendation",
-          "documentation":"<p>Recommended instance types for training and inference with this algorithm.</p>"
+          "documentation":"<p>The recommended instance types for training and inference with this algorithm.</p>"
         }
       },
       "documentation":"<p>Describes an Amazon SageMaker algorithm fulfillment option, including version details and recommended instance types.</p>"
@@ -3004,18 +3462,18 @@
       "members":{
         "recommendedBatchTransformInstanceType":{
           "shape":"String",
-          "documentation":"<p>The recommended instance type for batch inference.</p>"
+          "documentation":"<p>The instance type that the seller recommends for batch transform jobs with this algorithm.</p>"
         },
         "recommendedRealtimeInferenceInstanceType":{
           "shape":"String",
-          "documentation":"<p>The recommended instance type for real-time inference.</p>"
+          "documentation":"<p>The instance type that the seller recommends for real-time inference endpoints with this algorithm.</p>"
         },
         "recommendedTrainingInstanceType":{
           "shape":"String",
           "documentation":"<p>The recommended instance type for training.</p>"
         }
       },
-      "documentation":"<p>Recommended instance types for training and inference with a SageMaker algorithm.</p>"
+      "documentation":"<p>The recommended instance types for training and inference with a SageMaker algorithm.</p>"
     },
     "SageMakerModelContentTypeList":{
       "type":"list",
@@ -3054,7 +3512,7 @@
         },
         "releaseNotes":{
           "shape":"String",
-          "documentation":"<p>Release notes describing changes in this version of the fulfillment option.</p>"
+          "documentation":"<p>Release notes that describe the changes in this version of the fulfillment option.</p>"
         },
         "usageInstructions":{
           "shape":"String",
@@ -3062,11 +3520,11 @@
         },
         "recommendation":{
           "shape":"SageMakerModelRecommendation",
-          "documentation":"<p>Recommended instance types for inference with this model.</p>"
+          "documentation":"<p>The recommended instance types for inference with this model.</p>"
         },
         "supportedContentTypes":{
           "shape":"SageMakerModelContentTypeList",
-          "documentation":"<p>The MIME types that this model accepts as input.</p>"
+          "documentation":"<p>The Multipurpose Internet Mail Extensions (MIME) types that this model accepts as input.</p>"
         },
         "supportedResponseMimeTypes":{
           "shape":"SageMakerModelResponseMimeTypeList",
@@ -3081,14 +3539,14 @@
       "members":{
         "recommendedBatchTransformInstanceType":{
           "shape":"String",
-          "documentation":"<p>The recommended instance type for batch inference.</p>"
+          "documentation":"<p>The instance type that the seller recommends for batch transform jobs with this model package.</p>"
         },
         "recommendedRealtimeInferenceInstanceType":{
           "shape":"String",
-          "documentation":"<p>The recommended instance type for real-time inference.</p>"
+          "documentation":"<p>The instance type that the seller recommends for real-time inference endpoints with this model package.</p>"
         }
       },
-      "documentation":"<p>Recommended instance types for inference with a SageMaker model.</p>"
+      "documentation":"<p>The recommended instance types for inference with a SageMaker model.</p>"
     },
     "SageMakerModelResponseMimeTypeList":{
       "type":"list",
@@ -3133,7 +3591,12 @@
         "PRICING_MODEL",
         "PRICING_UNIT",
         "DEPLOYED_ON_AWS",
-        "NUMBER_OF_PRODUCTS"
+        "NUMBER_OF_PRODUCTS",
+        "CERTIFICATES",
+        "SPECIALIZATION",
+        "SPECIALIZATION_CATEGORY",
+        "SELLER_ENGAGEMENT",
+        "TRUST_CENTER"
       ]
     },
     "SearchFacetsInput":{
@@ -3141,7 +3604,7 @@
       "members":{
         "locale":{
           "shape":"Locale",
-          "documentation":"<p>A BCP 47 language tag or comma-separated priority list specifying the preferred locale for response content. See <code>Locale</code> for supported values, constraints, fallback behavior, and the default locale. If omitted, the service returns content in the default locale.</p>"
+          "documentation":"<p>The preferred locale for response content, as a Best Current Practice 47 (BCP 47) language tag or a comma-separated priority list of language tags. See <code>Locale</code> for supported values, constraints, fallback behavior, and the default locale. If you omit this field, the service returns content in the default locale.</p>"
         },
         "searchText":{
           "shape":"SearchText",
@@ -3149,15 +3612,15 @@
         },
         "filters":{
           "shape":"SearchFilterList",
-          "documentation":"<p>Filters to apply before retrieving facets. Multiple filters are combined with AND logic. Multiple values within the same filter are combined with OR logic.</p>"
+          "documentation":"<p>Filters to apply before retrieving facets. A result must match every filter. Within one filter, a result matches if it has any of the values.</p>"
         },
         "facetTypes":{
           "shape":"FacetTypeList",
-          "documentation":"<p>A list of specific facet types to retrieve. If empty or null, all available facets are returned.</p>"
+          "documentation":"<p>The facet types to retrieve. If you omit this field or leave it empty, the service returns all available facets.</p>"
         },
         "nextToken":{
           "shape":"NextToken",
-          "documentation":"<p>If <code>nextToken</code> is returned, there are more results available. Make the call again using the returned token to retrieve the next page.</p>"
+          "documentation":"<p>If the service returns <code>nextToken</code>, more results are available. The value of <code>nextToken</code> is a unique pagination token for each page. Make the call again with the returned token to retrieve the next page. Keep all other arguments unchanged. Each pagination token expires after 24 hours. An expired pagination token returns a <code>ValidationException</code>.</p>"
         }
       }
     },
@@ -3178,7 +3641,7 @@
         },
         "nextToken":{
           "shape":"NextToken",
-          "documentation":"<p>If <code>nextToken</code> is returned, there are more results available. Make the call again using the returned token to retrieve the next page.</p>"
+          "documentation":"<p>If the service returns <code>nextToken</code>, more results are available. The value of <code>nextToken</code> is a unique pagination token for each page. Make the call again with the returned token to retrieve the next page. Keep all other arguments unchanged. Each pagination token expires after 24 hours. An expired pagination token returns a <code>ValidationException</code>.</p>"
         }
       }
     },
@@ -3191,11 +3654,11 @@
       "members":{
         "filterType":{
           "shape":"SearchFilterType",
-          "documentation":"<p>The type of filter to apply.</p>"
+          "documentation":"<p>The type of filter to apply. See <code>filterValues</code> for the supported types and their values.</p>"
         },
         "filterValues":{
           "shape":"SearchFilterFilterValuesList",
-          "documentation":"<p>The values to filter by. Term filters accept multiple values (OR logic). Range filters (MIN/MAX_AVERAGE_CUSTOMER_RATING) accept a single value between 0.0 and 5.0.</p>"
+          "documentation":"<p>The values to filter by. Term filters accept multiple values, and a result matches if it has any of them. Range filters accept a single value. The supported values for each <code>filterType</code> are as follows:</p> <dl> <dt>CATEGORY</dt> <dd> <p>One or more category identifiers. Matches listings in those categories.</p> </dd> <dt>CERTIFICATES</dt> <dd> <p>One or more certification identifiers, such as <code>ISO_27001</code> or <code>SOC2_TYPE_2</code>. Matches listings that hold those certifications.</p> </dd> <dt>DEPLOYED_ON_AWS</dt> <dd> <p>The single value <code>DEPLOYED_ON_AWS</code>. Matches listings whose products are deployed on AWS infrastructure.</p> </dd> <dt>FULFILLMENT_OPTION_TYPE</dt> <dd> <p>One or more fulfillment option types, such as <code>SAAS</code>, <code>AMAZON_MACHINE_IMAGE</code>, or <code>CONTAINER</code>. Matches listings that you can deploy or access in those ways.</p> </dd> <dt>MAX_AVERAGE_CUSTOMER_RATING</dt> <dd> <p>A single rating between <code>0.0</code> and <code>5.0</code>. Matches listings whose average customer rating is at or below that value.</p> </dd> <dt>MIN_AVERAGE_CUSTOMER_RATING</dt> <dd> <p>A single rating between <code>0.0</code> and <code>5.0</code>. Matches listings whose average customer rating is at or above that value.</p> </dd> <dt>NUMBER_OF_PRODUCTS</dt> <dd> <p> <code>SINGLE_PRODUCT</code> or <code>MULTI_PRODUCT</code>. Matches single-product listings or multi-product solutions.</p> </dd> <dt>PRICING_MODEL</dt> <dd> <p>One or more of <code>BYOL</code>, <code>CONTRACT</code>, <code>FREE</code>, and <code>USAGE</code>. Matches listings with offers that use those pricing models.</p> </dd> <dt>PRICING_UNIT</dt> <dd> <p>One or more pricing units, such as <code>USERS</code>, <code>HOSTS</code>, or <code>REQUESTS</code>. Matches listings that bill by those units.</p> </dd> <dt>PRODUCT_ID</dt> <dd> <p>One or more product identifiers. Matches listings that contain those products.</p> </dd> <dt>PUBLISHER</dt> <dd> <p>One or more publisher identifiers. Matches listings from those sellers.</p> </dd> <dt>SELLER_ENGAGEMENT</dt> <dd> <p>One or more <code>SellerEngagementType</code> values, such as <code>BUY_NOW</code> or <code>REQUEST_FOR_DEMO</code>. Matches listings that offer those ways to engage with the seller.</p> </dd> <dt>SPECIALIZATION</dt> <dd> <p>One or more specialization identifiers. Matches listings that earned those specializations.</p> </dd> <dt>SPECIALIZATION_CATEGORY</dt> <dd> <p>One or more specialization category identifiers. Matches listings that earned a category under a specialization.</p> </dd> <dt>TRUST_CENTER</dt> <dd> <p>The single value <code>HAS_TRUST_CENTER</code>. Matches listings that have a trust center.</p> </dd> </dl> <p>Use <code>SearchFacets</code> to retrieve the values available for <code>CATEGORY</code>, <code>PUBLISHER</code>, <code>CERTIFICATES</code>, <code>SPECIALIZATION</code>, and <code>SPECIALIZATION_CATEGORY</code>.</p>"
         }
       },
       "documentation":"<p>A filter used to narrow search results by attribute, such as category, pricing model, or fulfillment type.</p>"
@@ -3223,7 +3686,13 @@
         "PRICING_MODEL",
         "PRICING_UNIT",
         "DEPLOYED_ON_AWS",
-        "NUMBER_OF_PRODUCTS"
+        "NUMBER_OF_PRODUCTS",
+        "CERTIFICATES",
+        "PRODUCT_ID",
+        "SPECIALIZATION",
+        "SPECIALIZATION_CATEGORY",
+        "SELLER_ENGAGEMENT",
+        "TRUST_CENTER"
       ]
     },
     "SearchFilterValue":{
@@ -3237,7 +3706,7 @@
       "members":{
         "locale":{
           "shape":"Locale",
-          "documentation":"<p>A BCP 47 language tag or comma-separated priority list specifying the preferred locale for response content. See <code>Locale</code> for supported values, constraints, fallback behavior, and the default locale. If omitted, the service returns content in the default locale.</p>"
+          "documentation":"<p>The preferred locale for response content, as a Best Current Practice 47 (BCP 47) language tag or a comma-separated priority list of language tags. See <code>Locale</code> for supported values, constraints, fallback behavior, and the default locale. If you omit this field, the service returns content in the default locale.</p>"
         },
         "searchText":{
           "shape":"SearchText",
@@ -3245,23 +3714,23 @@
         },
         "filters":{
           "shape":"SearchFilterList",
-          "documentation":"<p>Filters to narrow search results. Multiple filters are combined with AND logic. Multiple values within the same filter are combined with OR logic.</p>"
+          "documentation":"<p>Filters to narrow search results. A result must match every filter. Within one filter, a result matches if it has any of the values.</p>"
         },
         "maxResults":{
           "shape":"MaxResults",
-          "documentation":"<p>The maximum number of results that are returned per call. You can use <code>nextToken</code> to get more results.</p>"
+          "documentation":"<p>The maximum number of listings to return in each call. If you omit this field, the default is 25. Use <code>nextToken</code> to retrieve the next page.</p>"
         },
         "sortBy":{
           "shape":"SearchListingsSortBy",
-          "documentation":"<p>The field to sort results by. Valid values are <code>RELEVANCE</code> and <code>AVERAGE_CUSTOMER_RATING</code>.</p>"
+          "documentation":"<p>The field to sort results by. If you do not specify a value, the service sorts by <code>RELEVANCE</code>. This field has one of the following values:</p> <dl> <dt>AVERAGE_CUSTOMER_RATING</dt> <dd> <p>Sorts by average customer rating.</p> </dd> <dt>RELEVANCE</dt> <dd> <p>Sorts by relevance to the search query.</p> </dd> </dl>"
         },
         "sortOrder":{
           "shape":"SearchListingsSortOrder",
-          "documentation":"<p>The sort direction. Valid values are <code>DESCENDING</code> and <code>ASCENDING</code>.</p>"
+          "documentation":"<p>The sort direction. If you do not specify a value, the service sorts in <code>DESCENDING</code> order. This field has one of the following values:</p> <dl> <dt>ASCENDING</dt> <dd> <p>Sorts from lowest to highest.</p> </dd> <dt>DESCENDING</dt> <dd> <p>Sorts from highest to lowest.</p> </dd> </dl>"
         },
         "nextToken":{
           "shape":"NextToken",
-          "documentation":"<p>If <code>nextToken</code> is returned, there are more results available. Make the call again using the returned token to retrieve the next page.</p>"
+          "documentation":"<p>If the service returns <code>nextToken</code>, more results are available. The value of <code>nextToken</code> is a unique pagination token for each page. Make the call again with the returned token to retrieve the next page. Keep all other arguments unchanged. Each pagination token expires after 24 hours. An expired pagination token returns a <code>ValidationException</code>.</p>"
         }
       }
     },
@@ -3282,7 +3751,7 @@
         },
         "nextToken":{
           "shape":"NextToken",
-          "documentation":"<p>If <code>nextToken</code> is returned, there are more results available. Make the call again using the returned token to retrieve the next page.</p>"
+          "documentation":"<p>If the service returns <code>nextToken</code>, more results are available. The value of <code>nextToken</code> is a unique pagination token for each page. Make the call again with the returned token to retrieve the next page. Keep all other arguments unchanged. Each pagination token expires after 24 hours. An expired pagination token returns a <code>ValidationException</code>.</p>"
         }
       }
     },
@@ -3338,7 +3807,7 @@
       "members":{
         "engagementType":{
           "shape":"SellerEngagementType",
-          "documentation":"<p>The type of engagement, such as <code>REQUEST_FOR_PRIVATE_OFFER</code> or <code>REQUEST_FOR_DEMO</code>.</p>"
+          "documentation":"<p>The type of engagement. This field has one of the following values:</p> <dl> <dt>BUY_NOW</dt> <dd> <p>The product is available for immediate purchase.</p> </dd> <dt>EXPRESS_PRIVATE_OFFER</dt> <dd> <p>You can request an express private offer and accept it immediately.</p> </dd> <dt>REQUEST_FOR_DEMO</dt> <dd> <p>You can request a demo from the seller.</p> </dd> <dt>REQUEST_FOR_PRIVATE_OFFER</dt> <dd> <p>You can request a private offer from the seller.</p> </dd> <dt>TRY_FOR_FREE</dt> <dd> <p>The product offers a free trial.</p> </dd> </dl>"
         },
         "contentType":{
           "shape":"SellerEngagementContentType",
@@ -3349,7 +3818,7 @@
           "documentation":"<p>The engagement value, such as a URL to the engagement form.</p>"
         }
       },
-      "documentation":"<p>An engagement option available to potential buyers of a product, such as requesting a private offer or a demo.</p>"
+      "documentation":"<p>A way you can engage with the seller of a product, such as requesting a private offer or a demo.</p>"
     },
     "SellerEngagementContentType":{
       "type":"string",
@@ -3365,7 +3834,10 @@
       "type":"string",
       "enum":[
         "REQUEST_FOR_PRIVATE_OFFER",
-        "REQUEST_FOR_DEMO"
+        "REQUEST_FOR_DEMO",
+        "EXPRESS_PRIVATE_OFFER",
+        "BUY_NOW",
+        "TRY_FOR_FREE"
       ]
     },
     "SellerInformation":{
@@ -3392,6 +3864,115 @@
       "min":1,
       "pattern":"[\\w\\-]+"
     },
+    "Specialization":{
+      "type":"structure",
+      "required":[
+        "specializationId",
+        "specializationName",
+        "specializationTypes"
+      ],
+      "members":{
+        "specializationId":{
+          "shape":"SpecializationId",
+          "documentation":"<p>The unique identifier of the specialization.</p>"
+        },
+        "specializationName":{
+          "shape":"NonEmptyString",
+          "documentation":"<p>The name of the specialization displayed to you.</p>"
+        },
+        "description":{
+          "shape":"NonEmptyString",
+          "documentation":"<p>A description of the specialization displayed to you.</p>"
+        },
+        "specializationTypes":{
+          "shape":"SpecializationTypeList",
+          "documentation":"<p>The types that categorize this specialization.</p>"
+        },
+        "caseStudyIds":{
+          "shape":"CaseStudyIdList",
+          "documentation":"<p>The identifiers of the case studies that this specialization cites. Retrieve the case studies with the <code>CASE_STUDY</code> attribute type.</p>"
+        }
+      },
+      "documentation":"<p>A specialization earned for the listing, such as an AWS Competency.</p>"
+    },
+    "SpecializationCategory":{
+      "type":"structure",
+      "required":[
+        "specializationCategoryId",
+        "specializationCategoryName",
+        "parentSpecializationId"
+      ],
+      "members":{
+        "specializationCategoryId":{
+          "shape":"SpecializationId",
+          "documentation":"<p>The unique identifier of the category.</p>"
+        },
+        "specializationCategoryName":{
+          "shape":"NonEmptyString",
+          "documentation":"<p>The name of the category displayed to you.</p>"
+        },
+        "parentSpecializationId":{
+          "shape":"SpecializationId",
+          "documentation":"<p>The identifier of the parent specialization.</p>"
+        }
+      },
+      "documentation":"<p>A category under a specialization that the listing earned.</p>"
+    },
+    "SpecializationDetail":{
+      "type":"structure",
+      "members":{
+        "specialization":{
+          "shape":"Specialization",
+          "documentation":"<p>A specialization earned for the listing.</p>"
+        },
+        "specializationCategory":{
+          "shape":"SpecializationCategory",
+          "documentation":"<p>A category under a specialization that the listing earned.</p>"
+        }
+      },
+      "documentation":"<p>A specialization result for a listing. Exactly one member is set: a specialization or a category under one.</p>",
+      "union":true
+    },
+    "SpecializationId":{
+      "type":"string",
+      "max":255,
+      "min":1,
+      "pattern":"[a-z0-9\\-]+"
+    },
+    "SpecializationType":{
+      "type":"string",
+      "documentation":"<p>The type a specialization is categorized under. This field has one of the following values:</p> <dl> <dt>INDUSTRY</dt> <dd> <p>An industry specialization.</p> </dd> <dt>SERVICES</dt> <dd> <p>A services specialization.</p> </dd> <dt>USE_CASE</dt> <dd> <p>A use-case specialization.</p> </dd> </dl>",
+      "enum":[
+        "USE_CASE",
+        "INDUSTRY",
+        "SERVICES"
+      ]
+    },
+    "SpecializationTypeDetail":{
+      "type":"structure",
+      "required":[
+        "specializationType",
+        "displayName"
+      ],
+      "members":{
+        "specializationType":{
+          "shape":"SpecializationType",
+          "documentation":"<p>The specialization type.</p>"
+        },
+        "displayName":{
+          "shape":"NonEmptyString",
+          "documentation":"<p>The name of the specialization type displayed to you.</p>"
+        }
+      },
+      "documentation":"<p>Describes a specialization type with its display information.</p>"
+    },
+    "SpecializationTypeList":{
+      "type":"list",
+      "member":{"shape":"SpecializationTypeDetail"},
+      "documentation":"<p>The specialization types that categorize a specialization, with their display information.</p>",
+      "max":3,
+      "min":0
+    },
     "String":{"type":"string"},
     "SupportTerm":{
       "type":"structure",
@@ -3414,7 +3995,7 @@
           "documentation":"<p>The refund policy description for the offer.</p>"
         }
       },
-      "documentation":"<p>Defines a support term that includes the refund policy for the offer.</p>"
+      "documentation":"<p>Describes a support term that includes the refund policy for the offer.</p>"
     },
     "TermId":{
       "type":"string",
@@ -3462,7 +4043,7 @@
       "members":{
         "message":{"shape":"ExceptionMessage"}
       },
-      "documentation":"<p>The request was denied due to request throttling.</p>",
+      "documentation":"<p>The request was denied due to request throttling. Reduce the frequency of your requests and retry.</p>",
       "error":{
         "httpStatusCode":429,
         "senderFault":true
@@ -3470,6 +4051,320 @@
       "exception":true
     },
     "Timestamp":{"type":"timestamp"},
+    "TrustCenterCertificationAttribute":{
+      "type":"structure",
+      "required":[
+        "certificationType",
+        "displayName",
+        "logoUrl"
+      ],
+      "members":{
+        "certificationType":{
+          "shape":"NonEmptyString",
+          "documentation":"<p>The certification type. The set of values is open and can include provider-defined certifications.</p>"
+        },
+        "displayName":{
+          "shape":"NonEmptyString",
+          "documentation":"<p>The authoritative certification name displayed to you.</p>"
+        },
+        "logoUrl":{
+          "shape":"URL",
+          "documentation":"<p>The URL of the certification logo.</p>"
+        }
+      },
+      "documentation":"<p>A trust center certification associated with a listing.</p>"
+    },
+    "TrustCenterCertificationSummary":{
+      "type":"structure",
+      "required":[
+        "certificationType",
+        "displayName",
+        "logoUrl"
+      ],
+      "members":{
+        "certificationType":{
+          "shape":"NonEmptyString",
+          "documentation":"<p>The certification type. The set of values is open and can include provider-defined certifications.</p>"
+        },
+        "displayName":{
+          "shape":"NonEmptyString",
+          "documentation":"<p>The certification name displayed to you.</p>"
+        },
+        "logoUrl":{
+          "shape":"URL",
+          "documentation":"<p>The URL of the certification logo.</p>"
+        }
+      },
+      "documentation":"<p>Summary information for a certification associated with a listing.</p>"
+    },
+    "TrustCenterCertificationSummaryList":{
+      "type":"list",
+      "member":{"shape":"TrustCenterCertificationSummary"},
+      "documentation":"<p>Certification summaries associated with a listing.</p>",
+      "max":10,
+      "min":0
+    },
+    "TrustCenterControl":{
+      "type":"structure",
+      "required":[
+        "name",
+        "domains"
+      ],
+      "members":{
+        "name":{
+          "shape":"NonEmptyString",
+          "documentation":"<p>The name of the control.</p>"
+        },
+        "description":{
+          "shape":"TrustCenterControlDescriptionString",
+          "documentation":"<p>A description of the control.</p>"
+        },
+        "domains":{
+          "shape":"TrustCenterControlDomainList",
+          "documentation":"<p>The trust center domains to which the control applies.</p>"
+        }
+      },
+      "documentation":"<p>A control that a trust center publishes.</p>"
+    },
+    "TrustCenterControlDescriptionString":{
+      "type":"string",
+      "max":4096,
+      "min":1
+    },
+    "TrustCenterControlDomain":{
+      "type":"string",
+      "documentation":"<p>A broad classification of trust center controls.</p>",
+      "enum":[
+        "SECURITY",
+        "AI_GOVERNANCE",
+        "RESILIENCE"
+      ]
+    },
+    "TrustCenterControlDomainList":{
+      "type":"list",
+      "member":{"shape":"TrustCenterControlDomain"},
+      "documentation":"<p>The trust center domains to which a control applies.</p>",
+      "max":3,
+      "min":1
+    },
+    "TrustCenterDocumentAccessType":{
+      "type":"string",
+      "documentation":"<p>Ways to access a trust center document.</p>",
+      "enum":[
+        "DOWNLOAD",
+        "VIEW",
+        "REQUEST_ACCESS"
+      ]
+    },
+    "TrustCenterDocumentAttribute":{
+      "type":"structure",
+      "required":[
+        "contentType",
+        "value",
+        "accessType"
+      ],
+      "members":{
+        "contentType":{
+          "shape":"ResourceContentType",
+          "documentation":"<p>The format of the document resource value.</p>"
+        },
+        "value":{
+          "shape":"TrustCenterDocumentAttributeValueString",
+          "documentation":"<p>The URL used to download, view, or request access to the document.</p>"
+        },
+        "displayName":{
+          "shape":"TrustCenterDocumentAttributeDisplayNameString",
+          "documentation":"<p>The document name displayed to you.</p>"
+        },
+        "subjectArea":{
+          "shape":"NonEmptyString",
+          "documentation":"<p>The subject area of the document.</p>"
+        },
+        "accessType":{
+          "shape":"TrustCenterDocumentAccessType",
+          "documentation":"<p>How the document can be accessed.</p>"
+        }
+      },
+      "documentation":"<p>A trust center document associated with a listing.</p>"
+    },
+    "TrustCenterDocumentAttributeDisplayNameString":{
+      "type":"string",
+      "max":512,
+      "min":1
+    },
+    "TrustCenterDocumentAttributeValueString":{
+      "type":"string",
+      "max":8192,
+      "min":1
+    },
+    "TrustCenterFaqAttribute":{
+      "type":"structure",
+      "required":[
+        "question",
+        "answer"
+      ],
+      "members":{
+        "question":{
+          "shape":"NonEmptyString",
+          "documentation":"<p>The question.</p>"
+        },
+        "answer":{
+          "shape":"TrustCenterFaqAttributeAnswerString",
+          "documentation":"<p>The answer.</p>"
+        },
+        "subjectArea":{
+          "shape":"NonEmptyString",
+          "documentation":"<p>The subject area of the question.</p>"
+        }
+      },
+      "documentation":"<p>A frequently asked question that a trust center publishes.</p>"
+    },
+    "TrustCenterFaqAttributeAnswerString":{
+      "type":"string",
+      "max":8192,
+      "min":1
+    },
+    "TrustCenterProvider":{
+      "type":"string",
+      "documentation":"<p>The provider hosting a trust center.</p>",
+      "enum":[
+        "DRATA",
+        "VANTA",
+        "OTHER"
+      ]
+    },
+    "TrustCenterSource":{
+      "type":"structure",
+      "required":[
+        "contentType",
+        "value",
+        "provider"
+      ],
+      "members":{
+        "contentType":{
+          "shape":"ResourceContentType",
+          "documentation":"<p>The format of the trust center source value.</p>"
+        },
+        "value":{
+          "shape":"TrustCenterSourceValueString",
+          "documentation":"<p>The URL of the trust center.</p>"
+        },
+        "displayName":{
+          "shape":"TrustCenterSourceDisplayNameString",
+          "documentation":"<p>The trust center provider name displayed to you.</p>"
+        },
+        "provider":{
+          "shape":"TrustCenterProvider",
+          "documentation":"<p>The provider hosting the trust center.</p>"
+        }
+      },
+      "documentation":"<p>A source of trust center information.</p>"
+    },
+    "TrustCenterSourceDisplayNameString":{
+      "type":"string",
+      "max":255,
+      "min":1
+    },
+    "TrustCenterSourceSummary":{
+      "type":"structure",
+      "required":[
+        "contentType",
+        "value",
+        "provider"
+      ],
+      "members":{
+        "contentType":{
+          "shape":"ResourceContentType",
+          "documentation":"<p>The format of the trust center source value.</p>"
+        },
+        "value":{
+          "shape":"TrustCenterSourceSummaryValueString",
+          "documentation":"<p>The URL of the trust center.</p>"
+        },
+        "displayName":{
+          "shape":"TrustCenterSourceSummaryDisplayNameString",
+          "documentation":"<p>The trust center provider name displayed to you.</p>"
+        },
+        "provider":{
+          "shape":"TrustCenterProvider",
+          "documentation":"<p>The provider hosting the trust center.</p>"
+        }
+      },
+      "documentation":"<p>Summary information for a source of trust center information.</p>"
+    },
+    "TrustCenterSourceSummaryDisplayNameString":{
+      "type":"string",
+      "max":255,
+      "min":1
+    },
+    "TrustCenterSourceSummaryList":{
+      "type":"list",
+      "member":{"shape":"TrustCenterSourceSummary"},
+      "documentation":"<p>Trust center source summaries associated with a listing.</p>",
+      "max":10,
+      "min":1
+    },
+    "TrustCenterSourceSummaryValueString":{
+      "type":"string",
+      "max":8192,
+      "min":1
+    },
+    "TrustCenterSourceValueString":{
+      "type":"string",
+      "max":8192,
+      "min":1
+    },
+    "TrustCenterSummary":{
+      "type":"structure",
+      "required":[
+        "sourceSummaries",
+        "certificationSummaries",
+        "totalCertificationCount"
+      ],
+      "members":{
+        "sourceSummaries":{
+          "shape":"TrustCenterSourceSummaryList",
+          "documentation":"<p>Trust center source summaries associated with the listing.</p>"
+        },
+        "certificationSummaries":{
+          "shape":"TrustCenterCertificationSummaryList",
+          "documentation":"<p>A subset of certifications associated with the listing, selected by importance.</p>"
+        },
+        "totalCertificationCount":{
+          "shape":"NonNegativeCount",
+          "documentation":"<p>The total number of distinct certifications associated with the listing, including certifications omitted from <code>certificationSummaries</code>.</p>"
+        }
+      },
+      "documentation":"<p>A summary of trust center information associated with a listing.</p>"
+    },
+    "TrustCenterUpdateAttribute":{
+      "type":"structure",
+      "required":[
+        "title",
+        "description",
+        "publishedTime"
+      ],
+      "members":{
+        "title":{
+          "shape":"NonEmptyString",
+          "documentation":"<p>The update title.</p>"
+        },
+        "description":{
+          "shape":"TrustCenterUpdateAttributeDescriptionString",
+          "documentation":"<p>The update description.</p>"
+        },
+        "publishedTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The time when the update was published.</p>"
+        }
+      },
+      "documentation":"<p>An update that a trust center publishes.</p>"
+    },
+    "TrustCenterUpdateAttributeDescriptionString":{
+      "type":"string",
+      "max":8192,
+      "min":1
+    },
     "TypeToFacetMap":{
       "type":"map",
       "key":{"shape":"SearchFacetType"},
@@ -3507,7 +4402,7 @@
           "documentation":"<p>The rate cards containing per-unit rates for usage-based pricing.</p>"
         }
       },
-      "documentation":"<p>Defines a usage-based pricing term (typically pay-as-you-go), where buyers are charged based on product usage.</p>"
+      "documentation":"<p>Describes a usage-based pricing term, typically pay-as-you-go. You are charged based on your use of the product.</p>"
     },
     "UsageBasedRateCardItem":{
       "type":"structure",
@@ -3558,10 +4453,56 @@
       },
       "documentation":"<p>An entry in the list of use cases for a listing.</p>"
     },
+    "UseCaseInformation":{
+      "type":"structure",
+      "required":[
+        "displayName",
+        "value"
+      ],
+      "members":{
+        "displayName":{
+          "shape":"NonEmptyString",
+          "documentation":"<p>The human-readable name of the use case.</p>"
+        },
+        "value":{
+          "shape":"NonEmptyString",
+          "documentation":"<p>The machine-readable identifier of the use case.</p>"
+        }
+      },
+      "documentation":"<p>The name and identifier of a use case.</p>"
+    },
     "UseCaseList":{
       "type":"list",
       "member":{"shape":"UseCaseEntry"},
       "max":100,
+      "min":0
+    },
+    "UseCaseSummary":{
+      "type":"structure",
+      "required":["useCases"],
+      "members":{
+        "useCases":{
+          "shape":"UseCaseSummaryList",
+          "documentation":"<p>The use cases, in the order the seller defined them.</p>"
+        }
+      },
+      "documentation":"<p>The use cases of a listing, in summary form.</p>"
+    },
+    "UseCaseSummaryEntry":{
+      "type":"structure",
+      "required":["useCase"],
+      "members":{
+        "useCase":{
+          "shape":"UseCaseInformation",
+          "documentation":"<p>The name and identifier of the use case.</p>"
+        }
+      },
+      "documentation":"<p>A use case entry, as in <code>GetListing</code> without the description.</p>"
+    },
+    "UseCaseSummaryList":{
+      "type":"list",
+      "member":{"shape":"UseCaseSummaryEntry"},
+      "max":3,
       "min":0
     },
     "ValidationException":{
@@ -3570,10 +4511,10 @@
         "message":{"shape":"ExceptionMessage"},
         "reason":{
           "shape":"ValidationExceptionReason",
-          "documentation":"<p>The reason that the input fails to satisfy the constraints specified by the service.</p>"
+          "documentation":"<p>The reason that the input fails to satisfy the constraints that the Discovery API specifies. This field has one of the following values:</p> <dl> <dt>INVALID_PAGINATION_TOKEN</dt> <dd> <p>The <code>nextToken</code> value is malformed, expired, or belongs to a different request. Start the pagination again from the first page.</p> </dd> <dt>MALFORMED_REQUEST_PARAMETERS</dt> <dd> <p>One or more request parameters have an invalid value. Correct the parameters that you specified, and then resubmit your request.</p> </dd> <dt>PAGINATION_LIMIT_EXCEEDED</dt> <dd> <p>The request asks for results beyond the deepest page that the operation returns. Narrow your request with filters or a more specific search.</p> </dd> </dl>"
         }
       },
-      "documentation":"<p>The input fails to satisfy the constraints specified by the service.</p>",
+      "documentation":"<p>The input fails to satisfy the constraints specified by the service. Check the <code>reason</code> field for the constraint that failed.</p>",
       "error":{
         "httpStatusCode":400,
         "senderFault":true
@@ -3616,7 +4557,7 @@
           "documentation":"<p>The date when the agreement starts.</p>"
         }
       },
-      "documentation":"<p>Defines a validity term that specifies the duration or date range of an agreement.</p>"
+      "documentation":"<p>Describes a validity term that specifies the duration or date range of an agreement.</p>"
     },
     "VariablePaymentTerm":{
       "type":"structure",
@@ -3644,8 +4585,8 @@
           "documentation":"<p>The maximum total amount that can be charged under this term.</p>"
         }
       },
-      "documentation":"<p>Defines a variable payment term with a maximum total charge amount.</p>"
+      "documentation":"<p>Describes a variable payment term with a maximum total charge amount.</p>"
     }
   },
-  "documentation":"<p>The AWS Marketplace Discovery API provides programmatic access to the AWS Marketplace catalog, including searching and browsing listings, retrieving product details and fulfillment options, and accessing public and private offer pricing and terms.</p>"
+  "documentation":"<p>With the AWS Marketplace Discovery API (Discovery API), you have programmatic access to the AWS Marketplace catalog. You can search and browse listings, retrieve product details and fulfillment options, and access public and private offer pricing and terms. For more information, see <a href=\"https://docs.aws.amazon.com/marketplace/latest/developerguide/discovery-apis.html\">Using the AWS Marketplace Discovery API</a> in the <i>AWS Marketplace Developer Guide</i>.</p>"
 }

@@ -403,6 +403,38 @@
       ],
       "documentation":"<p>Returns your API key in decrypted form. Use this to check the token domains that you have defined for the key. </p> <p>API keys are required for the integration of the CAPTCHA API in your JavaScript client applications. The API lets you customize the placement and characteristics of the CAPTCHA puzzle for your end users. For more information about the CAPTCHA JavaScript integration, see <a href=\"https://docs.aws.amazon.com/waf/latest/developerguide/waf-application-integration.html\">WAF client application integration</a> in the <i>WAF Developer Guide</i>.</p>"
     },
+    "GetEvent":{
+      "name":"GetEvent",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"GetEventRequest"},
+      "output":{"shape":"GetEventResponse"},
+      "errors":[
+        {"shape":"WAFInternalErrorException"},
+        {"shape":"WAFInvalidParameterException"},
+        {"shape":"WAFNonexistentItemException"},
+        {"shape":"WAFInvalidOperationException"}
+      ],
+      "documentation":"<p>Retrieves the details of the specified event for the specified web ACL, including the event actors that are associated with the event and the event timeline. Currently, this operation supports API Security Amazon Web Services Managed Rules.</p>"
+    },
+    "GetEventActor":{
+      "name":"GetEventActor",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"GetEventActorRequest"},
+      "output":{"shape":"GetEventActorResponse"},
+      "errors":[
+        {"shape":"WAFInternalErrorException"},
+        {"shape":"WAFInvalidParameterException"},
+        {"shape":"WAFNonexistentItemException"},
+        {"shape":"WAFInvalidOperationException"}
+      ],
+      "documentation":"<p>Retrieves the details of the specified event actor. An event actor is a client that is associated with one or more events. The details include the latest observed attributes of the event actor, the events that it's associated with, and the history of changes to its attributes. Currently, this operation supports API Security Amazon Web Services Managed Rules.</p>"
+    },
     "GetIPSet":{
       "name":"GetIPSet",
       "http":{
@@ -690,6 +722,52 @@
         {"shape":"WAFInvalidOperationException"}
       ],
       "documentation":"<p>Retrieves an array of managed rule groups that are available for you to use. This list includes all Amazon Web Services Managed Rules rule groups and all of the Amazon Web Services Marketplace managed rule groups that you're subscribed to.</p>"
+    },
+    "ListEventActors":{
+      "name":"ListEventActors",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"ListEventActorsRequest"},
+      "output":{"shape":"ListEventActorsResponse"},
+      "errors":[
+        {"shape":"WAFInternalErrorException"},
+        {"shape":"WAFInvalidParameterException"},
+        {"shape":"WAFInvalidOperationException"}
+      ],
+      "documentation":"<p>Retrieves a paginated list of the event actors in your account that are associated with events in the specified time window. An event actor is a client that is associated with one or more events. The operation returns up to the top 100 event actors by event count. Results are paginated. Use the <code>NextMarker</code> value from the response to retrieve the next batch of results. Currently, this operation supports API Security Amazon Web Services Managed Rules.</p>"
+    },
+    "ListEvents":{
+      "name":"ListEvents",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"ListEventsRequest"},
+      "output":{"shape":"ListEventsResponse"},
+      "errors":[
+        {"shape":"WAFInternalErrorException"},
+        {"shape":"WAFInvalidParameterException"},
+        {"shape":"WAFInvalidOperationException"}
+      ],
+      "documentation":"<p>Retrieves a paginated list of event summaries for your account. Use this operation to monitor and investigate potential threats to the resources that your web ACLs protect. Results are paginated. Use the <code>NextMarker</code> value from the response to retrieve the next batch of results. Currently, this operation supports API Security Amazon Web Services Managed Rules.</p> <p>You can filter the results by time window, event category, resource, and API pattern, and sort them by start time, end time, or confidence.</p> <p>To retrieve the events for a single web ACL, use <a>ListEventsByWebACL</a>. To retrieve the full details of a single event, use <a>GetEvent</a>.</p>"
+    },
+    "ListEventsByWebACL":{
+      "name":"ListEventsByWebACL",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"ListEventsByWebACLRequest"},
+      "output":{"shape":"ListEventsByWebACLResponse"},
+      "errors":[
+        {"shape":"WAFInternalErrorException"},
+        {"shape":"WAFInvalidParameterException"},
+        {"shape":"WAFNonexistentItemException"},
+        {"shape":"WAFInvalidOperationException"}
+      ],
+      "documentation":"<p>Retrieves a paginated list of event summaries for the specified web ACL. Use this operation to monitor and investigate potential threats to the resources that the web ACL protects. Results are paginated. Use the <code>NextMarker</code> value from the response to retrieve the next batch of results. Currently, this operation supports API Security Amazon Web Services Managed Rules.</p> <p>You can filter the results by time window, event category, resource, and API pattern, and sort them by start time, end time, or confidence.</p> <p>To retrieve the events for all of the web ACLs in your account, use <a>ListEvents</a>. To retrieve the full details of a single event, use <a>GetEvent</a>.</p>"
     },
     "ListIPSets":{
       "name":"ListIPSets",
@@ -1118,6 +1196,17 @@
       },
       "documentation":"<p>Details for your use of the account creation fraud prevention managed rule group, <code>AWSManagedRulesACFPRuleSet</code>. This configuration is used in <code>ManagedRuleGroupConfig</code>. </p> <p>For additional information about this and the other intelligent threat mitigation rule groups, see <a href=\"https://docs.aws.amazon.com/waf/latest/developerguide/waf-managed-protections\">Intelligent threat mitigation in WAF</a> and <a href=\"https://docs.aws.amazon.com/waf/latest/developerguide/aws-managed-rule-groups-list\">Amazon Web Services Managed Rules rule groups list</a> in the <i>WAF Developer Guide</i>. </p>"
     },
+    "AWSManagedRulesAISecurityRuleSet":{
+      "type":"structure",
+      "required":["BedrockGuardrails"],
+      "members":{
+        "BedrockGuardrails":{
+          "shape":"BedrockGuardrails",
+          "documentation":"<p>Specifies whether and how the rule group uses Amazon Bedrock Guardrails. </p>"
+        }
+      },
+      "documentation":"<p>Configures the use of the AI security managed rule group, <code>AWSManagedRulesAISecurityRuleSet</code>. This configuration is used in <code>ManagedRuleGroupConfig</code>. </p> <p>The rule group always runs its own inspections. The configuration that you provide here determines whether the rule group also uses Amazon Bedrock Guardrails to inspect web requests, or web requests and responses. </p> <p>Use of this rule group is not supported in Firewall Manager. </p>"
+    },
     "AWSManagedRulesATPRuleSet":{
       "type":"structure",
       "required":["LoginPath"],
@@ -1259,6 +1348,96 @@
       },
       "documentation":"<p>A logical rule statement used to combine other rule statements with AND logic. You provide more than one <a>Statement</a> within the <code>AndStatement</code>. </p>"
     },
+    "ApiPattern":{
+      "type":"structure",
+      "members":{
+        "Method":{
+          "shape":"HttpMethodString",
+          "documentation":"<p>The HTTP method of the API pattern. For example, <code>GET</code> or <code>POST</code>.</p>"
+        },
+        "PathPattern":{
+          "shape":"PathPatternString",
+          "documentation":"<p>The normalized URI path of the API pattern. Templated path segments are shown in braces. For example, <code>/api/v1/accounts/{id}</code>.</p>"
+        },
+        "Port":{
+          "shape":"PortNumber",
+          "documentation":"<p>The port of the API pattern. For example, <code>443</code>.</p>"
+        },
+        "Domains":{
+          "shape":"DomainList",
+          "documentation":"<p>The domains that the API pattern was observed on. For example, <code>api.example.com</code>.</p>"
+        }
+      },
+      "documentation":"<p>An API endpoint pattern that an API security event involves.</p>"
+    },
+    "ApiPatternDomainList":{
+      "type":"list",
+      "member":{"shape":"DomainString"},
+      "max":10
+    },
+    "ApiPatternFilter":{
+      "type":"structure",
+      "members":{
+        "Method":{
+          "shape":"HttpMethodString",
+          "documentation":"<p>The HTTP method that you want the filter to match. For example, <code>GET</code> or <code>POST</code>.</p>"
+        },
+        "PathPattern":{
+          "shape":"PathPatternString",
+          "documentation":"<p>The normalized URI path that you want the filter to match. For example, <code>/api/v1/accounts/{id}</code>.</p>"
+        },
+        "Port":{
+          "shape":"PortNumber",
+          "documentation":"<p>The port that you want the filter to match. For example, <code>443</code>.</p>"
+        },
+        "Domains":{
+          "shape":"ApiPatternDomainList",
+          "documentation":"<p>The domains that you want the filter to match. You can specify up to 10 domains.</p>"
+        }
+      },
+      "documentation":"<p>An API pattern to filter events by, used in <a>ListEvents</a> and <a>ListEventsByWebACL</a>.</p>"
+    },
+    "ApiPatternFilterList":{
+      "type":"list",
+      "member":{"shape":"ApiPatternFilter"},
+      "max":20,
+      "min":1
+    },
+    "ApiPatternList":{
+      "type":"list",
+      "member":{"shape":"ApiPattern"},
+      "max":20
+    },
+    "ApiSecurityEventDetail":{
+      "type":"structure",
+      "members":{
+        "Label":{
+          "shape":"LabelName",
+          "documentation":"<p>The fully qualified name of the label that WAF assigned to the event. For example, <code>awswaf:managed:aws:api-security:credential-stuffing-high</code>.</p>"
+        },
+        "Category":{
+          "shape":"CategoryString",
+          "documentation":"<p>The API security threat category of the event. For example, <code>API2:2023</code>.</p>"
+        },
+        "Confidence":{
+          "shape":"Confidence",
+          "documentation":"<p>The confidence level of the event detection: <code>LOW</code>, <code>MEDIUM</code>, or <code>HIGH</code>.</p>"
+        },
+        "ApiPatterns":{
+          "shape":"ApiPatternList",
+          "documentation":"<p>The API patterns that the event involves. The list contains up to 20 API patterns.</p>"
+        },
+        "EventActors":{
+          "shape":"EventActorReferenceList",
+          "documentation":"<p>The event actors that are associated with the event. The list contains up to 20 event actors. To retrieve the details of an event actor, provide its <code>EventActorId</code> to <a>GetEventActor</a>.</p>"
+        },
+        "Timeline":{
+          "shape":"EventTimelineEntryList",
+          "documentation":"<p>The changes to the event's label, confidence, and API patterns over time, ordered from oldest to newest. The list contains up to 32 entries.</p> <p>For <a>ListEvents</a> and <a>ListEventsByWebACL</a>, this is returned only if you specify <code>TIMELINE</code> in the request <code>Include</code> setting.</p>"
+        }
+      },
+      "documentation":"<p>The API security details of an event.</p>"
+    },
     "ApplicationAttribute":{
       "type":"structure",
       "members":{
@@ -1310,6 +1489,16 @@
       },
       "documentation":"<p>A rule statement that inspects web traffic based on the Autonomous System Number (ASN) associated with the request's IP address.</p> <p>For additional details, see <a href=\"https://docs.aws.amazon.com/waf/latest/developerguide/waf-rule-statement-type-asn-match.html\">ASN match rule statement</a> in the <a href=\"https://docs.aws.amazon.com/waf/latest/developerguide/waf-chapter.html\">WAF Developer Guide</a>. </p>"
     },
+    "AsnOrganizationString":{
+      "type":"string",
+      "max":256,
+      "min":1
+    },
+    "AsnString":{
+      "type":"string",
+      "max":32,
+      "min":1
+    },
     "AssociateWebACLRequest":{
       "type":"structure",
       "required":[
@@ -1339,7 +1528,8 @@
         "COGNITO_USER_POOL",
         "APP_RUNNER_SERVICE",
         "VERIFIED_ACCESS_INSTANCE",
-        "AGENTCORE_GATEWAY"
+        "AGENTCORE_GATEWAY",
+        "APPLICATION_LOAD_BALANCER"
       ]
     },
     "AssociationConfig":{
@@ -1347,14 +1537,14 @@
       "members":{
         "RequestBody":{
           "shape":"RequestBody",
-          "documentation":"<p>Customizes the maximum size of the request body that your protected CloudFront, API Gateway, Amazon Cognito, App Runner, and Verified Access resources forward to WAF for inspection. The default size is 16 KB (16,384 bytes). You can change the setting for any of the available resource types. </p> <note> <p>You are charged additional fees when your protected resources forward body sizes that are larger than the default. For more information, see <a href=\"http://aws.amazon.com/waf/pricing/\">WAF Pricing</a>.</p> </note> <p>Example JSON: <code> { \"API_GATEWAY\": \"KB_48\", \"APP_RUNNER_SERVICE\": \"KB_32\" }</code> </p> <p>For Application Load Balancer and AppSync, the limit is fixed at 8 KB (8,192 bytes).</p>"
+          "documentation":"<p>Customizes the maximum size of the request body that your protected Application Load Balancer, CloudFront, API Gateway, Amazon Cognito, App Runner, and Verified Access resources forward to WAF for inspection. The default size is 8 KB (8,192 bytes) for Application Load Balancer and 16 KB (16,384 bytes) for the other resource types. You can change the setting for any of the available resource types. </p> <note> <p>You are charged additional fees when your protected resources forward body sizes that are larger than the default. For more information, see <a href=\"http://aws.amazon.com/waf/pricing/\">WAF Pricing</a>.</p> </note> <p>Example JSON: <code> { \"API_GATEWAY\": \"KB_48\", \"APP_RUNNER_SERVICE\": \"KB_32\", \"APPLICATION_LOAD_BALANCER\": \"KB_16\" }</code> </p> <p>For AppSync, the limit is fixed at 8 KB (8,192 bytes).</p>"
         },
         "ChallengeJavascriptSdkInjection":{
           "shape":"ChallengeJavascriptSdkInjection",
           "documentation":"<p>Specifies the CloudFront distributions that insert the WAF challenge JavaScript SDK into the HTML responses that they return. When you enable this setting for a distribution, you do not add the SDK to your web pages yourself. </p> <p>You can configure this setting only for CloudFront distributions, using the <code>CLOUDFRONT</code> map key. WAF rejects any other resource type, and the setting is not available for regional resources. To configure it, use the CloudFront scope. </p> <p>Your web ACL must also contain at least one of the following qualifying managed rule groups. WAF Bot Control qualifies only at the <code>TARGETED</code> inspection level, not at <code>COMMON</code>: </p> <ul> <li> <p>The WAF Bot Control managed rule group <code>AWSManagedRulesBotControlRuleSet</code>, with the inspection level set to <code>TARGETED</code>. </p> </li> <li> <p>The WAF Fraud Control account takeover prevention (ATP) managed rule group <code>AWSManagedRulesATPRuleSet</code>. </p> </li> <li> <p>The WAF Fraud Control account creation fraud prevention (ACFP) managed rule group <code>AWSManagedRulesACFPRuleSet</code>. </p> </li> </ul> <p>If you remove the last qualifying managed rule group from the web ACL, or lower the WAF Bot Control inspection level from <code>TARGETED</code> to <code>COMMON</code>, you must remove this setting in the same update. Otherwise, WAF rejects the update. </p> <p>Example JSON: <code> { \"CLOUDFRONT\": {} }</code> </p> <p>If you omit this setting, CloudFront does not insert the SDK. When you omit it from a web ACL that previously used it, cached HTML that already contains the SDK is still served until it expires, or until you invalidate the cache for that distribution. For more information, see <a href=\"https://docs.aws.amazon.com/waf/latest/developerguide/waf-challenge-javascript-sdk-injection.html\">Automatic SDK integration for CloudFront distributions</a> in the <i>WAF Developer Guide</i>. </p>"
         }
       },
-      "documentation":"<p>Specifies custom configurations for the associations between the web ACL and protected resources. </p> <p>Use this to customize the maximum size of the request body that your protected resources forward to WAF for inspection. You can customize this setting for CloudFront, API Gateway, Amazon Cognito, App Runner, or Verified Access resources. The default setting is 16 KB (16,384 bytes). </p> <note> <p>You are charged additional fees when your protected resources forward body sizes that are larger than the default. For more information, see <a href=\"http://aws.amazon.com/waf/pricing/\">WAF Pricing</a>.</p> </note> <p>For Application Load Balancer and AppSync, the limit is fixed at 8 KB (8,192 bytes).</p> <p>You can also use this to have your CloudFront distributions insert the WAF challenge JavaScript SDK into the HTML responses that they return. For more information, see the <code>ChallengeJavascriptSdkInjection</code> setting. </p>"
+      "documentation":"<p>Specifies custom configurations for the associations between the web ACL and protected resources. </p> <p>Use this to customize the maximum size of the request body that your protected resources forward to WAF for inspection. You can customize this setting for Application Load Balancer, CloudFront, API Gateway, Amazon Cognito, App Runner, or Verified Access resources. The default setting is 8 KB (8,192 bytes) for Application Load Balancer and 16 KB (16,384 bytes) for the other resource types. </p> <note> <p>You are charged additional fees when your protected resources forward body sizes that are larger than the default. For more information, see <a href=\"http://aws.amazon.com/waf/pricing/\">WAF Pricing</a>.</p> </note> <p>For AppSync, the limit is fixed at 8 KB (8,192 bytes).</p> <p>You can also use this to have your CloudFront distributions insert the WAF challenge JavaScript SDK into the HTML responses that they return. For more information, see the <code>ChallengeJavascriptSdkInjection</code> setting. </p>"
     },
     "AttributeName":{
       "type":"string",
@@ -1372,6 +1562,51 @@
       "member":{"shape":"AttributeValue"},
       "max":50,
       "min":1
+    },
+    "AuthFingerprintString":{
+      "type":"string",
+      "max":512,
+      "min":1
+    },
+    "BedrockGuardrails":{
+      "type":"structure",
+      "members":{
+        "Disable":{
+          "shape":"DisableBedrockGuardrails",
+          "documentation":"<p>Turns off the use of Amazon Bedrock Guardrails. The rule group continues to run its own inspections. </p> <p>JSON specification: <code>\"Disable\": {}</code> </p>"
+        },
+        "ProtectRequestOnly":{
+          "shape":"BedrockGuardrailsRequestOnly",
+          "documentation":"<p>Uses Amazon Bedrock Guardrails to inspect web requests. </p>"
+        },
+        "ProtectRequestAndResponse":{
+          "shape":"BedrockGuardrailsRequestAndResponse",
+          "documentation":"<p>Uses Amazon Bedrock Guardrails to inspect web requests and the responses to them. </p>"
+        }
+      },
+      "documentation":"<p>Specifies whether the AI security managed rule group, <code>AWSManagedRulesAISecurityRuleSet</code>, uses Amazon Bedrock Guardrails to inspect web requests, or web requests and responses. </p> <p>Specify exactly one of the following settings: <code>Disable</code>, <code>ProtectRequestOnly</code>, or <code>ProtectRequestAndResponse</code>. </p>"
+    },
+    "BedrockGuardrailsRequestAndResponse":{
+      "type":"structure",
+      "required":["RoleArn"],
+      "members":{
+        "RoleArn":{
+          "shape":"IAMRoleArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the IAM role that WAF uses to call Amazon Bedrock Guardrails for the rule group. The role must be in the same Amazon Web Services account as the web ACL. </p> <p>To specify the role, you must have permission to call <code>iam:PassRole</code> on it, to pass it to the WAF service principal <code>wafv2.amazonaws.com</code>. </p>"
+        }
+      },
+      "documentation":"<p>Configures the AI security managed rule group to use Amazon Bedrock Guardrails to inspect web requests and the responses to them. </p> <p>This is used in the <code>BedrockGuardrails</code> setting of <code>AWSManagedRulesAISecurityRuleSet</code>. </p>"
+    },
+    "BedrockGuardrailsRequestOnly":{
+      "type":"structure",
+      "required":["RoleArn"],
+      "members":{
+        "RoleArn":{
+          "shape":"IAMRoleArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the IAM role that WAF uses to call Amazon Bedrock Guardrails for the rule group. The role must be in the same Amazon Web Services account as the web ACL. </p> <p>To specify the role, you must have permission to call <code>iam:PassRole</code> on it, to pass it to the WAF service principal <code>wafv2.amazonaws.com</code>. </p>"
+        }
+      },
+      "documentation":"<p>Configures the AI security managed rule group to use Amazon Bedrock Guardrails to inspect web requests. </p> <p>This is used in the <code>BedrockGuardrails</code> setting of <code>AWSManagedRulesAISecurityRuleSet</code>. </p>"
     },
     "BlockAction":{
       "type":"structure",
@@ -1397,7 +1632,7 @@
       "members":{
         "OversizeHandling":{
           "shape":"OversizeHandling",
-          "documentation":"<p>What WAF should do if the body is larger than WAF can inspect. </p> <p>WAF does not support inspecting the entire contents of the web request body if the body exceeds the limit for the resource type. When a web request body is larger than the limit, the underlying host service only forwards the contents that are within the limit to WAF for inspection. </p> <ul> <li> <p>For Application Load Balancer and AppSync, the limit is fixed at 8 KB (8,192 bytes).</p> </li> <li> <p>For CloudFront, API Gateway, Amazon Cognito, App Runner, and Verified Access, the default limit is 16 KB (16,384 bytes), and you can increase the limit for each resource type in the web ACL <code>AssociationConfig</code>, for additional processing fees. </p> </li> <li> <p>For Amplify, use the CloudFront limit.</p> </li> </ul> <p>The options for oversize handling are the following:</p> <ul> <li> <p> <code>CONTINUE</code> - Inspect the available body contents normally, according to the rule inspection criteria. </p> </li> <li> <p> <code>MATCH</code> - Treat the web request as matching the rule statement. WAF applies the rule action to the request.</p> </li> <li> <p> <code>NO_MATCH</code> - Treat the web request as not matching the rule statement.</p> </li> </ul> <p>You can combine the <code>MATCH</code> or <code>NO_MATCH</code> settings for oversize handling with your rule and web ACL action settings, so that you block any request whose body is over the limit. </p> <p>Default: <code>CONTINUE</code> </p>"
+          "documentation":"<p>What WAF should do if the body is larger than WAF can inspect. </p> <p>WAF does not support inspecting the entire contents of the web request body if the body exceeds the limit for the resource type. When a web request body is larger than the limit, the underlying host service only forwards the contents that are within the limit to WAF for inspection. </p> <ul> <li> <p>For AppSync, the limit is fixed at 8 KB (8,192 bytes).</p> </li> <li> <p>For Application Load Balancer, the default limit is 8 KB (8,192 bytes), and you can change the limit in the web ACL <code>AssociationConfig</code>. </p> </li> <li> <p>For CloudFront, API Gateway, Amazon Cognito, App Runner, and Verified Access, the default limit is 16 KB (16,384 bytes), and you can increase the limit for each resource type in the web ACL <code>AssociationConfig</code>, for additional processing fees. </p> </li> <li> <p>For Amplify, use the CloudFront limit.</p> </li> </ul> <p>The options for oversize handling are the following:</p> <ul> <li> <p> <code>CONTINUE</code> - Inspect the available body contents normally, according to the rule inspection criteria. </p> </li> <li> <p> <code>MATCH</code> - Treat the web request as matching the rule statement. WAF applies the rule action to the request.</p> </li> <li> <p> <code>NO_MATCH</code> - Treat the web request as not matching the rule statement.</p> </li> </ul> <p>You can combine the <code>MATCH</code> or <code>NO_MATCH</code> settings for oversize handling with your rule and web ACL action settings, so that you block any request whose body is over the limit. </p> <p>Default: <code>CONTINUE</code> </p>"
         }
       },
       "documentation":"<p>Inspect the body of the web request. The body immediately follows the request headers.</p> <p>This is used to indicate the web request component to inspect, in the <a>FieldToMatch</a> specification. </p>"
@@ -1511,6 +1746,12 @@
         }
       },
       "documentation":"<p>The result from the inspection of the web request for a valid <code>CAPTCHA</code> token. </p>"
+    },
+    "CategoryString":{
+      "type":"string",
+      "max":128,
+      "min":1,
+      "pattern":".*\\S.*"
     },
     "ChallengeAction":{
       "type":"structure",
@@ -1646,6 +1887,14 @@
       "type":"list",
       "member":{"shape":"Condition"},
       "min":1
+    },
+    "Confidence":{
+      "type":"string",
+      "enum":[
+        "LOW",
+        "MEDIUM",
+        "HIGH"
+      ]
     },
     "ConnectedAccountArn":{
       "type":"string",
@@ -1804,6 +2053,10 @@
         }
       },
       "documentation":"<p>Specifies that WAF should count the request. Optionally defines additional custom handling for the request.</p> <p>This is used in the context of other settings, for example to specify values for <a>RuleAction</a> and web ACL <a>DefaultAction</a>. </p>"
+    },
+    "CountedValue":{
+      "type":"integer",
+      "min":0
     },
     "Country":{"type":"string"},
     "CountryCode":{
@@ -2066,6 +2319,11 @@
       "member":{"shape":"CountryCode"},
       "min":1
     },
+    "CountryString":{
+      "type":"string",
+      "max":64,
+      "min":1
+    },
     "CreateAPIKeyRequest":{
       "type":"structure",
       "required":[
@@ -2290,7 +2548,7 @@
         },
         "AssociationConfig":{
           "shape":"AssociationConfig",
-          "documentation":"<p>Specifies custom configurations for the associations between the web ACL and protected resources. </p> <p>Use this to customize the maximum size of the request body that your protected resources forward to WAF for inspection. You can customize this setting for CloudFront, API Gateway, Amazon Cognito, App Runner, or Verified Access resources. The default setting is 16 KB (16,384 bytes). </p> <note> <p>You are charged additional fees when your protected resources forward body sizes that are larger than the default. For more information, see <a href=\"http://aws.amazon.com/waf/pricing/\">WAF Pricing</a>.</p> </note> <p>For Application Load Balancer and AppSync, the limit is fixed at 8 KB (8,192 bytes).</p> <p>You can also use this to have your CloudFront distributions insert the WAF challenge JavaScript SDK into the HTML responses that they return. For more information, see the <code>ChallengeJavascriptSdkInjection</code> setting. </p>"
+          "documentation":"<p>Specifies custom configurations for the associations between the web ACL and protected resources. </p> <p>Use this to customize the maximum size of the request body that your protected resources forward to WAF for inspection. You can customize this setting for Application Load Balancer, CloudFront, API Gateway, Amazon Cognito, App Runner, or Verified Access resources. The default setting is 8 KB (8,192 bytes) for Application Load Balancer and 16 KB (16,384 bytes) for the other resource types. </p> <note> <p>You are charged additional fees when your protected resources forward body sizes that are larger than the default. For more information, see <a href=\"http://aws.amazon.com/waf/pricing/\">WAF Pricing</a>.</p> </note> <p>For AppSync, the limit is fixed at 8 KB (8,192 bytes).</p> <p>You can also use this to have your CloudFront distributions insert the WAF challenge JavaScript SDK into the HTML responses that they return. For more information, see the <code>ChallengeJavascriptSdkInjection</code> setting. </p>"
         },
         "OnSourceDDoSProtectionConfig":{
           "shape":"OnSourceDDoSProtectionConfig",
@@ -2853,6 +3111,11 @@
         }
       }
     },
+    "DisableBedrockGuardrails":{
+      "type":"structure",
+      "members":{},
+      "documentation":"<p>Turns off the use of Amazon Bedrock Guardrails in the AI security managed rule group. The rule group continues to run its own inspections. </p> <p>This is used in the <code>BedrockGuardrails</code> setting of <code>AWSManagedRulesAISecurityRuleSet</code>. </p> <p>JSON specification: <code>\"Disable\": {}</code> </p>"
+    },
     "DisallowedFeature":{
       "type":"structure",
       "members":{
@@ -2885,6 +3148,16 @@
     "DisassociateWebACLResponse":{
       "type":"structure",
       "members":{}
+    },
+    "DomainList":{
+      "type":"list",
+      "member":{"shape":"DomainString"},
+      "max":100
+    },
+    "DomainString":{
+      "type":"string",
+      "max":256,
+      "min":1
     },
     "DownloadUrl":{"type":"string"},
     "EmailField":{
@@ -2920,6 +3193,323 @@
     "ErrorMessage":{"type":"string"},
     "ErrorReason":{"type":"string"},
     "EvaluationWindowSec":{"type":"long"},
+    "EventActorChange":{
+      "type":"structure",
+      "members":{
+        "ChangeTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The time of the change.</p>"
+        },
+        "ClientIp":{
+          "shape":"IpAddressString",
+          "documentation":"<p>The client IP address of the event actor after the change.</p>"
+        },
+        "TlsFingerprint":{
+          "shape":"TlsFingerprintString",
+          "documentation":"<p>The TLS fingerprint of the event actor after the change, such as a JA3 or JA4 fingerprint.</p>"
+        },
+        "Asn":{
+          "shape":"AsnString",
+          "documentation":"<p>The autonomous system number (ASN) that is associated with the client IP address after the change.</p>"
+        },
+        "AsnOrganization":{
+          "shape":"AsnOrganizationString",
+          "documentation":"<p>The name of the organization that owns the ASN after the change.</p>"
+        },
+        "Country":{
+          "shape":"CountryString",
+          "documentation":"<p>The country of the client IP address after the change.</p>"
+        }
+      },
+      "documentation":"<p>A change to the network attributes of an event actor.</p>"
+    },
+    "EventActorChangeList":{
+      "type":"list",
+      "member":{"shape":"EventActorChange"},
+      "max":20
+    },
+    "EventActorDetail":{
+      "type":"structure",
+      "required":["Summary"],
+      "members":{
+        "Summary":{
+          "shape":"EventActorDetailSummary",
+          "documentation":"<p>The latest observed attributes of the event actor.</p>"
+        },
+        "Events":{
+          "shape":"RelatedEventList",
+          "documentation":"<p>The API security events that the event actor is associated with. The list contains up to 20 events.</p>"
+        },
+        "Changes":{
+          "shape":"EventActorChangeList",
+          "documentation":"<p>The history of changes to the network attributes of the event actor, ordered from oldest to newest. The list contains up to 20 entries.</p>"
+        }
+      },
+      "documentation":"<p>The details of an event actor, returned by <a>GetEventActor</a>.</p>"
+    },
+    "EventActorDetailSummary":{
+      "type":"structure",
+      "required":["EventActorId"],
+      "members":{
+        "EventActorId":{
+          "shape":"EntityId",
+          "documentation":"<p>The unique identifier of the event actor.</p>"
+        },
+        "ClientIp":{
+          "shape":"IpAddressString",
+          "documentation":"<p>The client IP address of the event actor.</p>"
+        },
+        "TlsFingerprint":{
+          "shape":"TlsFingerprintString",
+          "documentation":"<p>The TLS fingerprint of the event actor, such as a JA3 or JA4 fingerprint.</p>"
+        },
+        "Asn":{
+          "shape":"AsnString",
+          "documentation":"<p>The autonomous system number (ASN) that is associated with the client IP address of the event actor.</p>"
+        },
+        "AsnOrganization":{
+          "shape":"AsnOrganizationString",
+          "documentation":"<p>The name of the organization that owns the ASN. For example, <code>AMAZON-02</code>.</p>"
+        },
+        "Country":{
+          "shape":"CountryString",
+          "documentation":"<p>The country of the client IP address of the event actor.</p>"
+        },
+        "AuthFingerprint":{
+          "shape":"AuthFingerprintString",
+          "documentation":"<p>A hash of the authentication credentials that the client of the event actor provides in the request. These can include a JSON Web Token (JWT), a JSON Web Encryption (JWE) token, an Amazon Web Services Signature Version 4 (SigV4) signature, or basic authentication credentials. You can use the fingerprint to match the same client across events and in your WAF logs.</p>"
+        },
+        "CreatedAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The time when WAF first observed the event actor.</p>"
+        }
+      },
+      "documentation":"<p>The latest observed attributes of an event actor.</p>"
+    },
+    "EventActorReference":{
+      "type":"structure",
+      "members":{
+        "EventActorId":{
+          "shape":"EntityId",
+          "documentation":"<p>The unique identifier of the event actor. You provide this to <a>GetEventActor</a> to retrieve the details of the event actor.</p>"
+        },
+        "EventActorValue":{
+          "shape":"EventActorValueString",
+          "documentation":"<p>The observed identifier of the event actor. For example, a client IP address or an authentication fingerprint.</p>"
+        }
+      },
+      "documentation":"<p>A reference to an event actor that is associated with an API security event.</p>"
+    },
+    "EventActorReferenceList":{
+      "type":"list",
+      "member":{"shape":"EventActorReference"},
+      "max":20
+    },
+    "EventActorSortBy":{
+      "type":"string",
+      "enum":["EVENT_COUNT"]
+    },
+    "EventActorSummary":{
+      "type":"structure",
+      "required":["EventActorId"],
+      "members":{
+        "EventActorId":{
+          "shape":"EntityId",
+          "documentation":"<p>The unique identifier of the event actor. You provide this to <a>GetEventActor</a> to retrieve the details of the event actor.</p>"
+        },
+        "ClientIp":{
+          "shape":"IpAddressString",
+          "documentation":"<p>The client IP address of the event actor.</p>"
+        },
+        "TlsFingerprint":{
+          "shape":"TlsFingerprintString",
+          "documentation":"<p>The TLS fingerprint of the event actor, such as a JA3 or JA4 fingerprint.</p>"
+        },
+        "Asn":{
+          "shape":"AsnString",
+          "documentation":"<p>The autonomous system number (ASN) that is associated with the client IP address of the event actor.</p>"
+        },
+        "AsnOrganization":{
+          "shape":"AsnOrganizationString",
+          "documentation":"<p>The name of the organization that owns the ASN. For example, <code>AMAZON-02</code>.</p>"
+        },
+        "Country":{
+          "shape":"CountryString",
+          "documentation":"<p>The country of the client IP address of the event actor.</p>"
+        },
+        "AuthFingerprint":{
+          "shape":"AuthFingerprintString",
+          "documentation":"<p>A hash of the authentication credentials that the client of the event actor provides in the request. These can include a JSON Web Token (JWT), a JSON Web Encryption (JWE) token, an Amazon Web Services Signature Version 4 (SigV4) signature, or basic authentication credentials. You can use the fingerprint to match the same client across events and in your WAF logs.</p>"
+        },
+        "CreatedAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The time when WAF first observed the event actor.</p>"
+        },
+        "EventCount":{
+          "shape":"CountedValue",
+          "documentation":"<p>The number of API security events that the event actor is associated with in the requested time window.</p>"
+        }
+      },
+      "documentation":"<p>High-level information about an event actor, returned by <a>ListEventActors</a>.</p>"
+    },
+    "EventActorSummaryList":{
+      "type":"list",
+      "member":{"shape":"EventActorSummary"},
+      "max":100
+    },
+    "EventActorValueString":{
+      "type":"string",
+      "max":512,
+      "min":1
+    },
+    "EventCategory":{
+      "type":"string",
+      "enum":["API_SECURITY"]
+    },
+    "EventDetailSummary":{
+      "type":"structure",
+      "required":["EventId"],
+      "members":{
+        "EventId":{
+          "shape":"EntityId",
+          "documentation":"<p>The unique identifier of the event. You provide this to <a>GetEvent</a> to retrieve the details of the event.</p>"
+        },
+        "EventStatus":{
+          "shape":"EventStatus",
+          "documentation":"<p>The current status of the event.</p>"
+        },
+        "EventCategory":{
+          "shape":"EventCategory",
+          "documentation":"<p>The category of the event. The only supported value is <code>API_SECURITY</code>.</p>"
+        },
+        "StartTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The time when the event started.</p>"
+        },
+        "LastUpdatedTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The time when the event was last updated.</p>"
+        },
+        "EndTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The time when the event ended. This is not populated while the event is ongoing.</p>"
+        },
+        "ResourceArn":{
+          "shape":"ResourceArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the protected resource that the event is associated with.</p>"
+        },
+        "WebAclArn":{
+          "shape":"ResourceArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the web ACL that the event is associated with.</p>"
+        },
+        "ApiSecurityEventDetail":{
+          "shape":"ApiSecurityEventDetail",
+          "documentation":"<p>The API security details of the event, such as the label, category, confidence, API patterns, and event actors.</p>"
+        }
+      },
+      "documentation":"<p>Information about an API security event, returned by <a>ListEvents</a>, <a>ListEventsByWebACL</a>, and <a>GetEvent</a>.</p>"
+    },
+    "EventDetailSummaryList":{
+      "type":"list",
+      "member":{"shape":"EventDetailSummary"},
+      "max":100
+    },
+    "EventFilter":{
+      "type":"structure",
+      "required":[
+        "Name",
+        "Values"
+      ],
+      "members":{
+        "Name":{
+          "shape":"EventFilterKey",
+          "documentation":"<p>The name of the field to filter on. Valid values:</p> <ul> <li> <p> <code>EVENT_CATEGORY</code> - Filter by event category. The only supported filter value is <code>API_SECURITY</code>.</p> </li> <li> <p> <code>RESOURCE_ARN</code> - Filter by protected resource. The filter values are the Amazon Resource Name (ARN)s of the protected resources.</p> </li> </ul>"
+        },
+        "Values":{
+          "shape":"FilterValueList",
+          "documentation":"<p>The values to filter on. You can specify up to 10 values.</p>"
+        }
+      },
+      "documentation":"<p>A filter to narrow the events that are returned by <a>ListEvents</a> and <a>ListEventsByWebACL</a>.</p>"
+    },
+    "EventFilterKey":{
+      "type":"string",
+      "enum":[
+        "EVENT_CATEGORY",
+        "RESOURCE_ARN"
+      ]
+    },
+    "EventFilterList":{
+      "type":"list",
+      "member":{"shape":"EventFilter"},
+      "max":8,
+      "min":1
+    },
+    "EventIncludeField":{
+      "type":"string",
+      "enum":["TIMELINE"]
+    },
+    "EventIncludeFieldList":{
+      "type":"list",
+      "member":{"shape":"EventIncludeField"},
+      "max":10,
+      "min":1
+    },
+    "EventNextMarker":{
+      "type":"string",
+      "max":1024,
+      "min":1,
+      "pattern":".*\\S.*"
+    },
+    "EventPaginationLimit":{
+      "type":"integer",
+      "max":20,
+      "min":1
+    },
+    "EventSortBy":{
+      "type":"string",
+      "enum":[
+        "START_TIME",
+        "END_TIME",
+        "CONFIDENCE"
+      ]
+    },
+    "EventStatus":{
+      "type":"string",
+      "enum":[
+        "EVENT_STARTED",
+        "EVENT_IN_PROGRESS",
+        "EVENT_COMPLETED",
+        "EVENT_ENDED"
+      ]
+    },
+    "EventTimelineEntry":{
+      "type":"structure",
+      "members":{
+        "ChangeTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The time of the change.</p>"
+        },
+        "Label":{
+          "shape":"LabelName",
+          "documentation":"<p>The fully qualified name of the label that was assigned to the event at the time of the change.</p>"
+        },
+        "Confidence":{
+          "shape":"Confidence",
+          "documentation":"<p>The confidence level of the event detection at the time of the change: <code>LOW</code>, <code>MEDIUM</code>, or <code>HIGH</code>.</p>"
+        },
+        "ApiPatterns":{
+          "shape":"ApiPatternList",
+          "documentation":"<p>The API patterns that the event involved at the time of the change.</p>"
+        }
+      },
+      "documentation":"<p>A change to the label, confidence, or API patterns of an API security event.</p>"
+    },
+    "EventTimelineEntryList":{
+      "type":"list",
+      "member":{"shape":"EventTimelineEntry"},
+      "max":32
+    },
     "ExcludedRule":{
       "type":"structure",
       "required":["Name"],
@@ -2994,7 +3584,7 @@
         },
         "Body":{
           "shape":"Body",
-          "documentation":"<p>Inspect the request body as plain text. The request body immediately follows the request headers. This is the part of a request that contains any additional data that you want to send to your web server as the HTTP request body, such as data from a form. </p> <p>WAF does not support inspecting the entire contents of the web request body if the body exceeds the limit for the resource type. When a web request body is larger than the limit, the underlying host service only forwards the contents that are within the limit to WAF for inspection. </p> <ul> <li> <p>For Application Load Balancer and AppSync, the limit is fixed at 8 KB (8,192 bytes).</p> </li> <li> <p>For CloudFront, API Gateway, Amazon Cognito, App Runner, and Verified Access, the default limit is 16 KB (16,384 bytes), and you can increase the limit for each resource type in the web ACL <code>AssociationConfig</code>, for additional processing fees. </p> </li> <li> <p>For Amplify, use the CloudFront limit.</p> </li> </ul> <p>For information about how to handle oversized request bodies, see the <code>Body</code> object configuration. </p>"
+          "documentation":"<p>Inspect the request body as plain text. The request body immediately follows the request headers. This is the part of a request that contains any additional data that you want to send to your web server as the HTTP request body, such as data from a form. </p> <p>WAF does not support inspecting the entire contents of the web request body if the body exceeds the limit for the resource type. When a web request body is larger than the limit, the underlying host service only forwards the contents that are within the limit to WAF for inspection. </p> <ul> <li> <p>For AppSync, the limit is fixed at 8 KB (8,192 bytes).</p> </li> <li> <p>For Application Load Balancer, the default limit is 8 KB (8,192 bytes), and you can change the limit in the web ACL <code>AssociationConfig</code>. </p> </li> <li> <p>For CloudFront, API Gateway, Amazon Cognito, App Runner, and Verified Access, the default limit is 16 KB (16,384 bytes), and you can increase the limit for each resource type in the web ACL <code>AssociationConfig</code>, for additional processing fees. </p> </li> <li> <p>For Amplify, use the CloudFront limit.</p> </li> </ul> <p>For information about how to handle oversized request bodies, see the <code>Body</code> object configuration. </p>"
         },
         "Method":{
           "shape":"Method",
@@ -3002,7 +3592,7 @@
         },
         "JsonBody":{
           "shape":"JsonBody",
-          "documentation":"<p>Inspect the request body as JSON. The request body immediately follows the request headers. This is the part of a request that contains any additional data that you want to send to your web server as the HTTP request body, such as data from a form. </p> <p>WAF does not support inspecting the entire contents of the web request body if the body exceeds the limit for the resource type. When a web request body is larger than the limit, the underlying host service only forwards the contents that are within the limit to WAF for inspection. </p> <ul> <li> <p>For Application Load Balancer and AppSync, the limit is fixed at 8 KB (8,192 bytes).</p> </li> <li> <p>For CloudFront, API Gateway, Amazon Cognito, App Runner, and Verified Access, the default limit is 16 KB (16,384 bytes), and you can increase the limit for each resource type in the web ACL <code>AssociationConfig</code>, for additional processing fees. </p> </li> <li> <p>For Amplify, use the CloudFront limit.</p> </li> </ul> <p>For information about how to handle oversized request bodies, see the <code>JsonBody</code> object configuration. </p>"
+          "documentation":"<p>Inspect the request body as JSON. The request body immediately follows the request headers. This is the part of a request that contains any additional data that you want to send to your web server as the HTTP request body, such as data from a form. </p> <p>WAF does not support inspecting the entire contents of the web request body if the body exceeds the limit for the resource type. When a web request body is larger than the limit, the underlying host service only forwards the contents that are within the limit to WAF for inspection. </p> <ul> <li> <p>For AppSync, the limit is fixed at 8 KB (8,192 bytes).</p> </li> <li> <p>For Application Load Balancer, the default limit is 8 KB (8,192 bytes), and you can change the limit in the web ACL <code>AssociationConfig</code>. </p> </li> <li> <p>For CloudFront, API Gateway, Amazon Cognito, App Runner, and Verified Access, the default limit is 16 KB (16,384 bytes), and you can increase the limit for each resource type in the web ACL <code>AssociationConfig</code>, for additional processing fees. </p> </li> <li> <p>For Amplify, use the CloudFront limit.</p> </li> </ul> <p>For information about how to handle oversized request bodies, see the <code>JsonBody</code> object configuration. </p>"
         },
         "Headers":{
           "shape":"Headers",
@@ -3133,6 +3723,17 @@
       "max":256,
       "min":1,
       "pattern":".*\\S.*"
+    },
+    "FilterValue":{
+      "type":"string",
+      "max":2048,
+      "min":1
+    },
+    "FilterValueList":{
+      "type":"list",
+      "member":{"shape":"FilterValue"},
+      "max":10,
+      "min":1
     },
     "Filters":{
       "type":"list",
@@ -3289,6 +3890,63 @@
         "CreationTimestamp":{
           "shape":"Timestamp",
           "documentation":"<p>The date and time that the key was created. </p>"
+        }
+      }
+    },
+    "GetEventActorRequest":{
+      "type":"structure",
+      "required":[
+        "Scope",
+        "EventActorId"
+      ],
+      "members":{
+        "Scope":{
+          "shape":"Scope",
+          "documentation":"<p>Specifies whether this is for a global resource type, such as a Amazon CloudFront distribution. For an Amplify application, use <code>CLOUDFRONT</code>.</p> <p>To work with CloudFront, you must also specify the Region US East (N. Virginia) as follows: </p> <ul> <li> <p>CLI - Specify the Region when you use the CloudFront scope: <code>--scope=CLOUDFRONT --region=us-east-1</code>. </p> </li> <li> <p>API and SDKs - For all calls, use the Region endpoint us-east-1. </p> </li> </ul>"
+        },
+        "EventActorId":{
+          "shape":"EntityId",
+          "documentation":"<p>The unique identifier of the event actor. WAF returns the event actor ID in the event details of <a>ListEvents</a>, <a>ListEventsByWebACL</a>, and <a>GetEvent</a>, and in the response to <a>ListEventActors</a>.</p>"
+        }
+      }
+    },
+    "GetEventActorResponse":{
+      "type":"structure",
+      "members":{
+        "EventActor":{
+          "shape":"EventActorDetail",
+          "documentation":"<p>The details of the event actor.</p>"
+        }
+      }
+    },
+    "GetEventRequest":{
+      "type":"structure",
+      "required":[
+        "Scope",
+        "EventId",
+        "WebAclArn"
+      ],
+      "members":{
+        "Scope":{
+          "shape":"Scope",
+          "documentation":"<p>Specifies whether this is for a global resource type, such as a Amazon CloudFront distribution. For an Amplify application, use <code>CLOUDFRONT</code>.</p> <p>To work with CloudFront, you must also specify the Region US East (N. Virginia) as follows: </p> <ul> <li> <p>CLI - Specify the Region when you use the CloudFront scope: <code>--scope=CLOUDFRONT --region=us-east-1</code>. </p> </li> <li> <p>API and SDKs - For all calls, use the Region endpoint us-east-1. </p> </li> </ul>"
+        },
+        "EventId":{
+          "shape":"EntityId",
+          "documentation":"<p>The unique identifier of the event. WAF returns the event ID in the responses to <a>ListEvents</a> and <a>ListEventsByWebACL</a>.</p>"
+        },
+        "WebAclArn":{
+          "shape":"ResourceArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the web ACL that the event is associated with.</p>"
+        }
+      }
+    },
+    "GetEventResponse":{
+      "type":"structure",
+      "members":{
+        "Event":{
+          "shape":"EventDetailSummary",
+          "documentation":"<p>The details of the event.</p>"
         }
       }
     },
@@ -4014,6 +4672,17 @@
       },
       "documentation":"<p>Inspect all headers in the web request. You can specify the parts of the headers to inspect and you can narrow the set of headers to inspect by including or excluding specific keys.</p> <p>This is used to indicate the web request component to inspect, in the <a>FieldToMatch</a> specification. </p> <p>If you want to inspect just the value of a single header, use the <code>SingleHeader</code> <code>FieldToMatch</code> setting instead.</p> <p>Example JSON: <code>\"Headers\": { \"MatchPattern\": { \"All\": {} }, \"MatchScope\": \"KEY\", \"OversizeHandling\": \"MATCH\" }</code> </p>"
     },
+    "HttpMethodString":{
+      "type":"string",
+      "max":16,
+      "min":1
+    },
+    "IAMRoleArn":{
+      "type":"string",
+      "max":2048,
+      "min":20,
+      "pattern":"^arn:aws[a-zA-Z-]*:iam::\\d{12}:role/(?:[\\x21-\\x7F]+/)?[\\w+=,.@-]+$"
+    },
     "IPAddress":{
       "type":"string",
       "max":50,
@@ -4164,6 +4833,11 @@
         "DAILY"
       ]
     },
+    "IpAddressString":{
+      "type":"string",
+      "max":64,
+      "min":1
+    },
     "JA3Fingerprint":{
       "type":"structure",
       "required":["FallbackBehavior"],
@@ -4207,7 +4881,7 @@
         },
         "OversizeHandling":{
           "shape":"OversizeHandling",
-          "documentation":"<p>What WAF should do if the body is larger than WAF can inspect. </p> <p>WAF does not support inspecting the entire contents of the web request body if the body exceeds the limit for the resource type. When a web request body is larger than the limit, the underlying host service only forwards the contents that are within the limit to WAF for inspection. </p> <ul> <li> <p>For Application Load Balancer and AppSync, the limit is fixed at 8 KB (8,192 bytes).</p> </li> <li> <p>For CloudFront, API Gateway, Amazon Cognito, App Runner, and Verified Access, the default limit is 16 KB (16,384 bytes), and you can increase the limit for each resource type in the web ACL <code>AssociationConfig</code>, for additional processing fees. </p> </li> <li> <p>For Amplify, use the CloudFront limit.</p> </li> </ul> <p>The options for oversize handling are the following:</p> <ul> <li> <p> <code>CONTINUE</code> - Inspect the available body contents normally, according to the rule inspection criteria. </p> </li> <li> <p> <code>MATCH</code> - Treat the web request as matching the rule statement. WAF applies the rule action to the request.</p> </li> <li> <p> <code>NO_MATCH</code> - Treat the web request as not matching the rule statement.</p> </li> </ul> <p>You can combine the <code>MATCH</code> or <code>NO_MATCH</code> settings for oversize handling with your rule and web ACL action settings, so that you block any request whose body is over the limit. </p> <p>Default: <code>CONTINUE</code> </p>"
+          "documentation":"<p>What WAF should do if the body is larger than WAF can inspect. </p> <p>WAF does not support inspecting the entire contents of the web request body if the body exceeds the limit for the resource type. When a web request body is larger than the limit, the underlying host service only forwards the contents that are within the limit to WAF for inspection. </p> <ul> <li> <p>For AppSync, the limit is fixed at 8 KB (8,192 bytes).</p> </li> <li> <p>For Application Load Balancer, the default limit is 8 KB (8,192 bytes), and you can change the limit in the web ACL <code>AssociationConfig</code>. </p> </li> <li> <p>For CloudFront, API Gateway, Amazon Cognito, App Runner, and Verified Access, the default limit is 16 KB (16,384 bytes), and you can increase the limit for each resource type in the web ACL <code>AssociationConfig</code>, for additional processing fees. </p> </li> <li> <p>For Amplify, use the CloudFront limit.</p> </li> </ul> <p>The options for oversize handling are the following:</p> <ul> <li> <p> <code>CONTINUE</code> - Inspect the available body contents normally, according to the rule inspection criteria. </p> </li> <li> <p> <code>MATCH</code> - Treat the web request as matching the rule statement. WAF applies the rule action to the request.</p> </li> <li> <p> <code>NO_MATCH</code> - Treat the web request as not matching the rule statement.</p> </li> </ul> <p>You can combine the <code>MATCH</code> or <code>NO_MATCH</code> settings for oversize handling with your rule and web ACL action settings, so that you block any request whose body is over the limit. </p> <p>Default: <code>CONTINUE</code> </p>"
         }
       },
       "documentation":"<p>Inspect the body of the web request as JSON. The body immediately follows the request headers. </p> <p>This is used to indicate the web request component to inspect, in the <a>FieldToMatch</a> specification. </p> <p>Use the specifications in this object to indicate which parts of the JSON body to inspect using the rule's inspection criteria. WAF inspects only the parts of the JSON that result from the matches that you indicate. </p> <p>Example JSON: <code>\"JsonBody\": { \"MatchPattern\": { \"All\": {} }, \"MatchScope\": \"ALL\" }</code> </p> <p>For additional information about this request component option, see <a href=\"https://docs.aws.amazon.com/waf/latest/developerguide/waf-rule-statement-fields-list.html#waf-rule-statement-request-component-json-body\">JSON body</a> in the <i>WAF Developer Guide</i>.</p>"
@@ -4438,6 +5112,168 @@
         "ManagedRuleGroups":{
           "shape":"ManagedRuleGroupSummaries",
           "documentation":"<p>Array of managed rule groups that you can use. If you specified a <code>Limit</code> in your request, this might not be the full list. </p>"
+        }
+      }
+    },
+    "ListEventActorsRequest":{
+      "type":"structure",
+      "required":[
+        "Scope",
+        "TimeWindow"
+      ],
+      "members":{
+        "Scope":{
+          "shape":"Scope",
+          "documentation":"<p>Specifies whether this is for a global resource type, such as a Amazon CloudFront distribution. For an Amplify application, use <code>CLOUDFRONT</code>.</p> <p>To work with CloudFront, you must also specify the Region US East (N. Virginia) as follows: </p> <ul> <li> <p>CLI - Specify the Region when you use the CloudFront scope: <code>--scope=CLOUDFRONT --region=us-east-1</code>. </p> </li> <li> <p>API and SDKs - For all calls, use the Region endpoint us-east-1. </p> </li> </ul>"
+        },
+        "TimeWindow":{
+          "shape":"TimeWindow",
+          "documentation":"<p>The time range for the event actors to return. The time window can't be longer than one year.</p>"
+        },
+        "SortBy":{
+          "shape":"EventActorSortBy",
+          "documentation":"<p>The field to sort event actors by. The only supported value is <code>EVENT_COUNT</code>.</p>"
+        },
+        "Limit":{
+          "shape":"PaginationLimit",
+          "documentation":"<p>The maximum number of event actors that you want WAF to return for this request. Valid values are 1 to 100. If more event actors are available, WAF returns a <code>NextMarker</code> value in the response that you can use in a subsequent call to get the next batch of event actors.</p>"
+        },
+        "NextMarker":{
+          "shape":"EventNextMarker",
+          "documentation":"<p>When you request a list of objects with a <code>Limit</code> setting, if the number of objects that are still available for retrieval exceeds the limit, WAF returns a <code>NextMarker</code> value in the response. To retrieve the next batch of objects, provide the marker from the prior call in your next request.</p>"
+        }
+      }
+    },
+    "ListEventActorsResponse":{
+      "type":"structure",
+      "required":["EventActors"],
+      "members":{
+        "EventActors":{
+          "shape":"EventActorSummaryList",
+          "documentation":"<p>The list of event actor summaries.</p>"
+        },
+        "NextMarker":{
+          "shape":"EventNextMarker",
+          "documentation":"<p>When you request a list of objects with a <code>Limit</code> setting, if the number of objects that are still available for retrieval exceeds the limit, WAF returns a <code>NextMarker</code> value in the response. To retrieve the next batch of objects, provide the marker from the prior call in your next request.</p>"
+        }
+      }
+    },
+    "ListEventsByWebACLRequest":{
+      "type":"structure",
+      "required":[
+        "Scope",
+        "WebAclArn"
+      ],
+      "members":{
+        "Scope":{
+          "shape":"Scope",
+          "documentation":"<p>Specifies whether this is for a global resource type, such as a Amazon CloudFront distribution. For an Amplify application, use <code>CLOUDFRONT</code>.</p> <p>To work with CloudFront, you must also specify the Region US East (N. Virginia) as follows: </p> <ul> <li> <p>CLI - Specify the Region when you use the CloudFront scope: <code>--scope=CLOUDFRONT --region=us-east-1</code>. </p> </li> <li> <p>API and SDKs - For all calls, use the Region endpoint us-east-1. </p> </li> </ul>"
+        },
+        "WebAclArn":{
+          "shape":"ResourceArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the web ACL whose events you want to retrieve.</p>"
+        },
+        "TimeWindow":{
+          "shape":"TimeWindow",
+          "documentation":"<p>The time range for the events to return. If you don't specify a time window, WAF returns events from the past year. The time window can't be longer than one year.</p>"
+        },
+        "Filters":{
+          "shape":"EventFilterList",
+          "documentation":"<p>Filters that narrow the results by event category or by the Amazon Resource Name (ARN) of the protected resource. You can specify up to 8 filters.</p>"
+        },
+        "ApiPatternFilters":{
+          "shape":"ApiPatternFilterList",
+          "documentation":"<p>Filters that narrow the results to events that involve the specified API patterns. If you specify more than one API pattern filter, WAF returns the events that match any of the filters. You can specify up to 20 API pattern filters.</p>"
+        },
+        "Limit":{
+          "shape":"EventPaginationLimit",
+          "documentation":"<p>The maximum number of events that you want WAF to return for this request. Valid values are 1 to 20. If more events are available, WAF returns a <code>NextMarker</code> value in the response that you can use in a subsequent call to get the next batch of events.</p>"
+        },
+        "NextMarker":{
+          "shape":"EventNextMarker",
+          "documentation":"<p>When you request a list of objects with a <code>Limit</code> setting, if the number of objects that are still available for retrieval exceeds the limit, WAF returns a <code>NextMarker</code> value in the response. To retrieve the next batch of objects, provide the marker from the prior call in your next request.</p> <p>The marker is valid only for a request with the same <code>WebAclArn</code>, <code>TimeWindow</code>, <code>Filters</code>, <code>SortBy</code>, and <code>SortOrder</code> settings as the request that returned it.</p>"
+        },
+        "SortOrder":{
+          "shape":"SortOrder",
+          "documentation":"<p>The order in which WAF sorts the events. Valid values:</p> <ul> <li> <p> <code>ASC</code> - Sort in ascending order.</p> </li> <li> <p> <code>DESC</code> - Sort in descending order. This is the default.</p> </li> </ul>"
+        },
+        "SortBy":{
+          "shape":"EventSortBy",
+          "documentation":"<p>The field that WAF sorts the events by. Valid values:</p> <ul> <li> <p> <code>CONFIDENCE</code> - Sort by the confidence level of the event detection.</p> </li> <li> <p> <code>END_TIME</code> - Sort by the time that the event ended.</p> </li> <li> <p> <code>START_TIME</code> - Sort by the time that the event started.</p> </li> </ul>"
+        },
+        "Include":{
+          "shape":"EventIncludeFieldList",
+          "documentation":"<p>Additional fields to return with each event summary. By default, the response includes only the default summary fields.</p> <p>Specify <code>TIMELINE</code> to return the timeline of each event in <code>ApiSecurityEventDetail$Timeline</code>.</p>"
+        }
+      }
+    },
+    "ListEventsByWebACLResponse":{
+      "type":"structure",
+      "required":["Events"],
+      "members":{
+        "Events":{
+          "shape":"EventDetailSummaryList",
+          "documentation":"<p>The list of event summaries.</p>"
+        },
+        "NextMarker":{
+          "shape":"EventNextMarker",
+          "documentation":"<p>When you request a list of objects with a <code>Limit</code> setting, if the number of objects that are still available for retrieval exceeds the limit, WAF returns a <code>NextMarker</code> value in the response. To retrieve the next batch of objects, provide the marker from the prior call in your next request.</p>"
+        }
+      }
+    },
+    "ListEventsRequest":{
+      "type":"structure",
+      "required":["Scope"],
+      "members":{
+        "Scope":{
+          "shape":"Scope",
+          "documentation":"<p>Specifies whether this is for a global resource type, such as a Amazon CloudFront distribution. For an Amplify application, use <code>CLOUDFRONT</code>.</p> <p>To work with CloudFront, you must also specify the Region US East (N. Virginia) as follows: </p> <ul> <li> <p>CLI - Specify the Region when you use the CloudFront scope: <code>--scope=CLOUDFRONT --region=us-east-1</code>. </p> </li> <li> <p>API and SDKs - For all calls, use the Region endpoint us-east-1. </p> </li> </ul>"
+        },
+        "TimeWindow":{
+          "shape":"TimeWindow",
+          "documentation":"<p>The time range for the events to return. If you don't specify a time window, WAF returns events from the past year. The time window can't be longer than one year.</p>"
+        },
+        "Filters":{
+          "shape":"EventFilterList",
+          "documentation":"<p>Filters that narrow the results by event category or by the Amazon Resource Name (ARN) of the protected resource. You can specify up to 8 filters.</p>"
+        },
+        "ApiPatternFilters":{
+          "shape":"ApiPatternFilterList",
+          "documentation":"<p>Filters that narrow the results to events that involve the specified API patterns. If you specify more than one API pattern filter, WAF returns the events that match any of the filters. You can specify up to 20 API pattern filters.</p>"
+        },
+        "Limit":{
+          "shape":"EventPaginationLimit",
+          "documentation":"<p>The maximum number of events that you want WAF to return for this request. Valid values are 1 to 20. If more events are available, WAF returns a <code>NextMarker</code> value in the response that you can use in a subsequent call to get the next batch of events.</p>"
+        },
+        "NextMarker":{
+          "shape":"EventNextMarker",
+          "documentation":"<p>When you request a list of objects with a <code>Limit</code> setting, if the number of objects that are still available for retrieval exceeds the limit, WAF returns a <code>NextMarker</code> value in the response. To retrieve the next batch of objects, provide the marker from the prior call in your next request.</p> <p>The marker is valid only for a request with the same <code>TimeWindow</code>, <code>Filters</code>, <code>SortBy</code>, and <code>SortOrder</code> settings as the request that returned it.</p>"
+        },
+        "SortOrder":{
+          "shape":"SortOrder",
+          "documentation":"<p>The order in which WAF sorts the events. Valid values:</p> <ul> <li> <p> <code>ASC</code> - Sort in ascending order.</p> </li> <li> <p> <code>DESC</code> - Sort in descending order. This is the default.</p> </li> </ul>"
+        },
+        "SortBy":{
+          "shape":"EventSortBy",
+          "documentation":"<p>The field that WAF sorts the events by. Valid values:</p> <ul> <li> <p> <code>CONFIDENCE</code> - Sort by the confidence level of the event detection.</p> </li> <li> <p> <code>END_TIME</code> - Sort by the time that the event ended.</p> </li> <li> <p> <code>START_TIME</code> - Sort by the time that the event started.</p> </li> </ul>"
+        },
+        "Include":{
+          "shape":"EventIncludeFieldList",
+          "documentation":"<p>Additional fields to return with each event summary. By default, the response includes only the default summary fields.</p> <p>Specify <code>TIMELINE</code> to return the timeline of each event in <code>ApiSecurityEventDetail$Timeline</code>.</p>"
+        }
+      }
+    },
+    "ListEventsResponse":{
+      "type":"structure",
+      "required":["Events"],
+      "members":{
+        "Events":{
+          "shape":"EventDetailSummaryList",
+          "documentation":"<p>The list of event summaries.</p>"
+        },
+        "NextMarker":{
+          "shape":"EventNextMarker",
+          "documentation":"<p>When you request a list of objects with a <code>Limit</code> setting, if the number of objects that are still available for retrieval exceeds the limit, WAF returns a <code>NextMarker</code> value in the response. To retrieve the next batch of objects, provide the marker from the prior call in your next request.</p>"
         }
       }
     },
@@ -4961,9 +5797,13 @@
         "AWSManagedRulesAntiDDoSRuleSet":{
           "shape":"AWSManagedRulesAntiDDoSRuleSet",
           "documentation":"<p>Additional configuration for using the anti-DDoS managed rule group, <code>AWSManagedRulesAntiDDoSRuleSet</code>. Use this to configure anti-DDoS behavior for the rule group. </p> <p>For information about using the anti-DDoS managed rule group, see <a href=\"https://docs.aws.amazon.com/waf/latest/developerguide/aws-managed-rule-groups-anti-ddos.html\">WAF Anti-DDoS rule group</a> and <a href=\"https://docs.aws.amazon.com/waf/latest/developerguide/waf-anti-ddos.html\">Distributed Denial of Service (DDoS) prevention</a> in the <i>WAF Developer Guide</i>.</p>"
+        },
+        "AWSManagedRulesAISecurityRuleSet":{
+          "shape":"AWSManagedRulesAISecurityRuleSet",
+          "documentation":"<p>Additional configuration for using the AI security managed rule group, <code>AWSManagedRulesAISecurityRuleSet</code>. Use this to specify whether the rule group uses Amazon Bedrock Guardrails to inspect web requests, or web requests and responses. </p> <p>For information about the Amazon Web Services Managed Rules rule groups, see <a href=\"https://docs.aws.amazon.com/waf/latest/developerguide/aws-managed-rule-groups-list\">Amazon Web Services Managed Rules rule groups list</a> in the <i>WAF Developer Guide</i>.</p>"
         }
       },
-      "documentation":"<p>Additional information that's used by a managed rule group. Many managed rule groups don't require this.</p> <p>The rule groups used for intelligent threat mitigation require additional configuration: </p> <ul> <li> <p>Use the <code>AWSManagedRulesACFPRuleSet</code> configuration object to configure the account creation fraud prevention managed rule group. The configuration includes the registration and sign-up pages of your application and the locations in the account creation request payload of data, such as the user email and phone number fields. </p> </li> <li> <p>Use the <code>AWSManagedRulesAntiDDoSRuleSet</code> configuration object to configure the anti-DDoS managed rule group. The configuration includes the sensitivity levels to use in the rules that typically block and challenge requests that might be participating in DDoS attacks and the specification to use to indicate whether a request can handle a silent browser challenge. </p> </li> <li> <p>Use the <code>AWSManagedRulesATPRuleSet</code> configuration object to configure the account takeover prevention managed rule group. The configuration includes the sign-in page of your application and the locations in the login request payload of data such as the username and password. </p> </li> <li> <p>Use the <code>AWSManagedRulesBotControlRuleSet</code> configuration object to configure the protection level that you want the Bot Control rule group to use. </p> </li> </ul> <p>For example specifications, see the examples section of <a>CreateWebACL</a>.</p>"
+      "documentation":"<p>Additional information that's used by a managed rule group. Many managed rule groups don't require this.</p> <p>The rule groups used for intelligent threat mitigation require additional configuration: </p> <ul> <li> <p>Use the <code>AWSManagedRulesACFPRuleSet</code> configuration object to configure the account creation fraud prevention managed rule group. The configuration includes the registration and sign-up pages of your application and the locations in the account creation request payload of data, such as the user email and phone number fields. </p> </li> <li> <p>Use the <code>AWSManagedRulesAISecurityRuleSet</code> configuration object to configure the AI security managed rule group. The configuration specifies whether the rule group uses Amazon Bedrock Guardrails to inspect web requests, or web requests and responses, and the IAM role that WAF uses to call Amazon Bedrock Guardrails. </p> </li> <li> <p>Use the <code>AWSManagedRulesAntiDDoSRuleSet</code> configuration object to configure the anti-DDoS managed rule group. The configuration includes the sensitivity levels to use in the rules that typically block and challenge requests that might be participating in DDoS attacks and the specification to use to indicate whether a request can handle a silent browser challenge. </p> </li> <li> <p>Use the <code>AWSManagedRulesATPRuleSet</code> configuration object to configure the account takeover prevention managed rule group. The configuration includes the sign-in page of your application and the locations in the login request payload of data such as the username and password. </p> </li> <li> <p>Use the <code>AWSManagedRulesBotControlRuleSet</code> configuration object to configure the protection level that you want the Bot Control rule group to use. </p> </li> </ul> <p>For example specifications, see the examples section of <a>CreateWebACL</a>.</p>"
     },
     "ManagedRuleGroupConfigs":{
       "type":"list",
@@ -4998,7 +5838,7 @@
         },
         "ManagedRuleGroupConfigs":{
           "shape":"ManagedRuleGroupConfigs",
-          "documentation":"<p>Additional information that's used by a managed rule group. Many managed rule groups don't require this.</p> <p>The rule groups used for intelligent threat mitigation require additional configuration: </p> <ul> <li> <p>Use the <code>AWSManagedRulesACFPRuleSet</code> configuration object to configure the account creation fraud prevention managed rule group. The configuration includes the registration and sign-up pages of your application and the locations in the account creation request payload of data, such as the user email and phone number fields. </p> </li> <li> <p>Use the <code>AWSManagedRulesAntiDDoSRuleSet</code> configuration object to configure the anti-DDoS managed rule group. The configuration includes the sensitivity levels to use in the rules that typically block and challenge requests that might be participating in DDoS attacks and the specification to use to indicate whether a request can handle a silent browser challenge. </p> </li> <li> <p>Use the <code>AWSManagedRulesATPRuleSet</code> configuration object to configure the account takeover prevention managed rule group. The configuration includes the sign-in page of your application and the locations in the login request payload of data such as the username and password. </p> </li> <li> <p>Use the <code>AWSManagedRulesBotControlRuleSet</code> configuration object to configure the protection level that you want the Bot Control rule group to use. </p> </li> </ul>"
+          "documentation":"<p>Additional information that's used by a managed rule group. Many managed rule groups don't require this.</p> <p>The rule groups used for intelligent threat mitigation require additional configuration: </p> <ul> <li> <p>Use the <code>AWSManagedRulesACFPRuleSet</code> configuration object to configure the account creation fraud prevention managed rule group. The configuration includes the registration and sign-up pages of your application and the locations in the account creation request payload of data, such as the user email and phone number fields. </p> </li> <li> <p>Use the <code>AWSManagedRulesAISecurityRuleSet</code> configuration object to configure the AI security managed rule group. The configuration specifies whether the rule group uses Amazon Bedrock Guardrails to inspect web requests, or web requests and responses, and the IAM role that WAF uses to call Amazon Bedrock Guardrails. </p> </li> <li> <p>Use the <code>AWSManagedRulesAntiDDoSRuleSet</code> configuration object to configure the anti-DDoS managed rule group. The configuration includes the sensitivity levels to use in the rules that typically block and challenge requests that might be participating in DDoS attacks and the specification to use to indicate whether a request can handle a silent browser challenge. </p> </li> <li> <p>Use the <code>AWSManagedRulesATPRuleSet</code> configuration object to configure the account takeover prevention managed rule group. The configuration includes the sign-in page of your application and the locations in the login request payload of data such as the username and password. </p> </li> <li> <p>Use the <code>AWSManagedRulesBotControlRuleSet</code> configuration object to configure the protection level that you want the Bot Control rule group to use. </p> </li> </ul>"
         },
         "RuleActionOverrides":{
           "shape":"RuleActionOverrides",
@@ -5426,7 +6266,9 @@
         "PRICE_AMOUNT",
         "PAYMENT_NETWORK",
         "PRE_PARSE_TEXT_TRANSFORMATION",
-        "CHALLENGE_JAVASCRIPT_SDK_INJECTION_CONFIG"
+        "CHALLENGE_JAVASCRIPT_SDK_INJECTION_CONFIG",
+        "BEDROCK_GUARDRAILS",
+        "ROLE_ARN"
       ]
     },
     "ParameterExceptionParameter":{
@@ -5443,6 +6285,11 @@
         }
       },
       "documentation":"<p>The name of the field in the request payload that contains your customer's password. </p> <p>This data type is used in the <code>RequestInspection</code> and <code>RequestInspectionACFP</code> data types. </p>"
+    },
+    "PathPatternString":{
+      "type":"string",
+      "max":512,
+      "min":1
     },
     "PathStatistics":{
       "type":"structure",
@@ -5559,6 +6406,11 @@
       "pattern":".*\\S.*"
     },
     "PopulationSize":{"type":"long"},
+    "PortNumber":{
+      "type":"integer",
+      "max":65535,
+      "min":0
+    },
     "PositionalConstraint":{
       "type":"string",
       "enum":[
@@ -6169,6 +7021,41 @@
       "type":"list",
       "member":{"shape":"Regex"}
     },
+    "RelatedEvent":{
+      "type":"structure",
+      "members":{
+        "EventId":{
+          "shape":"EntityId",
+          "documentation":"<p>The unique identifier of the event. You provide this to <a>GetEvent</a> to retrieve the details of the event.</p>"
+        },
+        "StartTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The time when the event started.</p>"
+        },
+        "Label":{
+          "shape":"LabelName",
+          "documentation":"<p>The fully qualified name of the label that WAF assigned to the event.</p>"
+        },
+        "Category":{
+          "shape":"CategoryString",
+          "documentation":"<p>The API security threat category of the event. For example, <code>API2:2023</code>.</p>"
+        },
+        "Confidence":{
+          "shape":"Confidence",
+          "documentation":"<p>The confidence level of the event detection: <code>LOW</code>, <code>MEDIUM</code>, or <code>HIGH</code>.</p>"
+        },
+        "ApiPatterns":{
+          "shape":"ApiPatternList",
+          "documentation":"<p>The API patterns that the event involves.</p>"
+        }
+      },
+      "documentation":"<p>An API security event that an event actor is associated with.</p>"
+    },
+    "RelatedEventList":{
+      "type":"list",
+      "member":{"shape":"RelatedEvent"},
+      "max":20
+    },
     "ReleaseNotes":{"type":"string"},
     "ReleaseSummaries":{
       "type":"list",
@@ -6199,10 +7086,10 @@
       "members":{
         "DefaultSizeInspectionLimit":{
           "shape":"SizeInspectionLimit",
-          "documentation":"<p>Specifies the maximum size of the web request body component that an associated CloudFront, API Gateway, Amazon Cognito, App Runner, or Verified Access resource should send to WAF for inspection. This applies to statements in the web ACL that inspect the body or JSON body. </p> <p>Default: <code>16 KB (16,384 bytes)</code> </p>"
+          "documentation":"<p>Specifies the maximum size of the web request body component that an associated Application Load Balancer, CloudFront, API Gateway, Amazon Cognito, App Runner, or Verified Access resource should send to WAF for inspection. This applies to statements in the web ACL that inspect the body or JSON body. </p> <p>You can specify <code>KB_8</code> only for Application Load Balancer, with the <code>APPLICATION_LOAD_BALANCER</code> resource type. </p> <p>Default: <code>8 KB (8,192 bytes)</code> for Application Load Balancer and <code>16 KB (16,384 bytes)</code> for the other resource types</p>"
         }
       },
-      "documentation":"<p>Customizes the maximum size of the request body that your protected CloudFront, API Gateway, Amazon Cognito, App Runner, and Verified Access resources forward to WAF for inspection. The default size is 16 KB (16,384 bytes). You can change the setting for any of the available resource types. </p> <note> <p>You are charged additional fees when your protected resources forward body sizes that are larger than the default. For more information, see <a href=\"http://aws.amazon.com/waf/pricing/\">WAF Pricing</a>.</p> </note> <p>Example JSON: <code> { \"API_GATEWAY\": \"KB_48\", \"APP_RUNNER_SERVICE\": \"KB_32\" }</code> </p> <p>For Application Load Balancer and AppSync, the limit is fixed at 8 KB (8,192 bytes).</p> <p>This is used in the <code>AssociationConfig</code> of the web ACL. </p>"
+      "documentation":"<p>Customizes the maximum size of the request body that your protected Application Load Balancer, CloudFront, API Gateway, Amazon Cognito, App Runner, and Verified Access resources forward to WAF for inspection. The default size is 8 KB (8,192 bytes) for Application Load Balancer and 16 KB (16,384 bytes) for the other resource types. You can change the setting for any of the available resource types. </p> <note> <p>You are charged additional fees when your protected resources forward body sizes that are larger than the default. For more information, see <a href=\"http://aws.amazon.com/waf/pricing/\">WAF Pricing</a>.</p> </note> <p>Example JSON: <code> { \"API_GATEWAY\": \"KB_48\", \"APP_RUNNER_SERVICE\": \"KB_32\", \"APPLICATION_LOAD_BALANCER\": \"KB_16\" }</code> </p> <p>For AppSync, the limit is fixed at 8 KB (8,192 bytes).</p> <p>This is used in the <code>AssociationConfig</code> of the web ACL. </p>"
     },
     "RequestCount":{
       "type":"long",
@@ -7040,6 +7927,7 @@
     "SizeInspectionLimit":{
       "type":"string",
       "enum":[
+        "KB_8",
         "KB_16",
         "KB_32",
         "KB_48",
@@ -7392,6 +8280,11 @@
       "min":60
     },
     "Timestamp":{"type":"timestamp"},
+    "TlsFingerprintString":{
+      "type":"string",
+      "max":512,
+      "min":1
+    },
     "TokenDomain":{
       "type":"string",
       "max":253,
@@ -7690,7 +8583,7 @@
         },
         "AssociationConfig":{
           "shape":"AssociationConfig",
-          "documentation":"<p>Specifies custom configurations for the associations between the web ACL and protected resources. </p> <p>Use this to customize the maximum size of the request body that your protected resources forward to WAF for inspection. You can customize this setting for CloudFront, API Gateway, Amazon Cognito, App Runner, or Verified Access resources. The default setting is 16 KB (16,384 bytes). </p> <note> <p>You are charged additional fees when your protected resources forward body sizes that are larger than the default. For more information, see <a href=\"http://aws.amazon.com/waf/pricing/\">WAF Pricing</a>.</p> </note> <p>For Application Load Balancer and AppSync, the limit is fixed at 8 KB (8,192 bytes).</p> <p>You can also use this to have your CloudFront distributions insert the WAF challenge JavaScript SDK into the HTML responses that they return. For more information, see the <code>ChallengeJavascriptSdkInjection</code> setting. </p>"
+          "documentation":"<p>Specifies custom configurations for the associations between the web ACL and protected resources. </p> <p>Use this to customize the maximum size of the request body that your protected resources forward to WAF for inspection. You can customize this setting for Application Load Balancer, CloudFront, API Gateway, Amazon Cognito, App Runner, or Verified Access resources. The default setting is 8 KB (8,192 bytes) for Application Load Balancer and 16 KB (16,384 bytes) for the other resource types. </p> <note> <p>You are charged additional fees when your protected resources forward body sizes that are larger than the default. For more information, see <a href=\"http://aws.amazon.com/waf/pricing/\">WAF Pricing</a>.</p> </note> <p>For AppSync, the limit is fixed at 8 KB (8,192 bytes).</p> <p>You can also use this to have your CloudFront distributions insert the WAF challenge JavaScript SDK into the HTML responses that they return. For more information, see the <code>ChallengeJavascriptSdkInjection</code> setting. </p>"
         },
         "OnSourceDDoSProtectionConfig":{
           "shape":"OnSourceDDoSProtectionConfig",
@@ -8081,7 +8974,7 @@
         },
         "AssociationConfig":{
           "shape":"AssociationConfig",
-          "documentation":"<p>Specifies custom configurations for the associations between the web ACL and protected resources. </p> <p>Use this to customize the maximum size of the request body that your protected resources forward to WAF for inspection. You can customize this setting for CloudFront, API Gateway, Amazon Cognito, App Runner, or Verified Access resources. The default setting is 16 KB (16,384 bytes). </p> <note> <p>You are charged additional fees when your protected resources forward body sizes that are larger than the default. For more information, see <a href=\"http://aws.amazon.com/waf/pricing/\">WAF Pricing</a>.</p> </note> <p>For Application Load Balancer and AppSync, the limit is fixed at 8 KB (8,192 bytes).</p> <p>You can also use this to have your CloudFront distributions insert the WAF challenge JavaScript SDK into the HTML responses that they return. For more information, see the <code>ChallengeJavascriptSdkInjection</code> setting. </p>"
+          "documentation":"<p>Specifies custom configurations for the associations between the web ACL and protected resources. </p> <p>Use this to customize the maximum size of the request body that your protected resources forward to WAF for inspection. You can customize this setting for Application Load Balancer, CloudFront, API Gateway, Amazon Cognito, App Runner, or Verified Access resources. The default setting is 8 KB (8,192 bytes) for Application Load Balancer and 16 KB (16,384 bytes) for the other resource types. </p> <note> <p>You are charged additional fees when your protected resources forward body sizes that are larger than the default. For more information, see <a href=\"http://aws.amazon.com/waf/pricing/\">WAF Pricing</a>.</p> </note> <p>For AppSync, the limit is fixed at 8 KB (8,192 bytes).</p> <p>You can also use this to have your CloudFront distributions insert the WAF challenge JavaScript SDK into the HTML responses that they return. For more information, see the <code>ChallengeJavascriptSdkInjection</code> setting. </p>"
         },
         "RetrofittedByFirewallManager":{
           "shape":"Boolean",

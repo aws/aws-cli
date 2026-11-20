@@ -1,0 +1,384 @@
+{
+  "version":"2.0",
+  "metadata":{
+    "apiVersion":"2022-07-26",
+    "auth":["aws.auth#sigv4"],
+    "endpointPrefix":"agent-discovery",
+    "protocol":"rest-json",
+    "protocols":["rest-json"],
+    "serviceFullName":"Agent Discovery",
+    "serviceId":"Agent Discovery",
+    "signatureVersion":"v4",
+    "signingName":"agent-discovery",
+    "uid":"agent-discovery-2022-07-26"
+  },
+  "operations":{
+    "SearchPublicRecords":{
+      "name":"SearchPublicRecords",
+      "http":{
+        "method":"POST",
+        "requestUri":"/records/search",
+        "responseCode":200
+      },
+      "input":{"shape":"SearchPublicRecordsRequest"},
+      "output":{"shape":"SearchPublicRecordsResponse"},
+      "errors":[
+        {"shape":"ThrottlingException"},
+        {"shape":"ValidationException"},
+        {"shape":"InternalServerException"}
+      ],
+      "documentation":"<p>Search public agent records across the authoritative + crawler indexes. Hybrid keyword + neural ranking, merged and fused (weighted RRF), with filters, org governance policy, and descriptor-visibility enforcement applied server-side. Public, authenticated (D-1).</p>",
+      "readonly":true
+    }
+  },
+  "shapes":{
+    "ArdErrorCode":{
+      "type":"string",
+      "documentation":"<p>ARD's error classification (Appendix B). Values are ARD's, uppercase on the wire.</p>",
+      "enum":[
+        "INVALID_ARGUMENT",
+        "UNAUTHENTICATED",
+        "NOT_FOUND",
+        "RATE_LIMIT_EXCEEDED",
+        "INTERNAL_ERROR"
+      ]
+    },
+    "DescriptorEntry":{
+      "type":"structure",
+      "members":{
+        "data":{
+          "shape":"descriptorData",
+          "documentation":"<p>Inline descriptor content (JSON string).</p>"
+        },
+        "version":{
+          "shape":"descriptorTypeVersion",
+          "documentation":"<p>Descriptor type version.</p>"
+        },
+        "source":{
+          "shape":"DescriptorSource",
+          "documentation":"<p>Reference to externally-hosted descriptor content.</p>"
+        },
+        "additionalData":{
+          "shape":"DescriptorMap",
+          "documentation":"<p>Nested sub-descriptors keyed by slot name (e.g. <code>tools</code>, <code>skillMd</code>).</p>"
+        }
+      },
+      "documentation":"<p>A descriptor slot value (A2A card, MCP server card, skills definition, custom). Content is either inline (<code>data</code>) or a reference (<code>source</code>). <code>additionalData</code> carries nested sub-descriptors (e.g. mcpServer.tools, agentSkillsDefinition.skillMd).</p>"
+    },
+    "DescriptorMap":{
+      "type":"map",
+      "key":{"shape":"descriptorSlotKey"},
+      "value":{"shape":"DescriptorEntry"},
+      "documentation":"<p>Keyed descriptor slots (Vestry DescriptorsV2 = Map&lt;String, DescriptorEntry&gt;). A record carries one slot per descriptor type it publishes, and <code>additionalData</code> one per named sub-descriptor, so 32 is well above any real record. A PutRecord over the cap is a 400.</p>",
+      "max":32,
+      "min":0
+    },
+    "DescriptorSource":{
+      "type":"structure",
+      "members":{
+        "fromUrl":{
+          "shape":"DescriptorSourceUrl",
+          "documentation":"<p>The URL that hosts the descriptor content.</p>"
+        }
+      },
+      "documentation":"<p>Reference to descriptor content hosted at a URL.</p>"
+    },
+    "DescriptorSourceUrl":{
+      "type":"structure",
+      "required":["url"],
+      "members":{
+        "url":{
+          "shape":"url",
+          "documentation":"<p>The URL of the externally hosted descriptor content.</p>"
+        }
+      },
+      "documentation":"<p>A URL that hosts descriptor content.</p>"
+    },
+    "DomainName":{
+      "type":"string",
+      "documentation":"<p>FQDN per RFC-1035/1123, case-insensitive, at least two labels.</p>",
+      "max":253,
+      "min":1,
+      "pattern":"(?=.{1,253}$)([a-zA-Z0-9]([a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?\\.)+[a-zA-Z]{2,63}"
+    },
+    "Identifier":{
+      "type":"structure",
+      "members":{
+        "domain":{
+          "shape":"DomainName",
+          "documentation":"<p>Verified domain (e.g. example.com).</p>"
+        },
+        "uri":{
+          "shape":"identifierUri",
+          "documentation":"<p>Arbitrary resolvable URI (urn / url / did).</p>"
+        }
+      },
+      "documentation":"<p>The resolvable identifier value. Discriminated union — exactly one member is set.</p>",
+      "union":true
+    },
+    "InternalServerException":{
+      "type":"structure",
+      "members":{
+        "message":{"shape":"errorMessage"},
+        "errorCode":{
+          "shape":"ArdErrorCode",
+          "documentation":"<p>ARD's Appendix B code on the ARD surface, <code>INTERNAL_ERROR</code>.</p>"
+        }
+      },
+      "documentation":"<p>Thrown on an internal defect — a bug or malformed state, not a failed dependency.</p> <p>⚠️ Deliberately a **permanent** failure. Repeating a request that failed to serialize will fail identically, so treating a 500 as retryable would spin a poison message through redelivery forever instead of letting it reach a dead-letter queue. Dependency failures that *are* worth retrying use `ServiceUnavailableException` and its 503 instead.",
+      "error":{"httpStatusCode":500},
+      "exception":true,
+      "fault":true
+    },
+    "ProvenanceLink":{
+      "type":"structure",
+      "required":[
+        "relation",
+        "sourceId"
+      ],
+      "members":{
+        "relation":{
+          "shape":"ProvenanceRelation",
+          "documentation":"<p>How the contributor got the record.</p>"
+        },
+        "sourceId":{
+          "shape":"trustUri",
+          "documentation":"<p>The source of the record. Not always a URI. On <code>publishedFrom</code> it's the value of the record's <code>identifier</code> union member, <code>identifier.uri</code> or <code>identifier.domain</code>, unchanged. On <code>discoveredFrom</code> it's the name the registry gave the partner source when it was configured for crawling, not a URL.</p>"
+        }
+      },
+      "documentation":"<p>Lineage of a record (AI Catalog Provenance Link Object), with only its required members.</p>"
+    },
+    "ProvenanceLinkList":{
+      "type":"list",
+      "member":{"shape":"ProvenanceLink"},
+      "max":20,
+      "min":0
+    },
+    "ProvenanceRelation":{
+      "type":"string",
+      "documentation":"<p>A provenance link's <code>relation</code>, in AI Catalog's verb-phrase style (AI Catalog leaves it free text), and the value of an ARD entry's <code>com.amazon.route53.registry.origin</code> extension. The <code>provenance</code> filter on SearchPublicRecords and ARD takes these values or <code>authoritative</code>, <code>discovered</code> and <code>federated</code>, in any case.</p>",
+      "enum":[
+        "publishedFrom",
+        "discoveredFrom",
+        "federatedFrom"
+      ]
+    },
+    "PublicRecord":{
+      "type":"structure",
+      "required":[
+        "identifier",
+        "displayName",
+        "recordType"
+      ],
+      "members":{
+        "identifier":{"shape":"Identifier"},
+        "displayName":{
+          "shape":"displayName",
+          "documentation":"<p>The record's display name.</p>"
+        },
+        "description":{
+          "shape":"description",
+          "documentation":"<p>A description of the record.</p>"
+        },
+        "recordType":{
+          "shape":"RecordType",
+          "documentation":"<p>The kind of resource the record describes, such as an agent, a tool, or a skill.</p>"
+        },
+        "domain":{"shape":"DomainName"},
+        "descriptors":{
+          "shape":"DescriptorMap",
+          "documentation":"<p>Every PUBLIC descriptor slot the record was published with, as published: each slot's <code>source</code>, inline <code>data</code>, <code>version</code> and nested <code>additionalData</code>, the <code>custom</code> slot included. Absent on a record discovered at a partner source; ARD serves the partner's cards.</p>"
+        },
+        "trustManifests":{
+          "shape":"TrustManifestList",
+          "documentation":"<p>Trust Manifests (AI Catalog Trust Manifest Object), today only the registry's own, <code>contributor</code> <code>did:web:agent-registry.global.api.aws</code>. Its one provenance link says how the registry got the record: <code>relation</code> is <code>publishedFrom</code> for a record its owner published and <code>discoveredFrom</code> for one the registry discovered at a partner source, with <code>sourceId</code> as <code>ProvenanceLink.sourceId</code> describes. The <code>provenance</code> filter takes the same values (see <code>ProvenanceRelation</code>). It's left off when the registry can't name the source: a <code>federatedFrom</code> record until the index carries the peer registry, a discovered record with no source, or a missing or unknown origin. The manifest is unsigned, so it attributes the claim to the registry and doesn't authenticate it.</p>"
+        },
+        "recordVersion":{
+          "shape":"recordVersion",
+          "documentation":"<p>The record's version string, set by its publisher. Left off when the record has none, for example a discovered record whose source carries no version.</p>"
+        },
+        "createdAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>When the record was created.</p>"
+        },
+        "updatedAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>When the record was last updated.</p>"
+        }
+      },
+      "documentation":"<p>A public record returned by search. Only the record's public descriptors are included.</p>"
+    },
+    "PublicRecordList":{
+      "type":"list",
+      "member":{"shape":"PublicRecord"}
+    },
+    "RecordType":{
+      "type":"string",
+      "enum":[
+        "AGENT",
+        "TOOL",
+        "SKILL",
+        "CUSTOM",
+        "GATEWAY",
+        "WEB_BOT"
+      ]
+    },
+    "SearchFilterExpression":{
+      "type":"structure",
+      "members":{},
+      "documentation":"<p>SearchPublicRecords' <code>filters</code>: an object of field → <code>{operator: value}</code>, or one <code>$and</code>/<code>$or</code> key holding an array of such objects. A document because a value is a string or an array depending on the operator.</p>",
+      "document":true
+    },
+    "SearchPublicRecordsRequest":{
+      "type":"structure",
+      "members":{
+        "searchQuery":{
+          "shape":"searchQuery",
+          "documentation":"<p>Free-text natural-language query (ARD <code>text</code>). Drives semantic + lexical ranking.</p>",
+          "locationName":"query"
+        },
+        "filters":{
+          "shape":"SearchFilterExpression",
+          "documentation":"<p>Structured filter narrowing the results, in the grammar of Agent Registry's SearchDiscoverableRegistryRecords <code>filters</code>: <code>$eq</code>, <code>$ne</code> and <code>$in</code> on a field, with <code>$and</code> or <code>$or</code> over single-condition objects, never nested. Fields are <code>identifier</code>, <code>domain</code>, <code>recordType</code>, <code>descriptorType</code>, <code>provenance</code> and <code>recordVersion</code>, and <code>identifier</code> also takes <code>$prefix</code>. For example <code>{&quot;recordType&quot;: {&quot;$eq&quot;: &quot;AGENT&quot;}}</code> or <code>{&quot;$or&quot;: [{&quot;recordType&quot;: {&quot;$eq&quot;: &quot;MCP&quot;}}, {&quot;domain&quot;: {&quot;$eq&quot;: &quot;acme.com&quot;}}]}</code>.</p> <p>Limits, the same ones Agent Registry applies: at most 10 conditions, `$in` takes 1-25 values, values are strings of 1-512 characters, and `{}` is invalid. A `document` can't carry `@length`, so the service enforces these and answers a filter past them with a ValidationException, as Agent Registry does."
+        },
+        "maxResults":{
+          "shape":"maxResults",
+          "documentation":"<p>Max records per page. Default 20, max 100.</p>"
+        },
+        "nextToken":{
+          "shape":"nextToken",
+          "documentation":"<p>Opaque composite-cursor pagination token (O-DM12).</p>"
+        }
+      }
+    },
+    "SearchPublicRecordsResponse":{
+      "type":"structure",
+      "required":["records"],
+      "members":{
+        "records":{
+          "shape":"PublicRecordList",
+          "documentation":"<p>The records that match the search, most relevant first.</p>"
+        },
+        "nextToken":{
+          "shape":"nextToken",
+          "documentation":"<p>The token to pass in a later request to get the next page of results. Absent when there are no more results.</p>"
+        }
+      }
+    },
+    "ThrottlingException":{
+      "type":"structure",
+      "members":{
+        "message":{"shape":"errorMessage"},
+        "errorCode":{"shape":"ArdErrorCode"}
+      },
+      "documentation":"<p>Thrown when the caller exceeds a rate/burst limit (D-9). ARD's code for it is <code>RATE_LIMIT_EXCEEDED</code>.</p>",
+      "error":{
+        "httpStatusCode":429,
+        "senderFault":true
+      },
+      "exception":true,
+      "retryable":{"throttling":true}
+    },
+    "Timestamp":{"type":"timestamp"},
+    "TrustManifest":{
+      "type":"structure",
+      "required":["contributor"],
+      "members":{
+        "contributor":{
+          "shape":"trustUri",
+          "documentation":"<p>Absolute URI of the contributor these claims are attributed to.</p>"
+        },
+        "provenance":{
+          "shape":"ProvenanceLinkList",
+          "documentation":"<p>The record's lineage as the contributor states it: how the contributor got the record, and from which source.</p>"
+        }
+      },
+      "documentation":"<p>One contributor's trust metadata about a record (AI Catalog Trust Manifest Object), with only the members the registry sets. AI Catalog's other members (<code>subject</code>, <code>signature</code>, <code>trustSchema</code>, <code>attestations</code>, <code>extensions</code>) are optional, so each can be added when something sets it.</p>"
+    },
+    "TrustManifestList":{
+      "type":"list",
+      "member":{"shape":"TrustManifest"},
+      "documentation":"<p>Capped like <code>ArdTrustManifestList</code>. AI Catalog sets no count.</p>",
+      "max":10,
+      "min":0
+    },
+    "ValidationException":{
+      "type":"structure",
+      "members":{
+        "message":{"shape":"errorMessage"},
+        "errorCode":{"shape":"ArdErrorCode"}
+      },
+      "documentation":"<p>Thrown when a request fails input validation.</p> <p>`errorCode` carries ARD's Appendix B code, `INVALID_ARGUMENT`, which ARD's OpenAPI makes a required member of every error body on the ARD surface. The Amazon-shaped and internal surfaces leave it unset.",
+      "error":{
+        "httpStatusCode":400,
+        "senderFault":true
+      },
+      "exception":true
+    },
+    "description":{
+      "type":"string",
+      "max":4096,
+      "min":0
+    },
+    "descriptorData":{
+      "type":"string",
+      "documentation":"<p>Inline descriptor content (opaque JSON string).</p>",
+      "max":131072,
+      "min":0
+    },
+    "descriptorSlotKey":{
+      "type":"string",
+      "max":64,
+      "min":1
+    },
+    "descriptorTypeVersion":{
+      "type":"string",
+      "max":64,
+      "min":1
+    },
+    "displayName":{
+      "type":"string",
+      "max":255,
+      "min":1
+    },
+    "errorMessage":{"type":"string"},
+    "identifierUri":{
+      "type":"string",
+      "max":2048,
+      "min":1
+    },
+    "maxResults":{
+      "type":"integer",
+      "box":true,
+      "max":100,
+      "min":1
+    },
+    "nextToken":{
+      "type":"string",
+      "max":2048,
+      "min":1
+    },
+    "recordVersion":{
+      "type":"string",
+      "max":128,
+      "min":1
+    },
+    "searchQuery":{
+      "type":"string",
+      "max":1024,
+      "min":0
+    },
+    "trustUri":{
+      "type":"string",
+      "documentation":"<p>A URI or other identifier in a Trust Manifest: a contributor or a source.</p>",
+      "max":2048,
+      "min":1
+    },
+    "url":{
+      "type":"string",
+      "max":2048,
+      "min":1
+    }
+  },
+  "documentation":"<p>Agent Discovery lets you search public records for AI agents, tools, skills, and other resources that their publishers have made discoverable.</p>"
+}

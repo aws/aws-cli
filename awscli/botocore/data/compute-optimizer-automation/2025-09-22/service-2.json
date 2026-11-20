@@ -38,7 +38,7 @@
         {"shape":"ServiceUnavailableException"},
         {"shape":"IdempotencyTokenInUseException"}
       ],
-      "documentation":"<p>Associates one or more member accounts with your organization's management account, enabling centralized implementation of optimization actions across those accounts. Once associated, the management account (or a delegated administrator) can apply recommended actions to the member account. When you associate a member account, its organization rule mode is automatically set to \"Any allowed,\" which permits the management account to create Automation rules that automatically apply actions to that account. If the member account has not previously enabled the Automation feature, the association process automatically enables it.</p> <note> <p>Only the management account or a delegated administrator can perform this action.</p> </note>",
+      "documentation":"<p>Associates one or more member accounts with your organization's management account, enabling centralized implementation of optimization actions across those accounts. Once associated, the management account (or a delegated administrator) can apply recommended actions to the member account. When you associate a member account, its organization rule mode is automatically set to \"Any allowed,\" which permits the management account to create Automation rules that automatically apply actions to that account. If the member account has not previously enabled the Automation feature, the association process automatically enables it.</p> <p>Requests that include an account to which an organization enrollment configuration applies are rejected.</p> <note> <p>Only the management account or a delegated administrator can perform this action.</p> </note>",
       "idempotent":true
     },
     "CreateAutomationRule":{
@@ -88,6 +88,29 @@
       "documentation":"<p> Deletes an existing automation rule. </p>",
       "idempotent":true
     },
+    "DeleteOrganizationEnrollmentConfiguration":{
+      "name":"DeleteOrganizationEnrollmentConfiguration",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"DeleteOrganizationEnrollmentConfigurationRequest"},
+      "output":{"shape":"DeleteOrganizationEnrollmentConfigurationResponse"},
+      "errors":[
+        {"shape":"ForbiddenException"},
+        {"shape":"InvalidParameterValueException"},
+        {"shape":"OptInRequiredException"},
+        {"shape":"IdempotentParameterMismatchException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ConflictException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ServiceUnavailableException"},
+        {"shape":"IdempotencyTokenInUseException"}
+      ],
+      "documentation":"<p> Deletes the specified configuration types from an organization enrollment configuration. After deletion, Automation stays enabled for affected accounts and earlier account associations aren't restored. Affected accounts inherit the organization rule mode from the closest parent that has an organization enrollment configuration, or get None allowed if no parent has one. </p> <note> <p>Only the management account or a delegated administrator can perform this action.</p> </note>",
+      "idempotent":true
+    },
     "DisassociateAccounts":{
       "name":"DisassociateAccounts",
       "http":{
@@ -108,7 +131,7 @@
         {"shape":"ServiceUnavailableException"},
         {"shape":"IdempotencyTokenInUseException"}
       ],
-      "documentation":"<p> Disassociates member accounts from your organization's management account, removing centralized automation capabilities. Once disassociated, organization rules no longer apply to the member account, and the management account (or delegated administrator) cannot create Automation rules for that account. </p> <note> <p>Only the management account or a delegated administrator can perform this action.</p> </note>",
+      "documentation":"<p> Disassociates member accounts from your organization's management account, removing centralized automation capabilities. Once disassociated, organization rules no longer apply to the member account, and the management account (or delegated administrator) can't create automation rules for that account. </p> <p>Requests that include an account to which an organization enrollment configuration applies are rejected.</p> <note> <p>Only the management account or a delegated administrator can perform this action.</p> </note>",
       "idempotent":true
     },
     "GetAutomationEvent":{
@@ -310,6 +333,46 @@
       ],
       "documentation":"<p> Lists the automation rules that match specified filters. </p>"
     },
+    "ListOrganizationEnrollmentConfigurations":{
+      "name":"ListOrganizationEnrollmentConfigurations",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"ListOrganizationEnrollmentConfigurationsRequest"},
+      "output":{"shape":"ListOrganizationEnrollmentConfigurationsResponse"},
+      "errors":[
+        {"shape":"ForbiddenException"},
+        {"shape":"InvalidParameterValueException"},
+        {"shape":"OptInRequiredException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ServiceUnavailableException"}
+      ],
+      "documentation":"<p> Lists the organization enrollment configurations that are stored directly on accounts, organizational units (OUs), and the organization root. </p> <note> <p>Only the management account or a delegated administrator can perform this action.</p> </note>",
+      "readonly":true
+    },
+    "ListOrganizationalUnits":{
+      "name":"ListOrganizationalUnits",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"ListOrganizationalUnitsRequest"},
+      "output":{"shape":"ListOrganizationalUnitsResponse"},
+      "errors":[
+        {"shape":"InvalidParameterValueException"},
+        {"shape":"ForbiddenException"},
+        {"shape":"OptInRequiredException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ServiceUnavailableException"}
+      ],
+      "documentation":"<p> Lists the organization root and organizational units (OUs), including whether an applicable organization enrollment configuration enables Automation for member accounts and the effective organization rule mode for each root or OU. </p> <note> <p>Only the management account or a delegated administrator can perform this action.</p> </note>",
+      "readonly":true
+    },
     "ListRecommendedActionSummaries":{
       "name":"ListRecommendedActionSummaries",
       "http":{
@@ -327,7 +390,7 @@
         {"shape":"InternalServerException"},
         {"shape":"ServiceUnavailableException"}
       ],
-      "documentation":"<p> Provides a summary of recommended actions based on specified filters. </p> <note> <p>Management accounts and delegated administrators can retrieve recommended actions that include associated member accounts. You can associate a member account using <code>AssociateAccounts</code>.</p> </note>"
+      "documentation":"<p> Provides a summary of recommended actions based on specified filters. </p> <note> <p>Management accounts and delegated administrators can retrieve recommended action summaries for member accounts that are associated using <code>AssociateAccounts</code> or have an applicable organization enrollment configuration with <code>organizationRuleMode</code> set to <code>AnyAllowed</code>.</p> </note>"
     },
     "ListRecommendedActions":{
       "name":"ListRecommendedActions",
@@ -346,7 +409,7 @@
         {"shape":"InternalServerException"},
         {"shape":"ServiceUnavailableException"}
       ],
-      "documentation":"<p> Lists the recommended actions based that match specified filters. </p> <note> <p>Management accounts and delegated administrators can retrieve recommended actions that include associated member accounts. You can associate a member account using <code>AssociateAccounts</code>.</p> </note>"
+      "documentation":"<p> Lists the recommended actions that match the specified filters. </p> <note> <p>Management accounts and delegated administrators can retrieve recommended actions for member accounts that are associated using <code>AssociateAccounts</code> or have an applicable organization enrollment configuration with <code>organizationRuleMode</code> set to <code>AnyAllowed</code>.</p> </note>"
     },
     "ListTagsForResource":{
       "name":"ListTagsForResource",
@@ -369,6 +432,29 @@
       "documentation":"<p> Lists the tags for a specified resource. </p>",
       "readonly":true
     },
+    "PutOrganizationEnrollmentConfiguration":{
+      "name":"PutOrganizationEnrollmentConfiguration",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"PutOrganizationEnrollmentConfigurationRequest"},
+      "output":{"shape":"PutOrganizationEnrollmentConfigurationResponse"},
+      "errors":[
+        {"shape":"ForbiddenException"},
+        {"shape":"InvalidParameterValueException"},
+        {"shape":"OptInRequiredException"},
+        {"shape":"IdempotentParameterMismatchException"},
+        {"shape":"ThrottlingException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ConflictException"},
+        {"shape":"InternalServerException"},
+        {"shape":"ServiceUnavailableException"},
+        {"shape":"IdempotencyTokenInUseException"}
+      ],
+      "documentation":"<p> Creates or updates an organization enrollment configuration. The organization enrollment configuration sets the organization rule mode on the specified account, organizational unit (OU), or organization root and enables Automation for affected member accounts that have opted in to Compute Optimizer, including accounts that join later. Changes on an OU or the organization root can take up to 5 minutes. Organization enrollment configurations take precedence over settings made by <code>AssociateAccounts</code> and <code>DisassociateAccounts</code>. You must specify at least one configuration in the request. </p> <note> <p>Only the management account or a delegated administrator can perform this action.</p> <p>Organization enrollment configurations can't be created for the management account.</p> </note>",
+      "idempotent":true
+    },
     "RollbackAutomationEvent":{
       "name":"RollbackAutomationEvent",
       "http":{
@@ -389,7 +475,7 @@
         {"shape":"ServiceUnavailableException"},
         {"shape":"IdempotencyTokenInUseException"}
       ],
-      "documentation":"<p> Initiates a rollback for a completed automation event. </p> <note> <p>Management accounts and delegated administrators can only initiate a rollback for events belonging to associated member accounts. You can associate a member account using <code>AssociateAccounts</code>.</p> </note>",
+      "documentation":"<p> Initiates a rollback for a completed automation event. </p> <note> <p>Management accounts and delegated administrators can initiate a rollback for events belonging to member accounts that are associated using <code>AssociateAccounts</code> or have an applicable organization enrollment configuration with <code>organizationRuleMode</code> set to <code>AnyAllowed</code>.</p> </note>",
       "idempotent":true
     },
     "StartAutomationEvent":{
@@ -413,7 +499,7 @@
         {"shape":"IdempotencyTokenInUseException"},
         {"shape":"ServiceQuotaExceededException"}
       ],
-      "documentation":"<p> Initiates a one-time, on-demand automation for the specified recommended action. </p> <note> <p>Management accounts and delegated administrators can only initiate recommended actions for associated member accounts. You can associate a member account using <code>AssociateAccounts</code>.</p> </note>",
+      "documentation":"<p> Initiates a one-time, on-demand automation for the specified recommended action. </p> <note> <p>Management accounts and delegated administrators can initiate recommended actions for member accounts that are associated using <code>AssociateAccounts</code> or have an applicable organization enrollment configuration with <code>organizationRuleMode</code> set to <code>AnyAllowed</code>.</p> </note>",
       "idempotent":true
     },
     "TagResource":{
@@ -552,6 +638,10 @@
           "shape":"OrganizationRuleMode",
           "documentation":"<p>Specifies whether the management account can create Automation rules that implement optimization actions for this account. </p>"
         },
+        "organizationRuleModeSource":{
+          "shape":"OrganizationRuleModeSource",
+          "documentation":"<p>Information about the source of the account's effective organization rule mode. </p>"
+        },
         "statusReason":{
           "shape":"String",
           "documentation":"<p>The reason for the current Automation enrollment status. </p>"
@@ -577,7 +667,7 @@
         },
         "clientToken":{
           "shape":"ClientToken",
-          "documentation":"<p> A unique identifier to ensure idempotency of the request. Valid for 24 hours after creation. </p>",
+          "documentation":"<p> A unique identifier to ensure idempotency of the request. Valid for 30 minutes after creation. </p>",
           "idempotencyToken":true
         }
       }
@@ -594,6 +684,13 @@
           "documentation":"<p> Any errors that occurred during the association process. </p>"
         }
       }
+    },
+    "AutoEnrollMemberAccounts":{
+      "type":"string",
+      "enum":[
+        "All",
+        "None"
+      ]
     },
     "AutomationEvent":{
       "type":"structure",
@@ -674,7 +771,7 @@
         },
         "values":{
           "shape":"FilterValues",
-          "documentation":"<p> The values to use for the specified filter. </p>"
+          "documentation":"<p> The values to use for the specified filter. For the <code>ResourceType</code>, <code>EventType</code>, and <code>EventStatus</code> filters, the value that you specify must exactly match the corresponding field of the automation event, including case. For example, specify <code>Complete</code>, not <code>complete</code>. Wildcards aren't supported. An asterisk (<code>*</code>) or a question mark (<code>?</code>) in a value matches only that literal character. </p> <p> Valid values for the <code>EventStatus</code> filter are <code>Ready</code>, <code>InProgress</code>, <code>Complete</code>, <code>Failed</code>, <code>Cancelled</code>, <code>RollbackReady</code>, <code>RollbackInProgress</code>, <code>RollbackComplete</code>, and <code>RollbackFailed</code>. </p>"
         }
       },
       "documentation":"<p> A filter to apply when listing automation events. </p>"
@@ -875,6 +972,18 @@
         "NumericGreaterThanEqualsIfExists"
       ]
     },
+    "ConflictException":{
+      "type":"structure",
+      "members":{
+        "message":{"shape":"String"}
+      },
+      "documentation":"<p> The request conflicts with a concurrent change to the same resource. Retry the request. </p>",
+      "error":{
+        "httpStatusCode":409,
+        "senderFault":true
+      },
+      "exception":true
+    },
     "CreateAutomationRuleRequest":{
       "type":"structure",
       "required":[
@@ -1023,7 +1132,7 @@
         },
         "restartNeeded":{
           "shape":"StringCriteriaConditionList",
-          "documentation":"<p>Filter criteria indicating whether the recommended action requires a resource restart.</p>"
+          "documentation":"<p>Filter criteria indicating whether the recommended action requires a resource restart. Valid values are <code>true</code> and <code>false</code>. Values are case-sensitive unless you use an <code>IgnoreCase</code> comparison operator. For example, <code>StringEquals</code> with the value <code>False</code> matches no recommended actions.</p>"
         }
       },
       "documentation":"<p> A set of conditions that specify which recommended action qualify for implementation. When a rule is active and a recommended action matches these criteria, Compute Optimizer implements the action at the scheduled run time. You can specify up to 20 conditions per filter criteria and 20 values per condition. </p>"
@@ -1051,6 +1160,32 @@
       }
     },
     "DeleteAutomationRuleResponse":{
+      "type":"structure",
+      "members":{}
+    },
+    "DeleteOrganizationEnrollmentConfigurationRequest":{
+      "type":"structure",
+      "required":[
+        "target",
+        "configurationTypes"
+      ],
+      "members":{
+        "target":{
+          "shape":"OrganizationTarget",
+          "documentation":"<p> The account, organizational unit (OU), or organization root whose organization enrollment configuration you want to delete. </p>"
+        },
+        "configurationTypes":{
+          "shape":"OrganizationEnrollmentConfigurationTypes",
+          "documentation":"<p> The organization enrollment configuration types to delete from the target. </p>"
+        },
+        "clientToken":{
+          "shape":"ClientToken",
+          "documentation":"<p> A unique identifier to ensure idempotency of the request. </p>",
+          "idempotencyToken":true
+        }
+      }
+    },
+    "DeleteOrganizationEnrollmentConfigurationResponse":{
       "type":"structure",
       "members":{}
     },
@@ -1091,7 +1226,7 @@
       "members":{
         "comparison":{
           "shape":"ComparisonOperator",
-          "documentation":"<p>The comparison operator used to evaluate the attribute against the specified values.</p>"
+          "documentation":"<p>The comparison operator used to evaluate the attribute against the specified values. Only operators that begin with <code>Numeric</code> are valid. Any other operator returns an <code>InvalidParameterValueException</code>.</p>"
         },
         "values":{
           "shape":"DoubleList",
@@ -1412,6 +1547,10 @@
         "lastUpdatedTimestamp":{
           "shape":"Timestamp",
           "documentation":"<p> The timestamp of the last update to the enrollment configuration. </p>"
+        },
+        "organizationEnrollmentConfigurationStatus":{
+          "shape":"OrganizationEnrollmentConfigurationStatus",
+          "documentation":"<p> Specifies whether an organization enrollment configuration on your account, or inherited from a parent OU or the organization root, enables Automation for your member account. Associations made using <code>AssociateAccounts</code> don't affect this status. This field is returned for organization member accounts, including delegated administrators. It's omitted for management accounts and accounts that aren't in an organization. </p>"
         }
       }
     },
@@ -1448,7 +1587,7 @@
       "members":{
         "comparison":{
           "shape":"ComparisonOperator",
-          "documentation":"<p>The comparison operator used to evaluate the attribute against the specified values.</p>"
+          "documentation":"<p>The comparison operator used to evaluate the attribute against the specified values. Only operators that begin with <code>Numeric</code> are valid. Any other operator returns an <code>InvalidParameterValueException</code>.</p>"
         },
         "values":{
           "shape":"IntegerList",
@@ -1530,7 +1669,7 @@
         },
         "maxResults":{
           "shape":"ListAutomationEventStepsRequestMaxResultsInteger",
-          "documentation":"<p>The maximum number of automation event steps to return in a single response. Valid range is 1-1000.</p>"
+          "documentation":"<p>The maximum number of automation event steps to return in a single response. If you don't specify a value, the default is 100.</p>"
         },
         "nextToken":{
           "shape":"NextToken",
@@ -1564,6 +1703,10 @@
           "shape":"AutomationEventFilterList",
           "documentation":"<p> The filters to apply to the list of automation event summaries. </p>"
         },
+        "organizationalUnitIds":{
+          "shape":"OrganizationalUnitIds",
+          "documentation":"<p> The organizational unit (OU) or organization root IDs to use to filter the results. The response includes event summaries for accounts in the specified OUs and their child OUs. Only the management account or a delegated administrator can specify this parameter. </p>"
+        },
         "startDateInclusive":{
           "shape":"String",
           "documentation":"<p>The start date for filtering automation event summaries, inclusive. Events created on or after this date will be included.</p>"
@@ -1574,7 +1717,7 @@
         },
         "maxResults":{
           "shape":"ListAutomationEventSummariesRequestMaxResultsInteger",
-          "documentation":"<p>The maximum number of automation event summaries to return in a single response. Valid range is 1-1000.</p>"
+          "documentation":"<p>The maximum number of automation event summaries to return in a single response. If you don't specify a value, the default is 100.</p>"
         },
         "nextToken":{
           "shape":"NextToken",
@@ -1608,6 +1751,10 @@
           "shape":"AutomationEventFilterList",
           "documentation":"<p> The filters to apply to the list of automation events. </p>"
         },
+        "organizationalUnitIds":{
+          "shape":"OrganizationalUnitIds",
+          "documentation":"<p> The organizational unit (OU) or organization root IDs to use to filter the results. The response includes events for accounts in the specified OUs and their child OUs. Only the management account or a delegated administrator can specify this parameter. </p>"
+        },
         "startTimeInclusive":{
           "shape":"Timestamp",
           "documentation":"<p> The start of the time range to query for events. </p>"
@@ -1618,7 +1765,7 @@
         },
         "maxResults":{
           "shape":"ListAutomationEventsRequestMaxResultsInteger",
-          "documentation":"<p> The maximum number of results to return in a single call. </p>"
+          "documentation":"<p> The maximum number of automation events to return in a single response. If you don't specify a value, the default is 100. </p>"
         },
         "nextToken":{
           "shape":"NextToken",
@@ -1658,7 +1805,7 @@
         },
         "organizationScope":{
           "shape":"OrganizationScope",
-          "documentation":"<p> The organizational scope for the rule preview. </p>"
+          "documentation":"<p> The organizational scope for the rule preview. This parameter is required when <code>ruleType</code> is <code>OrganizationRule</code>. Don't specify it when <code>ruleType</code> is <code>AccountRule</code>. </p>"
         },
         "recommendedActionTypes":{
           "shape":"RecommendedActionTypeList",
@@ -1670,7 +1817,7 @@
         },
         "maxResults":{
           "shape":"ListAutomationRulePreviewRequestMaxResultsInteger",
-          "documentation":"<p>The maximum number of automation rule preview results to return in a single response. Valid range is 1-1000.</p>"
+          "documentation":"<p>The maximum number of automation rule preview results to return in a single response. If you don't specify a value, the default is 100.</p>"
         },
         "nextToken":{
           "shape":"NextToken",
@@ -1710,7 +1857,7 @@
         },
         "organizationScope":{
           "shape":"OrganizationScope",
-          "documentation":"<p>The organizational scope for the rule preview.</p>"
+          "documentation":"<p>The organizational scope for the rule preview. This parameter is required when <code>ruleType</code> is <code>OrganizationRule</code>. Don't specify it when <code>ruleType</code> is <code>AccountRule</code>.</p>"
         },
         "recommendedActionTypes":{
           "shape":"RecommendedActionTypeList",
@@ -1719,7 +1866,7 @@
         "criteria":{"shape":"Criteria"},
         "maxResults":{
           "shape":"ListAutomationRulePreviewSummariesRequestMaxResultsInteger",
-          "documentation":"<p>The maximum number of automation rule preview summaries to return in a single response. Valid range is 1-1000.</p>"
+          "documentation":"<p>The maximum number of automation rule preview summaries to return in a single response. If you don't specify a value, the default is 100.</p>"
         },
         "nextToken":{
           "shape":"NextToken",
@@ -1755,7 +1902,7 @@
         },
         "maxResults":{
           "shape":"ListAutomationRulesRequestMaxResultsInteger",
-          "documentation":"<p>The maximum number of automation rules to return in a single response. Valid range is 1-1000.</p>"
+          "documentation":"<p>The maximum number of automation rules to return in a single response. If you don't specify a value, the default is 100.</p>"
         },
         "nextToken":{
           "shape":"NextToken",
@@ -1782,6 +1929,80 @@
         }
       }
     },
+    "ListOrganizationEnrollmentConfigurationsRequest":{
+      "type":"structure",
+      "members":{
+        "targetType":{
+          "shape":"OrganizationTargetType",
+          "documentation":"<p> The target type to use to filter the results. If you specify <code>OrganizationalUnit</code>, the results also include configurations stored on the organization root. If you don't specify a target type, the operation returns configurations for every target type. </p>"
+        },
+        "maxResults":{
+          "shape":"ListOrganizationEnrollmentConfigurationsRequestMaxResultsInteger",
+          "documentation":"<p> The maximum number of organization enrollment configurations to return in a single response. If you don't specify a value, the default is 1,000. </p>"
+        },
+        "nextToken":{
+          "shape":"NextToken",
+          "documentation":"<p> The token to use to retrieve the next page of results. </p>"
+        }
+      }
+    },
+    "ListOrganizationEnrollmentConfigurationsRequestMaxResultsInteger":{
+      "type":"integer",
+      "box":true,
+      "max":1000,
+      "min":1
+    },
+    "ListOrganizationEnrollmentConfigurationsResponse":{
+      "type":"structure",
+      "required":["organizationEnrollmentConfigurations"],
+      "members":{
+        "organizationEnrollmentConfigurations":{
+          "shape":"OrganizationEnrollmentConfigurations",
+          "documentation":"<p> The organization enrollment configurations stored on each target in this page of results. </p>"
+        },
+        "nextToken":{
+          "shape":"NextToken",
+          "documentation":"<p> The token to use to retrieve the next page of results. </p>"
+        }
+      }
+    },
+    "ListOrganizationalUnitsRequest":{
+      "type":"structure",
+      "members":{
+        "organizationalUnitIds":{
+          "shape":"OrganizationalUnitIds",
+          "documentation":"<p> The organizational unit (OU) or organization root IDs to return. If you don't specify this parameter, the operation returns the organization root and every OU. </p>"
+        },
+        "maxResults":{
+          "shape":"ListOrganizationalUnitsRequestMaxResultsInteger",
+          "documentation":"<p> The maximum number of organizational units to return in a single response. If you don't specify a value, the default is 1,000. </p>"
+        },
+        "nextToken":{
+          "shape":"NextToken",
+          "documentation":"<p> The token to use to retrieve the next page of results. </p>"
+        }
+      }
+    },
+    "ListOrganizationalUnitsRequestMaxResultsInteger":{
+      "type":"integer",
+      "box":true,
+      "max":1000,
+      "min":1
+    },
+    "ListOrganizationalUnitsResponse":{
+      "type":"structure",
+      "required":["organizationalUnits"],
+      "members":{
+        "organizationalUnits":{
+          "shape":"OrganizationalUnitInfoList",
+          "documentation":"<p> The organizational units and organization root returned in this page of results, including the organization rule mode that applies to each. </p>"
+        },
+        "nextToken":{
+          "shape":"NextToken",
+          "documentation":"<p> The token to use to retrieve the next page of results. </p>"
+        }
+      }
+    },
     "ListRecommendedActionSummariesRequest":{
       "type":"structure",
       "members":{
@@ -1789,9 +2010,13 @@
           "shape":"RecommendedActionFilterList",
           "documentation":"<p>A list of filters to apply when retrieving recommended action summaries. Filters can be based on resource type, action type, account ID, and other criteria.</p>"
         },
+        "organizationalUnitIds":{
+          "shape":"OrganizationalUnitIds",
+          "documentation":"<p> The organizational unit (OU) or organization root IDs to use to filter the results. The response includes recommended action summaries for accounts in the specified OUs and their child OUs. Only the management account or a delegated administrator can specify this parameter. </p>"
+        },
         "maxResults":{
           "shape":"ListRecommendedActionSummariesRequestMaxResultsInteger",
-          "documentation":"<p>The maximum number of recommended action summaries to return in a single response. Valid range is 1-1000.</p>"
+          "documentation":"<p>The maximum number of recommended action summaries to return in a single response. If you don't specify a value, the default is 100.</p>"
         },
         "nextToken":{
           "shape":"NextToken",
@@ -1825,9 +2050,13 @@
           "shape":"RecommendedActionFilterList",
           "documentation":"<p> The filters to apply to the list of recommended actions. </p>"
         },
+        "organizationalUnitIds":{
+          "shape":"OrganizationalUnitIds",
+          "documentation":"<p> The organizational unit (OU) or organization root IDs to use to filter the results. The response includes recommended actions for accounts in the specified OUs and their child OUs. Only the management account or a delegated administrator can specify this parameter. </p>"
+        },
         "maxResults":{
           "shape":"ListRecommendedActionsRequestMaxResultsInteger",
-          "documentation":"<p>The maximum number of recommended actions to return in a single response. Valid range is 1-1000.</p>"
+          "documentation":"<p>The maximum number of recommended actions to return in a single response. If you don't specify a value, the default is 100.</p>"
         },
         "nextToken":{
           "shape":"NextToken",
@@ -1886,7 +2115,7 @@
       "members":{
         "message":{"shape":"String"}
       },
-      "documentation":"<p> The operation can only be performed by a management account. </p>",
+      "documentation":"<p> The operation can only be performed by an organization's management account or a delegated administrator. </p>",
       "error":{
         "httpStatusCode":400,
         "senderFault":true
@@ -1914,16 +2143,77 @@
         },
         "accountIds":{
           "shape":"OrganizationConfigurationAccountIds",
-          "documentation":"<p>List of specific Amazon Web Services account IDs where the organization rule should be applied.</p>"
+          "documentation":"<p>The specific Amazon Web Services account IDs where the organization rule should be applied. You can specify up to 50 account IDs.</p>"
+        },
+        "organizationalUnitIds":{
+          "shape":"OrganizationConfigurationOrganizationalUnitIds",
+          "documentation":"<p>The organizational unit (OU) or organization root IDs to include in the organization rule scope. The rule applies to accounts in the specified OUs and their child OUs. You can specify up to 150 IDs.</p>"
+        },
+        "excludedOrganizationalUnitIds":{
+          "shape":"OrganizationConfigurationOrganizationalUnitIds",
+          "documentation":"<p>The organizational unit (OU) or organization root IDs to exclude from the organization rule scope. The rule doesn't apply to accounts in the specified OUs or their child OUs. You can specify up to 150 IDs.</p>"
+        },
+        "excludedAccountIds":{
+          "shape":"OrganizationConfigurationAccountIds",
+          "documentation":"<p>The Amazon Web Services account IDs to exclude from the organization rule scope. You can specify up to 50 account IDs. An excluded account remains excluded even if it is in an included OU.</p>"
         }
       },
-      "documentation":"<p>Configuration settings for organization-wide automation rules.</p>"
+      "documentation":"<p>Configuration settings that define the scope of an organization-wide automation rule. Each organizational unit (OU) list can contain up to 150 OUs or organization roots, and each account list can contain up to 50 accounts. Each included OU or organization root must have an effective organization rule mode of <code>AnyAllowed</code>. Exclusions take precedence over inclusions. An account that is in an included OU and is also excluded is excluded. The rule doesn't apply to the management account when the account is reached through an OU or the organization root.</p>"
     },
     "OrganizationConfigurationAccountIds":{
       "type":"list",
       "member":{"shape":"AccountId"},
       "max":50,
       "min":1
+    },
+    "OrganizationConfigurationOrganizationalUnitIds":{
+      "type":"list",
+      "member":{"shape":"OrganizationalUnitId"},
+      "max":150,
+      "min":1
+    },
+    "OrganizationEnrollmentConfiguration":{
+      "type":"structure",
+      "required":[
+        "targetId",
+        "targetType"
+      ],
+      "members":{
+        "targetId":{
+          "shape":"String",
+          "documentation":"<p>The ID of the account, organizational unit (OU), or organization root on which the configuration is stored.</p>"
+        },
+        "targetType":{
+          "shape":"OrganizationTargetType",
+          "documentation":"<p>The type of target on which the configuration is stored.</p>"
+        },
+        "organizationRuleMode":{
+          "shape":"OrganizationRuleMode",
+          "documentation":"<p>The organization rule mode set on the target by the organization enrollment configuration.</p>"
+        }
+      },
+      "documentation":"<p>An organization enrollment configuration sets the organization rule mode on an account, organizational unit (OU), or the organization root and enables Automation for affected member accounts that have opted in to Compute Optimizer.</p>"
+    },
+    "OrganizationEnrollmentConfigurationStatus":{
+      "type":"string",
+      "enum":[
+        "Active",
+        "Inactive"
+      ]
+    },
+    "OrganizationEnrollmentConfigurationType":{
+      "type":"string",
+      "enum":["OrganizationRuleMode"]
+    },
+    "OrganizationEnrollmentConfigurationTypes":{
+      "type":"list",
+      "member":{"shape":"OrganizationEnrollmentConfigurationType"},
+      "max":1,
+      "min":1
+    },
+    "OrganizationEnrollmentConfigurations":{
+      "type":"list",
+      "member":{"shape":"OrganizationEnrollmentConfiguration"}
     },
     "OrganizationRuleMode":{
       "type":"string",
@@ -1932,15 +2222,117 @@
         "NoneAllowed"
       ]
     },
+    "OrganizationRuleModeSource":{
+      "type":"structure",
+      "required":["sourceType"],
+      "members":{
+        "sourceType":{
+          "shape":"OrganizationRuleModeSourceType",
+          "documentation":"<p>How the effective organization rule mode is supplied.</p> <ul> <li> <p> <code>Applied</code> - An organization enrollment configuration is on this organizational unit or account.</p> </li> <li> <p> <code>Inherited</code> - The organization enrollment configuration is on the parent organizational unit or root.</p> </li> <li> <p> <code>Direct</code> - The organization rule mode is set on the account itself, with no organization enrollment configuration applied.</p> </li> <li> <p> <code>Default</code> - No organization enrollment configuration applies, so the organization rule mode is None allowed.</p> </li> </ul>"
+        },
+        "sourceTargetId":{
+          "shape":"String",
+          "documentation":"<p>The ID of the account, organizational unit (OU), or organization root that has the organization enrollment configuration. This field is omitted when <code>sourceType</code> is <code>Direct</code> or <code>Default</code>.</p>"
+        }
+      },
+      "documentation":"<p>Information about the source of an effective organization rule mode.</p>"
+    },
+    "OrganizationRuleModeSourceType":{
+      "type":"string",
+      "enum":[
+        "Applied",
+        "Inherited",
+        "Direct",
+        "Default"
+      ]
+    },
     "OrganizationScope":{
       "type":"structure",
       "members":{
         "accountIds":{
           "shape":"OrganizationConfigurationAccountIds",
           "documentation":"<p>List of Amazon Web Services account IDs to include in the organization scope.</p>"
+        },
+        "organizationalUnitIds":{
+          "shape":"OrganizationConfigurationOrganizationalUnitIds",
+          "documentation":"<p>The organizational unit (OU) or organization root IDs to include in the preview scope. The preview includes accounts in the specified OUs and their child OUs.</p>"
+        },
+        "excludedOrganizationalUnitIds":{
+          "shape":"OrganizationConfigurationOrganizationalUnitIds",
+          "documentation":"<p>The organizational unit (OU) or organization root IDs to exclude from the preview scope. The preview doesn't include accounts in the specified OUs or their child OUs.</p>"
+        },
+        "excludedAccountIds":{
+          "shape":"OrganizationConfigurationAccountIds",
+          "documentation":"<p>The Amazon Web Services account IDs to exclude from the preview scope.</p>"
         }
       },
       "documentation":"<p> Defines the scope for organization-level rules when previewing matching actions.</p>"
+    },
+    "OrganizationTarget":{
+      "type":"structure",
+      "members":{
+        "accountId":{
+          "shape":"AccountId",
+          "documentation":"<p>The ID of the member account to target. You can't specify the management account.</p>"
+        },
+        "organizationalUnitId":{
+          "shape":"OrganizationalUnitId",
+          "documentation":"<p>The ID of the organizational unit (OU) or organization root to target.</p>"
+        }
+      },
+      "documentation":"<p>An account, organizational unit (OU), or organization root to which an organization enrollment configuration applies. The management account can't be specified as an account target.</p>",
+      "union":true
+    },
+    "OrganizationTargetType":{
+      "type":"string",
+      "enum":[
+        "Account",
+        "OrganizationalUnit"
+      ]
+    },
+    "OrganizationalUnitId":{
+      "type":"string",
+      "max":68,
+      "min":1,
+      "pattern":"(r-[0-9a-z]{4,32}|ou-[0-9a-z]{4,32}-[a-z0-9]{8,32})"
+    },
+    "OrganizationalUnitIds":{
+      "type":"list",
+      "member":{"shape":"OrganizationalUnitId"},
+      "max":50,
+      "min":1
+    },
+    "OrganizationalUnitInfo":{
+      "type":"structure",
+      "required":[
+        "organizationalUnitId",
+        "autoEnrollMemberAccounts",
+        "organizationRuleMode",
+        "organizationRuleModeSource"
+      ],
+      "members":{
+        "organizationalUnitId":{
+          "shape":"OrganizationalUnitId",
+          "documentation":"<p>The ID of the organizational unit (OU) or organization root.</p>"
+        },
+        "autoEnrollMemberAccounts":{
+          "shape":"AutoEnrollMemberAccounts",
+          "documentation":"<p>Whether an applicable organization enrollment configuration enables Automation for eligible member accounts beneath the organizational unit (OU) or organization root.</p> <ul> <li> <p> <code>All</code> - An organization enrollment configuration applies and enables Automation for affected member accounts, including accounts that join later. This value applies to configurations with either <code>AnyAllowed</code> or <code>NoneAllowed</code>.</p> </li> <li> <p> <code>None</code> - No organization enrollment configuration applies, so Automation isn't enabled by an organization enrollment configuration.</p> </li> </ul>"
+        },
+        "organizationRuleMode":{
+          "shape":"OrganizationRuleMode",
+          "documentation":"<p>The effective organization rule mode for the organizational unit or organization root.</p>"
+        },
+        "organizationRuleModeSource":{
+          "shape":"OrganizationRuleModeSource",
+          "documentation":"<p>Information about the source of the effective organization rule mode.</p>"
+        }
+      },
+      "documentation":"<p>Information about an organizational unit (OU) or the organization root, including whether an applicable organization enrollment configuration enables Automation for member accounts and the effective organization rule mode.</p>"
+    },
+    "OrganizationalUnitInfoList":{
+      "type":"list",
+      "member":{"shape":"OrganizationalUnitInfo"}
     },
     "PreviewResult":{
       "type":"structure",
@@ -2022,6 +2414,29 @@
       "type":"list",
       "member":{"shape":"PreviewResult"}
     },
+    "PutOrganizationEnrollmentConfigurationRequest":{
+      "type":"structure",
+      "required":["target"],
+      "members":{
+        "target":{
+          "shape":"OrganizationTarget",
+          "documentation":"<p> The account, organizational unit (OU), or organization root on which to create or update the organization enrollment configuration. You can't specify the management account. </p>"
+        },
+        "organizationRuleMode":{
+          "shape":"OrganizationRuleMode",
+          "documentation":"<p> The organization rule mode to set on the target. An organization enrollment configuration with either <code>AnyAllowed</code> or <code>NoneAllowed</code> enables Automation for affected member accounts. <code>AnyAllowed</code> permits organization rules to apply to those accounts, while <code>NoneAllowed</code> doesn't. </p>"
+        },
+        "clientToken":{
+          "shape":"ClientToken",
+          "documentation":"<p> A unique identifier to ensure idempotency of the request. </p>",
+          "idempotencyToken":true
+        }
+      }
+    },
+    "PutOrganizationEnrollmentConfigurationResponse":{
+      "type":"structure",
+      "members":{}
+    },
     "RecommendedAction":{
       "type":"structure",
       "members":{
@@ -2092,10 +2507,10 @@
         },
         "values":{
           "shape":"FilterValues",
-          "documentation":"<p>List of filter values to match against the specified filter name. Used to narrow down recommended actions based on specific criteria.</p>"
+          "documentation":"<p>The list of values to filter by for the specified filter name. Wildcards aren't supported. An asterisk (<code>*</code>) or a question mark (<code>?</code>) in a value matches only that literal character. How a value is matched depends on the filter name:</p> <dl> <dt>ResourceType, RecommendedActionType, ResourceId, and AccountId</dt> <dd> <p>The value that you specify must exactly match the corresponding field of the recommended action, including case. For example, specify <code>EbsVolume</code>, not <code>ebsvolume</code>.</p> </dd> <dt>CurrentResourceDetailsEbsVolumeType</dt> <dd> <p>Matches when the value appears anywhere in the current resource details of the recommended action, which include the volume type, size, IOPS, and throughput. Matching is case sensitive, and a partial value also matches. For example, <code>gp</code> matches both <code>gp2</code> and <code>gp3</code> volumes, and <code>100</code> matches any volume whose size, IOPS, or throughput contains 100. To filter by volume type, specify the complete volume type, such as <code>gp3</code> or <code>io2</code>.</p> </dd> <dt>ResourceTagsKey and ResourceTagsValue</dt> <dd> <p>Matches when the value appears anywhere in the tags of the resource. Both filter names search every tag key and tag value. Matching is case sensitive, and a partial value also matches. For example, a <code>ResourceTagsKey</code> value of <code>test</code> matches a resource that has a tag value of <code>test</code>.</p> </dd> <dt>LookBackPeriodInDays</dt> <dd> <p>Matches when the lookback period of the recommended action equals the value. Specify a number of days, such as <code>14</code>.</p> </dd> <dt>RestartNeeded</dt> <dd> <p>Matches recommended actions based on whether implementing them requires a resource restart. Specify <code>true</code> or <code>false</code>.</p> </dd> </dl>"
         }
       },
-      "documentation":"<p>A filter used to narrow down recommended action results based on specific criteria.</p>"
+      "documentation":"<p>A filter used to narrow down recommended action results based on specific criteria. If a filter has more than one value, a recommended action matches the filter when it matches any of the values. If you specify more than one filter, a recommended action must match all of the filters.</p>"
     },
     "RecommendedActionFilterList":{
       "type":"list",
@@ -2210,7 +2625,7 @@
       "members":{
         "comparison":{
           "shape":"ComparisonOperator",
-          "documentation":"<p>The comparison operator used to evaluate the attribute against the specified values.</p>"
+          "documentation":"<p>The comparison operator used to evaluate the attribute against the specified values. Only operators that begin with <code>String</code> are valid. Any other operator returns an <code>InvalidParameterValueException</code>.</p>"
         },
         "key":{
           "shape":"StringCriteriaValue",
@@ -2428,7 +2843,7 @@
       "members":{
         "comparison":{
           "shape":"ComparisonOperator",
-          "documentation":"<p>The comparison operator used to evaluate the attribute against the specified values.</p>"
+          "documentation":"<p>The comparison operator used to evaluate the attribute against the specified values. Only operators that begin with <code>String</code> are valid. Any other operator returns an <code>InvalidParameterValueException</code>.</p>"
         },
         "values":{
           "shape":"StringCriteriaValues",
@@ -2736,7 +3151,7 @@
       "members":{
         "status":{
           "shape":"EnrollmentStatus",
-          "documentation":"<p>The desired enrollment status. </p> <ul> <li> <p>Active - Enables the Automation feature for your account.</p> </li> <li> <p>Inactive - Disables the Automation feature for your account and stops all of your automation rules. If you opt in again later, all rules will be inactive, and you must enable the rules you want to run. You must wait at least 24 hours after opting out to opt in again.</p> </li> </ul> <note> <p>The <code>Pending</code> and <code>Failed</code> options cannot be used to update the enrollment status of an account. They are returned in the response of a request to update the enrollment status of an account.</p> <p>If you are a member account, your account must be disassociated from your organization’s management account before you can disable Automation. Contact your administrator to make this change.</p> </note>"
+          "documentation":"<p>The desired enrollment status. </p> <ul> <li> <p>Active - Enables the Automation feature for your account.</p> </li> <li> <p>Inactive - Disables the Automation feature for your account and stops all of your automation rules. If you opt in again later, all rules will be inactive, and you must enable the rules you want to run. You must wait at least 24 hours after opting out to opt in again.</p> </li> </ul> <note> <p>The <code>Pending</code> and <code>Failed</code> options can't be used to update the enrollment status of an account. They are returned in the response of a request to update the enrollment status of an account.</p> <p>If you are a member account, you can't disable Automation while an organization enrollment configuration applies. If no organization enrollment configuration applies, you also can't disable Automation while your organization rule mode is <code>AnyAllowed</code>. Ask your administrator to delete the organization enrollment configuration or disassociate your account, as applicable.</p> </note>"
         },
         "clientToken":{
           "shape":"ClientToken",

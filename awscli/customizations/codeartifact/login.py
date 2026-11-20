@@ -38,13 +38,22 @@ def get_relative_expiration_time(remaining):
     return message
 
 
+def _redact_auth_token(value, auth_token):
+    if not auth_token:
+        return value
+    return value.replace(auth_token, '******')
+
+
 class CommandFailedError(Exception):
     def __init__(self, called_process_error, auth_token):
-        msg = str(called_process_error).replace(auth_token, '******')
+        msg = _redact_auth_token(str(called_process_error), auth_token)
         if called_process_error.stderr is not None:
+            stderr = called_process_error.stderr
+            if isinstance(stderr, bytes):
+                stderr = stderr.decode(get_stderr_encoding())
             msg += (
                 f' Stderr from command:\n'
-                f'{called_process_error.stderr.decode(get_stderr_encoding())}'
+                f'{_redact_auth_token(stderr, auth_token)}'
             )
         Exception.__init__(self, msg)
 

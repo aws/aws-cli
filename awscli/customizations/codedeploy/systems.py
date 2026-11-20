@@ -187,6 +187,7 @@ class Windows(System):
             ],
             stdout=subprocess.PIPE,
             stderr=subprocess.PIPE,
+            text=True,
         )
         (output, error) = process.communicate()
         not_found = (
@@ -230,6 +231,7 @@ class Windows(System):
             ],
             stdout=subprocess.PIPE,
             stderr=subprocess.PIPE,
+            text=True,
         )
         (output, error) = process.communicate()
         if "Running" not in output:
@@ -248,6 +250,7 @@ class Windows(System):
             ],
             stdout=subprocess.PIPE,
             stderr=subprocess.PIPE,
+            text=True,
         )
         (output, error) = process.communicate()
         not_found = (
@@ -273,6 +276,7 @@ class Windows(System):
             ],
             stdout=subprocess.PIPE,
             stderr=subprocess.PIPE,
+            text=True,
         )
         (output, error) = process.communicate()
         if process.returncode != 0:
@@ -329,6 +333,7 @@ class Linux(System):
             ['service', 'codedeploy-agent', 'stop'],
             stdout=subprocess.PIPE,
             stderr=subprocess.PIPE,
+            text=True,
         )
         (output, error) = process.communicate()
         if process.returncode != 0 and params.not_found_msg not in error:

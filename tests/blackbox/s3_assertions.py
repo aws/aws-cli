@@ -45,15 +45,25 @@ def _check_key(request, key: str, addressing_style: str, op_name: str):
 def _check_params(request, params: dict, param_map: dict, op_name: str):
     """Check optional params against the wire using a lookup map.
 
-    param_map maps param_name -> (location, wire_name) where location
-    is "header", "headers", or "querystring".
+    param_map maps param_name to either a (location, wire_name) pair,
+    where location is "header", "headers", "querystring", or "payload",
+    or a function that reads the param's value from the request. The
+    functions cover params whose wire form differs between transfer
+    clients.
     """
     parsed_url = urlparse(request.effective_path)
     actual_qs = parse_qs(parsed_url.query)
     for param_name, expected in params.items():
         if param_name not in param_map:
             raise ValueError(f"{op_name}: unknown param {param_name!r}")
-        loc, wire = param_map[param_name]
+        spec = param_map[param_name]
+        if callable(spec):
+            actual = spec(request)
+            assert (
+                actual == expected
+            ), f"{op_name}.{param_name}: expected {expected!r}, got {actual!r}"
+            continue
+        loc, wire = spec
         if loc == "header":
             actual = request.headers.get(wire) or request.headers.get(
                 wire.lower()
@@ -84,6 +94,28 @@ def _check_params(request, params: dict, param_map: dict, op_name: str):
                 f"{op_name}.{param_name}",
                 coerce_strings=True,
             )
+
+
+def _read_checksum_algorithm(request) -> str | None:
+    """Read the algorithm of the request's checksum trailer, e.g. CRC32.
+
+    Both transfer clients name the trailer in ``x-amz-trailer``, but
+    only the classic client also sends ``x-amz-sdk-checksum-algorithm``.
+    """
+    trailer = request.headers.get("x-amz-trailer", "").lower()
+    if not trailer.startswith("x-amz-checksum-"):
+        return None
+    return trailer.removeprefix("x-amz-checksum-").upper()
+
+
+def _read_checksum_mode(request) -> str | None:
+    """Read ``x-amz-checksum-mode``, upper-cased.
+
+    S3 accepts the value in any case. The classic transfer client sends
+    ``ENABLED`` and the CRT transfer client sends ``enabled``.
+    """
+    mode = request.headers.get("x-amz-checksum-mode")
+    return None if mode is None else mode.upper()
 
 
 def _assert_subset(actual, expected, path: str, coerce_strings: bool = False):
@@ -185,7 +217,7 @@ _PUT_OBJECT_PARAMS = {
     "ContentLength": ("header", "Content-Length"),
     "ContentMD5": ("header", "Content-MD5"),
     "ContentType": ("header", "Content-Type"),
-    "ChecksumAlgorithm": ("header", "x-amz-sdk-checksum-algorithm"),
+    "ChecksumAlgorithm": _read_checksum_algorithm,
     "ChecksumCRC32": ("header", "x-amz-checksum-crc32"),
     "ChecksumCRC32C": ("header", "x-amz-checksum-crc32c"),
     "ChecksumCRC64NVME": ("header", "x-amz-checksum-crc64nvme"),
@@ -313,7 +345,7 @@ _GET_OBJECT_PARAMS = {
     ),
     "RequestPayer": ("header", "x-amz-request-payer"),
     "ExpectedBucketOwner": ("header", "x-amz-expected-bucket-owner"),
-    "ChecksumMode": ("header", "x-amz-checksum-mode"),
+    "ChecksumMode": _read_checksum_mode,
     "ResponseCacheControl": ("querystring", "response-cache-control"),
     "ResponseContentDisposition": (
         "querystring",

@@ -157,7 +157,9 @@ def _build_create_logging_config(app_log, sys_log):
     return {'loggingConfig': config}
 
 
-def build_create_request(parsed_args, norm, tags, role_arn, s3_obj, region):
+def build_create_request(
+    parsed_args, norm, tags, role_arn, s3_obj, region, runtime_id
+):
     """Return the kwargs for ``create_web_function``.
 
     Optional fields that are unset (``None`` / empty) are omitted via
@@ -170,9 +172,7 @@ def build_create_request(parsed_args, norm, tags, role_arn, s3_obj, region):
             'kmsKeyArn': parsed_args.kms_key_arn,
             'buildConfig': {
                 'codeConfig': {'s3Object': _s3_object(s3_obj)},
-                'runtimeConfig': {
-                    'runtime': parsed_args.runtime or constants.DEFAULT_RUNTIME
-                },
+                'runtimeConfig': {'runtime': runtime_id},
             },
             'serviceConfig': _service_config(
                 role_arn,
@@ -207,7 +207,7 @@ _REVISION_FIELDS_NOT_INHERITED = frozenset({'description'})
 
 
 def build_revision_request(
-    session, parsed_args, norm, role_arn, s3_obj, existing
+    session, parsed_args, norm, role_arn, s3_obj, existing, runtime_id
 ):
     """Return the kwargs for ``create_web_function_revision``.
 
@@ -235,13 +235,7 @@ def build_revision_request(
         lambda existing: _s3_object(s3_obj, existing),
     )
     build_config = request['buildConfig']
-    runtime_config = build_config.setdefault('runtimeConfig', {})
-    runtime = parsed_args.runtime or runtime_config.get('runtime')
-    if not runtime:
-        raise LambdaWebError(
-            'The command could not determine the runtime. Specify --runtime.'
-        )
-    runtime_config['runtime'] = runtime
+    build_config.setdefault('runtimeConfig', {})['runtime'] = runtime_id
 
     service_config = request.setdefault('serviceConfig', {})
     service_config['executionRoleArn'] = role_arn

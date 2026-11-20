@@ -11,6 +11,10 @@
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
 from awscli.customizations.lambdaweb import constants
+from awscli.customizations.lambdaweb.runtimes import python as python_runtime
+
+_PYTHON_RUNTIME = python_runtime.RUNTIME.latest
+_PYTHON_ENTRYPOINT_ENV_VAR = python_runtime.ENTRYPOINT_ENV_VAR
 
 _EXCLUDED_PATTERNS_HELP = ', '.join(
     f'``{pattern}``' for pattern in constants.DEFAULT_EXCLUDE_PATTERNS
@@ -57,8 +61,11 @@ ARG_TABLE = [
         'help_text': (
             'Path to the directory that contains the Web Function source code. '
             'This option is required when you create a Web Function unless you '
-            'use ``--hello-world``. For an existing Web Function, omit this '
-            'option to update configuration and reuse the deployed code. With '
+            'use ``--hello-world``. When you create a Web Function and omit '
+            '``--runtime``, the command detects a Node.js or Python project '
+            'from files such as ``package.json`` or ``requirements.txt``. For '
+            'an existing Web Function, omit this option to update '
+            'configuration and reuse the deployed code. With '
             '``--hello-world``, the default is ``./&lt;name&gt;``.'
         ),
     },
@@ -67,11 +74,14 @@ ARG_TABLE = [
         'action': 'store_true',
         'default': False,
         'help_text': (
-            'Create and deploy a minimal TypeScript starter that '
-            f'listens on port ``{constants.RUNTIME_HTTP_PORT}``. Set '
-            f'``{constants.LOCAL_PORT_ENV_VAR}`` to use a different port for '
-            'local development. The starter uses '
-            f'``{constants.DEFAULT_RUNTIME}``. Only ``--name`` is required.'
+            'Create and deploy a minimal starter application. By default, '
+            'the starter is a TypeScript HTTP server on '
+            f'``{constants.DEFAULT_RUNTIME}`` that listens on port '
+            f'``{constants.RUNTIME_HTTP_PORT}``. With ``--runtime python``, '
+            'the starter is a Python WSGI application on '
+            f'``{_PYTHON_RUNTIME}``. Set ``{constants.LOCAL_PORT_ENV_VAR}`` '
+            'to use a different port for local development. Only ``--name`` '
+            'is required.'
         ),
     },
     {
@@ -88,25 +98,37 @@ ARG_TABLE = [
     {
         'name': 'runtime',
         'help_text': (
-            'Runtime identifier for the Web Function. When you create a Web '
-            'Function, the default is '
-            f'``{constants.DEFAULT_RUNTIME}``. When you update a Web Function, '
-            'the command reuses its current runtime.'
+            'Runtime for the Web Function. Specify a runtime identifier, such '
+            f'as ``{constants.DEFAULT_RUNTIME}`` or ``{_PYTHON_RUNTIME}``, or '
+            'specify ``node`` or ``python`` to use the latest version of that '
+            'runtime. When you create a Web Function and omit this option, the '
+            'command detects a Python project from its files and otherwise '
+            f'uses ``{constants.DEFAULT_RUNTIME}``. When you update a Web '
+            'Function, the command reuses its current runtime.'
         ),
     },
     {
         'name': 'entry-point',
         'help_text': (
-            'Path to the entry file, relative to ``--code``. The entry file '
-            'must start the HTTP server. If you omit this option, the command '
+            'Entry point of the application, relative to ``--code``. For a '
+            'Node.js runtime, specify the path to the entry file, which must '
+            'start the HTTP server. If you omit this option, the command '
             'checks the ``main`` and ``exports`` fields in ``package.json``, '
             'then checks common files such as ``index.js`` and ``server.js``. '
             'If the entry file is not ``index.js``, the command adds an '
             '``index.js`` wrapper that imports it. To have the runtime load a '
             f'file directly, set ``{constants.ENTRYPOINT_ENV_VAR}`` with '
-            '``--env`` '
-            'instead. Do not use ``--entry-point`` and '
-            f'``{constants.ENTRYPOINT_ENV_VAR}`` together.'
+            '``--env`` instead. For a Python runtime, specify the application '
+            'object as ``module:object``, as you would for uvicorn or '
+            'gunicorn (for example, ``app.main:app``), optionally prefixed '
+            'with ``asgi:`` or ``wsgi:``, or specify the path to a ``.py`` '
+            'file. If you omit this option, the command checks common modules '
+            'such as ``main.py`` and ``app.py`` and Django projects. The '
+            f'default is ``{python_runtime.DEFAULT_ENTRY}``. For another '
+            f'entry point, the command sets ``{_PYTHON_ENTRYPOINT_ENV_VAR}`` '
+            'on the revision. Do not use ``--entry-point`` together with '
+            f'``{constants.ENTRYPOINT_ENV_VAR}`` or '
+            f'``{_PYTHON_ENTRYPOINT_ENV_VAR}``.'
         ),
     },
     {
@@ -138,9 +160,10 @@ ARG_TABLE = [
             'example, ``--env KEY1=VALUE1 --env KEY2=VALUE2``. For an existing '
             'Web Function, the command adds or replaces the specified keys and '
             'preserves other variables. To remove a variable, use '
-            '``--unset-env``. To select the file that the runtime loads, set '
-            f'``{constants.ENTRYPOINT_ENV_VAR}`` with this option. Do not use '
-            f'``{constants.ENTRYPOINT_ENV_VAR}`` with ``--entry-point``.'
+            '``--unset-env``. To select the entry point that the runtime '
+            f'loads, set ``{constants.ENTRYPOINT_ENV_VAR}`` (Node.js) or '
+            f'``{_PYTHON_ENTRYPOINT_ENV_VAR}`` (Python) with this option. Do '
+            'not use these variables with ``--entry-point``.'
         ),
     },
     {

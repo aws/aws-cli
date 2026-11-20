@@ -15,7 +15,6 @@ import os
 import signal
 import sys
 import time
-from pathlib import PureWindowsPath
 
 from botocore.exceptions import BotoCoreError, ClientError
 
@@ -31,6 +30,7 @@ from awscli.customizations.lambdaweb import (
     output,
     requests,
     role,
+    runtimes,
     scaffold,
     validation,
     wait,
@@ -119,12 +119,11 @@ class LambdaWebDeploy(BasicCommand):
         if reuse_code:
             validation.validate_reuse_code_args(parsed_args, norm)
         # two different ways to select the entry point; the inherited-value
-        # case is caught later in _customer_entrypoint.
-        if (
-            parsed_args.entry_point
-            and constants.ENTRYPOINT_ENV_VAR in norm.env
-        ):
-            raise validation.entrypoint_conflict_error()
+        # case is caught later in _select_entry.
+        if parsed_args.entry_point:
+            for env_var in runtimes.entry_env_vars():
+                if env_var in norm.env:
+                    raise validation.entrypoint_conflict_error(env_var)
         # Tag values can be empty, so parse them separately from --env.
         tags = parse_kv(parsed_args.tags, label='--tags')
         validation.validate_bounded_args(self._session, parsed_args, norm)
@@ -190,23 +189,31 @@ class LambdaWebDeploy(BasicCommand):
         if creating:
             validation.reject_update_only_args(parsed_args, norm)
             validation.validate_create_endpoint_args(parsed_args, norm, region)
+            existing = None
+            endpoint_plan = None
+            runtime_id, runtime = self._resolve_runtime(
+                parsed_args, reuse_code, existing
+            )
             if parsed_args.hello_world:
                 # --hello-world is itself the create opt-in, so it needs no
                 # separate confirmation.
                 output.progress(
                     f'Creating starter application in {parsed_args.code} ...'
                 )
-                scaffold.write_hello_world(parsed_args.code, parsed_args.name)
+                scaffold.write_hello_world(
+                    parsed_args.code, parsed_args.name, runtime
+                )
             else:
                 self._confirm_create(parsed_args, region)
-            existing = None
-            endpoint_plan = None
         else:
             existing = requests.resolve_latest_revision(
                 lambda_web, parsed_args.name
             )
             validation.reject_unreadable_environment(
                 parsed_args.name, existing
+            )
+            runtime_id, runtime = self._resolve_runtime(
+                parsed_args, reuse_code, existing
             )
             # resolve and gate the endpoint before any mutation, so an invalid
             # endpoint request fails without deploying a revision first.
@@ -226,34 +233,21 @@ class LambdaWebDeploy(BasicCommand):
                 'package was uploaded.'
             )
         else:
-            # when the customer sets AWS_LAMBDA_NODEJS_ENTRYPOINT the runtime
-            # loads that file instead of index.js, so defer to it and inject
-            # no wrapper; only check that the named file is in the bundle.
-            customer_entrypoint = self._customer_entrypoint(
-                parsed_args, norm, existing
+            selection = self._select_entry(
+                parsed_args, norm, existing, runtime
             )
-            if customer_entrypoint is not None:
-                validation.verify_entrypoint_in_tree(
-                    parsed_args.code, customer_entrypoint
-                )
-                output.progress(
-                    f"Using entry point '{customer_entrypoint}' from "
-                    f'{constants.ENTRYPOINT_ENV_VAR}.'
-                )
-                # ``entry=None`` tells build_zip to skip wrapper injection.
-                entry = None
-            else:
-                entry = bundle.resolve_entry_point(
-                    parsed_args.code,
-                    parsed_args.entry_point,
-                )
+            runtime.inspect_dependencies(parsed_args.code, runtime_id)
             output.progress('Creating deployment package ...')
             zip_path, size = bundle.build_zip(
                 parsed_args.code,
-                entry,
-                exclude_patterns=constants.DEFAULT_EXCLUDE_PATTERNS,
+                selection,
+                exclude_patterns=(
+                    constants.DEFAULT_EXCLUDE_PATTERNS
+                    + runtime.exclude_patterns
+                ),
                 include_hidden=parsed_args.include_hidden_files,
                 force_include=parsed_args.force_include,
+                symlink_hint=runtime.symlink_hint,
             )
 
         try:
@@ -311,6 +305,7 @@ class LambdaWebDeploy(BasicCommand):
                 s3_obj,
                 bucket_resolved,
                 role_arn,
+                runtime_id,
             )
         return self._run_update(
             parsed_args,
@@ -325,31 +320,144 @@ class LambdaWebDeploy(BasicCommand):
             role_arn,
             existing,
             endpoint_plan,
+            runtime_id,
             package_uploaded=not reuse_code,
         )
 
-    def _customer_entrypoint(self, parsed_args, norm, existing):
-        """Return the effective customer-set entry-point value, or ``None``.
+    def _resolve_runtime(self, parsed_args, reuse_code, existing):
+        """Return ``(runtime_id, runtime)`` for this deployment.
 
-        Honored from ``--env`` or inherited from the prior revision. The CLI
-        never sets the variable itself, it only defers to it.
+        ``--runtime`` wins. A new Web Function otherwise takes the runtime
+        detected from ``--code``, or the default. An existing one keeps its
+        deployed runtime, with a warning when the code looks like another
+        runtime's project.
         """
-        value = norm.env.get(constants.ENTRYPOINT_ENV_VAR)
+        requested = runtimes.resolve_requested(parsed_args.runtime)
+        detectable = not reuse_code and not parsed_args.hello_world
+        if existing is None:
+            if requested is not None:
+                return self._note_unrecognized_runtime(requested, detectable)
+            detected = (
+                runtimes.detect_single(parsed_args.code)
+                if detectable
+                else None
+            )
+            if detected is None or detected is runtimes.DEFAULT:
+                return constants.DEFAULT_RUNTIME, runtimes.DEFAULT
+            output.progress(
+                f'Detected a {detected.display_name} application; using '
+                f'the {detected.latest} runtime.'
+            )
+            return detected.latest, detected
+
+        if requested is not None:
+            return self._note_unrecognized_runtime(requested, detectable)
+        runtime_config = (existing.get('buildConfig') or {}).get(
+            'runtimeConfig'
+        ) or {}
+        runtime_id = runtime_config.get('runtime')
+        if not runtime_id:
+            raise LambdaWebError(
+                'The command could not determine the runtime. Specify '
+                '--runtime.'
+            )
+        runtime = runtimes.for_identifier(runtime_id)
+        if not runtime.matches(runtime_id):
+            return self._note_unrecognized_runtime(
+                (runtime_id, runtime), detectable
+            )
+        if detectable:
+            matches = runtimes.detect(parsed_args.code)
+            if len(matches) == 1 and matches[0] is not runtime:
+                other = matches[0]
+                output.progress(
+                    f"Warning: --code '{parsed_args.code}' looks like a "
+                    f"{other.display_name} application, but Web Function "
+                    f"'{parsed_args.name}' uses the {runtime_id} runtime. "
+                    f'The command keeps {runtime_id}. To switch, run it '
+                    f'again with --runtime {other.aliases[0]}.'
+                )
+        return runtime_id, runtime
+
+    @staticmethod
+    def _note_unrecognized_runtime(resolved, packaging):
+        """Explain packaging for a runtime the AWS CLI does not recognize yet."""
+        runtime_id, runtime = resolved
+        if packaging and not runtime.matches(runtime_id):
+            output.progress(
+                f"Runtime '{runtime_id}' isn't recognized by this version of "
+                'the AWS CLI. The command packages the code with its '
+                f'{runtime.display_name} rules and lets AWS Lambda validate '
+                'the runtime.'
+            )
+        return resolved
+
+    def _select_entry(self, parsed_args, norm, existing, runtime):
+        """Return the runtime's ``EntrySelection`` for ``--code``.
+
+        A customer-set entry-point variable, from ``--env`` or inherited from
+        the prior revision, is honored as-is. Otherwise the runtime resolves
+        the entry from ``--entry-point`` or the source tree, and any variable
+        it needs is added to ``norm.env``.
+        """
+        env_var = runtime.entry_env_var
+        value = norm.env.get(env_var)
+        inherited = False
         if value is None and existing is not None:
-            inherited = (existing.get('serviceConfig') or {}).get(
+            inherited_env = (existing.get('serviceConfig') or {}).get(
                 'environmentVariables'
             ) or {}
             # An explicit --unset-env of the key means the customer is taking
             # it back off, so do not treat the inherited value as active.
-            if constants.ENTRYPOINT_ENV_VAR not in norm.unset_env:
-                value = inherited.get(constants.ENTRYPOINT_ENV_VAR)
-        if value is None:
-            return None
-        if parsed_args.entry_point:
-            raise validation.entrypoint_conflict_error()
-        value = PureWindowsPath(value).as_posix()
-        norm.env[constants.ENTRYPOINT_ENV_VAR] = value
-        return value
+            if env_var not in norm.unset_env:
+                value = inherited_env.get(env_var)
+                inherited = value is not None
+        replaced_inherited = False
+        if value is not None and parsed_args.entry_point:
+            # --entry-point replaces an inherited value only when the runtime
+            # applies it through the same variable.
+            if not (inherited and runtime.entry_point_uses_env):
+                raise validation.entrypoint_conflict_error(
+                    env_var, inherited=inherited
+                )
+            value = None
+            replaced_inherited = True
+        if value is not None:
+            try:
+                selection = runtime.customer_entry(value, parsed_args.code)
+            except LambdaWebError as e:
+                if not inherited:
+                    raise
+                raise type(e)(
+                    f'{e} The variable was inherited from the deployed '
+                    'revision. Pass --entry-point module:object to '
+                    f'replace it, or --unset-env {env_var} to remove it.'
+                ) from None
+            source = (
+                f'{env_var} on the deployed revision' if inherited else env_var
+            )
+            output.progress(
+                f"Using entry point '{selection.display}' from {source}."
+            )
+        else:
+            selection = runtime.resolve_entry(
+                parsed_args.code, parsed_args.entry_point
+            )
+            if selection.env:
+                output.progress(f"Using entry point '{selection.display}'.")
+        if selection.env:
+            norm.env.update(selection.env)
+            # The selected entry point must take effect even when the same
+            # key is named by --unset-env; the unset already removed the
+            # inherited value from consideration above.
+            norm.unset_env[:] = [
+                key for key in norm.unset_env if key not in selection.env
+            ]
+        elif replaced_inherited and env_var not in norm.unset_env:
+            # The explicit entry point resolved to the runtime default, which
+            # needs no variable, so clear the inherited override.
+            norm.unset_env.append(env_var)
+        return selection
 
     def _resolve_code_dir(self, parsed_args):
         """Default ``--code`` to ``./<name>`` for ``--hello-world``."""
@@ -462,7 +570,10 @@ class LambdaWebDeploy(BasicCommand):
             region_name=region,
             verify=verify,
         )
-        output.progress('Preparing AWS IAM execution role ...')
+        if parsed_args.execution_role_arn:
+            output.progress('Validating AWS IAM execution role ...')
+        else:
+            output.progress('Preparing AWS IAM execution role ...')
         return role.ensure_role(
             iam,
             parsed_args.name,
@@ -509,6 +620,7 @@ class LambdaWebDeploy(BasicCommand):
         s3_obj,
         bucket_resolved,
         role_arn,
+        runtime_id,
     ):
         request = requests.build_create_request(
             parsed_args,
@@ -517,6 +629,7 @@ class LambdaWebDeploy(BasicCommand):
             role_arn,
             s3_obj,
             region,
+            runtime_id,
         )
         output.progress('Creating Lambda Web Function ...')
         try:
@@ -589,6 +702,7 @@ class LambdaWebDeploy(BasicCommand):
         role_arn,
         existing,
         endpoint_plan,
+        runtime_id,
         *,
         package_uploaded,
     ):
@@ -599,6 +713,7 @@ class LambdaWebDeploy(BasicCommand):
             role_arn,
             s3_obj,
             existing,
+            runtime_id,
         )
         output.progress('Creating Web Function revision ...')
         try:
@@ -709,6 +824,11 @@ class LambdaWebDeploy(BasicCommand):
         if not parsed_args.no_wait:
             output.report_regional_urls(endpoint)
             result.update(output.endpoint_url_fields(endpoint))
+        elif (endpoint_plan.target or {}).get('domainName'):
+            # --no-wait skips polling, but an existing endpoint's domain
+            # is immutable, so its URL is already known.
+            output.report_regional_urls(endpoint_plan.target)
+            result.update(output.endpoint_url_fields(endpoint_plan.target))
         self._emit(parsed_globals, result, console)
         return 0
 

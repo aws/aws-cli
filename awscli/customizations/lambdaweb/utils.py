@@ -12,6 +12,7 @@
 # language governing permissions and limitations under the License.
 
 
+import os
 import re
 
 from awscli.customizations.lambdaweb import model
@@ -19,6 +20,11 @@ from awscli.customizations.lambdaweb.exceptions import (
     InvalidArgumentValueError,
     InvalidKeyValueError,
 )
+
+
+def posix_relpath(path):
+    """Normalize a relative path to the ``/``-separated form used in zips."""
+    return os.path.normpath(path).replace(os.sep, '/')
 
 
 def create_nested_client(session, service_name, **kwargs):

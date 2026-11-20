@@ -164,11 +164,77 @@ Output::
     https://a1b2c3d4e5.x9y.lambda-web.us-west-2.on.aws
     Console: https://us-west-2.console.aws.amazon.com/lambda/home#/web-functions/my-app
 
+For more information, see `Environment variables <https://docs.aws.amazon.com/lambda/latest/dg/web-functions-revisions-env-vars.html>`__ in the *AWS Lambda Developer Guide*.
+
+**Example 10: To create and deploy a Python starter application**
+
+The following ``deploy`` example creates a Python starter in ``./my-api`` and
+deploys it with the ``python3.15`` runtime. The starter exposes a WSGI
+application object named ``app`` in ``main.py``. Lambda imports ``main:app``
+and serves it, so there is no server to configure. ::
+
+    aws lambda-web deploy \
+        --name my-api \
+        --hello-world \
+        --runtime python
+
+Output::
+
+    https://a1b2c3d4e5.x9y.lambda-web.us-west-2.on.aws
+    Console: https://us-west-2.console.aws.amazon.com/lambda/home#/web-functions/my-api
+
+For more information, see `Creating a Lambda Web Function <https://docs.aws.amazon.com/lambda/latest/dg/web-functions-create.html>`__ in the *AWS Lambda Developer Guide*.
+
+**Example 11: To deploy a Python application with its dependencies**
+
+The following ``deploy`` example deploys a FastAPI application. Web Functions
+run on ``arm64``, and ``deploy`` does not install dependencies, so install
+them into the project directory for that platform first. Use ``uv`` or
+``pip``. When you create a Web Function and omit ``--runtime``, the command
+detects a Python project from files such as ``requirements.txt`` or
+``main.py``. ::
+
+    uv pip install -r requirements.txt --target . \
+        --python-platform aarch64-manylinux_2_34 --python-version 3.15
+    aws lambda-web deploy \
+        --name my-api \
+        --code . \
+        --runtime python \
+        --create
+
+Output::
+
+    https://a1b2c3d4e5.x9y.lambda-web.us-west-2.on.aws
+    Console: https://us-west-2.console.aws.amazon.com/lambda/home#/web-functions/my-api
+
+For more information, see `Web Function deployment package <https://docs.aws.amazon.com/lambda/latest/dg/web-functions-configuration-deployment-package.html>`__ in the *AWS Lambda Developer Guide*.
+
+**Example 12: To deploy a Python application with a different entry point**
+
+The following ``deploy`` example deploys a Django project whose application
+object is ``application`` in ``mysite/asgi.py``. Specify the entry point as
+``module:object``, as you would for uvicorn or gunicorn. The command sets
+``AWS_LAMBDA_PYTHON_ENTRYPOINT`` on the revision. To require a specific
+interface, set ``--env AWS_LAMBDA_PYTHON_ENTRYPOINT=wsgi:mysite.wsgi:application``
+instead of ``--entry-point``. Add the endpoint domain to ``ALLOWED_HOSTS`` in
+the Django settings, and to ``CSRF_TRUSTED_ORIGINS`` if forms post to the
+application. Otherwise, Django returns HTTP 400 responses. ::
+
+    aws lambda-web deploy \
+        --name my-site \
+        --code . \
+        --entry-point mysite.asgi:application
+
+Output::
+
+    https://a1b2c3d4e5.x9y.lambda-web.us-west-2.on.aws
+    Console: https://us-west-2.console.aws.amazon.com/lambda/home#/web-functions/my-site
+
+For more information, see `Environment variables <https://docs.aws.amazon.com/lambda/latest/dg/web-functions-revisions-env-vars.html>`__ in the *AWS Lambda Developer Guide*.
+
 These examples use ``us-west-2`` as the AWS Region for deployment. The command
 selects the AWS Region from ``--region``, the ``AWS_DEFAULT_REGION`` environment
 variable, or your AWS CLI configuration. You can use a different AWS Region.
 Endpoint and console URLs reflect the AWS Region used for the deployment. A
 ``MultiRegion`` endpoint uses the global endpoint domain. The endpoint
 identifiers are fictitious and do not identify live resources.
-
-For more information, see `Environment variables <https://docs.aws.amazon.com/lambda/latest/dg/web-functions-revisions-env-vars.html>`__ in the *AWS Lambda Developer Guide*.

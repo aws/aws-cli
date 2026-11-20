@@ -10,7 +10,6 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
-import json
 import os
 import sys
 import zipfile
@@ -22,234 +21,19 @@ from awscli.customizations.lambdaweb.constants import (
     DEFAULT_EXCLUDE_PATTERNS,
     DEFAULT_INCLUDED_HIDDEN_DIRECTORIES,
     DEFAULT_INCLUDED_HIDDEN_FILES,
-    ENTRY_POINT_CANDIDATES,
 )
 from awscli.customizations.lambdaweb.exceptions import (
-    EntryPointNotFoundError,
     InvalidFunctionNameError,
     InvalidSourceError,
-    MalformedPackageJsonError,
     WrapperConflictError,
 )
+from awscli.customizations.lambdaweb.runtimes import nodejs
+from awscli.customizations.lambdaweb.runtimes.base import EntrySelection
 
 
 def _write(path, content=''):
     with open(path, 'w') as f:
         f.write(content)
-
-
-def test_resolve_explicit_entry_relative(tmp_path):
-    src = str(tmp_path)
-    _write(os.path.join(src, 'app.js'), '// app')
-    assert bundle.resolve_entry_point(src, explicit='./app.js') == 'app.js'
-
-
-def test_resolve_explicit_entry_absolute_rejected(tmp_path):
-    src = str(tmp_path)
-    abs_entry = os.path.join(src, 'app.js')
-    _write(abs_entry, '// app')
-    with pytest.raises(InvalidSourceError):
-        bundle.resolve_entry_point(src, explicit=abs_entry)
-
-
-def test_resolve_explicit_entry_escape_rejected(tmp_path):
-    src = str(tmp_path / 'inner')
-    os.makedirs(src)
-    _write(str(tmp_path / 'outside.js'), '// outside')
-    with pytest.raises(InvalidSourceError):
-        bundle.resolve_entry_point(src, explicit='../outside.js')
-
-
-def test_resolve_falls_back_to_package_main(tmp_path):
-    src = str(tmp_path)
-    _write(os.path.join(src, 'server.js'), '// real')
-    _write(
-        os.path.join(src, 'package.json'),
-        '{"main": "server.js"}',
-    )
-    assert bundle.resolve_entry_point(src) == 'server.js'
-
-
-def test_resolve_falls_back_to_index_js(tmp_path):
-    src = str(tmp_path)
-    _write(os.path.join(src, 'index.js'), '// idx')
-    assert bundle.resolve_entry_point(src) == 'index.js'
-
-
-def test_resolve_raises_when_no_candidate(tmp_path):
-    src = str(tmp_path)
-    _write(os.path.join(src, 'README.md'), '# hi')
-    with pytest.raises(EntryPointNotFoundError) as excinfo:
-        bundle.resolve_entry_point(src)
-    message = str(excinfo.value)
-    assert ', '.join(ENTRY_POINT_CANDIDATES) in message
-    assert str(list(ENTRY_POINT_CANDIDATES)) not in message
-
-
-def test_resolve_uses_exports_bare_string(tmp_path):
-    # Modern packages may declare only "exports" (no "main"). A bare-string
-    # "." export resolves to that file.
-    src = str(tmp_path)
-    os.makedirs(os.path.join(src, 'dist'))
-    _write(os.path.join(src, 'dist', 'index.js'), '// built')
-    _write(
-        os.path.join(src, 'package.json'),
-        '{"exports": "./dist/index.js"}',
-    )
-    assert bundle.resolve_entry_point(src) == 'dist/index.js'
-
-
-def test_resolve_exports_conditions_prefer_import(tmp_path):
-    # The injected wrapper loads via dynamic import(), so the ESM ("import")
-    # target is preferred over the CJS ("require") one for a dual package.
-    src = str(tmp_path)
-    os.makedirs(os.path.join(src, 'dist'))
-    _write(os.path.join(src, 'dist', 'esm.js'), '// esm')
-    _write(os.path.join(src, 'dist', 'cjs.js'), '// cjs')
-    _write(
-        os.path.join(src, 'package.json'),
-        '{"exports": {".": {"require": "./dist/cjs.js", '
-        '"import": "./dist/esm.js"}}}',
-    )
-    assert bundle.resolve_entry_point(src) == 'dist/esm.js'
-
-
-def test_resolve_exports_require_only(tmp_path):
-    # A CJS-only package that still uses an exports map resolves via "require".
-    src = str(tmp_path)
-    os.makedirs(os.path.join(src, 'dist'))
-    _write(os.path.join(src, 'dist', 'cjs.js'), '// cjs')
-    _write(
-        os.path.join(src, 'package.json'),
-        '{"exports": {".": {"require": "./dist/cjs.js"}}}',
-    )
-    assert bundle.resolve_entry_point(src) == 'dist/cjs.js'
-
-
-def test_resolve_exports_bare_conditions_object(tmp_path):
-    # "exports" may be a bare conditions object with no "." subpath key.
-    src = str(tmp_path)
-    os.makedirs(os.path.join(src, 'dist'))
-    _write(os.path.join(src, 'dist', 'esm.js'), '// esm')
-    _write(
-        os.path.join(src, 'package.json'),
-        '{"exports": {"import": "./dist/esm.js", '
-        '"require": "./dist/cjs.js"}}',
-    )
-    assert bundle.resolve_entry_point(src) == 'dist/esm.js'
-
-
-@pytest.mark.parametrize(
-    'exports',
-    [
-        [None, './dist/index.js'],
-        {'.': {'import': [None, './dist/index.js']}},
-    ],
-)
-def test_resolve_exports_array_fallback(tmp_path, exports):
-    src = str(tmp_path)
-    os.makedirs(os.path.join(src, 'dist'))
-    _write(os.path.join(src, 'dist', 'index.js'), '// built')
-    _write(
-        os.path.join(src, 'package.json'),
-        json.dumps({'exports': exports}),
-    )
-
-    assert bundle.resolve_entry_point(src) == 'dist/index.js'
-
-
-def test_resolve_main_wins_over_exports(tmp_path):
-    # When both are present and "main" points at a real file, "main" wins
-    # (it is the older, more specific field and existing behavior).
-    src = str(tmp_path)
-    os.makedirs(os.path.join(src, 'dist'))
-    _write(os.path.join(src, 'main.js'), '// main')
-    _write(os.path.join(src, 'dist', 'index.js'), '// built')
-    _write(
-        os.path.join(src, 'package.json'),
-        '{"main": "main.js", "exports": "./dist/index.js"}',
-    )
-    assert bundle.resolve_entry_point(src) == 'main.js'
-
-
-def test_resolve_main_handles_utf8_bom_and_normalizes_dot_prefix(tmp_path):
-    src = str(tmp_path)
-    _write(os.path.join(src, 'server.js'), '// server')
-    with open(
-        os.path.join(src, 'package.json'), 'w', encoding='utf-8-sig'
-    ) as f:
-        json.dump(
-            {'name': 'café', 'main': './server.js'},
-            f,
-            ensure_ascii=False,
-        )
-
-    assert bundle.resolve_entry_point(src) == 'server.js'
-
-
-def test_resolve_exports_missing_file_falls_through(tmp_path):
-    # "exports" is only a discovery heuristic: if it points at an unbuilt
-    # output (file absent), fall through to candidate scanning rather than
-    # resolve to a path that would not actually ship.
-    src = str(tmp_path)
-    _write(os.path.join(src, 'index.js'), '// idx')
-    _write(
-        os.path.join(src, 'package.json'),
-        '{"exports": "./dist/index.js"}',
-    )
-    assert bundle.resolve_entry_point(src) == 'index.js'
-
-
-@pytest.mark.parametrize(
-    'bad_target',
-    [
-        '../evil.js',
-        '/etc/passwd',
-        './../evil.js',
-    ],
-)
-def test_resolve_exports_escape_ignored(tmp_path, bad_target):
-    # An absolute path or parent-dir escape in "exports" is never honored;
-    # resolution falls through to the safe candidate list.
-    src = str(tmp_path)
-    _write(os.path.join(src, 'index.js'), '// idx')
-    _write(
-        os.path.join(src, 'package.json'),
-        f'{{"exports": "{bad_target}"}}',
-    )
-    assert bundle.resolve_entry_point(src) == 'index.js'
-
-
-def test_malformed_package_json_does_not_echo_contents(tmp_path):
-    src = str(tmp_path)
-    _write(
-        os.path.join(src, 'package.json'),
-        '{"secret":"AKIA1234567890","main":"index.js",,}',
-    )
-    _write(os.path.join(src, 'index.js'), '// idx')
-    with pytest.raises(MalformedPackageJsonError) as excinfo:
-        bundle.resolve_entry_point(src)
-    msg = str(excinfo.value)
-    assert 'AKIA' not in msg
-    assert 'AKIA1234567890' not in msg
-    assert 'secret' not in msg
-
-
-def test_unreadable_package_json_raises_friendly_error(tmp_path, monkeypatch):
-    src = str(tmp_path)
-    package_json = os.path.join(src, 'package.json')
-    _write(package_json, '{}')
-
-    def raise_permission_error(*args, **kwargs):
-        raise PermissionError('permission denied')
-
-    monkeypatch.setattr('builtins.open', raise_permission_error)
-    with pytest.raises(InvalidSourceError) as excinfo:
-        bundle.resolve_entry_point(src)
-
-    message = str(excinfo.value)
-    assert package_json in message
-    assert 'readable' in message
 
 
 def test_build_zip_arcnames_forward_slash_on_all_platforms(tmp_path):
@@ -259,7 +43,10 @@ def test_build_zip_arcnames_forward_slash_on_all_platforms(tmp_path):
     _write(os.path.join(src, 'index.js'), '// idx')
     _write(os.path.join(nested, 'mod.js'), '// mod')
     path, _ = bundle.build_zip(
-        src, 'index.js', exclude_patterns=(), include_hidden=False
+        src,
+        nodejs.select('index.js'),
+        exclude_patterns=(),
+        include_hidden=False,
     )
     try:
         with zipfile.ZipFile(path) as zf:
@@ -282,7 +69,10 @@ def test_build_zip_skips_symlinks(tmp_path):
     _write(target, '// target')
     os.symlink(target, os.path.join(src, 'link.js'))
     path, _ = bundle.build_zip(
-        src, 'index.js', exclude_patterns=(), include_hidden=False
+        src,
+        nodejs.select('index.js'),
+        exclude_patterns=(),
+        include_hidden=False,
     )
     try:
         with zipfile.ZipFile(path) as zf:
@@ -311,7 +101,10 @@ def test_build_zip_skips_symlinked_directory(tmp_path):
     os.makedirs(nm)
     os.symlink(real_dep, os.path.join(nm, 'dep'))
     path, _ = bundle.build_zip(
-        src, 'index.js', exclude_patterns=(), include_hidden=False
+        src,
+        nodejs.select('index.js'),
+        exclude_patterns=(),
+        include_hidden=False,
     )
     try:
         with zipfile.ZipFile(path) as zf:
@@ -342,7 +135,10 @@ def test_build_zip_warns_once_on_skipped_symlinks(tmp_path, capsys):
     os.makedirs(nm)
     os.symlink(os.path.join(src, 'store', 'dep'), os.path.join(nm, 'dep'))
     path, _ = bundle.build_zip(
-        src, 'index.js', exclude_patterns=(), include_hidden=False
+        src,
+        nodejs.select('index.js'),
+        exclude_patterns=(),
+        include_hidden=False,
     )
     os.unlink(path)
     err = capsys.readouterr().err
@@ -360,7 +156,10 @@ def test_build_zip_no_symlink_warning_when_none_skipped(tmp_path, capsys):
     src = str(tmp_path)
     _write(os.path.join(src, 'index.js'), '// idx')
     path, _ = bundle.build_zip(
-        src, 'index.js', exclude_patterns=(), include_hidden=False
+        src,
+        nodejs.select('index.js'),
+        exclude_patterns=(),
+        include_hidden=False,
     )
     os.unlink(path)
     assert 'Warning: skipped' not in capsys.readouterr().err
@@ -378,7 +177,10 @@ def test_build_zip_excluded_symlink_does_not_warn(tmp_path, capsys):
     _write(os.path.join(src, 'real.pem'), 'secret')
     os.symlink(os.path.join(src, 'real.pem'), os.path.join(src, 'link.pem'))
     path, _ = bundle.build_zip(
-        src, 'index.js', exclude_patterns=('*.pem',), include_hidden=False
+        src,
+        nodejs.select('index.js'),
+        exclude_patterns=('*.pem',),
+        include_hidden=False,
     )
     try:
         with zipfile.ZipFile(path) as zf:
@@ -397,7 +199,7 @@ def test_build_zip_excludes_dotenv_by_default(tmp_path):
     _write(os.path.join(src, '.env.production'), 'SECRET=2')
     path, _ = bundle.build_zip(
         src,
-        'index.js',
+        nodejs.select('index.js'),
         exclude_patterns=DEFAULT_EXCLUDE_PATTERNS,
         include_hidden=False,
     )
@@ -422,7 +224,7 @@ def test_build_zip_force_includes_exact_excluded_files(tmp_path, capsys):
 
     path, _ = bundle.build_zip(
         src,
-        'index.js',
+        nodejs.select('index.js'),
         exclude_patterns=DEFAULT_EXCLUDE_PATTERNS,
         include_hidden=False,
         force_include=['./.env', 'certs/public.pem'],
@@ -453,7 +255,7 @@ def test_build_zip_force_include_rejects_source_escape(tmp_path):
     with pytest.raises(InvalidSourceError, match='remain inside'):
         bundle.build_zip(
             str(src),
-            'index.js',
+            nodejs.select('index.js'),
             exclude_patterns=DEFAULT_EXCLUDE_PATTERNS,
             include_hidden=False,
             force_include=['../outside.env'],
@@ -475,7 +277,7 @@ def test_build_zip_force_include_rejects_non_regular_file(tmp_path, file_type):
     with pytest.raises(InvalidSourceError, match='regular file'):
         bundle.build_zip(
             src,
-            'index.js',
+            nodejs.select('index.js'),
             exclude_patterns=DEFAULT_EXCLUDE_PATTERNS,
             include_hidden=False,
             force_include=['forced'],
@@ -496,7 +298,7 @@ def test_build_zip_force_include_does_not_override_excluded_directory(
     ):
         bundle.build_zip(
             src,
-            'index.js',
+            nodejs.select('index.js'),
             exclude_patterns=DEFAULT_EXCLUDE_PATTERNS,
             include_hidden=True,
             force_include=['.ssh/known_hosts'],
@@ -520,7 +322,7 @@ def test_build_zip_includes_runtime_hidden_directories_by_default(
 
     path, _ = bundle.build_zip(
         src,
-        'index.js',
+        nodejs.select('index.js'),
         exclude_patterns=DEFAULT_EXCLUDE_PATTERNS,
         include_hidden=False,
     )
@@ -546,7 +348,7 @@ def test_build_zip_includes_runtime_hidden_files_by_default(
 
     path, _ = bundle.build_zip(
         src,
-        'index.js',
+        nodejs.select('index.js'),
         exclude_patterns=DEFAULT_EXCLUDE_PATTERNS,
         include_hidden=False,
     )
@@ -567,7 +369,7 @@ def test_build_zip_accepts_entry_in_included_hidden_directory(tmp_path):
 
     path, _ = bundle.build_zip(
         src,
-        entry,
+        nodejs.select(entry),
         exclude_patterns=DEFAULT_EXCLUDE_PATTERNS,
         include_hidden=False,
     )
@@ -591,7 +393,7 @@ def test_build_zip_warns_once_for_skipped_hidden_paths(tmp_path, capsys):
 
     path, _ = bundle.build_zip(
         src,
-        'index.js',
+        nodejs.select('index.js'),
         exclude_patterns=DEFAULT_EXCLUDE_PATTERNS,
         include_hidden=False,
     )
@@ -620,7 +422,7 @@ def test_build_zip_excluded_hidden_paths_do_not_warn(tmp_path, capsys):
 
     path, _ = bundle.build_zip(
         src,
-        'index.js',
+        nodejs.select('index.js'),
         exclude_patterns=DEFAULT_EXCLUDE_PATTERNS,
         include_hidden=False,
     )
@@ -636,7 +438,7 @@ def test_build_zip_includes_nonsecret_hidden_when_opted_in(tmp_path):
     _write(os.path.join(src, '.editorconfig'), 'root = true')
     path, _ = bundle.build_zip(
         src,
-        'index.js',
+        nodejs.select('index.js'),
         exclude_patterns=DEFAULT_EXCLUDE_PATTERNS,
         include_hidden=True,
     )
@@ -662,7 +464,7 @@ def test_build_zip_include_hidden_still_excludes_secrets(tmp_path):
     _write(os.path.join(src, '.netrc'), 'password secret')
     path, _ = bundle.build_zip(
         src,
-        'index.js',
+        nodejs.select('index.js'),
         exclude_patterns=DEFAULT_EXCLUDE_PATTERNS,
         include_hidden=True,
     )
@@ -694,7 +496,7 @@ def test_build_zip_excludes_nested_cache_dir(tmp_path):
     _write(os.path.join(keep_dir, 'index.js'), '// dep')
     path, _ = bundle.build_zip(
         src,
-        'index.js',
+        nodejs.select('index.js'),
         exclude_patterns=DEFAULT_EXCLUDE_PATTERNS,
         include_hidden=False,
     )
@@ -721,7 +523,7 @@ def test_build_zip_excludes_monorepo_cache_dir_with_hidden_opt_in(tmp_path):
 
     path, _ = bundle.build_zip(
         src,
-        'index.js',
+        nodejs.select('index.js'),
         exclude_patterns=DEFAULT_EXCLUDE_PATTERNS,
         include_hidden=True,
     )
@@ -775,7 +577,10 @@ def test_wrapper_injected_when_entry_is_server_js(tmp_path):
     _write(os.path.join(src, 'server.js'), "console.log('hi')")
     _write(os.path.join(src, 'package.json'), '{"type": "module"}')
     path, _ = bundle.build_zip(
-        src, 'server.js', exclude_patterns=(), include_hidden=False
+        src,
+        nodejs.select('server.js'),
+        exclude_patterns=(),
+        include_hidden=False,
     )
     try:
         with zipfile.ZipFile(path) as zf:
@@ -797,7 +602,10 @@ def test_build_zip_normalizes_dot_prefixed_entry(tmp_path):
     _write(os.path.join(src, 'server.js'), "console.log('hi')")
 
     path, _ = bundle.build_zip(
-        src, './server.js', exclude_patterns=(), include_hidden=False
+        src,
+        nodejs.select('./server.js'),
+        exclude_patterns=(),
+        include_hidden=False,
     )
     try:
         with zipfile.ZipFile(path) as zf:
@@ -813,7 +621,10 @@ def test_build_zip_dot_prefixed_index_does_not_inject_wrapper(tmp_path):
     _write(os.path.join(src, 'index.js'), '// customer index')
 
     path, _ = bundle.build_zip(
-        src, './index.js', exclude_patterns=(), include_hidden=False
+        src,
+        nodejs.select('./index.js'),
+        exclude_patterns=(),
+        include_hidden=False,
     )
     try:
         with zipfile.ZipFile(path) as zf:
@@ -839,7 +650,7 @@ def test_build_zip_rejects_entry_excluded_from_bundle(
     with pytest.raises(InvalidSourceError, match='not included'):
         bundle.build_zip(
             src,
-            entry,
+            nodejs.select(entry),
             exclude_patterns=exclude_patterns,
             include_hidden=False,
         )
@@ -850,7 +661,7 @@ def test_wrapper_escapes_entry_point_for_javascript(tmp_path):
     entry = "server's.js"
     _write(os.path.join(src, entry), "console.log('hi')")
     path, _ = bundle.build_zip(
-        src, entry, exclude_patterns=(), include_hidden=False
+        src, nodejs.select(entry), exclude_patterns=(), include_hidden=False
     )
     try:
         with zipfile.ZipFile(path) as zf:
@@ -880,7 +691,10 @@ def test_wrapper_uses_dynamic_import_regardless_of_module_system(
     if pkg_json is not None:
         _write(os.path.join(src, 'package.json'), pkg_json)
     path, _ = bundle.build_zip(
-        src, 'server.cjs', exclude_patterns=(), include_hidden=False
+        src,
+        nodejs.select('server.cjs'),
+        exclude_patterns=(),
+        include_hidden=False,
     )
     try:
         with zipfile.ZipFile(path) as zf:
@@ -900,7 +714,10 @@ def test_wrapper_refuses_to_overwrite_existing_index_js(tmp_path):
     _write(os.path.join(src, 'server.js'), '// real')
     with pytest.raises(WrapperConflictError) as excinfo:
         bundle.build_zip(
-            src, 'server.js', exclude_patterns=(), include_hidden=False
+            src,
+            nodejs.select('server.js'),
+            exclude_patterns=(),
+            include_hidden=False,
         )
     assert 'index.js' in str(excinfo.value)
 
@@ -912,7 +729,7 @@ def test_wrapper_replaces_excluded_index_js(tmp_path):
 
     path, _ = bundle.build_zip(
         src,
-        'server.js',
+        nodejs.select('server.js'),
         exclude_patterns=('index.js',),
         include_hidden=False,
     )
@@ -935,7 +752,7 @@ def test_wrapper_replaces_symlinked_index_js(tmp_path):
 
     path, _ = bundle.build_zip(
         src,
-        'server.js',
+        nodejs.select('server.js'),
         exclude_patterns=(),
         include_hidden=False,
     )
@@ -976,7 +793,10 @@ def test_build_zip_skips_fifo(tmp_path, capsys):
     _write(os.path.join(src, 'index.js'), '// idx')
     os.mkfifo(os.path.join(src, 'pipe'))
     path, _ = bundle.build_zip(
-        src, 'index.js', exclude_patterns=(), include_hidden=False
+        src,
+        nodejs.select('index.js'),
+        exclude_patterns=(),
+        include_hidden=False,
     )
     try:
         with zipfile.ZipFile(path) as zf:
@@ -992,7 +812,10 @@ def test_build_zip_wrapper_entry_is_world_readable(tmp_path):
     src = str(tmp_path)
     _write(os.path.join(src, 'server.js'), '// real')
     path, _ = bundle.build_zip(
-        src, 'server.js', exclude_patterns=(), include_hidden=False
+        src,
+        nodejs.select('server.js'),
+        exclude_patterns=(),
+        include_hidden=False,
     )
     try:
         with zipfile.ZipFile(path) as zf:
@@ -1012,7 +835,7 @@ def test_build_zip_excludes_secrets_case_insensitively(tmp_path):
     _write(os.path.join(src, 'ID_RSA'), 'secret')
     path, _ = bundle.build_zip(
         src,
-        'index.js',
+        nodejs.select('index.js'),
         exclude_patterns=DEFAULT_EXCLUDE_PATTERNS,
         include_hidden=True,
     )
@@ -1037,10 +860,94 @@ def test_build_zip_removes_temp_file_on_failure(tmp_path, monkeypatch):
     monkeypatch.setattr(bundle.tempfile, 'tempdir', str(tmpdir))
     with pytest.raises(WrapperConflictError):
         bundle.build_zip(
-            src, 'server.js', exclude_patterns=(), include_hidden=False
+            src,
+            nodejs.select('server.js'),
+            exclude_patterns=(),
+            include_hidden=False,
         )
     assert list(tmpdir.iterdir()) == []
 
 
 def test_remove_bundle_missing_file_is_quiet(tmp_path):
     bundle.remove_bundle(str(tmp_path / 'nope.zip'))
+
+
+def test_build_zip_selection_without_wrapper_ships_tree_as_is(tmp_path):
+    # A runtime that applies its entry through the environment (Python)
+    # verifies the module is bundled and injects nothing.
+    src = str(tmp_path)
+    _write(os.path.join(src, 'app.py'), 'app = 1\n')
+    _write(os.path.join(src, 'index.js'), '// unrelated')
+    selection = EntrySelection(display='app:app', bundle_path='app.py')
+    path, _ = bundle.build_zip(
+        src, selection, exclude_patterns=(), include_hidden=False
+    )
+    try:
+        with zipfile.ZipFile(path) as zf:
+            assert set(zf.namelist()) == {'app.py', 'index.js'}
+            assert zf.read('index.js').decode() == '// unrelated'
+    finally:
+        os.unlink(path)
+
+
+def test_build_zip_selection_without_bundle_path_skips_verification(tmp_path):
+    src = str(tmp_path)
+    os.makedirs(os.path.join(src, 'pkg'))
+    _write(os.path.join(src, 'pkg', 'routes.py'), '')
+    selection = EntrySelection(display='pkg:app')
+    path, _ = bundle.build_zip(
+        src, selection, exclude_patterns=(), include_hidden=False
+    )
+    try:
+        with zipfile.ZipFile(path) as zf:
+            assert zf.namelist() == ['pkg/routes.py']
+    finally:
+        os.unlink(path)
+
+
+def test_build_zip_rejects_missing_selection_bundle_path(tmp_path):
+    src = str(tmp_path)
+    _write(os.path.join(src, 'other.py'), '')
+    selection = EntrySelection(display='app:app', bundle_path='app.py')
+    with pytest.raises(InvalidSourceError, match="entry point 'app.py'"):
+        bundle.build_zip(
+            src, selection, exclude_patterns=(), include_hidden=False
+        )
+
+
+def test_build_zip_wrapper_conflict_names_wrapper_file(tmp_path):
+    src = str(tmp_path)
+    _write(os.path.join(src, 'main.py'), '')
+    _write(os.path.join(src, 'server.py'), '')
+    selection = EntrySelection(
+        display='server:app',
+        bundle_path='server.py',
+        wrapper=('main.py', 'from server import app\n'),
+    )
+    with pytest.raises(WrapperConflictError) as excinfo:
+        bundle.build_zip(
+            src, selection, exclude_patterns=(), include_hidden=False
+        )
+    assert 'rename your entry point to main.py' in str(excinfo.value)
+
+
+@pytest.mark.skipif(
+    sys.platform == 'win32',
+    reason='symlinks need elevation on Windows',
+)
+def test_build_zip_appends_runtime_symlink_hint(tmp_path, capsys):
+    src = str(tmp_path)
+    _write(os.path.join(src, 'main.py'), 'app = 1')
+    _write(os.path.join(src, 'real.py'), '')
+    os.symlink(os.path.join(src, 'real.py'), os.path.join(src, 'link.py'))
+    path, _ = bundle.build_zip(
+        src,
+        None,
+        exclude_patterns=(),
+        include_hidden=False,
+        symlink_hint='Reinstall with pip.',
+    )
+    os.unlink(path)
+    err = capsys.readouterr().err
+    assert 'Reinstall with pip.' in err
+    assert 'npm' not in err

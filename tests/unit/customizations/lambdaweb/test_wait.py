@@ -42,7 +42,7 @@ def _endpoint_response(
         'endpointArn': f'arn:aws:lambda:{REGION}:111111111111:endpoint:{ENDPOINT_NAME}',
         'endpointName': ENDPOINT_NAME,
         'endpointType': 'HomeRegion',
-        'domainName': 'abc.lambda-url.us-east-1.on.aws',
+        'domainName': 'abc.x9y.lambda-web.us-east-1.on.aws',
         'authType': 'ApplicationManaged',
         'autoDeploymentMode': 'LatestRevision',
         'revisionWeights': [{'revisionId': REVISION_ID, 'weight': 100}],

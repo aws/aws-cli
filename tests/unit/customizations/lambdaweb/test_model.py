@@ -296,6 +296,7 @@ def test_revision_request_matches_current_input_model():
             'versionId': '',
         },
         existing,
+        constants.DEFAULT_RUNTIME,
     )
     assert 'versionId' not in request['buildConfig']['codeConfig']['s3Object']
     validate_parameters(

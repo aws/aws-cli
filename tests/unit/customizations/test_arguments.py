@@ -49,6 +49,11 @@ class TestOverrideRequiredArgsArgument(unittest.TestCase):
         self.argument.override_required_args(self.argument_table, args)
         self.assertFalse(self.mock_arg.required)
 
+    def test_override_required_args_if_in_cmdline_with_equals(self):
+        args = ['--no-required-args=value']
+        self.argument.override_required_args(self.argument_table, args)
+        self.assertFalse(self.mock_arg.required)
+
     def test_no_override_required_args_if_not_in_cmdline(self):
         args = []
         self.argument.override_required_args(self.argument_table, args)

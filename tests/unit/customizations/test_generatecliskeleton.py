@@ -95,6 +95,24 @@ class TestGenerateCliSkeleton(unittest.TestCase):
         self.argument.override_required_args(argument_table, args)
         self.assertFalse(argument_table['required-arg'].required)
 
+    def test_no_override_required_args_when_output_with_equals(self):
+        argument_table = {}
+        mock_arg = mock.Mock()
+        mock_arg.required = True
+        argument_table['required-arg'] = mock_arg
+        args = ['--generate-cli-skeleton=output']
+        self.argument.override_required_args(argument_table, args)
+        self.assertTrue(argument_table['required-arg'].required)
+
+    def test_override_required_args_when_input_with_equals(self):
+        argument_table = {}
+        mock_arg = mock.Mock()
+        mock_arg.required = True
+        argument_table['required-arg'] = mock_arg
+        args = ['--generate-cli-skeleton=input']
+        self.argument.override_required_args(argument_table, args)
+        self.assertFalse(argument_table['required-arg'].required)
+
     def test_override_required_args_when_output_present_but_not_value(self):
         argument_table = {}
         mock_arg = mock.Mock()

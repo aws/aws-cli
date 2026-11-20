@@ -716,6 +716,9 @@ PLUGIN_REGISTRY = {
     'building-command-table.s3_sync': [
         ('awscli.customizations.s3.s3', 'register_s3_sync_strategies')
     ],
+    'building-command-table.sagemaker-gateway-runtime': [
+        ('awscli.customizations.removals', 'register_removals')
+    ],
     'building-command-table.sagemaker-runtime': [
         ('awscli.customizations.removals', 'register_removals')
     ],

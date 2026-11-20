@@ -12,6 +12,7 @@ from awscli.argparser import (
     SubCommandArgParser,
     format_unknown_options_error,
     get_option_suggestion_candidates,
+    get_valid_options,
 )
 from awscli.argprocess import unpack_argument, unpack_cli_arg
 from awscli.arguments import CustomArgument, create_argument_model_from_schema
@@ -221,6 +222,7 @@ class BasicCommand(CLICommand):
                         get_option_suggestion_candidates(
                             self.arg_table, self._session
                         ),
+                        get_valid_options(self.arg_table),
                     )
                 )
             rc = self._run_main(parsed_args, parsed_globals)

@@ -34,6 +34,7 @@ class ModelIndexer:
         'signup',
         'agent-toolkit',
         'update',
+        'console',
     ]
 
     _CREATE_CMD_TABLE = """\

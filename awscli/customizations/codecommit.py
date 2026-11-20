@@ -100,10 +100,10 @@ class CodeCommitGetCommand(BasicCommand):
 
     def _run_main(self, args, parsed_globals):
         git_parameters = self.read_git_parameters()
+        host = git_parameters['host']
         if (
-            'amazon.com' in git_parameters['host']
-            or 'amazonaws.com' in git_parameters['host']
-            or 'amazonaws.eu' in git_parameters['host']
+            'amazon.com' in host
+            or any(suffix in host for suffix in self._get_dns_suffixes())
             or args.ignore_host_check
         ):
             theUrl = self.extract_url(git_parameters)
@@ -142,9 +142,24 @@ class CodeCommitGetCommand(BasicCommand):
         )
         return url
 
+    def _get_dns_suffixes(self):
+        # The DNS suffix of every partition (amazonaws.com, amazonaws.com.cn,
+        # amazonaws.eu, ...), so hosts in a new partition are recognized
+        # without a code change.
+        partitions = self._session.get_data('partitions')['partitions']
+        return sorted(
+            {partition['outputs']['dnsSuffix'] for partition in partitions},
+            key=len,
+            reverse=True,
+        )
+
     def extract_region(self, parameters, parsed_globals):
+        suffixes = '|'.join(
+            re.escape(suffix) for suffix in self._get_dns_suffixes()
+        )
         match = re.match(
-            r'(vpce-.+\.)?git-codecommit(-fips)?\.([^.]+)\.(vpce\.)?amazonaws\.(com|eu)',
+            r'(vpce-.+\.)?git-codecommit(-fips)?\.([^.]+)\.(vpce\.)?'
+            rf'({suffixes})',
             parameters['host'],
         )
         if match is not None:

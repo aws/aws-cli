@@ -2152,6 +2152,19 @@
       ],
       "documentation":"<p>Returns information about an AutoML job created by calling <a href=\"https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_CreateAutoMLJobV2.html\">CreateAutoMLJobV2</a> or <a href=\"https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_CreateAutoMLJob.html\">CreateAutoMLJob</a>.</p>"
     },
+    "DescribeCapacityReservation":{
+      "name":"DescribeCapacityReservation",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"DescribeCapacityReservationRequest"},
+      "output":{"shape":"DescribeCapacityReservationResponse"},
+      "errors":[
+        {"shape":"ResourceNotFound"}
+      ],
+      "documentation":"<p>Returns details about a SageMaker Capacity Reservation, such as its instance type, instance count, Availability Zone, and start and end times.</p>"
+    },
     "DescribeCluster":{
       "name":"DescribeCluster",
       "http":{
@@ -2882,6 +2895,19 @@
       ],
       "documentation":"<p>Retrieves details about a reserved capacity.</p>"
     },
+    "DescribeResourceAssociations":{
+      "name":"DescribeResourceAssociations",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"DescribeResourceAssociationsRequest"},
+      "output":{"shape":"DescribeResourceAssociationsResponse"},
+      "errors":[
+        {"shape":"ResourceNotFound"}
+      ],
+      "documentation":"<p>Returns the resources in your account that are associated with a SageMaker Capacity Reservation and the status of each association. Resources include SageMaker AI HyperPod clusters and SageMaker AI endpoints.</p>"
+    },
     "DescribeSpace":{
       "name":"DescribeSpace",
       "http":{
@@ -3102,6 +3128,19 @@
         {"shape":"ResourceNotFound"}
       ],
       "documentation":"<p>Extends an existing training plan by purchasing an extension offering. This allows you to add additional compute capacity time to your training plan without creating a new plan or reconfiguring your workloads.</p> <p>To find available extension offerings, use the <code> <a href=\"https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_SearchTrainingPlanOfferings.html\">SearchTrainingPlanOfferings</a> </code> API with the <code>TrainingPlanArn</code> parameter.</p> <p>To view the history of extensions for a training plan, use the <code> <a href=\"https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_DescribeTrainingPlanExtensionHistory.html\">DescribeTrainingPlanExtensionHistory</a> </code> API.</p>"
+    },
+    "GetCapacityReservationUsage":{
+      "name":"GetCapacityReservationUsage",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"GetCapacityReservationUsageRequest"},
+      "output":{"shape":"GetCapacityReservationUsageResponse"},
+      "errors":[
+        {"shape":"ResourceNotFound"}
+      ],
+      "documentation":"<p>Returns the number of instances in use from a SageMaker Capacity Reservation, for each account that uses them.</p> <p>SageMaker AI refreshes the usage counts periodically. The <code>LastRefreshTime</code> value shows when the counts were last refreshed.</p>"
     },
     "GetDeviceFleetReport":{
       "name":"GetDeviceFleetReport",
@@ -3331,6 +3370,16 @@
         {"shape":"ResourceNotFound"}
       ],
       "documentation":"<p>List the candidates created for the job.</p>"
+    },
+    "ListCapacityReservations":{
+      "name":"ListCapacityReservations",
+      "http":{
+        "method":"POST",
+        "requestUri":"/"
+      },
+      "input":{"shape":"ListCapacityReservationsRequest"},
+      "output":{"shape":"ListCapacityReservationsResponse"},
+      "documentation":"<p>Lists the SageMaker Capacity Reservations in your account.</p> <p>An empty list is a valid response.</p>"
     },
     "ListClusterEvents":{
       "name":"ListClusterEvents",
@@ -9814,9 +9863,370 @@
       },
       "documentation":"<p>Information about the Capacity Reservation used by an instance or instance group.</p>"
     },
+    "CapacityReservationArn":{
+      "type":"string",
+      "documentation":"<p>The Amazon Resource Name (ARN) of a SageMaker Capacity Reservation.</p>",
+      "max":256,
+      "min":1,
+      "pattern":"arn:aws[a-z\\-]*:sagemaker:[a-z0-9\\-]+:[0-9]{12}:sm-capacity-reservation/smcr-[0-9a-z]{12}"
+    },
+    "CapacityReservationAvailabilityZoneId":{
+      "type":"string",
+      "documentation":"<p>The ID of an Availability Zone, for example <code>use1-az1</code>.</p>",
+      "max":32,
+      "min":1
+    },
+    "CapacityReservationDetail":{
+      "type":"structure",
+      "required":[
+        "SMCapacityReservationArn",
+        "SMCapacityReservationId",
+        "Owner",
+        "Status",
+        "InstanceType",
+        "AvailabilityZoneId",
+        "TotalInstanceCount",
+        "StartTime",
+        "CreationTime"
+      ],
+      "members":{
+        "SMCapacityReservationArn":{
+          "shape":"CapacityReservationArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the SageMaker Capacity Reservation.</p>"
+        },
+        "SMCapacityReservationId":{
+          "shape":"SageMakerCapacityReservationId",
+          "documentation":"<p>The ID of the SageMaker Capacity Reservation. The ID is the last part of the ARN and starts with <code>smcr-</code>.</p>"
+        },
+        "Owner":{
+          "shape":"AccountId",
+          "documentation":"<p>The ID of the Amazon Web Services account that owns the SageMaker Capacity Reservation.</p>"
+        },
+        "Status":{
+          "shape":"CapacityReservationStatus",
+          "documentation":"<p>The status of the SageMaker Capacity Reservation. SageMaker AI sets the status from the start and end times of the reservation. Valid values:</p> <dl> <dt>Scheduled</dt> <dd> <p>The current time is before <code>StartTime</code>.</p> </dd> <dt>Active</dt> <dd> <p>The current time is between <code>StartTime</code> and <code>EndTime</code>. You can use the reserved instances.</p> </dd> <dt>Expired</dt> <dd> <p>The current time is at or after <code>EndTime</code>.</p> </dd> </dl>"
+        },
+        "InstanceType":{
+          "shape":"CapacityReservationInstanceType",
+          "documentation":"<p>The SageMaker AI instance type of the reserved instances, for example <code>ml.p5.48xlarge</code>.</p>"
+        },
+        "AvailabilityZone":{
+          "shape":"AvailabilityZone",
+          "documentation":"<p>The name of the Availability Zone of the reserved instances, for example <code>us-east-1a</code>. Availability Zone names can map to different physical zones in different accounts. To identify the same zone across accounts, use <code>AvailabilityZoneId</code>.</p>"
+        },
+        "AvailabilityZoneId":{
+          "shape":"CapacityReservationAvailabilityZoneId",
+          "documentation":"<p>The ID of the Availability Zone of the reserved instances, for example <code>use1-az1</code>. An Availability Zone ID identifies the same physical zone in every account.</p>"
+        },
+        "TotalInstanceCount":{
+          "shape":"TotalInstanceCount",
+          "documentation":"<p>The number of instances in the SageMaker Capacity Reservation.</p>"
+        },
+        "StartTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The time when the reserved instances become available.</p>"
+        },
+        "EndTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The time when the SageMaker Capacity Reservation ends. This value is not returned if the reservation has no end time.</p>"
+        },
+        "CreationTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The time when the SageMaker Capacity Reservation was created.</p>"
+        }
+      },
+      "documentation":"<p>Details about a SageMaker Capacity Reservation. A SageMaker Capacity Reservation reserves a number of instances of one instance type in one Availability Zone for a period of time.</p>"
+    },
+    "CapacityReservationEndpointSharing":{
+      "type":"string",
+      "documentation":"<p>Whether one endpoint or multiple endpoints can use an ML capacity reservation.</p>",
+      "enum":[
+        "SingleEndpoint",
+        "MultipleEndpoints"
+      ]
+    },
+    "CapacityReservationEndpointsAssociation":{
+      "type":"structure",
+      "required":[
+        "Status",
+        "AssociatedTime"
+      ],
+      "members":{
+        "MlReservationId":{
+          "shape":"CapacityReservationMlReservationId",
+          "documentation":"<p>The name of the ML capacity reservation. The name is the last part of the ML capacity reservation ARN.</p>"
+        },
+        "Status":{
+          "shape":"CapacityReservationOptInStatus",
+          "documentation":"<p>The status of the association. Valid values:</p> <dl> <dt>Pending</dt> <dd> <p>SageMaker AI is adding or removing the association.</p> </dd> <dt>Active</dt> <dd> <p>The resources are associated with the SageMaker Capacity Reservation and can use its instances.</p> </dd> <dt>Inactive</dt> <dd> <p>The resources are not associated with the SageMaker Capacity Reservation.</p> </dd> </dl>"
+        },
+        "MatchCriteria":{
+          "shape":"CapacityReservationMatchCriteria",
+          "documentation":"<p>How endpoints in your account match the ML capacity reservation. Valid values:</p> <dl> <dt>Open</dt> <dd> <p>Endpoints in your account use the ML capacity reservation automatically when their instance type matches. You don't specify the ML capacity reservation ARN when you create the endpoint.</p> </dd> <dt>Targeted</dt> <dd> <p>An endpoint uses the ML capacity reservation only when you specify its ARN when you create or update the endpoint.</p> </dd> </dl>"
+        },
+        "EndpointSharing":{
+          "shape":"CapacityReservationEndpointSharing",
+          "documentation":"<p>Whether one endpoint or multiple endpoints can use the ML capacity reservation. Valid values:</p> <dl> <dt>SingleEndpoint</dt> <dd> <p>Only one endpoint can use the ML capacity reservation.</p> </dd> <dt>MultipleEndpoints</dt> <dd> <p>Multiple endpoints can use the ML capacity reservation.</p> </dd> </dl>"
+        },
+        "MlReservationArn":{
+          "shape":"MlReservationArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the ML capacity reservation. Specify this ARN in <code>CreateEndpointConfig</code> to use the reserved instances for an endpoint. For a new ML capacity reservation, this value is returned when the status is <code>Active</code>.</p>"
+        },
+        "FailureReason":{
+          "shape":"FailureReason",
+          "documentation":"<p>The reason that the most recent attempt to add or remove the association failed. This value is returned only when the most recent attempt failed. After a failure to add the association, the status is <code>Inactive</code>. After a failure to remove the association, the status is <code>Active</code>.</p>"
+        },
+        "AssociatedTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The time when SageMaker AI started the current association. This time resets when you add the association again after it was removed or after it failed.</p>"
+        }
+      },
+      "documentation":"<p>The association between the SageMaker AI endpoints in your account and a SageMaker Capacity Reservation, through one ML capacity reservation. To use the reserved instances for an endpoint, specify the ML capacity reservation ARN in the <code>MlReservationArn</code> field of <code>ProductionVariantCapacityReservationConfig</code> when you call <code>CreateEndpointConfig</code>.</p>"
+    },
+    "CapacityReservationFilter":{
+      "type":"structure",
+      "required":[
+        "Name",
+        "Values"
+      ],
+      "members":{
+        "Name":{
+          "shape":"CapacityReservationFilterName",
+          "documentation":"<p>The name of the field to filter on. The only supported value is <code>Status</code>.</p>"
+        },
+        "Values":{
+          "shape":"CapacityReservationFilterValues",
+          "documentation":"<p>The values to match. For the <code>Status</code> filter, valid values are <code>Scheduled</code>, <code>Active</code>, and <code>Expired</code>. Values are case sensitive. You can specify up to 10 values.</p>"
+        }
+      },
+      "documentation":"<p>A filter for the <code>ListCapacityReservations</code> operation. A reservation matches the filter when its value for <code>Name</code> equals any of the values in <code>Values</code>.</p>"
+    },
+    "CapacityReservationFilterName":{
+      "type":"string",
+      "documentation":"<p>The name of a field to filter SageMaker Capacity Reservations on.</p>",
+      "enum":["Status"]
+    },
+    "CapacityReservationFilterValue":{
+      "type":"string",
+      "documentation":"<p>A value to match in a SageMaker Capacity Reservation filter.</p>",
+      "max":64,
+      "min":1,
+      "pattern":"(Scheduled|Active|Expired)"
+    },
+    "CapacityReservationFilterValues":{
+      "type":"list",
+      "member":{"shape":"CapacityReservationFilterValue"},
+      "max":10,
+      "min":1
+    },
+    "CapacityReservationFilters":{
+      "type":"list",
+      "member":{"shape":"CapacityReservationFilter"},
+      "max":1,
+      "min":1
+    },
+    "CapacityReservationHyperPodClustersAssociation":{
+      "type":"structure",
+      "required":[
+        "Status",
+        "AssociatedTime"
+      ],
+      "members":{
+        "Status":{
+          "shape":"CapacityReservationOptInStatus",
+          "documentation":"<p>The status of the association. Valid values:</p> <dl> <dt>Pending</dt> <dd> <p>SageMaker AI is adding or removing the association.</p> </dd> <dt>Active</dt> <dd> <p>The resources are associated with the SageMaker Capacity Reservation and can use its instances.</p> </dd> <dt>Inactive</dt> <dd> <p>The resources are not associated with the SageMaker Capacity Reservation.</p> </dd> </dl>"
+        },
+        "FailureReason":{
+          "shape":"FailureReason",
+          "documentation":"<p>The reason that the most recent attempt to add or remove the association failed. This value is returned only when the most recent attempt failed. After a failure to add the association, the status is <code>Inactive</code>. After a failure to remove the association, the status is <code>Active</code>.</p>"
+        },
+        "AssociatedTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The time when SageMaker AI started the current association. This time resets when you add the association again after it was removed or after it failed.</p>"
+        }
+      },
+      "documentation":"<p>The association between the SageMaker AI HyperPod clusters in your account and a SageMaker Capacity Reservation.</p>"
+    },
+    "CapacityReservationInstanceType":{
+      "type":"string",
+      "documentation":"<p>The SageMaker AI instance type of a SageMaker Capacity Reservation, for example <code>ml.p5.48xlarge</code>.</p>",
+      "max":64,
+      "min":1
+    },
+    "CapacityReservationInstanceUsage":{
+      "type":"structure",
+      "required":[
+        "AccountId",
+        "InUseInstanceCount",
+        "ResourcesUsage"
+      ],
+      "members":{
+        "AccountId":{
+          "shape":"AccountId",
+          "documentation":"<p>The ID of the Amazon Web Services account that uses the instances.</p>"
+        },
+        "InUseInstanceCount":{
+          "shape":"InUseInstanceCount",
+          "documentation":"<p>The number of instances that the account uses, across all resource types.</p>"
+        },
+        "ResourcesUsage":{
+          "shape":"CapacityReservationResourceUsageSet",
+          "documentation":"<p>The instance usage for each resource type that has instances in use in the account.</p>"
+        }
+      },
+      "documentation":"<p>The instances from a SageMaker Capacity Reservation that one account uses.</p>"
+    },
+    "CapacityReservationInstanceUsageSet":{
+      "type":"list",
+      "member":{"shape":"CapacityReservationInstanceUsage"}
+    },
+    "CapacityReservationMatchCriteria":{
+      "type":"string",
+      "documentation":"<p>How endpoints match an ML capacity reservation.</p>",
+      "enum":[
+        "Open",
+        "Targeted"
+      ]
+    },
+    "CapacityReservationMlReservationId":{
+      "type":"string",
+      "documentation":"<p>The name of an ML capacity reservation.</p>"
+    },
+    "CapacityReservationOptInStatus":{
+      "type":"string",
+      "documentation":"<p>The status of an association between resources and a SageMaker Capacity Reservation.</p>",
+      "enum":[
+        "Pending",
+        "Active",
+        "Inactive"
+      ]
+    },
     "CapacityReservationPreference":{
       "type":"string",
       "enum":["capacity-reservations-only"]
+    },
+    "CapacityReservationResourceAssociation":{
+      "type":"structure",
+      "members":{
+        "HyperPodClusters":{
+          "shape":"CapacityReservationHyperPodClustersAssociation",
+          "documentation":"<p>The association between the SageMaker AI HyperPod clusters in your account and the SageMaker Capacity Reservation. The association applies to all HyperPod clusters in your account.</p>"
+        },
+        "Endpoints":{
+          "shape":"CapacityReservationEndpointsAssociation",
+          "documentation":"<p>The association between the SageMaker AI endpoints in your account and the SageMaker Capacity Reservation, through one ML capacity reservation. The response includes one item for each ML capacity reservation.</p>"
+        }
+      },
+      "documentation":"<p>An association between one type of resource in your account and a SageMaker Capacity Reservation. Each item contains exactly one member.</p>",
+      "union":true
+    },
+    "CapacityReservationResourceAssociations":{
+      "type":"list",
+      "member":{"shape":"CapacityReservationResourceAssociation"}
+    },
+    "CapacityReservationResourceType":{
+      "type":"string",
+      "documentation":"<p>A type of resource that uses instances from a SageMaker Capacity Reservation.</p>",
+      "enum":[
+        "HyperPodClusters",
+        "Endpoints"
+      ]
+    },
+    "CapacityReservationResourceUsage":{
+      "type":"structure",
+      "required":[
+        "ResourceType",
+        "InUseInstanceCount"
+      ],
+      "members":{
+        "ResourceType":{
+          "shape":"CapacityReservationResourceType",
+          "documentation":"<p>The type of resource that uses the instances. Valid values:</p> <dl> <dt>HyperPodClusters</dt> <dd> <p>SageMaker AI HyperPod clusters.</p> </dd> <dt>Endpoints</dt> <dd> <p>SageMaker AI endpoints.</p> </dd> </dl>"
+        },
+        "InUseInstanceCount":{
+          "shape":"InUseInstanceCount",
+          "documentation":"<p>The number of instances from the SageMaker Capacity Reservation that are in use.</p>"
+        }
+      },
+      "documentation":"<p>The instances from a SageMaker Capacity Reservation that one resource type uses in an account.</p>"
+    },
+    "CapacityReservationResourceUsageSet":{
+      "type":"list",
+      "member":{"shape":"CapacityReservationResourceUsage"}
+    },
+    "CapacityReservationStatus":{
+      "type":"string",
+      "documentation":"<p>The status of a SageMaker Capacity Reservation.</p>",
+      "enum":[
+        "Scheduled",
+        "Active",
+        "Expired"
+      ]
+    },
+    "CapacityReservationSummaries":{
+      "type":"list",
+      "member":{"shape":"CapacityReservationSummary"}
+    },
+    "CapacityReservationSummary":{
+      "type":"structure",
+      "required":[
+        "SMCapacityReservationArn",
+        "SMCapacityReservationId",
+        "Owner",
+        "Status",
+        "InstanceType",
+        "AvailabilityZoneId",
+        "TotalInstanceCount",
+        "StartTime",
+        "CreationTime"
+      ],
+      "members":{
+        "SMCapacityReservationArn":{
+          "shape":"CapacityReservationArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the SageMaker Capacity Reservation.</p>"
+        },
+        "SMCapacityReservationId":{
+          "shape":"SageMakerCapacityReservationId",
+          "documentation":"<p>The ID of the SageMaker Capacity Reservation. The ID is the last part of the ARN and starts with <code>smcr-</code>.</p>"
+        },
+        "Owner":{
+          "shape":"AccountId",
+          "documentation":"<p>The ID of the Amazon Web Services account that owns the SageMaker Capacity Reservation.</p>"
+        },
+        "Status":{
+          "shape":"CapacityReservationStatus",
+          "documentation":"<p>The status of the SageMaker Capacity Reservation. SageMaker AI sets the status from the start and end times of the reservation. Valid values:</p> <dl> <dt>Scheduled</dt> <dd> <p>The current time is before <code>StartTime</code>.</p> </dd> <dt>Active</dt> <dd> <p>The current time is between <code>StartTime</code> and <code>EndTime</code>. You can use the reserved instances.</p> </dd> <dt>Expired</dt> <dd> <p>The current time is at or after <code>EndTime</code>.</p> </dd> </dl>"
+        },
+        "InstanceType":{
+          "shape":"CapacityReservationInstanceType",
+          "documentation":"<p>The SageMaker AI instance type of the reserved instances, for example <code>ml.p5.48xlarge</code>.</p>"
+        },
+        "AvailabilityZone":{
+          "shape":"AvailabilityZone",
+          "documentation":"<p>The name of the Availability Zone of the reserved instances, for example <code>us-east-1a</code>. Availability Zone names can map to different physical zones in different accounts. To identify the same zone across accounts, use <code>AvailabilityZoneId</code>.</p>"
+        },
+        "AvailabilityZoneId":{
+          "shape":"CapacityReservationAvailabilityZoneId",
+          "documentation":"<p>The ID of the Availability Zone of the reserved instances, for example <code>use1-az1</code>. An Availability Zone ID identifies the same physical zone in every account.</p>"
+        },
+        "TotalInstanceCount":{
+          "shape":"TotalInstanceCount",
+          "documentation":"<p>The number of instances in the SageMaker Capacity Reservation.</p>"
+        },
+        "StartTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The time when the reserved instances become available.</p>"
+        },
+        "EndTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The time when the SageMaker Capacity Reservation ends. This value is not returned if the reservation has no end time.</p>"
+        },
+        "CreationTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The time when the SageMaker Capacity Reservation was created.</p>"
+        }
+      },
+      "documentation":"<p>Summary information about a SageMaker Capacity Reservation.</p>"
     },
     "CapacityReservationType":{
       "type":"string",
@@ -20079,6 +20489,26 @@
         }
       }
     },
+    "DescribeCapacityReservationRequest":{
+      "type":"structure",
+      "required":["SMCapacityReservationArn"],
+      "members":{
+        "SMCapacityReservationArn":{
+          "shape":"CapacityReservationArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the SageMaker Capacity Reservation. The ARN has the format <code>arn:aws:sagemaker:region:account-id:sm-capacity-reservation/smcr-id</code>.</p>"
+        }
+      }
+    },
+    "DescribeCapacityReservationResponse":{
+      "type":"structure",
+      "required":["CapacityReservation"],
+      "members":{
+        "CapacityReservation":{
+          "shape":"CapacityReservationDetail",
+          "documentation":"<p>Details about the SageMaker Capacity Reservation.</p>"
+        }
+      }
+    },
     "DescribeClusterEventRequest":{
       "type":"structure",
       "required":[
@@ -24196,6 +24626,50 @@
         }
       }
     },
+    "DescribeResourceAssociationsRequest":{
+      "type":"structure",
+      "required":["SMCapacityReservationArn"],
+      "members":{
+        "SMCapacityReservationArn":{
+          "shape":"CapacityReservationArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the SageMaker Capacity Reservation. The ARN has the format <code>arn:aws:sagemaker:region:account-id:sm-capacity-reservation/smcr-id</code>.</p>"
+        },
+        "MaxResults":{
+          "shape":"MaxResults",
+          "documentation":"<p>The maximum number of results to return in the response. If more results are available, the response includes a <code>NextToken</code> value.</p>"
+        },
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>If the previous response was truncated, the response includes a <code>NextToken</code> value. To retrieve the next set of results, use that token in your next request.</p>"
+        }
+      }
+    },
+    "DescribeResourceAssociationsResponse":{
+      "type":"structure",
+      "required":[
+        "SMCapacityReservationArn",
+        "SMCapacityReservationId",
+        "ResourceAssociations"
+      ],
+      "members":{
+        "SMCapacityReservationArn":{
+          "shape":"CapacityReservationArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the SageMaker Capacity Reservation.</p>"
+        },
+        "SMCapacityReservationId":{
+          "shape":"SageMakerCapacityReservationId",
+          "documentation":"<p>The ID of the SageMaker Capacity Reservation. The ID is the last part of the ARN and starts with <code>smcr-</code>.</p>"
+        },
+        "ResourceAssociations":{
+          "shape":"CapacityReservationResourceAssociations",
+          "documentation":"<p>The associations between resources in your account and the SageMaker Capacity Reservation. The list is empty when your account has no associations with the reservation.</p>"
+        },
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>If the response is truncated, SageMaker AI returns this token. To retrieve the next set of results, use this token in your next request.</p>"
+        }
+      }
+    },
     "DescribeSpaceRequest":{
       "type":"structure",
       "required":[
@@ -28257,6 +28731,60 @@
         }
       },
       "documentation":"<p>The generative AI settings for the SageMaker Canvas application.</p> <p>Configure these settings for Canvas users starting chats with generative AI foundation models. For more information, see <a href=\"https://docs.aws.amazon.com/sagemaker/latest/dg/canvas-fm-chat.html\"> Use generative AI with foundation models</a>.</p>"
+    },
+    "GetCapacityReservationUsageRequest":{
+      "type":"structure",
+      "required":["SMCapacityReservationArn"],
+      "members":{
+        "SMCapacityReservationArn":{
+          "shape":"CapacityReservationArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the SageMaker Capacity Reservation. The ARN has the format <code>arn:aws:sagemaker:region:account-id:sm-capacity-reservation/smcr-id</code>.</p>"
+        },
+        "MaxResults":{
+          "shape":"MaxResults",
+          "documentation":"<p>The maximum number of results to return in the response. If more results are available, the response includes a <code>NextToken</code> value.</p>"
+        },
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>If the previous response was truncated, the response includes a <code>NextToken</code> value. To retrieve the next set of results, use that token in your next request.</p>"
+        }
+      }
+    },
+    "GetCapacityReservationUsageResponse":{
+      "type":"structure",
+      "required":[
+        "SMCapacityReservationId",
+        "TotalInstanceCount",
+        "AvailableInstanceCount",
+        "LastRefreshTime",
+        "InstanceUsageSet"
+      ],
+      "members":{
+        "SMCapacityReservationId":{
+          "shape":"SageMakerCapacityReservationId",
+          "documentation":"<p>The ID of the SageMaker Capacity Reservation. The ID is the last part of the ARN and starts with <code>smcr-</code>.</p>"
+        },
+        "TotalInstanceCount":{
+          "shape":"TotalInstanceCount",
+          "documentation":"<p>The number of instances in the SageMaker Capacity Reservation.</p>"
+        },
+        "AvailableInstanceCount":{
+          "shape":"AvailableInstanceCount",
+          "documentation":"<p>The number of instances in the SageMaker Capacity Reservation that are not in use.</p>"
+        },
+        "LastRefreshTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The time when SageMaker AI last refreshed the usage counts in this response.</p>"
+        },
+        "InstanceUsageSet":{
+          "shape":"CapacityReservationInstanceUsageSet",
+          "documentation":"<p>The instance usage for each account that uses instances from the SageMaker Capacity Reservation, sorted by account ID. Each account appears at most once across all pages. The list is empty when no instances are in use.</p>"
+        },
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>If the response is truncated, SageMaker AI returns this token. To retrieve the next set of results, use this token in your next request.</p>"
+        }
+      }
     },
     "GetDeviceFleetReportRequest":{
       "type":"structure",
@@ -33874,6 +34402,37 @@
         "NextToken":{
           "shape":"NextToken",
           "documentation":"<p>If the previous response was truncated, you receive this token. Use it in your next request to receive the next set of results.</p>"
+        }
+      }
+    },
+    "ListCapacityReservationsRequest":{
+      "type":"structure",
+      "members":{
+        "MaxResults":{
+          "shape":"MaxResults",
+          "documentation":"<p>The maximum number of results to return in the response. If more results are available, the response includes a <code>NextToken</code> value.</p>"
+        },
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>If the previous response was truncated, the response includes a <code>NextToken</code> value. To retrieve the next set of results, use that token in your next request.</p>"
+        },
+        "Filters":{
+          "shape":"CapacityReservationFilters",
+          "documentation":"<p>A filter that returns only the reservations that match it. You can specify one filter. If you don't specify a filter, the response includes all reservations in your account.</p>"
+        }
+      }
+    },
+    "ListCapacityReservationsResponse":{
+      "type":"structure",
+      "required":["CapacityReservationSummaries"],
+      "members":{
+        "CapacityReservationSummaries":{
+          "shape":"CapacityReservationSummaries",
+          "documentation":"<p>Summaries of the SageMaker Capacity Reservations in your account.</p>"
+        },
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>If the response is truncated, SageMaker AI returns this token. To retrieve the next set of results, use this token in your next request.</p>"
         }
       }
     },
@@ -47596,6 +48155,11 @@
       "min":0,
       "pattern":"(https|s3)://([^/]+)/?(.*)"
     },
+    "SageMakerCapacityReservationId":{
+      "type":"string",
+      "documentation":"<p>The ID of a SageMaker Capacity Reservation.</p>",
+      "pattern":"smcr-[0-9a-z]{12}"
+    },
     "SageMakerImageName":{
       "type":"string",
       "enum":["sagemaker_distribution"]
@@ -48478,7 +49042,8 @@
         "Succeeded",
         "Failed",
         "RollbackInProgress",
-        "RollbackComplete"
+        "RollbackComplete",
+        "PartiallySucceeded"
       ]
     },
     "SortActionsBy":{

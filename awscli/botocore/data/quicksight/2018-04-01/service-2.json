@@ -50,6 +50,24 @@
       ],
       "documentation":"<p>Deletes one or more knowledge bases.</p>"
     },
+    "BatchDeletePolicyAssignmentByPolicy":{
+      "name":"BatchDeletePolicyAssignmentByPolicy",
+      "http":{
+        "method":"POST",
+        "requestUri":"/governance-policy-mgmt/accounts/{AccountId}/policy-assignments/batch-delete",
+        "responseCode":200
+      },
+      "input":{"shape":"BatchDeletePolicyAssignmentByPolicyRequest"},
+      "output":{"shape":"BatchDeletePolicyAssignmentByPolicyResponse"},
+      "errors":[
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalFailureException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ValidationException"}
+      ],
+      "documentation":"<p>Removes a governance policy from multiple Amazon Quick Sight principals in a single request. A principal that doesn't have the policy is reported as a success.</p> <p>Each entry succeeds or fails independently. Check the <code>Errors</code> list in the response for entries that failed.</p>"
+    },
     "BatchDeleteTopicReviewedAnswer":{
       "name":"BatchDeleteTopicReviewedAnswer",
       "http":{
@@ -85,6 +103,24 @@
       ],
       "documentation":"<p>Describes the effective resource limits for one or more Amazon Quick Sight users, including the limits that apply to each user based on their profile assignments.</p>"
     },
+    "BatchPutPolicyAssignmentByPolicy":{
+      "name":"BatchPutPolicyAssignmentByPolicy",
+      "http":{
+        "method":"POST",
+        "requestUri":"/governance-policy-mgmt/accounts/{AccountId}/policy-assignments/batch-put",
+        "responseCode":200
+      },
+      "input":{"shape":"BatchPutPolicyAssignmentByPolicyRequest"},
+      "output":{"shape":"BatchPutPolicyAssignmentByPolicyResponse"},
+      "errors":[
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalFailureException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ValidationException"}
+      ],
+      "documentation":"<p>Assigns a governance policy to multiple Amazon Quick Sight principals in a single request. If a principal already has a policy of the same type, this operation replaces it.</p> <p>Each entry succeeds or fails independently. Check the <code>Errors</code> list in the response for entries that failed.</p>"
+    },
     "CancelIngestion":{
       "name":"CancelIngestion",
       "http":{
@@ -102,6 +138,46 @@
         {"shape":"InternalFailureException"}
       ],
       "documentation":"<p>Cancels an ongoing ingestion of data into SPICE.</p>"
+    },
+    "CreateAccessControlApplication":{
+      "name":"CreateAccessControlApplication",
+      "http":{
+        "method":"POST",
+        "requestUri":"/accounts/{AwsAccountId}/access-control-applications",
+        "responseCode":201
+      },
+      "input":{"shape":"CreateAccessControlApplicationRequest"},
+      "output":{"shape":"CreateAccessControlApplicationResponse"},
+      "errors":[
+        {"shape":"ThrottlingException"},
+        {"shape":"InvalidParameterValueException"},
+        {"shape":"InternalFailureException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"LimitExceededException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ConflictException"}
+      ],
+      "documentation":"<p>Creates an access control application in an Amazon Quick Sight account. You use an access control application to define how an external client signs in to Quick Sight with OAuth 2.0.</p> <p>To connect a client to Quick Sight through an inbound connector, associate the access control application with the connector by using the <code>UpdateInboundConnectorApplicationAssociations</code> operation.</p>"
+    },
+    "CreateAccessControlApplicationSecret":{
+      "name":"CreateAccessControlApplicationSecret",
+      "http":{
+        "method":"POST",
+        "requestUri":"/accounts/{AwsAccountId}/access-control-applications/{ApplicationId}/client-secrets",
+        "responseCode":201
+      },
+      "input":{"shape":"CreateAccessControlApplicationSecretRequest"},
+      "output":{"shape":"CreateAccessControlApplicationSecretResponse"},
+      "errors":[
+        {"shape":"ThrottlingException"},
+        {"shape":"InvalidParameterValueException"},
+        {"shape":"InternalFailureException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"LimitExceededException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ConflictException"}
+      ],
+      "documentation":"<p>Creates a client secret for an access control application. An access control application can have up to two client secrets, so that you can rotate a secret without downtime.</p> <p>Provide the Amazon Web Services Secrets Manager (Secrets Manager) secret ARN for each Region where the client secret, issued by your identity provider (IdP), is stored.</p>"
     },
     "CreateAccountCustomization":{
       "name":"CreateAccountCustomization",
@@ -470,6 +546,26 @@
       ],
       "documentation":"<p>Creates an assignment with one specified IAM policy, identified by its Amazon Resource Name (ARN). This policy assignment is attached to the specified groups or users of Amazon Quick Sight. Assignment names are unique per Amazon Web Services account. To avoid overwriting rules in other namespaces, use assignment names that are unique.</p>"
     },
+    "CreateInboundConnector":{
+      "name":"CreateInboundConnector",
+      "http":{
+        "method":"POST",
+        "requestUri":"/accounts/{AwsAccountId}/inbound-connectors",
+        "responseCode":201
+      },
+      "input":{"shape":"CreateInboundConnectorRequest"},
+      "output":{"shape":"CreateInboundConnectorResponse"},
+      "errors":[
+        {"shape":"ThrottlingException"},
+        {"shape":"InvalidParameterValueException"},
+        {"shape":"InternalFailureException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"LimitExceededException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ConflictException"}
+      ],
+      "documentation":"<p>Creates an inbound connector in a Quick Sight account. An inbound connector is the endpoint that an external client, such as the Quick Sight desktop application, uses to reach Quick Sight in your account.</p> <p>Your users authenticate through the access control applications that are associated with the connector. To manage these associations, use <code>UpdateInboundConnectorApplicationAssociations</code>.</p> <p>An account can have one <code>QUICK_DESKTOP</code> inbound connector in each Region.</p>"
+    },
     "CreateIngestion":{
       "name":"CreateIngestion",
       "http":{
@@ -510,6 +606,28 @@
         {"shape":"AccessDeniedException"}
       ],
       "documentation":"<p>Creates a knowledge base from a specified data source. Supported data source connector types include:</p> <ul> <li> <p> <code>S3_KNOWLEDGE_BASE</code> – Uses an Amazon S3 bucket as the data source.</p> </li> <li> <p> <code>WEB_CRAWLER</code> – Uses web pages indexed by the built-in web crawler as the data source.</p> </li> <li> <p> <code>GOOGLE_DRIVE</code> – Uses Google Drive as the data source. Supports service account authentication only.</p> </li> <li> <p> <code>SHAREPOINT</code> – Uses SharePoint as the data source. Supports two-legged OAuth only.</p> </li> <li> <p> <code>ONE_DRIVE</code> – Uses OneDrive as the data source. Supports two-legged OAuth only.</p> </li> </ul>"
+    },
+    "CreateKnowledgeBaseRefreshSchedule":{
+      "name":"CreateKnowledgeBaseRefreshSchedule",
+      "http":{
+        "method":"POST",
+        "requestUri":"/v1/accounts/{AwsAccountId}/knowledge-bases/{KnowledgeBaseId}/kb-refresh-schedules",
+        "responseCode":201
+      },
+      "input":{"shape":"CreateKnowledgeBaseRefreshScheduleRequest"},
+      "output":{"shape":"CreateKnowledgeBaseRefreshScheduleResponse"},
+      "errors":[
+        {"shape":"ThrottlingException"},
+        {"shape":"ResourceExistsException"},
+        {"shape":"InvalidRequestException"},
+        {"shape":"InvalidParameterValueException"},
+        {"shape":"InternalFailureException"},
+        {"shape":"PreconditionNotMetException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"LimitExceededException"},
+        {"shape":"AccessDeniedException"}
+      ],
+      "documentation":"<p>Creates a schedule that periodically refreshes an Amazon Quick Sight knowledge base at the frequency that you specify.</p> <p>A knowledge base can have only one refresh schedule. If the knowledge base already has a refresh schedule, the request fails with a <code>LimitExceededException</code>.</p>"
     },
     "CreateLimitsProfile":{
       "name":"CreateLimitsProfile",
@@ -792,6 +910,46 @@
         {"shape":"InternalFailureException"}
       ],
       "documentation":"<p>Creates a new VPC connection.</p>"
+    },
+    "DeleteAccessControlApplication":{
+      "name":"DeleteAccessControlApplication",
+      "http":{
+        "method":"DELETE",
+        "requestUri":"/accounts/{AwsAccountId}/access-control-applications",
+        "responseCode":200
+      },
+      "input":{"shape":"DeleteAccessControlApplicationRequest"},
+      "output":{"shape":"DeleteAccessControlApplicationResponse"},
+      "errors":[
+        {"shape":"ThrottlingException"},
+        {"shape":"InvalidParameterValueException"},
+        {"shape":"InternalFailureException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ConflictException"}
+      ],
+      "documentation":"<p>Deletes an access control application. You can't delete an access control application that is associated with an inbound connector whose status is <code>ENABLED</code>.</p> <p>If another update to the same application is in progress, Quick Sight returns a <code>ConflictException</code>. Retry the request.</p>",
+      "idempotent":true
+    },
+    "DeleteAccessControlApplicationSecret":{
+      "name":"DeleteAccessControlApplicationSecret",
+      "http":{
+        "method":"DELETE",
+        "requestUri":"/accounts/{AwsAccountId}/access-control-applications/{ApplicationId}/client-secrets/{ClientSecretId}",
+        "responseCode":200
+      },
+      "input":{"shape":"DeleteAccessControlApplicationSecretRequest"},
+      "output":{"shape":"DeleteAccessControlApplicationSecretResponse"},
+      "errors":[
+        {"shape":"ThrottlingException"},
+        {"shape":"InvalidParameterValueException"},
+        {"shape":"InternalFailureException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ConflictException"}
+      ],
+      "documentation":"<p>Deletes a client secret from an access control application.</p>",
+      "idempotent":true
     },
     "DeleteAccountCustomPermission":{
       "name":"DeleteAccountCustomPermission",
@@ -1244,6 +1402,26 @@
       ],
       "documentation":"<p>Deletes all access scopes and authorized targets that are associated with a service from the Quick Sight IAM Identity Center application.</p> <p>This operation is only supported for Quick Sight accounts that use IAM Identity Center.</p>"
     },
+    "DeleteInboundConnector":{
+      "name":"DeleteInboundConnector",
+      "http":{
+        "method":"DELETE",
+        "requestUri":"/accounts/{AwsAccountId}/inbound-connectors/{InboundConnectorId}",
+        "responseCode":200
+      },
+      "input":{"shape":"DeleteInboundConnectorRequest"},
+      "output":{"shape":"DeleteInboundConnectorResponse"},
+      "errors":[
+        {"shape":"ThrottlingException"},
+        {"shape":"InvalidParameterValueException"},
+        {"shape":"InternalFailureException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ConflictException"}
+      ],
+      "documentation":"<p>Deletes an inbound connector. You must disable the connector before you can delete it. When you delete a connector, Quick Sight doesn't delete the access control applications that are associated with it.</p>",
+      "idempotent":true
+    },
     "DeleteKnowledgeBase":{
       "name":"DeleteKnowledgeBase",
       "http":{
@@ -1265,6 +1443,27 @@
         {"shape":"ConflictException"}
       ],
       "documentation":"<p>Deletes a knowledge base.</p>"
+    },
+    "DeleteKnowledgeBaseRefreshSchedule":{
+      "name":"DeleteKnowledgeBaseRefreshSchedule",
+      "http":{
+        "method":"DELETE",
+        "requestUri":"/v1/accounts/{AwsAccountId}/knowledge-bases/{KnowledgeBaseId}/kb-refresh-schedules/{ScheduleId}",
+        "responseCode":200
+      },
+      "input":{"shape":"DeleteKnowledgeBaseRefreshScheduleRequest"},
+      "output":{"shape":"DeleteKnowledgeBaseRefreshScheduleResponse"},
+      "errors":[
+        {"shape":"ThrottlingException"},
+        {"shape":"InvalidParameterValueException"},
+        {"shape":"InternalFailureException"},
+        {"shape":"PreconditionNotMetException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"LimitExceededException"},
+        {"shape":"AccessDeniedException"}
+      ],
+      "documentation":"<p>Deletes the refresh schedule for an Amazon Quick Sight knowledge base. Delete the schedule when you no longer want the knowledge base to refresh automatically.</p>",
+      "idempotent":true
     },
     "DeleteLimitsProfile":{
       "name":"DeleteLimitsProfile",
@@ -1322,6 +1521,26 @@
         {"shape":"InternalFailureException"}
       ],
       "documentation":"<p>Deletes an OAuthClientApplication.</p>"
+    },
+    "DeletePolicyAssignment":{
+      "name":"DeletePolicyAssignment",
+      "http":{
+        "method":"DELETE",
+        "requestUri":"/governance-policy-mgmt/accounts/{AccountId}/policy-assignments",
+        "responseCode":200
+      },
+      "input":{"shape":"DeletePolicyAssignmentRequest"},
+      "output":{"shape":"DeletePolicyAssignmentResponse"},
+      "errors":[
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalFailureException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ValidationException"},
+        {"shape":"ConflictException"}
+      ],
+      "documentation":"<p>Removes a governance policy from an Amazon Quick Sight principal. If the principal doesn't have the specified policy, the request succeeds and makes no change. If the principal has a different policy of the same type, the request fails with a <code>ConflictException</code>.</p>",
+      "idempotent":true
     },
     "DeleteRefreshSchedule":{
       "name":"DeleteRefreshSchedule",
@@ -1603,6 +1822,25 @@
         {"shape":"InternalFailureException"}
       ],
       "documentation":"<p>Deletes a VPC connection.</p>"
+    },
+    "DescribeAccessControlApplication":{
+      "name":"DescribeAccessControlApplication",
+      "http":{
+        "method":"GET",
+        "requestUri":"/accounts/{AwsAccountId}/access-control-applications/{ApplicationId}",
+        "responseCode":200
+      },
+      "input":{"shape":"DescribeAccessControlApplicationRequest"},
+      "output":{"shape":"DescribeAccessControlApplicationResponse"},
+      "errors":[
+        {"shape":"ThrottlingException"},
+        {"shape":"InvalidParameterValueException"},
+        {"shape":"InternalFailureException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"AccessDeniedException"}
+      ],
+      "documentation":"<p>Describes an access control application. The response includes client secret metadata, but never client secret values.</p>",
+      "readonly":true
     },
     "DescribeAccountCustomPermission":{
       "name":"DescribeAccountCustomPermission",
@@ -2356,6 +2594,25 @@
       ],
       "documentation":"<p>Describes an existing IAM policy assignment, as specified by the assignment name.</p>"
     },
+    "DescribeInboundConnector":{
+      "name":"DescribeInboundConnector",
+      "http":{
+        "method":"GET",
+        "requestUri":"/accounts/{AwsAccountId}/inbound-connectors/{InboundConnectorId}",
+        "responseCode":200
+      },
+      "input":{"shape":"DescribeInboundConnectorRequest"},
+      "output":{"shape":"DescribeInboundConnectorResponse"},
+      "errors":[
+        {"shape":"ThrottlingException"},
+        {"shape":"InvalidParameterValueException"},
+        {"shape":"InternalFailureException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"AccessDeniedException"}
+      ],
+      "documentation":"<p>Describes an inbound connector.</p>",
+      "readonly":true
+    },
     "DescribeIngestion":{
       "name":"DescribeIngestion",
       "http":{
@@ -2449,6 +2706,28 @@
         {"shape":"AccessDeniedException"}
       ],
       "documentation":"<p>Describes the resource permissions for a knowledge base.</p>",
+      "readonly":true
+    },
+    "DescribeKnowledgeBaseRefreshSchedule":{
+      "name":"DescribeKnowledgeBaseRefreshSchedule",
+      "http":{
+        "method":"GET",
+        "requestUri":"/v1/accounts/{AwsAccountId}/knowledge-bases/{KnowledgeBaseId}/kb-refresh-schedules/{ScheduleId}",
+        "responseCode":200
+      },
+      "input":{"shape":"DescribeKnowledgeBaseRefreshScheduleRequest"},
+      "output":{"shape":"DescribeKnowledgeBaseRefreshScheduleResponse"},
+      "errors":[
+        {"shape":"ThrottlingException"},
+        {"shape":"InvalidRequestException"},
+        {"shape":"InvalidParameterValueException"},
+        {"shape":"InternalFailureException"},
+        {"shape":"PreconditionNotMetException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"LimitExceededException"},
+        {"shape":"AccessDeniedException"}
+      ],
+      "documentation":"<p>Describes the refresh schedule for an Amazon Quick Sight knowledge base, including the schedule's frequency, start time, and state.</p>",
       "readonly":true
     },
     "DescribeLimitsProfile":{
@@ -2943,7 +3222,7 @@
         {"shape":"UnsupportedPricingPlanException"},
         {"shape":"InternalFailureException"}
       ],
-      "documentation":"<p>Generates an embed URL that you can use to embed an Amazon Quick dashboard or visual in your website, without having to register any reader users. Before you use this action, make sure that you have configured the dashboards and permissions.</p> <p>The following rules apply to the generated URL:</p> <ul> <li> <p>It contains a temporary bearer token. It is valid for 5 minutes after it is generated. Once redeemed within this period, it cannot be re-used again.</p> </li> <li> <p>The URL validity period should not be confused with the actual session lifetime that can be customized using the <code> <a href=\"https://docs.aws.amazon.com/quicksight/latest/APIReference/API_GenerateEmbedUrlForAnonymousUser.html#QS-GenerateEmbedUrlForAnonymousUser-request-SessionLifetimeInMinutes\">SessionLifetimeInMinutes</a> </code> parameter. The resulting user session is valid for 15 minutes (minimum) to 10 hours (maximum). The default session duration is 10 hours.</p> </li> <li> <p>You are charged only when the URL is used or there is interaction with Amazon Quick.</p> </li> </ul> <p>For more information, see <a href=\"https://docs.aws.amazon.com/quicksight/latest/user/embedded-analytics.html\">Embedded Analytics</a> in the <i>Amazon Quick User Guide</i>.</p> <p>For more information about the high-level steps for embedding and for an interactive demo of the ways you can customize embedding, visit the <a href=\"https://docs.aws.amazon.com/quicksight/latest/user/quicksight-dev-portal.html\">Amazon Quick Developer Portal</a>.</p>"
+      "documentation":"<p>Generates an embed URL that you can use to embed an Quick dashboard or visual in your website, without having to register any reader users. Before you use this action, make sure that you have configured the dashboards and permissions.</p> <p>The following rules apply to the generated URL:</p> <ul> <li> <p>It contains a temporary bearer token. It is valid for 5 minutes after it is generated. Once redeemed within this period, it cannot be re-used again.</p> </li> <li> <p>The URL validity period should not be confused with the actual session lifetime that can be customized using the <code> <a href=\"https://docs.aws.amazon.com/quicksight/latest/APIReference/API_GenerateEmbedUrlForAnonymousUser.html#QS-GenerateEmbedUrlForAnonymousUser-request-SessionLifetimeInMinutes\">SessionLifetimeInMinutes</a> </code> parameter. The resulting user session is valid for 15 minutes (minimum) to 10 hours (maximum). The default session duration is 10 hours.</p> </li> <li> <p>You are charged only when the URL is used or there is interaction with Quick.</p> </li> </ul> <p>For more information, see <a href=\"https://docs.aws.amazon.com/quicksight/latest/user/embedded-analytics.html\">Embedded Analytics</a> in the <i>Quick User Guide</i>.</p> <p>For more information about the high-level steps for embedding and for an interactive demo of the ways you can customize embedding, visit the <a href=\"https://docs.aws.amazon.com/quicksight/latest/user/quicksight-dev-portal.html\">Quick Developer Portal</a>.</p>"
     },
     "GenerateEmbedUrlForRegisteredUser":{
       "name":"GenerateEmbedUrlForRegisteredUser",
@@ -2964,7 +3243,7 @@
         {"shape":"UnsupportedPricingPlanException"},
         {"shape":"InternalFailureException"}
       ],
-      "documentation":"<p>Generates an embed URL that you can use to embed an Amazon Quick experience in your website. This action can be used for any type of user registered in an Amazon Quick account. Before you use this action, make sure that you have configured the relevant Amazon Quick resource and permissions.</p> <p>The following rules apply to the generated URL:</p> <ul> <li> <p>It contains a temporary bearer token. It is valid for 5 minutes after it is generated. Once redeemed within this period, it cannot be re-used again.</p> </li> <li> <p>The URL validity period should not be confused with the actual session lifetime that can be customized using the <code> <a href=\"https://docs.aws.amazon.com/quicksight/latest/APIReference/API_GenerateEmbedUrlForRegisteredUser.html#QS-GenerateEmbedUrlForRegisteredUser-request-SessionLifetimeInMinutes\">SessionLifetimeInMinutes</a> </code> parameter.</p> <p>The resulting user session is valid for 15 minutes (minimum) to 10 hours (maximum). The default session duration is 10 hours.</p> </li> <li> <p>You are charged only when the URL is used or there is interaction with Amazon Quick.</p> </li> </ul> <p>For more information, see <a href=\"https://docs.aws.amazon.com/quicksight/latest/user/embedded-analytics.html\">Embedded Analytics</a> in the <i>Amazon Quick User Guide</i>.</p> <p>For more information about the high-level steps for embedding and for an interactive demo of the ways you can customize embedding, visit the <a href=\"https://docs.aws.amazon.com/quicksight/latest/user/quicksight-dev-portal.html\">Amazon Quick Developer Portal</a>.</p>"
+      "documentation":"<p>Generates an embed URL that you can use to embed an Quick experience in your website. This action can be used for any type of user registered in an Quick account. Before you use this action, make sure that you have configured the relevant Quick resource and permissions.</p> <p>The following rules apply to the generated URL:</p> <ul> <li> <p>It contains a temporary bearer token. It is valid for 5 minutes after it is generated. Once redeemed within this period, it cannot be re-used again.</p> </li> <li> <p>The URL validity period should not be confused with the actual session lifetime that can be customized using the <code> <a href=\"https://docs.aws.amazon.com/quicksight/latest/APIReference/API_GenerateEmbedUrlForRegisteredUser.html#QS-GenerateEmbedUrlForRegisteredUser-request-SessionLifetimeInMinutes\">SessionLifetimeInMinutes</a> </code> parameter.</p> <p>The resulting user session is valid for 15 minutes (minimum) to 10 hours (maximum). The default session duration is 10 hours.</p> </li> <li> <p>You are charged only when the URL is used or there is interaction with Quick.</p> </li> </ul> <p>For more information, see <a href=\"https://docs.aws.amazon.com/quicksight/latest/user/embedded-analytics.html\">Embedded Analytics</a> in the <i>Quick User Guide</i>.</p> <p>For more information about the high-level steps for embedding and for an interactive demo of the ways you can customize embedding, visit the <a href=\"https://docs.aws.amazon.com/quicksight/latest/user/quicksight-dev-portal.html\">Quick Developer Portal</a>.</p>"
     },
     "GenerateEmbedUrlForRegisteredUserWithIdentity":{
       "name":"GenerateEmbedUrlForRegisteredUserWithIdentity",
@@ -3009,7 +3288,7 @@
         {"shape":"UnsupportedPricingPlanException"},
         {"shape":"InternalFailureException"}
       ],
-      "documentation":"<p>Generates a temporary session URL and authorization code(bearer token) that you can use to embed an Amazon Quick Sight read-only dashboard in your website or application. Before you use this command, make sure that you have configured the dashboards and permissions. </p> <p>Currently, you can use <code>GetDashboardEmbedURL</code> only from the server, not from the user's browser. The following rules apply to the generated URL:</p> <ul> <li> <p>They must be used together.</p> </li> <li> <p>They can be used one time only.</p> </li> <li> <p>They are valid for 5 minutes after you run this command.</p> </li> <li> <p>You are charged only when the URL is used or there is interaction with Quick.</p> </li> <li> <p>The resulting user session is valid for 15 minutes (default) up to 10 hours (maximum). You can use the optional <code>SessionLifetimeInMinutes</code> parameter to customize session duration.</p> </li> </ul> <p>For more information, see <a href=\"https://docs.aws.amazon.com/quicksight/latest/user/embedded-analytics-deprecated.html\">Embedding Analytics Using GetDashboardEmbedUrl</a> in the <i>Amazon Quick User Guide</i>.</p> <p>For more information about the high-level steps for embedding and for an interactive demo of the ways you can customize embedding, visit the <a href=\"https://docs.aws.amazon.com/quicksight/latest/user/quicksight-dev-portal.html\">Amazon Quick Developer Portal</a>.</p>"
+      "documentation":"<p>Generates a temporary session URL and authorization code(bearer token) that you can use to embed an Amazon Quick Sight read-only dashboard in your website or application. Before you use this command, make sure that you have configured the dashboards and permissions. </p> <p>Currently, you can use <code>GetDashboardEmbedURL</code> only from the server, not from the user's browser. The following rules apply to the generated URL:</p> <ul> <li> <p>They must be used together.</p> </li> <li> <p>They can be used one time only.</p> </li> <li> <p>They are valid for 5 minutes after you run this command.</p> </li> <li> <p>You are charged only when the URL is used or there is interaction with Quick.</p> </li> <li> <p>The resulting user session is valid for 15 minutes (default) up to 10 hours (maximum). You can use the optional <code>SessionLifetimeInMinutes</code> parameter to customize session duration.</p> </li> </ul> <p>For more information, see <a href=\"https://docs.aws.amazon.com/quicksight/latest/user/embedded-analytics-deprecated.html\">Embedding Analytics Using GetDashboardEmbedUrl</a> in the <i>Quick User Guide</i>.</p> <p>For more information about the high-level steps for embedding and for an interactive demo of the ways you can customize embedding, visit the <a href=\"https://docs.aws.amazon.com/quicksight/latest/user/quicksight-dev-portal.html\">Quick Developer Portal</a>.</p>"
     },
     "GetFlowMetadata":{
       "name":"GetFlowMetadata",
@@ -3066,6 +3345,25 @@
       ],
       "documentation":"<p>Retrieves the identity context for a Quick Sight user in a specified namespace, allowing you to obtain identity tokens that can be used with identity-enhanced IAM role sessions to call identity-aware APIs.</p> <p>Currently, you can call the following APIs with identity-enhanced Credentials</p> <ul> <li> <p> <a href=\"https://docs.aws.amazon.com/quicksight/latest/APIReference/API_StartDashboardSnapshotJob.html\">StartDashboardSnapshotJob</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/quicksight/latest/APIReference/API_DescribeDashboardSnapshotJob.html\">DescribeDashboardSnapshotJob</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/quicksight/latest/APIReference/API_DescribeDashboardSnapshotJobResult.html\">DescribeDashboardSnapshotJobResult</a> </p> </li> </ul> <p> <b>Supported Authentication Methods</b> </p> <p>This API supports Quick Sight native users, IAM federated users, and Active Directory users. For Quick Sight users authenticated by Amazon Web Services Identity Center, see <a href=\"https://docs.aws.amazon.com/singlesignon/latest/userguide/trustedidentitypropagation-identity-enhanced-iam-role-sessions.html\">Identity Center documentation on identity-enhanced IAM role sessions</a>.</p> <p> <b>Supported Regions</b> </p> <p>The GetIdentityContext API works only in regions that support at least one of these identity types:</p> <ul> <li> <p>Amazon Quick Sight native identity</p> </li> <li> <p>IAM federated identity</p> </li> <li> <p>Active Directory</p> </li> </ul> <p>To use this API successfully, call it in the same region where your user's identity resides. For example, if your user's identity is in us-east-1, make the API call in us-east-1. For more information about managing identities in Amazon Quick Sight, see <a href=\"https://docs.aws.amazon.com/quicksight/latest/userguide/identity.html\">Identity and access management in Amazon Quick Sight</a> in the Amazon Quick Sight User Guide.</p> <p> <b>Getting Identity-Enhanced Credentials</b> </p> <p>To obtain identity-enhanced credentials, follow these steps:</p> <ul> <li> <p>Call the GetIdentityContext API to retrieve an identity token for the specified user.</p> </li> <li> <p>Use the identity token with the <a href=\"https://docs.aws.amazon.com/STS/latest/APIReference/API_AssumeRole.html\">STS AssumeRole API</a> to obtain identity-enhanced IAM role session credentials.</p> </li> </ul> <p> <b>Usage with STS AssumeRole</b> </p> <p>The identity token returned by this API should be used with the STS AssumeRole API to obtain credentials for an identity-enhanced IAM role session. When calling AssumeRole, include the identity token in the <code>ProvidedContexts</code> parameter with <code>ProviderArn</code> set to <code>arn:aws:iam::aws:contextProvider/QuickSight</code> and <code>ContextAssertion</code> set to the identity token received from this API.</p> <p>The assumed role must allow the <code>sts:SetContext</code> action in addition to <code>sts:AssumeRole</code> in its trust relationship policy. The trust policy should include both actions for the principal that will be assuming the role.</p>"
     },
+    "GetPolicyAssignment":{
+      "name":"GetPolicyAssignment",
+      "http":{
+        "method":"GET",
+        "requestUri":"/governance-policy-mgmt/accounts/{AccountId}/policy-assignments",
+        "responseCode":200
+      },
+      "input":{"shape":"GetPolicyAssignmentRequest"},
+      "output":{"shape":"GetPolicyAssignmentResponse"},
+      "errors":[
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalFailureException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ValidationException"}
+      ],
+      "documentation":"<p>Describes the policy of the specified type that an Amazon Quick Sight principal has. If the principal has no policy of that type, the response contains no policy details.</p>",
+      "readonly":true
+    },
     "GetSessionEmbedUrl":{
       "name":"GetSessionEmbedUrl",
       "http":{
@@ -3085,7 +3383,26 @@
         {"shape":"UnsupportedUserEditionException"},
         {"shape":"InternalFailureException"}
       ],
-      "documentation":"<p>Generates a session URL and authorization code that you can use to embed the Amazon Amazon Quick Sight console in your web server code. Use <code>GetSessionEmbedUrl</code> where you want to provide an authoring portal that allows users to create data sources, datasets, analyses, and dashboards. The users who access an embedded Amazon Quick Sight console need belong to the author or admin security cohort. If you want to restrict permissions to some of these features, add a custom permissions profile to the user with the <code> <a href=\"https://docs.aws.amazon.com/quicksight/latest/APIReference/API_UpdateUser.html\">UpdateUser</a> </code> API operation. Use <code> <a href=\"https://docs.aws.amazon.com/quicksight/latest/APIReference/API_RegisterUser.html\">RegisterUser</a> </code> API operation to add a new user with a custom permission profile attached. For more information, see the following sections in the <i>Amazon Quick User Guide</i>:</p> <ul> <li> <p> <a href=\"https://docs.aws.amazon.com/quicksight/latest/user/embedded-analytics.html\">Embedding Analytics</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/quicksight/latest/user/customizing-permissions-to-the-quicksight-console.html\">Customizing Access to the Amazon Quick Console</a> </p> </li> </ul>"
+      "documentation":"<p>Generates a session URL and authorization code that you can use to embed the Amazon Amazon Quick Sight console in your web server code. Use <code>GetSessionEmbedUrl</code> where you want to provide an authoring portal that allows users to create data sources, datasets, analyses, and dashboards. The users who access an embedded Amazon Quick Sight console need belong to the author or admin security cohort. If you want to restrict permissions to some of these features, add a custom permissions profile to the user with the <code> <a href=\"https://docs.aws.amazon.com/quicksight/latest/APIReference/API_UpdateUser.html\">UpdateUser</a> </code> API operation. Use <code> <a href=\"https://docs.aws.amazon.com/quicksight/latest/APIReference/API_RegisterUser.html\">RegisterUser</a> </code> API operation to add a new user with a custom permission profile attached. For more information, see the following sections in the <i>Quick User Guide</i>:</p> <ul> <li> <p> <a href=\"https://docs.aws.amazon.com/quicksight/latest/user/embedded-analytics.html\">Embedding Analytics</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/quicksight/latest/user/customizing-permissions-to-the-quicksight-console.html\">Customizing Access to the Quick Console</a> </p> </li> </ul>"
+    },
+    "ListAccessControlApplications":{
+      "name":"ListAccessControlApplications",
+      "http":{
+        "method":"GET",
+        "requestUri":"/accounts/{AwsAccountId}/access-control-applications",
+        "responseCode":200
+      },
+      "input":{"shape":"ListAccessControlApplicationsRequest"},
+      "output":{"shape":"ListAccessControlApplicationsResponse"},
+      "errors":[
+        {"shape":"ThrottlingException"},
+        {"shape":"InvalidParameterValueException"},
+        {"shape":"InternalFailureException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"AccessDeniedException"}
+      ],
+      "documentation":"<p>Lists the access control applications in a Quick Sight account in the current Amazon Web Services Region. You can filter the results by namespace. Quick Sight paginates the results. To retrieve additional results, use the <code>NextToken</code> parameter.</p>",
+      "readonly":true
     },
     "ListActionConnectors":{
       "name":"ListActionConnectors",
@@ -3506,6 +3823,44 @@
       ],
       "documentation":"<p>Lists all services and authorized targets that the Quick Sight IAM Identity Center application can access.</p> <p>This operation is only supported for Quick Sight accounts that use IAM Identity Center.</p>"
     },
+    "ListInboundConnectorApplicationAssociations":{
+      "name":"ListInboundConnectorApplicationAssociations",
+      "http":{
+        "method":"GET",
+        "requestUri":"/accounts/{AwsAccountId}/inbound-connectors/{InboundConnectorId}/associations",
+        "responseCode":200
+      },
+      "input":{"shape":"ListInboundConnectorApplicationAssociationsRequest"},
+      "output":{"shape":"ListInboundConnectorApplicationAssociationsResponse"},
+      "errors":[
+        {"shape":"ThrottlingException"},
+        {"shape":"InvalidParameterValueException"},
+        {"shape":"InternalFailureException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"AccessDeniedException"}
+      ],
+      "documentation":"<p>Lists the access control applications that are associated with an inbound connector. Quick Sight paginates the results. To retrieve additional results, use the <code>NextToken</code> parameter.</p>",
+      "readonly":true
+    },
+    "ListInboundConnectors":{
+      "name":"ListInboundConnectors",
+      "http":{
+        "method":"GET",
+        "requestUri":"/accounts/{AwsAccountId}/inbound-connectors",
+        "responseCode":200
+      },
+      "input":{"shape":"ListInboundConnectorsRequest"},
+      "output":{"shape":"ListInboundConnectorsResponse"},
+      "errors":[
+        {"shape":"ThrottlingException"},
+        {"shape":"InvalidParameterValueException"},
+        {"shape":"InternalFailureException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"AccessDeniedException"}
+      ],
+      "documentation":"<p>Lists the inbound connectors in a Quick Sight account. You can filter the results by connector type. Quick Sight paginates the results. To retrieve additional results, use the <code>NextToken</code> parameter.</p>",
+      "readonly":true
+    },
     "ListIngestions":{
       "name":"ListIngestions",
       "http":{
@@ -3524,6 +3879,28 @@
         {"shape":"InternalFailureException"}
       ],
       "documentation":"<p>Lists the history of SPICE ingestions for a dataset. Limited to 5 TPS per user and 25 TPS per account.</p>"
+    },
+    "ListKnowledgeBaseRefreshSchedules":{
+      "name":"ListKnowledgeBaseRefreshSchedules",
+      "http":{
+        "method":"GET",
+        "requestUri":"/v1/accounts/{AwsAccountId}/knowledge-bases/{KnowledgeBaseId}/kb-refresh-schedules",
+        "responseCode":200
+      },
+      "input":{"shape":"ListKnowledgeBaseRefreshSchedulesRequest"},
+      "output":{"shape":"ListKnowledgeBaseRefreshSchedulesResponse"},
+      "errors":[
+        {"shape":"ThrottlingException"},
+        {"shape":"InvalidParameterValueException"},
+        {"shape":"InternalFailureException"},
+        {"shape":"PreconditionNotMetException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"InvalidNextTokenException"},
+        {"shape":"LimitExceededException"},
+        {"shape":"AccessDeniedException"}
+      ],
+      "documentation":"<p>Lists the refresh schedules for an Amazon Quick Sight knowledge base. Currently, a knowledge base can have only one refresh schedule, so the list contains at most one schedule. Results are paginated. To retrieve the next page of results, use the <code>NextToken</code> value from the previous response.</p>",
+      "readonly":true
     },
     "ListKnowledgeBases":{
       "name":"ListKnowledgeBases",
@@ -3600,6 +3977,25 @@
         {"shape":"InternalFailureException"}
       ],
       "documentation":"<p>Lists all OAuthClientApplications in the current Amazon Web Services Region that belong to this Amazon Web Services account.</p>"
+    },
+    "ListPrincipalsForPolicy":{
+      "name":"ListPrincipalsForPolicy",
+      "http":{
+        "method":"GET",
+        "requestUri":"/governance-policy-mgmt/accounts/{AccountId}/policy-assignments/by-policy",
+        "responseCode":200
+      },
+      "input":{"shape":"ListPrincipalsForPolicyRequest"},
+      "output":{"shape":"ListPrincipalsForPolicyResponse"},
+      "errors":[
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalFailureException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ValidationException"}
+      ],
+      "documentation":"<p>Lists the Amazon Quick Sight principals that have a governance policy. This operation returns paginated results. A page can contain fewer results than <code>MaxResults</code>, or none, and still include a <code>NextToken</code>. Continue to call the operation until the response doesn't include a <code>NextToken</code>. We recommend that you use pagination to make sure that the operation returns quickly and successfully.</p> <p>Results are eventually consistent and might not reflect recent changes. If the policy has no assignments, the response contains an empty <code>Principals</code> list. If the policy doesn't exist, the request fails with a <code>ResourceNotFoundException</code>.</p>",
+      "readonly":true
     },
     "ListRefreshSchedules":{
       "name":"ListRefreshSchedules",
@@ -4008,6 +4404,26 @@
         {"shape":"InternalFailureException"}
       ],
       "documentation":"<p>Creates or updates the dataset refresh properties for the dataset.</p>"
+    },
+    "PutPolicyAssignment":{
+      "name":"PutPolicyAssignment",
+      "http":{
+        "method":"PUT",
+        "requestUri":"/governance-policy-mgmt/accounts/{AccountId}/policy-assignments",
+        "responseCode":200
+      },
+      "input":{"shape":"PutPolicyAssignmentRequest"},
+      "output":{"shape":"PutPolicyAssignmentResponse"},
+      "errors":[
+        {"shape":"ThrottlingException"},
+        {"shape":"InternalFailureException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ValidationException"},
+        {"shape":"ConflictException"}
+      ],
+      "documentation":"<p>Assigns a governance policy to an Amazon Quick Sight principal. A principal can have one policy of each policy type. If the principal already has a policy of the same type, this operation replaces it.</p> <p>To make the change conditional, specify <code>ExistingPolicyArn</code>, <code>Revision</code>, or both. If the current assignment doesn't match, the request fails with a <code>ConflictException</code> and makes no change. If the principal already has the specified policy, the request succeeds and makes no change.</p>",
+      "idempotent":true
     },
     "RegisterUser":{
       "name":"RegisterUser",
@@ -4443,6 +4859,46 @@
         {"shape":"InternalFailureException"}
       ],
       "documentation":"<p>Removes a tag or tags from a resource.</p>"
+    },
+    "UpdateAccessControlApplication":{
+      "name":"UpdateAccessControlApplication",
+      "http":{
+        "method":"PATCH",
+        "requestUri":"/accounts/{AwsAccountId}/access-control-applications/{ApplicationId}",
+        "responseCode":200
+      },
+      "input":{"shape":"UpdateAccessControlApplicationRequest"},
+      "output":{"shape":"UpdateAccessControlApplicationResponse"},
+      "errors":[
+        {"shape":"ThrottlingException"},
+        {"shape":"InvalidParameterValueException"},
+        {"shape":"InternalFailureException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ConflictException"}
+      ],
+      "documentation":"<p>Updates an access control application. You can change its name, description, status, IdP settings such as the client ID and issuer URL, and its Quick Sight authentication settings such as redirect URIs.</p> <p>You can't change the <code>IdpAuthorizingType</code>, the <code>QuickAuthenticationType</code>, or the trusted token issuer after the application is created. To manage client secrets, use <code>CreateAccessControlApplicationSecret</code>, <code>UpdateAccessControlApplicationSecret</code>, and <code>DeleteAccessControlApplicationSecret</code>.</p>",
+      "idempotent":true
+    },
+    "UpdateAccessControlApplicationSecret":{
+      "name":"UpdateAccessControlApplicationSecret",
+      "http":{
+        "method":"PUT",
+        "requestUri":"/accounts/{AwsAccountId}/access-control-applications/{ApplicationId}/client-secrets/{ClientSecretId}",
+        "responseCode":200
+      },
+      "input":{"shape":"UpdateAccessControlApplicationSecretRequest"},
+      "output":{"shape":"UpdateAccessControlApplicationSecretResponse"},
+      "errors":[
+        {"shape":"ThrottlingException"},
+        {"shape":"InvalidParameterValueException"},
+        {"shape":"InternalFailureException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ConflictException"}
+      ],
+      "documentation":"<p>Updates the Amazon Web Services Secrets Manager secret ARNs of an IdP-provided client secret. You can add, replace, or remove the ARN for a Region, but you can't remove the last remaining Region. To remove it, delete the client secret.</p>",
+      "idempotent":true
     },
     "UpdateAccountCustomPermission":{
       "name":"UpdateAccountCustomPermission",
@@ -5099,6 +5555,47 @@
       ],
       "documentation":"<p>Adds or updates services and authorized targets to configure what the Quick Sight IAM Identity Center application can access.</p> <p>This operation is only supported for Quick Sight accounts using IAM Identity Center</p>"
     },
+    "UpdateInboundConnector":{
+      "name":"UpdateInboundConnector",
+      "http":{
+        "method":"PATCH",
+        "requestUri":"/accounts/{AwsAccountId}/inbound-connectors/{InboundConnectorId}",
+        "responseCode":200
+      },
+      "input":{"shape":"UpdateInboundConnectorRequest"},
+      "output":{"shape":"UpdateInboundConnectorResponse"},
+      "errors":[
+        {"shape":"ThrottlingException"},
+        {"shape":"InvalidParameterValueException"},
+        {"shape":"InternalFailureException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ConflictException"}
+      ],
+      "documentation":"<p>Updates an inbound connector. You can change its name, description, status, and configuration. You can't change the connector type after the connector is created.</p>",
+      "idempotent":true
+    },
+    "UpdateInboundConnectorApplicationAssociations":{
+      "name":"UpdateInboundConnectorApplicationAssociations",
+      "http":{
+        "method":"PUT",
+        "requestUri":"/accounts/{AwsAccountId}/inbound-connectors/{InboundConnectorId}/associations",
+        "responseCode":200
+      },
+      "input":{"shape":"UpdateInboundConnectorApplicationAssociationsRequest"},
+      "output":{"shape":"UpdateInboundConnectorApplicationAssociationsResponse"},
+      "errors":[
+        {"shape":"ThrottlingException"},
+        {"shape":"InvalidParameterValueException"},
+        {"shape":"InternalFailureException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"LimitExceededException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ConflictException"}
+      ],
+      "documentation":"<p>Associates access control applications with an inbound connector, disassociates them from it, or both. You can add up to 20 associations and remove up to 20 associations in each request. An inbound connector supports up to 6,000 associations.</p>",
+      "idempotent":true
+    },
     "UpdateIpRestriction":{
       "name":"UpdateIpRestriction",
       "http":{
@@ -5177,6 +5674,28 @@
         {"shape":"ConflictException"}
       ],
       "documentation":"<p>Updates the resource permissions for a knowledge base.</p>",
+      "idempotent":true
+    },
+    "UpdateKnowledgeBaseRefreshSchedule":{
+      "name":"UpdateKnowledgeBaseRefreshSchedule",
+      "http":{
+        "method":"PUT",
+        "requestUri":"/v1/accounts/{AwsAccountId}/knowledge-bases/{KnowledgeBaseId}/kb-refresh-schedules/{ScheduleId}",
+        "responseCode":200
+      },
+      "input":{"shape":"UpdateKnowledgeBaseRefreshScheduleRequest"},
+      "output":{"shape":"UpdateKnowledgeBaseRefreshScheduleResponse"},
+      "errors":[
+        {"shape":"ThrottlingException"},
+        {"shape":"InvalidParameterValueException"},
+        {"shape":"InternalFailureException"},
+        {"shape":"PreconditionNotMetException"},
+        {"shape":"ResourceNotFoundException"},
+        {"shape":"LimitExceededException"},
+        {"shape":"AccessDeniedException"},
+        {"shape":"ConflictException"}
+      ],
+      "documentation":"<p>Updates the refresh schedule for an Amazon Quick Sight knowledge base. Use this operation to change how often the knowledge base refreshes, or to enable or disable the schedule. Specify the schedule by its <code>ScheduleId</code>. The operation changes only the fields that you provide. Any field that you omit keeps its existing value.</p>",
       "idempotent":true
     },
     "UpdateLimitsProfile":{
@@ -5750,6 +6269,172 @@
         }
       },
       "documentation":"<p>Configuration for API key-based authentication to external services.</p>"
+    },
+    "AccessControlApplication":{
+      "type":"structure",
+      "required":[
+        "ApplicationId",
+        "Arn",
+        "Name",
+        "Namespace",
+        "AuthenticationType",
+        "Status",
+        "CreatedTime",
+        "LastUpdatedTime",
+        "TenantUrl"
+      ],
+      "members":{
+        "ApplicationId":{
+          "shape":"ShortRestrictiveResourceId",
+          "documentation":"<p>The ID of the access control application.</p>"
+        },
+        "Arn":{
+          "shape":"Arn",
+          "documentation":"<p>The ARN of the access control application.</p>"
+        },
+        "Name":{
+          "shape":"ResourceName",
+          "documentation":"<p>The name of the access control application.</p>"
+        },
+        "Namespace":{
+          "shape":"String",
+          "documentation":"<p>The Quick Sight namespace that the access control application belongs to.</p>"
+        },
+        "AuthenticationType":{
+          "shape":"AccessControlApplicationAuthenticationType",
+          "documentation":"<p>The authentication protocol that the access control application uses.</p>"
+        },
+        "Status":{
+          "shape":"AccessControlApplicationStatus",
+          "documentation":"<p>The status of the access control application.</p>"
+        },
+        "CreatedTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The time when the access control application was created.</p>"
+        },
+        "LastUpdatedTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The time when the access control application was last updated.</p>"
+        },
+        "TenantUrl":{
+          "shape":"String",
+          "documentation":"<p>The tenant URL of the access control application. This URL hosts the OAuth 2.0 and OpenID Connect endpoints for the application, such as <code>/authorize</code>, <code>/token</code>, <code>/.well-known/openid-configuration</code>, and <code>/jwks</code>.</p>"
+        },
+        "Description":{
+          "shape":"AccessControlApplicationDescription",
+          "documentation":"<p>The description of the access control application.</p>"
+        },
+        "IdcApplicationArn":{
+          "shape":"String",
+          "documentation":"<p>The ARN of the Amazon Web Services IAM Identity Center application that Quick Sight manages for this access control application. This value is present when the <code>IdpAuthorizingType</code> is <code>IDC_AUTH_CODE</code>, or when a trusted token issuer is configured.</p>"
+        },
+        "IdpAuthorizingConfiguration":{
+          "shape":"IdpAuthorizingConfig",
+          "documentation":"<p>The identity provider configuration of the access control application. Client secret values are never included.</p>"
+        },
+        "QuickAuthenticationConfiguration":{
+          "shape":"QuickAuthenticationConfig",
+          "documentation":"<p>The Quick Sight authentication configuration of the access control application. Client secret values are never included.</p>"
+        }
+      },
+      "documentation":"<p>An access control application. It defines how an external client signs in to Quick Sight with OAuth 2.0. Client secret values are never included.</p>"
+    },
+    "AccessControlApplicationAuthenticationType":{
+      "type":"string",
+      "documentation":"<p>The authentication protocol that the access control application uses. Valid values are <code>OIDC</code>.</p>",
+      "enum":["OIDC"]
+    },
+    "AccessControlApplicationDescription":{
+      "type":"string",
+      "documentation":"<p>A description of the access control application, up to 256 characters. If you don't provide a description, the application has no description.</p>",
+      "max":256,
+      "min":1,
+      "pattern":"[A-Za-z0-9 _.,!?\\-]*"
+    },
+    "AccessControlApplicationSecretManagerArn":{
+      "type":"string",
+      "documentation":"<p>The ARN of an Amazon Web Services Secrets Manager secret.</p>",
+      "max":2048,
+      "min":20,
+      "pattern":"arn:(aws|aws-cn|aws-us-gov|aws-iso|aws-iso-b):secretsmanager:[a-z0-9-]+:[0-9]{12}:secret:.+"
+    },
+    "AccessControlApplicationStatus":{
+      "type":"string",
+      "documentation":"<p>The status of an access control application. Valid values are <code>ENABLED</code> and <code>DISABLED</code>.</p>",
+      "enum":[
+        "ENABLED",
+        "DISABLED"
+      ]
+    },
+    "AccessControlApplicationSummary":{
+      "type":"structure",
+      "required":[
+        "ApplicationId",
+        "Arn",
+        "Name",
+        "Namespace",
+        "AuthenticationType",
+        "Status",
+        "CreatedTime",
+        "LastUpdatedTime",
+        "TenantUrl"
+      ],
+      "members":{
+        "ApplicationId":{
+          "shape":"ShortRestrictiveResourceId",
+          "documentation":"<p>The ID of the access control application.</p>"
+        },
+        "Arn":{
+          "shape":"Arn",
+          "documentation":"<p>The ARN of the access control application.</p>"
+        },
+        "Name":{
+          "shape":"ResourceName",
+          "documentation":"<p>The name of the access control application.</p>"
+        },
+        "Namespace":{
+          "shape":"String",
+          "documentation":"<p>The Quick Sight namespace that the access control application belongs to.</p>"
+        },
+        "AuthenticationType":{
+          "shape":"AccessControlApplicationAuthenticationType",
+          "documentation":"<p>The authentication protocol that the access control application uses.</p>"
+        },
+        "Status":{
+          "shape":"AccessControlApplicationStatus",
+          "documentation":"<p>The status of the access control application.</p>"
+        },
+        "CreatedTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The time when the access control application was created.</p>"
+        },
+        "LastUpdatedTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The time when the access control application was last updated.</p>"
+        },
+        "TenantUrl":{
+          "shape":"String",
+          "documentation":"<p>The tenant URL of the access control application. This URL hosts the OAuth 2.0 and OpenID Connect endpoints for the application, such as <code>/authorize</code>, <code>/token</code>, <code>/.well-known/openid-configuration</code>, and <code>/jwks</code>.</p>"
+        },
+        "IdpAuthorizingConfiguration":{
+          "shape":"IdpAuthorizingConfigSummary",
+          "documentation":"<p>A summary of the identity provider configuration of the access control application, without client secret information.</p>"
+        },
+        "QuickAuthenticationConfiguration":{
+          "shape":"QuickAuthenticationConfig",
+          "documentation":"<p>The Quick Sight authentication configuration of the access control application. Client secret values are never included.</p>"
+        },
+        "Description":{
+          "shape":"AccessControlApplicationDescription",
+          "documentation":"<p>The description of the access control application.</p>"
+        }
+      },
+      "documentation":"<p>A summary of an access control application, including its ID, ARN, name, namespace, authentication type, status, and timestamps.</p>"
+    },
+    "AccessControlApplicationSummaryList":{
+      "type":"list",
+      "member":{"shape":"AccessControlApplicationSummary"},
+      "documentation":"<p>A list of access control application summaries.</p>"
     },
     "AccessControlConfiguration":{
       "type":"structure",
@@ -8821,7 +9506,8 @@
       "enum":[
         "AGENT",
         "SPACE",
-        "KNOWLEDGE_BASE"
+        "KNOWLEDGE_BASE",
+        "FLOW"
       ]
     },
     "AssetTypeList":{
@@ -9158,6 +9844,20 @@
         }
       },
       "documentation":"<p>The parameters for IoT Analytics.</p>"
+    },
+    "AwsRegion":{
+      "type":"string",
+      "documentation":"<p>An Amazon Web Services Region code, for example <code>aa-example-1</code>.</p>",
+      "max":30,
+      "min":5,
+      "pattern":"[a-z]{2}(-[a-z]+)+-[0-9]+"
+    },
+    "AwsRegionList":{
+      "type":"list",
+      "member":{"shape":"AwsRegion"},
+      "documentation":"<p>A list of Amazon Web Services Region codes.</p>",
+      "max":10,
+      "min":0
     },
     "AxisBinding":{
       "type":"string",
@@ -9772,6 +10472,100 @@
       "type":"list",
       "member":{"shape":"BatchDeleteKnowledgeBaseSuccess"}
     },
+    "BatchDeletePolicyAssignmentByPolicyRequest":{
+      "type":"structure",
+      "required":[
+        "AccountId",
+        "PolicyArn",
+        "PrincipalArns"
+      ],
+      "members":{
+        "AccountId":{
+          "shape":"AwsAccountId",
+          "documentation":"<p>The ID of the Amazon Web Services account that contains the policy and the principals.</p>",
+          "location":"uri",
+          "locationName":"AccountId"
+        },
+        "PolicyArn":{
+          "shape":"PolicyArn",
+          "documentation":"<p>The ARN of the policy to remove. For each principal, the operation removes the assignment only if the principal currently has this policy.</p>"
+        },
+        "PrincipalArns":{
+          "shape":"BatchDeletePolicyAssignmentByPolicyRequestPrincipalArnsList",
+          "documentation":"<p>A list of 1–50 principal ARNs to remove the policy from. Each ARN must be unique within the request.</p>"
+        }
+      }
+    },
+    "BatchDeletePolicyAssignmentByPolicyRequestPrincipalArnsList":{
+      "type":"list",
+      "member":{"shape":"PrincipalArn"},
+      "max":50,
+      "min":1
+    },
+    "BatchDeletePolicyAssignmentByPolicyResponse":{
+      "type":"structure",
+      "required":[
+        "PolicyArn",
+        "Success",
+        "Errors"
+      ],
+      "members":{
+        "PolicyArn":{
+          "shape":"PolicyArn",
+          "documentation":"<p>The ARN of the policy from the request.</p>"
+        },
+        "Success":{
+          "shape":"BatchDeletePolicyAssignmentSuccessList",
+          "documentation":"<p>A list of principals that no longer have the policy.</p>"
+        },
+        "Errors":{
+          "shape":"BatchDeletePolicyAssignmentErrorList",
+          "documentation":"<p>A list of principals that the operation couldn't remove the policy from, with the reason for each failure.</p>"
+        }
+      }
+    },
+    "BatchDeletePolicyAssignmentError":{
+      "type":"structure",
+      "required":[
+        "PrincipalArn",
+        "ErrorCode",
+        "ErrorMessage"
+      ],
+      "members":{
+        "PrincipalArn":{
+          "shape":"PrincipalArn",
+          "documentation":"<p>The ARN of the principal.</p>"
+        },
+        "ErrorCode":{
+          "shape":"String",
+          "documentation":"<p>The reason the entry failed. Possible values:</p> <ul> <li> <p> <code>ValidationException</code> – The entry is not valid.</p> </li> <li> <p> <code>ResourceNotFoundException</code> – The principal doesn't exist.</p> </li> <li> <p> <code>ConflictException</code> – The principal has a different policy of the same type, or the assignment changed while this request was being processed.</p> </li> <li> <p> <code>ThrottlingException</code> – The entry was throttled. You can retry this entry.</p> </li> <li> <p> <code>InternalFailureException</code> – An internal error occurred.</p> </li> </ul>"
+        },
+        "ErrorMessage":{
+          "shape":"String",
+          "documentation":"<p>A description of the error.</p>"
+        }
+      },
+      "documentation":"<p>A principal that a <code>BatchDeletePolicyAssignmentByPolicy</code> request couldn't remove the policy from.</p>"
+    },
+    "BatchDeletePolicyAssignmentErrorList":{
+      "type":"list",
+      "member":{"shape":"BatchDeletePolicyAssignmentError"}
+    },
+    "BatchDeletePolicyAssignmentSuccess":{
+      "type":"structure",
+      "required":["PrincipalArn"],
+      "members":{
+        "PrincipalArn":{
+          "shape":"PrincipalArn",
+          "documentation":"<p>The ARN of the principal.</p>"
+        }
+      },
+      "documentation":"<p>A principal that no longer has the policy after a <code>BatchDeletePolicyAssignmentByPolicy</code> request, including a principal that didn't have the policy.</p>"
+    },
+    "BatchDeletePolicyAssignmentSuccessList":{
+      "type":"list",
+      "member":{"shape":"BatchDeletePolicyAssignmentSuccess"}
+    },
     "BatchDeleteTopicReviewedAnswerRequest":{
       "type":"structure",
       "required":[
@@ -9903,6 +10697,111 @@
           "documentation":"<p>A list of errors for users whose limits could not be described.</p>"
         }
       }
+    },
+    "BatchPutPolicyAssignmentByPolicyRequest":{
+      "type":"structure",
+      "required":[
+        "AccountId",
+        "PolicyArn",
+        "Assignments"
+      ],
+      "members":{
+        "AccountId":{
+          "shape":"AwsAccountId",
+          "documentation":"<p>The ID of the Amazon Web Services account that contains the policy and the principals.</p>",
+          "location":"uri",
+          "locationName":"AccountId"
+        },
+        "PolicyArn":{
+          "shape":"PolicyArn",
+          "documentation":"<p>The ARN of the policy to assign.</p>"
+        },
+        "Assignments":{
+          "shape":"BatchPutPolicyAssignmentByPolicyRequestAssignmentsList",
+          "documentation":"<p>A list of 1–50 principals to assign the policy to. Each principal ARN must be unique within the request.</p>"
+        }
+      }
+    },
+    "BatchPutPolicyAssignmentByPolicyRequestAssignmentsList":{
+      "type":"list",
+      "member":{"shape":"PutAssignmentEntry"},
+      "max":50,
+      "min":1
+    },
+    "BatchPutPolicyAssignmentByPolicyResponse":{
+      "type":"structure",
+      "required":[
+        "PolicyArn",
+        "Success",
+        "Errors"
+      ],
+      "members":{
+        "PolicyArn":{
+          "shape":"PolicyArn",
+          "documentation":"<p>The ARN of the policy from the request.</p>"
+        },
+        "Success":{
+          "shape":"BatchPutPolicyAssignmentSuccessList",
+          "documentation":"<p>A list of principals that the policy was assigned to.</p>"
+        },
+        "Errors":{
+          "shape":"BatchPutPolicyAssignmentErrorList",
+          "documentation":"<p>A list of principals that the policy couldn't be assigned to, with the reason for each failure.</p>"
+        }
+      }
+    },
+    "BatchPutPolicyAssignmentError":{
+      "type":"structure",
+      "required":[
+        "PrincipalArn",
+        "ErrorCode",
+        "ErrorMessage"
+      ],
+      "members":{
+        "PrincipalArn":{
+          "shape":"PrincipalArn",
+          "documentation":"<p>The ARN of the principal.</p>"
+        },
+        "ErrorCode":{
+          "shape":"String",
+          "documentation":"<p>The reason the entry failed. Possible values:</p> <ul> <li> <p> <code>ValidationException</code> – The entry is not valid.</p> </li> <li> <p> <code>ResourceNotFoundException</code> – The principal doesn't exist, or the policy was deleted while the request was being processed.</p> </li> <li> <p> <code>ConflictException</code> – The principal doesn't have the existing policy that you specified, or the assignment changed since the revision that you specified.</p> </li> <li> <p> <code>ThrottlingException</code> – The entry was throttled. You can retry this entry.</p> </li> <li> <p> <code>InternalFailureException</code> – An internal error occurred.</p> </li> </ul>"
+        },
+        "ErrorMessage":{
+          "shape":"String",
+          "documentation":"<p>A description of the error.</p>"
+        }
+      },
+      "documentation":"<p>A principal that a <code>BatchPutPolicyAssignmentByPolicy</code> request couldn't assign the policy to.</p>"
+    },
+    "BatchPutPolicyAssignmentErrorList":{
+      "type":"list",
+      "member":{"shape":"BatchPutPolicyAssignmentError"}
+    },
+    "BatchPutPolicyAssignmentSuccess":{
+      "type":"structure",
+      "required":[
+        "PrincipalArn",
+        "Revision"
+      ],
+      "members":{
+        "PrincipalArn":{
+          "shape":"PrincipalArn",
+          "documentation":"<p>The ARN of the principal.</p>"
+        },
+        "ReplacedPolicyArn":{
+          "shape":"PolicyArn",
+          "documentation":"<p>The ARN of the policy that this assignment replaced. This value is absent if the principal had no policy of this type before the request.</p>"
+        },
+        "Revision":{
+          "shape":"Revision",
+          "documentation":"<p>The revision of the assignment after this request.</p>"
+        }
+      },
+      "documentation":"<p>A principal that a <code>BatchPutPolicyAssignmentByPolicy</code> request assigned the policy to.</p>"
+    },
+    "BatchPutPolicyAssignmentSuccessList":{
+      "type":"list",
+      "member":{"shape":"BatchPutPolicyAssignmentSuccess"}
     },
     "BigQueryParameters":{
       "type":"structure",
@@ -11299,6 +12198,18 @@
         "UseMCPAction":{
           "shape":"CapabilityState",
           "documentation":"<p>The ability to use Model Context Protocol actions.</p>"
+        },
+        "LocalMCPAction":{
+          "shape":"CapabilityState",
+          "documentation":"<p>The ability to create, update, and use local Model Context Protocol (MCP) actions. This capability includes <code>CreateAndUpdateLocalMCPAction</code> and <code>UseLocalMCPAction</code>.</p>"
+        },
+        "CreateAndUpdateLocalMCPAction":{
+          "shape":"CapabilityState",
+          "documentation":"<p>The ability to create and update local Model Context Protocol (MCP) server configurations. Denying this capability does not by itself deny use of previously configured local MCP servers.</p>"
+        },
+        "UseLocalMCPAction":{
+          "shape":"CapabilityState",
+          "documentation":"<p>The ability to start local Model Context Protocol (MCP) servers and use their actions, including actions from previously configured local MCP servers.</p>"
         },
         "OpenAPIAction":{
           "shape":"CapabilityState",
@@ -13223,6 +14134,37 @@
       "min":0,
       "sensitive":true
     },
+    "ClientSecretConfiguration":{
+      "type":"structure",
+      "required":["ClientSecretSourceType"],
+      "members":{
+        "ClientSecretSourceType":{
+          "shape":"ClientSecretSourceType",
+          "documentation":"<p>The source of the client secret. The only valid value is <code>IDP_PROVIDED</code>: your IdP issued the secret value.</p>"
+        },
+        "ClientSecretConfigurationDetail":{
+          "shape":"ClientSecretConfigurationDetail",
+          "documentation":"<p>The details of the client secret. This is required when the <code>ClientSecretSourceType</code> is <code>IDP_PROVIDED</code>.</p>"
+        }
+      },
+      "documentation":"<p>The configuration of a new client secret that your IdP provides.</p>"
+    },
+    "ClientSecretConfigurationDetail":{
+      "type":"structure",
+      "members":{
+        "Idp":{
+          "shape":"IdpClientSecretInput",
+          "documentation":"<p>An IdP-provided client secret, with the Amazon Web Services Secrets Manager secret ARN for each Region.</p>"
+        }
+      },
+      "documentation":"<p>The details of an IdP-provided client secret. Required when <code>ClientSecretSourceType</code> is <code>IDP_PROVIDED</code>.</p>",
+      "union":true
+    },
+    "ClientSecretSourceType":{
+      "type":"string",
+      "documentation":"<p>The source of a client secret. The only valid value is <code>IDP_PROVIDED</code>: Your IdP issued the secret value, and you store it in Amazon Web Services Secrets Manager.</p>",
+      "enum":["IDP_PROVIDED"]
+    },
     "ClusterId":{
       "type":"string",
       "max":64,
@@ -13482,7 +14424,7 @@
     },
     "ColumnId":{
       "type":"string",
-      "max":64,
+      "max":256,
       "min":1
     },
     "ColumnIdentifier":{
@@ -14483,6 +15425,167 @@
       "type":"string",
       "pattern":"^arn:[-a-z0-9]*:quicksight:[-a-z0-9]*:[0-9]{12}:datasource/.+"
     },
+    "CreateAccessControlApplicationRequest":{
+      "type":"structure",
+      "required":[
+        "AwsAccountId",
+        "ApplicationId",
+        "Name",
+        "Namespace",
+        "AuthenticationType",
+        "IdpAuthorizingConfiguration",
+        "QuickAuthenticationConfiguration"
+      ],
+      "members":{
+        "AwsAccountId":{
+          "shape":"AwsAccountId",
+          "documentation":"<p>The ID of the Amazon Web Services account that contains the Quick Sight account.</p>",
+          "location":"uri",
+          "locationName":"AwsAccountId"
+        },
+        "ApplicationId":{
+          "shape":"ShortRestrictiveResourceId",
+          "documentation":"<p>The ID for the access control application. This ID is unique per Amazon Web Services Region for each Amazon Web Services account.</p> <p>Quick Sight reserves IDs that start with <code>quick-aca-</code> for the access control application of the Quick Sight desktop application. To create one, the ID must be <code>quick-aca-</code> followed by your Amazon Web Services account ID and the namespace, separated by a hyphen. For example, <code>quick-aca-111122223333-default</code>. In addition, <code>QuickAuthenticationType</code> must be <code>QUICK_MANAGED_PUBLIC_AUTH_CODE</code> with <code>http://localhost:18080</code> as the only redirect URI, and <code>IdpAuthorizingType</code> must be <code>IDC_AUTH_CODE</code> or <code>QUICK_MANAGED_AUTH_CODE</code>.</p>"
+        },
+        "Name":{
+          "shape":"ResourceName",
+          "documentation":"<p>The name of the access control application.</p>"
+        },
+        "Description":{
+          "shape":"AccessControlApplicationDescription",
+          "documentation":"<p>The description of the access control application.</p>"
+        },
+        "Namespace":{
+          "shape":"Namespace",
+          "documentation":"<p>The Quick Sight namespace for the access control application.</p>"
+        },
+        "AuthenticationType":{
+          "shape":"AccessControlApplicationAuthenticationType",
+          "documentation":"<p>The authentication protocol that the access control application uses.</p>"
+        },
+        "IdpAuthorizingConfiguration":{
+          "shape":"IdpAuthorizingConfigInput",
+          "documentation":"<p>The identity provider configuration of the access control application.</p>"
+        },
+        "QuickAuthenticationConfiguration":{
+          "shape":"QuickAuthenticationConfigInput",
+          "documentation":"<p>The Quick Sight authentication configuration of the access control application. You provide redirect URIs, and Quick Sight generates the client ID.</p>"
+        },
+        "Tags":{
+          "shape":"TagList",
+          "documentation":"<p>The tags to assign to the access control application.</p>"
+        }
+      }
+    },
+    "CreateAccessControlApplicationResponse":{
+      "type":"structure",
+      "required":[
+        "Status",
+        "RequestId",
+        "ApplicationId",
+        "Arn",
+        "AccessControlApplicationStatus",
+        "CreatedTime",
+        "TenantUrl"
+      ],
+      "members":{
+        "Status":{
+          "shape":"statusCode",
+          "documentation":"<p>The HTTP status of the request.</p>",
+          "location":"statusCode"
+        },
+        "RequestId":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Web Services request ID for this operation.</p>"
+        },
+        "ApplicationId":{
+          "shape":"String",
+          "documentation":"<p>The ID of the access control application.</p>"
+        },
+        "Arn":{
+          "shape":"String",
+          "documentation":"<p>The ARN of the access control application.</p>"
+        },
+        "AccessControlApplicationStatus":{
+          "shape":"AccessControlApplicationStatus",
+          "documentation":"<p>The status of the access control application. A new application is always <code>ENABLED</code>.</p>"
+        },
+        "CreatedTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The time when the access control application was created.</p>"
+        },
+        "TenantUrl":{
+          "shape":"String",
+          "documentation":"<p>The tenant URL of the access control application.</p>"
+        },
+        "IdcApplicationArn":{
+          "shape":"String",
+          "documentation":"<p>The ARN of the Amazon Web Services IAM Identity Center application that Quick Sight manages for this access control application. This value is present when the <code>IdpAuthorizingType</code> is <code>IDC_AUTH_CODE</code>, or when a trusted token issuer is configured.</p>"
+        },
+        "QuickAuthenticationConfiguration":{
+          "shape":"QuickAuthenticationConfigCreateOutput",
+          "documentation":"<p>The generated Quick Sight authentication configuration. It contains the generated client ID.</p>"
+        }
+      }
+    },
+    "CreateAccessControlApplicationSecretRequest":{
+      "type":"structure",
+      "required":[
+        "AwsAccountId",
+        "ApplicationId",
+        "ClientSecretConfiguration"
+      ],
+      "members":{
+        "AwsAccountId":{
+          "shape":"AwsAccountId",
+          "documentation":"<p>The ID of the Amazon Web Services account that contains the Quick Sight account.</p>",
+          "location":"uri",
+          "locationName":"AwsAccountId"
+        },
+        "ApplicationId":{
+          "shape":"ShortRestrictiveResourceId",
+          "documentation":"<p>The ID of the access control application.</p>",
+          "location":"uri",
+          "locationName":"ApplicationId"
+        },
+        "Description":{
+          "shape":"AccessControlApplicationDescription",
+          "documentation":"<p>A description of the client secret, for example <code>rotation-june-2026</code>. If you don't provide a description, the client secret has no description.</p>"
+        },
+        "ClientSecretConfiguration":{
+          "shape":"ClientSecretConfiguration",
+          "documentation":"<p>The source of the client secret, which is your IdP, and the Amazon Web Services Secrets Manager ARNs of the secret.</p>"
+        }
+      }
+    },
+    "CreateAccessControlApplicationSecretResponse":{
+      "type":"structure",
+      "required":[
+        "Status",
+        "RequestId",
+        "ClientSecretId",
+        "CreatedAt"
+      ],
+      "members":{
+        "Status":{
+          "shape":"statusCode",
+          "documentation":"<p>The HTTP status of the request.</p>",
+          "location":"statusCode"
+        },
+        "RequestId":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Web Services request ID for this operation.</p>"
+        },
+        "ClientSecretId":{
+          "shape":"ShortRestrictiveResourceId",
+          "documentation":"<p>The ID of the client secret.</p>"
+        },
+        "CreatedAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The time when the client secret was created.</p>"
+        }
+      }
+    },
     "CreateAccountCustomizationRequest":{
       "type":"structure",
       "required":[
@@ -15273,6 +16376,10 @@
         "SemanticModelConfiguration":{
           "shape":"SemanticModelConfiguration",
           "documentation":"<p>The semantic model configuration for the dataset. This configuration defines how the prepared data is structured for an analysis, including table mappings and row-level security configurations. Required when using the new data preparation experience.</p>"
+        },
+        "UnmaterializedCalculatedColumns":{
+          "shape":"UnmaterializedCalculatedColumnList",
+          "documentation":"<p>A list of unmaterialized calculated columns for the dataset. These columns are computed at analysis time and are not stored in the prepared data. You can only use this with the new data preparation experience.</p>"
         }
       }
     },
@@ -15823,6 +16930,86 @@
         }
       }
     },
+    "CreateInboundConnectorRequest":{
+      "type":"structure",
+      "required":[
+        "AwsAccountId",
+        "InboundConnectorId",
+        "Name",
+        "InboundConnectorConfiguration"
+      ],
+      "members":{
+        "AwsAccountId":{
+          "shape":"AwsAccountId",
+          "documentation":"<p>The ID of the Amazon Web Services account that contains the Quick Sight account.</p>",
+          "location":"uri",
+          "locationName":"AwsAccountId"
+        },
+        "InboundConnectorId":{
+          "shape":"ShortRestrictiveResourceId",
+          "documentation":"<p>The ID for the inbound connector. This ID is unique per Amazon Web Services Region for each Amazon Web Services account.</p> <p>For a <code>QUICK_DESKTOP</code> inbound connector, the ID must be <code>ibc-desktop-</code> followed by your Amazon Web Services account ID and the Region that you call, separated by a hyphen. For example, <code>ibc-desktop-111122223333-us-east-1</code>. Quick Sight reserves IDs that start with <code>ibc-desktop-</code> for <code>QUICK_DESKTOP</code> inbound connectors.</p>"
+        },
+        "Name":{
+          "shape":"ResourceName",
+          "documentation":"<p>The name of the inbound connector.</p>"
+        },
+        "Description":{
+          "shape":"InboundConnectorDescription",
+          "documentation":"<p>The description of the inbound connector.</p>"
+        },
+        "InboundConnectorConfiguration":{
+          "shape":"InboundConnectorConfig",
+          "documentation":"<p>The configuration of the inbound connector.</p>"
+        },
+        "Tags":{
+          "shape":"TagList",
+          "documentation":"<p>The tags to assign to the inbound connector.</p>"
+        }
+      }
+    },
+    "CreateInboundConnectorResponse":{
+      "type":"structure",
+      "required":[
+        "Status",
+        "RequestId",
+        "InboundConnectorId",
+        "Arn",
+        "TenantUrl",
+        "InboundConnectorStatus",
+        "CreatedTime"
+      ],
+      "members":{
+        "Status":{
+          "shape":"statusCode",
+          "documentation":"<p>The HTTP status of the request.</p>",
+          "location":"statusCode"
+        },
+        "RequestId":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Web Services request ID for this operation.</p>"
+        },
+        "InboundConnectorId":{
+          "shape":"String",
+          "documentation":"<p>The ID of the inbound connector.</p>"
+        },
+        "Arn":{
+          "shape":"String",
+          "documentation":"<p>The ARN of the inbound connector.</p>"
+        },
+        "TenantUrl":{
+          "shape":"String",
+          "documentation":"<p>The endpoint URL that clients use to reach Quick Sight through the inbound connector.</p>"
+        },
+        "InboundConnectorStatus":{
+          "shape":"InboundConnectorStatus",
+          "documentation":"<p>The status of the inbound connector. A new connector is always <code>ENABLED</code>.</p>"
+        },
+        "CreatedTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The time when the inbound connector was created.</p>"
+        }
+      }
+    },
     "CreateIngestionRequest":{
       "type":"structure",
       "required":[
@@ -15877,6 +17064,72 @@
         "Status":{
           "shape":"StatusCode",
           "documentation":"<p>The HTTP status of the request.</p>",
+          "location":"statusCode"
+        }
+      }
+    },
+    "CreateKnowledgeBaseRefreshScheduleRequest":{
+      "type":"structure",
+      "required":[
+        "AwsAccountId",
+        "KnowledgeBaseId",
+        "ScheduleId",
+        "ScheduleFrequency"
+      ],
+      "members":{
+        "AwsAccountId":{
+          "shape":"KbAwsAccountId",
+          "documentation":"<p>The ID of the Amazon Web Services account that contains the knowledge base.</p>",
+          "location":"uri",
+          "locationName":"AwsAccountId"
+        },
+        "KnowledgeBaseId":{
+          "shape":"KnowledgeBaseId",
+          "documentation":"<p>The unique identifier for the knowledge base.</p>",
+          "location":"uri",
+          "locationName":"KnowledgeBaseId"
+        },
+        "ScheduleId":{
+          "shape":"ScheduleId",
+          "documentation":"<p>A unique identifier for the knowledge base refresh schedule.</p>"
+        },
+        "ScheduleFrequency":{
+          "shape":"KnowledgeBaseRefreshFrequency",
+          "documentation":"<p>The frequency configuration for the refresh schedule. The frequency configuration specifies how often the schedule runs and, for weekly or monthly schedules, the day on which it runs.</p>"
+        },
+        "StartTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The date and time, in ISO 8601 format, after which the schedule can start refreshing the knowledge base. The first refresh runs at the next scheduled time after this date and time. If you don't specify a value, the schedule becomes active immediately, and the first refresh runs at the next scheduled time.</p>"
+        },
+        "State":{
+          "shape":"ScheduleState",
+          "documentation":"<p>The state that you want the refresh schedule to have when you create it. If you don't specify a state, the schedule is created in the <code>ENABLED</code> state. A schedule that isn't <code>ENABLED</code> doesn't run refreshes.</p>"
+        }
+      }
+    },
+    "CreateKnowledgeBaseRefreshScheduleResponse":{
+      "type":"structure",
+      "required":[
+        "ScheduleId",
+        "KnowledgeBaseArn"
+      ],
+      "members":{
+        "ScheduleId":{
+          "shape":"ScheduleId",
+          "documentation":"<p>The unique identifier for the refresh schedule.</p>"
+        },
+        "KnowledgeBaseArn":{
+          "shape":"KnowledgeBaseArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the knowledge base that the schedule applies to.</p>"
+        },
+        "RequestId":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Web Services request ID for this operation.</p>"
+        },
+        "Status":{
+          "shape":"StatusCode",
+          "documentation":"<p>The HTTP status of the request.</p>",
+          "box":true,
           "location":"statusCode"
         }
       }
@@ -17210,7 +18463,7 @@
     },
     "CustomInstructionsString":{
       "type":"string",
-      "max":5000,
+      "max":50000,
       "sensitive":true
     },
     "CustomLabel":{
@@ -18513,6 +19766,10 @@
         "SemanticModelConfiguration":{
           "shape":"SemanticModelConfiguration",
           "documentation":"<p>The semantic model configuration associated with this dataset.</p>"
+        },
+        "UnmaterializedCalculatedColumns":{
+          "shape":"UnmaterializedCalculatedColumnList",
+          "documentation":"<p>The unmaterialized calculated columns associated with this dataset. You can only use this with the new data preparation experience.</p>"
         }
       },
       "documentation":"<p>Dataset.</p>"
@@ -20581,6 +21838,98 @@
       },
       "documentation":"<p>The default options that correspond to the <code>TextField</code> filter control type.</p>"
     },
+    "DeleteAccessControlApplicationRequest":{
+      "type":"structure",
+      "required":["AwsAccountId"],
+      "members":{
+        "AwsAccountId":{
+          "shape":"AwsAccountId",
+          "documentation":"<p>The ID of the Amazon Web Services account that contains the Quick Sight account.</p>",
+          "location":"uri",
+          "locationName":"AwsAccountId"
+        },
+        "ApplicationId":{
+          "shape":"ShortRestrictiveResourceId",
+          "documentation":"<p>The ID of the access control application to delete.</p>",
+          "location":"querystring",
+          "locationName":"ApplicationId"
+        },
+        "IdcApplicationArn":{
+          "shape":"Arn",
+          "documentation":"<p>The ARN of an IAM Identity Center application that Quick Sight created for an access control application that has already been deleted. Provide this ARN to clean up the IAM Identity Center application.</p>",
+          "location":"querystring",
+          "locationName":"IdcApplicationArn"
+        }
+      }
+    },
+    "DeleteAccessControlApplicationResponse":{
+      "type":"structure",
+      "required":[
+        "Status",
+        "RequestId"
+      ],
+      "members":{
+        "Status":{
+          "shape":"statusCode",
+          "documentation":"<p>The HTTP status of the request.</p>",
+          "location":"statusCode"
+        },
+        "RequestId":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Web Services request ID for this operation.</p>"
+        },
+        "ApplicationId":{
+          "shape":"String",
+          "documentation":"<p>The ID of the deleted access control application.</p>"
+        }
+      }
+    },
+    "DeleteAccessControlApplicationSecretRequest":{
+      "type":"structure",
+      "required":[
+        "AwsAccountId",
+        "ApplicationId",
+        "ClientSecretId"
+      ],
+      "members":{
+        "AwsAccountId":{
+          "shape":"AwsAccountId",
+          "documentation":"<p>The ID of the Amazon Web Services account that contains the Quick Sight account.</p>",
+          "location":"uri",
+          "locationName":"AwsAccountId"
+        },
+        "ApplicationId":{
+          "shape":"ShortRestrictiveResourceId",
+          "documentation":"<p>The ID of the access control application.</p>",
+          "location":"uri",
+          "locationName":"ApplicationId"
+        },
+        "ClientSecretId":{
+          "shape":"ShortRestrictiveResourceId",
+          "documentation":"<p>The ID of the client secret.</p>",
+          "location":"uri",
+          "locationName":"ClientSecretId"
+        }
+      }
+    },
+    "DeleteAccessControlApplicationSecretResponse":{
+      "type":"structure",
+      "required":[
+        "Status",
+        "RequestId"
+      ],
+      "members":{
+        "Status":{
+          "shape":"statusCode",
+          "documentation":"<p>The HTTP status of the request.</p>",
+          "location":"statusCode"
+        },
+        "RequestId":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Web Services request ID for this operation.</p>"
+        }
+      }
+    },
     "DeleteAccountCustomPermissionRequest":{
       "type":"structure",
       "required":["AwsAccountId"],
@@ -21473,6 +22822,105 @@
         }
       }
     },
+    "DeleteInboundConnectorRequest":{
+      "type":"structure",
+      "required":[
+        "AwsAccountId",
+        "InboundConnectorId"
+      ],
+      "members":{
+        "AwsAccountId":{
+          "shape":"AwsAccountId",
+          "documentation":"<p>The ID of the Amazon Web Services account that contains the Quick Sight account.</p>",
+          "location":"uri",
+          "locationName":"AwsAccountId"
+        },
+        "InboundConnectorId":{
+          "shape":"ShortRestrictiveResourceId",
+          "documentation":"<p>The ID of the inbound connector.</p>",
+          "location":"uri",
+          "locationName":"InboundConnectorId"
+        }
+      }
+    },
+    "DeleteInboundConnectorResponse":{
+      "type":"structure",
+      "required":[
+        "Status",
+        "RequestId",
+        "InboundConnectorId"
+      ],
+      "members":{
+        "Status":{
+          "shape":"statusCode",
+          "documentation":"<p>The HTTP status of the request.</p>",
+          "location":"statusCode"
+        },
+        "RequestId":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Web Services request ID for this operation.</p>"
+        },
+        "InboundConnectorId":{
+          "shape":"String",
+          "documentation":"<p>The ID of the deleted inbound connector.</p>"
+        }
+      }
+    },
+    "DeleteKnowledgeBaseRefreshScheduleRequest":{
+      "type":"structure",
+      "required":[
+        "AwsAccountId",
+        "KnowledgeBaseId",
+        "ScheduleId"
+      ],
+      "members":{
+        "AwsAccountId":{
+          "shape":"KbAwsAccountId",
+          "documentation":"<p>The ID of the Amazon Web Services account that contains the knowledge base.</p>",
+          "location":"uri",
+          "locationName":"AwsAccountId"
+        },
+        "KnowledgeBaseId":{
+          "shape":"KnowledgeBaseId",
+          "documentation":"<p>The unique identifier for the knowledge base.</p>",
+          "location":"uri",
+          "locationName":"KnowledgeBaseId"
+        },
+        "ScheduleId":{
+          "shape":"ScheduleId",
+          "documentation":"<p>The unique identifier for the refresh schedule to delete.</p>",
+          "location":"uri",
+          "locationName":"ScheduleId"
+        }
+      }
+    },
+    "DeleteKnowledgeBaseRefreshScheduleResponse":{
+      "type":"structure",
+      "required":[
+        "ScheduleId",
+        "KnowledgeBaseArn"
+      ],
+      "members":{
+        "ScheduleId":{
+          "shape":"ScheduleId",
+          "documentation":"<p>The unique identifier for the deleted refresh schedule.</p>"
+        },
+        "KnowledgeBaseArn":{
+          "shape":"KnowledgeBaseArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the knowledge base that the schedule applied to.</p>"
+        },
+        "RequestId":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Web Services request ID for this operation.</p>"
+        },
+        "Status":{
+          "shape":"StatusCode",
+          "documentation":"<p>The HTTP status of the request.</p>",
+          "box":true,
+          "location":"statusCode"
+        }
+      }
+    },
     "DeleteKnowledgeBaseRequest":{
       "type":"structure",
       "required":[
@@ -21629,6 +23077,44 @@
           "location":"statusCode"
         }
       }
+    },
+    "DeletePolicyAssignmentRequest":{
+      "type":"structure",
+      "required":[
+        "AccountId",
+        "PolicyArn",
+        "PrincipalArn"
+      ],
+      "members":{
+        "AccountId":{
+          "shape":"AwsAccountId",
+          "documentation":"<p>The ID of the Amazon Web Services account that contains the principal.</p>",
+          "location":"uri",
+          "locationName":"AccountId"
+        },
+        "PolicyArn":{
+          "shape":"PolicyArn",
+          "documentation":"<p>The ARN of the policy to remove. The operation removes the assignment only if the principal currently has this policy.</p>",
+          "location":"querystring",
+          "locationName":"PolicyArn"
+        },
+        "PrincipalArn":{
+          "shape":"PrincipalArn",
+          "documentation":"<p>The ARN of the user, group, or account to remove the policy from.</p>",
+          "location":"querystring",
+          "locationName":"PrincipalArn"
+        },
+        "Revision":{
+          "shape":"Revision",
+          "documentation":"<p>The revision of the assignment from your most recent read. If the assignment has changed since that revision, the request fails with a <code>ConflictException</code>. If you don't specify a value, the operation doesn't check the revision.</p>",
+          "location":"querystring",
+          "locationName":"Revision"
+        }
+      }
+    },
+    "DeletePolicyAssignmentResponse":{
+      "type":"structure",
+      "members":{}
     },
     "DeleteRefreshScheduleRequest":{
       "type":"structure",
@@ -22337,6 +23823,50 @@
       "type":"string",
       "max":1,
       "min":1
+    },
+    "DescribeAccessControlApplicationRequest":{
+      "type":"structure",
+      "required":[
+        "AwsAccountId",
+        "ApplicationId"
+      ],
+      "members":{
+        "AwsAccountId":{
+          "shape":"AwsAccountId",
+          "documentation":"<p>The ID of the Amazon Web Services account that contains the Quick Sight account.</p>",
+          "location":"uri",
+          "locationName":"AwsAccountId"
+        },
+        "ApplicationId":{
+          "shape":"ShortRestrictiveResourceId",
+          "documentation":"<p>The ID of the access control application.</p>",
+          "location":"uri",
+          "locationName":"ApplicationId"
+        }
+      }
+    },
+    "DescribeAccessControlApplicationResponse":{
+      "type":"structure",
+      "required":[
+        "Status",
+        "RequestId",
+        "AccessControlApplication"
+      ],
+      "members":{
+        "Status":{
+          "shape":"statusCode",
+          "documentation":"<p>The HTTP status of the request.</p>",
+          "location":"statusCode"
+        },
+        "RequestId":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Web Services request ID for this operation.</p>"
+        },
+        "AccessControlApplication":{
+          "shape":"AccessControlApplication",
+          "documentation":"<p>The access control application.</p>"
+        }
+      }
     },
     "DescribeAccountCustomPermissionRequest":{
       "type":"structure",
@@ -24321,6 +25851,50 @@
         }
       }
     },
+    "DescribeInboundConnectorRequest":{
+      "type":"structure",
+      "required":[
+        "AwsAccountId",
+        "InboundConnectorId"
+      ],
+      "members":{
+        "AwsAccountId":{
+          "shape":"AwsAccountId",
+          "documentation":"<p>The ID of the Amazon Web Services account that contains the Quick Sight account.</p>",
+          "location":"uri",
+          "locationName":"AwsAccountId"
+        },
+        "InboundConnectorId":{
+          "shape":"ShortRestrictiveResourceId",
+          "documentation":"<p>The ID of the inbound connector.</p>",
+          "location":"uri",
+          "locationName":"InboundConnectorId"
+        }
+      }
+    },
+    "DescribeInboundConnectorResponse":{
+      "type":"structure",
+      "required":[
+        "Status",
+        "RequestId",
+        "InboundConnector"
+      ],
+      "members":{
+        "Status":{
+          "shape":"statusCode",
+          "documentation":"<p>The HTTP status of the request.</p>",
+          "location":"statusCode"
+        },
+        "RequestId":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Web Services request ID for this operation.</p>"
+        },
+        "InboundConnector":{
+          "shape":"InboundConnector",
+          "documentation":"<p>The inbound connector.</p>"
+        }
+      }
+    },
     "DescribeIngestionRequest":{
       "type":"structure",
       "required":[
@@ -24495,6 +26069,61 @@
         "Permissions":{
           "shape":"ResourcePermissionList",
           "documentation":"<p>The resource permissions for the knowledge base.</p>"
+        },
+        "RequestId":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Web Services request ID for this operation.</p>"
+        },
+        "Status":{
+          "shape":"StatusCode",
+          "documentation":"<p>The HTTP status of the request.</p>",
+          "box":true,
+          "location":"statusCode"
+        }
+      }
+    },
+    "DescribeKnowledgeBaseRefreshScheduleRequest":{
+      "type":"structure",
+      "required":[
+        "AwsAccountId",
+        "KnowledgeBaseId",
+        "ScheduleId"
+      ],
+      "members":{
+        "AwsAccountId":{
+          "shape":"KbAwsAccountId",
+          "documentation":"<p>The ID of the Amazon Web Services account that contains the knowledge base.</p>",
+          "location":"uri",
+          "locationName":"AwsAccountId"
+        },
+        "KnowledgeBaseId":{
+          "shape":"KnowledgeBaseId",
+          "documentation":"<p>The unique identifier for the knowledge base.</p>",
+          "location":"uri",
+          "locationName":"KnowledgeBaseId"
+        },
+        "ScheduleId":{
+          "shape":"ScheduleId",
+          "documentation":"<p>The unique identifier for the refresh schedule.</p>",
+          "location":"uri",
+          "locationName":"ScheduleId"
+        }
+      }
+    },
+    "DescribeKnowledgeBaseRefreshScheduleResponse":{
+      "type":"structure",
+      "required":[
+        "Schedule",
+        "KnowledgeBaseArn"
+      ],
+      "members":{
+        "Schedule":{
+          "shape":"KnowledgeBaseRefreshScheduleSummary",
+          "documentation":"<p>The refresh schedule for the knowledge base.</p>"
+        },
+        "KnowledgeBaseArn":{
+          "shape":"KnowledgeBaseArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the knowledge base that the schedule applies to.</p>"
         },
         "RequestId":{
           "shape":"String",
@@ -26421,6 +28050,142 @@
       "min":1,
       "sensitive":true
     },
+    "ExternalIdpConfidentialAuthCodeAuthorizingConfig":{
+      "type":"structure",
+      "required":[
+        "ClientId",
+        "IssuerUrl"
+      ],
+      "members":{
+        "ClientId":{
+          "shape":"OAuthApplicationClientId",
+          "documentation":"<p>The OAuth 2.0 client ID.</p>"
+        },
+        "IssuerUrl":{
+          "shape":"Uri",
+          "documentation":"<p>The issuer URL of the external OpenID Connect IdP.</p>"
+        },
+        "ClientSecrets":{
+          "shape":"ExternalIdpConfidentialClientSecretList",
+          "documentation":"<p>The client secrets of the confidential client, with the Amazon Web Services Secrets Manager ARN for each Region. Secret values are never included.</p>"
+        }
+      },
+      "documentation":"<p>The configuration for an external OpenID Connect IdP that uses the authorization code flow with a confidential client. Client secret values are never included.</p>"
+    },
+    "ExternalIdpConfidentialAuthCodeAuthorizingConfigInput":{
+      "type":"structure",
+      "required":[
+        "ClientId",
+        "IssuerUrl",
+        "ClientSecret"
+      ],
+      "members":{
+        "ClientId":{
+          "shape":"OAuthApplicationClientId",
+          "documentation":"<p>The OAuth 2.0 client ID.</p>"
+        },
+        "IssuerUrl":{
+          "shape":"Uri",
+          "documentation":"<p>The issuer URL of the external OpenID Connect IdP.</p>"
+        },
+        "ClientSecret":{
+          "shape":"IdpClientSecretInput",
+          "documentation":"<p>The first client secret of the confidential client.</p>"
+        }
+      },
+      "documentation":"<p>The configuration for an external OpenID Connect IdP that uses a confidential client. Provide the first client secret here. To add or remove client secrets later, use <code>CreateAccessControlApplicationSecret</code> and <code>DeleteAccessControlApplicationSecret</code>.</p>"
+    },
+    "ExternalIdpConfidentialAuthCodeAuthorizingConfigSummary":{
+      "type":"structure",
+      "required":[
+        "ClientId",
+        "IssuerUrl"
+      ],
+      "members":{
+        "ClientId":{
+          "shape":"OAuthApplicationClientId",
+          "documentation":"<p>The OAuth 2.0 client ID.</p>"
+        },
+        "IssuerUrl":{
+          "shape":"Uri",
+          "documentation":"<p>The issuer URL of the external OpenID Connect IdP.</p>"
+        }
+      },
+      "documentation":"<p>A summary of the configuration for an external OpenID Connect IdP that uses a confidential client.</p>"
+    },
+    "ExternalIdpConfidentialAuthCodeAuthorizingConfigUpdateInput":{
+      "type":"structure",
+      "required":[
+        "ClientId",
+        "IssuerUrl"
+      ],
+      "members":{
+        "ClientId":{
+          "shape":"OAuthApplicationClientId",
+          "documentation":"<p>The OAuth 2.0 client ID.</p>"
+        },
+        "IssuerUrl":{
+          "shape":"Uri",
+          "documentation":"<p>The issuer URL of the external OpenID Connect IdP.</p>"
+        }
+      },
+      "documentation":"<p>The external IdP settings to update for a confidential client.</p>"
+    },
+    "ExternalIdpConfidentialClientSecret":{
+      "type":"structure",
+      "required":[
+        "ClientSecretId",
+        "CreatedAt"
+      ],
+      "members":{
+        "ClientSecretId":{
+          "shape":"ShortRestrictiveResourceId",
+          "documentation":"<p>The ID of the client secret.</p>"
+        },
+        "RegionalSecretManagerArns":{
+          "shape":"RegionalSecretManagerArnMap",
+          "documentation":"<p>The ARN of the Amazon Web Services Secrets Manager secret that holds the client secret, for each Region.</p>"
+        },
+        "CreatedAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The time when the client secret was created.</p>"
+        },
+        "UpdatedAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The time when the secret's Region ARNs were last updated. This value is present only after you call <code>UpdateAccessControlApplicationSecret</code>.</p>"
+        },
+        "Description":{
+          "shape":"AccessControlApplicationDescription",
+          "documentation":"<p>The description of the client secret.</p>"
+        }
+      },
+      "documentation":"<p>A client secret of a confidential external IdP client. Secret values are never included.</p>"
+    },
+    "ExternalIdpConfidentialClientSecretList":{
+      "type":"list",
+      "member":{"shape":"ExternalIdpConfidentialClientSecret"},
+      "documentation":"<p>A list of up to two client secrets.</p>",
+      "max":2,
+      "min":1
+    },
+    "ExternalIdpPublicAuthCodeAuthorizingConfig":{
+      "type":"structure",
+      "required":[
+        "ClientId",
+        "IssuerUrl"
+      ],
+      "members":{
+        "ClientId":{
+          "shape":"OAuthApplicationClientId",
+          "documentation":"<p>The OAuth 2.0 client ID.</p>"
+        },
+        "IssuerUrl":{
+          "shape":"Uri",
+          "documentation":"<p>The issuer URL of the external OpenID Connect IdP.</p>"
+        }
+      },
+      "documentation":"<p>The configuration for an external OpenID Connect IdP that uses the authorization code flow with PKCE and a public client.</p>"
+    },
     "FMKBKnowledgeBaseArn":{
       "type":"string",
       "max":128,
@@ -26520,6 +28285,11 @@
     "FailedToUpdateAssociationList":{
       "type":"list",
       "member":{"shape":"FailedToUpdateAssociation"}
+    },
+    "FederatedCatalog":{
+      "type":"string",
+      "max":127,
+      "min":0
     },
     "FieldBarSeriesItem":{
       "type":"structure",
@@ -28585,11 +30355,11 @@
         },
         "Namespace":{
           "shape":"Namespace",
-          "documentation":"<p>The Amazon Quick Sight namespace that the anonymous user virtually belongs to. If you are not using an Amazon Quick custom namespace, set this to <code>default</code>.</p>"
+          "documentation":"<p>The Amazon Quick Sight namespace that the anonymous user virtually belongs to. If you are not using an Quick custom namespace, set this to <code>default</code>.</p>"
         },
         "SessionTags":{
           "shape":"SessionTagList",
-          "documentation":"<p>Session tags are user-specified strings that identify a session in your application. You can use these tags to implement row-level security (RLS) controls. Before you use the <code>SessionTags</code> parameter, make sure that you have configured the relevant datasets using the <code>DataSet$RowLevelPermissionTagConfiguration</code> parameter so that session tags can be used to provide row-level security.</p> <p>When using <code>SessionTags</code> in <code>GenerateEmbedUrlForAnonymousUser</code>,</p> <ul> <li> <p>Treat <code>SessionTags</code> as security credentials. Do not expose <code>SessionTags</code> to end users or client-side code.</p> </li> <li> <p>Implement server-side controls. Ensure that <code>SessionTags</code> are set exclusively by your trusted backend services, not by parameters that end users can modify.</p> </li> <li> <p>Protect <code>SessionTags</code> from enumeration. Ensure that users in one tenant cannot discover or guess sessionTag values belonging to other tenants.</p> </li> <li> <p>Review your architecture. If downstream customers or partners are allowed to call the <code>GenerateEmbedUrlForAnonymousUser</code> API directly, evaluate whether those parties could specify sessionTag values for tenants they should not access.</p> </li> </ul> <p>Besides, these are not the tags used for the Amazon Web Services resource tagging feature. For more information, see <a href=\"https://docs.aws.amazon.com/quicksight/latest/user/quicksight-dev-rls-tags.html\">Using Row-Level Security (RLS) with Tags</a> in the <i>Amazon Quick User Guide</i>.</p>"
+          "documentation":"<p>Session tags are user-specified strings that identify a session in your application. You can use these tags to implement row-level security (RLS) controls. Before you use the <code>SessionTags</code> parameter, make sure that you have configured the relevant datasets using the <code>DataSet$RowLevelPermissionTagConfiguration</code> parameter so that session tags can be used to provide row-level security.</p> <p>When using <code>SessionTags</code> in <code>GenerateEmbedUrlForAnonymousUser</code>,</p> <ul> <li> <p>Treat <code>SessionTags</code> as security credentials. Do not expose <code>SessionTags</code> to end users or client-side code.</p> </li> <li> <p>Implement server-side controls. Ensure that <code>SessionTags</code> are set exclusively by your trusted backend services, not by parameters that end users can modify.</p> </li> <li> <p>Protect <code>SessionTags</code> from enumeration. Ensure that users in one tenant cannot discover or guess sessionTag values belonging to other tenants.</p> </li> <li> <p>Review your architecture. If downstream customers or partners are allowed to call the <code>GenerateEmbedUrlForAnonymousUser</code> API directly, evaluate whether those parties could specify sessionTag values for tenants they should not access.</p> </li> </ul> <p>Besides, these are not the tags used for the Amazon Web Services resource tagging feature. For more information, see <a href=\"https://docs.aws.amazon.com/quicksight/latest/user/quicksight-dev-rls-tags.html\">Using Row-Level Security (RLS) with Tags</a> in the <i>Quick User Guide</i>.</p>"
         },
         "AuthorizedResourceArns":{
           "shape":"ArnList",
@@ -28629,7 +30399,7 @@
         },
         "AnonymousUserArn":{
           "shape":"Arn",
-          "documentation":"<p>The Amazon Resource Name (ARN) to use for the anonymous Amazon Quick user.</p>"
+          "documentation":"<p>The Amazon Resource Name (ARN) to use for the anonymous Quick user.</p>"
         }
       }
     },
@@ -29681,7 +31451,7 @@
         },
         "UserArn":{
           "shape":"Arn",
-          "documentation":"<p>The Amazon Quick user's Amazon Resource Name (ARN), for use with <code>QUICKSIGHT</code> identity type. You can use this for any Amazon Quick users in your account (readers, authors, or admins) authenticated as one of the following:</p> <ul> <li> <p>Active Directory (AD) users or group members</p> </li> <li> <p>Invited nonfederated users</p> </li> <li> <p>IAM users and IAM role-based sessions authenticated through Federated Single Sign-On using SAML, OpenID Connect, or IAM federation.</p> </li> </ul> <p>Omit this parameter for users in the third group – IAM users and IAM role-based sessions.</p>",
+          "documentation":"<p>The Quick user's Amazon Resource Name (ARN), for use with <code>QUICKSIGHT</code> identity type. You can use this for any Quick users in your account (readers, authors, or admins) authenticated as one of the following:</p> <ul> <li> <p>Active Directory (AD) users or group members</p> </li> <li> <p>Invited nonfederated users</p> </li> <li> <p>IAM users and IAM role-based sessions authenticated through Federated Single Sign-On using SAML, OpenID Connect, or IAM federation.</p> </li> </ul> <p>Omit this parameter for users in the third group – IAM users and IAM role-based sessions.</p>",
           "location":"querystring",
           "locationName":"user-arn"
         },
@@ -29877,7 +31647,7 @@
           "documentation":"<p>The region in which the context is to be used. Use this parameter to obtain an identity context for cross-region use.</p> <p>The specified region must meet the following conditions:</p> <ul> <li> <p>The region must be in the same Amazon Web Services partition as the region you are calling from. Cross-partition requests are not supported. For example, you cannot specify a region in the <code>aws-cn</code> partition when calling from a region in the <code>aws</code> partition.</p> </li> <li> <p>It must be a valid Amazon QuickSight supported region.</p> </li> <li> <p>The calling customer account must be enabled in the specified context region.</p> </li> <li> <p>This parameter is not supported when calling from an opt-in region.</p> </li> </ul>"
         }
       },
-      "documentation":"<p>///////////////////////// /////////////////////////</p>"
+      "documentation":"<p/>"
     },
     "GetIdentityContextResponse":{
       "type":"structure",
@@ -29900,6 +31670,60 @@
           "documentation":"<p>The identity context information for the user. This is an identity token that should be used as the ContextAssertion parameter in the <a href=\"https://docs.aws.amazon.com/STS/latest/APIReference/API_AssumeRole.html\">STS AssumeRole API</a> call to obtain identity enhanced Amazon Web Services credentials.</p>"
         }
       }
+    },
+    "GetPolicyAssignmentRequest":{
+      "type":"structure",
+      "required":[
+        "AccountId",
+        "PolicyType",
+        "PrincipalArn"
+      ],
+      "members":{
+        "AccountId":{
+          "shape":"AwsAccountId",
+          "documentation":"<p>The ID of the Amazon Web Services account that contains the principal.</p>",
+          "location":"uri",
+          "locationName":"AccountId"
+        },
+        "PolicyType":{
+          "shape":"PolicyType",
+          "documentation":"<p>The type of policy to describe. Choose one of the following values:</p> <ul> <li> <p> <code>LIMITS_PROFILE</code> – A limits profile that sets resource usage limits.</p> </li> <li> <p> <code>CUSTOM_PERMISSIONS</code> – A custom permissions profile that restricts the capabilities available to a principal.</p> </li> </ul>",
+          "location":"querystring",
+          "locationName":"PolicyType"
+        },
+        "PrincipalArn":{
+          "shape":"PrincipalArn",
+          "documentation":"<p>The ARN of the user, group, or account.</p>",
+          "location":"querystring",
+          "locationName":"PrincipalArn"
+        }
+      }
+    },
+    "GetPolicyAssignmentResponse":{
+      "type":"structure",
+      "members":{
+        "PolicyArn":{
+          "shape":"PolicyArn",
+          "documentation":"<p>The ARN of the policy that the principal has. The response doesn't include this value if the principal has no policy of the requested type.</p>"
+        },
+        "PolicyName":{
+          "shape":"GetPolicyAssignmentResponsePolicyNameString",
+          "documentation":"<p>The display name of the assigned policy. This value is absent if the policy has no name or the name can't be retrieved.</p>"
+        },
+        "UpdatedAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The date and time that the assignment was last updated.</p>"
+        },
+        "Revision":{
+          "shape":"Revision",
+          "documentation":"<p>The current revision of the assignment. Pass this value in a later <code>PutPolicyAssignment</code> or <code>DeletePolicyAssignment</code> request to make sure that the assignment hasn't changed.</p>"
+        }
+      }
+    },
+    "GetPolicyAssignmentResponsePolicyNameString":{
+      "type":"string",
+      "max":256,
+      "min":1
     },
     "GetSessionEmbedUrlRequest":{
       "type":"structure",
@@ -29925,7 +31749,7 @@
         },
         "UserArn":{
           "shape":"Arn",
-          "documentation":"<p>The Amazon Quick user's Amazon Resource Name (ARN), for use with <code>QUICKSIGHT</code> identity type. You can use this for any type of Amazon Quick users in your account (readers, authors, or admins). They need to be authenticated as one of the following:</p> <ol> <li> <p>Active Directory (AD) users or group members</p> </li> <li> <p>Invited nonfederated users</p> </li> <li> <p>IAM users and IAM role-based sessions authenticated through Federated Single Sign-On using SAML, OpenID Connect, or IAM federation</p> </li> </ol> <p>Omit this parameter for users in the third group, IAM users and IAM role-based sessions.</p>",
+          "documentation":"<p>The Quick user's Amazon Resource Name (ARN), for use with <code>QUICKSIGHT</code> identity type. You can use this for any type of Quick users in your account (readers, authors, or admins). They need to be authenticated as one of the following:</p> <ol> <li> <p>Active Directory (AD) users or group members</p> </li> <li> <p>Invited nonfederated users</p> </li> <li> <p>IAM users and IAM role-based sessions authenticated through Federated Single Sign-On using SAML, OpenID Connect, or IAM federation</p> </li> </ol> <p>Omit this parameter for users in the third group, IAM users and IAM role-based sessions.</p>",
           "location":"querystring",
           "locationName":"user-arn"
         }
@@ -29991,7 +31815,10 @@
     },
     "GovernedAction":{
       "type":"string",
-      "enum":["SHARE"]
+      "enum":[
+        "SHARE",
+        "PUBLISH"
+      ]
     },
     "GovernedActionList":{
       "type":"list",
@@ -31003,6 +32830,24 @@
       "max":200,
       "min":1
     },
+    "IdcTrustedTokenIssuerArn":{
+      "type":"string",
+      "documentation":"<p>The ARN of a trusted token issuer in IAM Identity Center.</p>",
+      "max":1284,
+      "min":20,
+      "pattern":"arn:(aws|aws-us-gov|aws-cn|aws-iso|aws-iso-b):sso::\\d{12}:trustedTokenIssuer/(sso)?ins-[a-zA-Z0-9-.]{16}/tti-[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}"
+    },
+    "IdcTrustedTokenIssuerConfig":{
+      "type":"structure",
+      "required":["IdcTrustedTokenIssuerArn"],
+      "members":{
+        "IdcTrustedTokenIssuerArn":{
+          "shape":"IdcTrustedTokenIssuerArn",
+          "documentation":"<p>The ARN of the trusted token issuer in IAM Identity Center.</p>"
+        }
+      },
+      "documentation":"<p>A trusted token issuer configuration. When you provide it, Quick Sight authenticates the user with the external IdP and then exchanges the token with IAM Identity Center through the specified trusted token issuer.</p>"
+    },
     "Identifier":{
       "type":"structure",
       "required":["Identity"],
@@ -31068,6 +32913,163 @@
       "documentation":"<p>The identity type specified isn't supported. Supported identity types include <code>IAM</code> and <code>QUICKSIGHT</code>.</p>",
       "error":{"httpStatusCode":403},
       "exception":true
+    },
+    "IdpAuthorizingConfig":{
+      "type":"structure",
+      "required":["IdpAuthorizingType"],
+      "members":{
+        "IdpAuthorizingType":{
+          "shape":"IdpAuthorizingType",
+          "documentation":"<p>How users of the access control application are authenticated.</p>"
+        },
+        "IdpAuthorizingConfigurationDetail":{
+          "shape":"IdpAuthorizingConfigurationDetail",
+          "documentation":"<p>The details of the external IdP configuration. This is present when the <code>IdpAuthorizingType</code> is <code>EXTERNAL_IDP_PUBLIC_AUTH_CODE</code> or <code>EXTERNAL_IDP_CONFIDENTIAL_AUTH_CODE</code>.</p>"
+        },
+        "IdcTrustedTokenIssuerConfiguration":{
+          "shape":"IdcTrustedTokenIssuerConfig",
+          "documentation":"<p>A trusted token issuer configuration. When you provide it, Quick Sight authenticates the user with the external IdP and then exchanges the token with IAM Identity Center through the specified trusted token issuer. You can't change it after the application is created.</p>"
+        }
+      },
+      "documentation":"<p>The identity provider configuration of an access control application.</p>"
+    },
+    "IdpAuthorizingConfigInput":{
+      "type":"structure",
+      "required":["IdpAuthorizingType"],
+      "members":{
+        "IdpAuthorizingType":{
+          "shape":"IdpAuthorizingType",
+          "documentation":"<p>How users of the access control application are authenticated.</p>"
+        },
+        "IdpAuthorizingConfigurationDetailInput":{
+          "shape":"IdpAuthorizingConfigurationDetailInput",
+          "documentation":"<p>The details of the external IdP configuration. This is present when the <code>IdpAuthorizingType</code> is <code>EXTERNAL_IDP_PUBLIC_AUTH_CODE</code> or <code>EXTERNAL_IDP_CONFIDENTIAL_AUTH_CODE</code>.</p>"
+        },
+        "IdcTrustedTokenIssuerConfiguration":{
+          "shape":"IdcTrustedTokenIssuerConfig",
+          "documentation":"<p>A trusted token issuer configuration. When you provide it, Quick Sight authenticates the user with the external IdP and then exchanges the token with IAM Identity Center through the specified trusted token issuer. You can't change it after the application is created.</p> <p>This is required when the application uses an external IdP and its namespace uses IAM Identity Center.</p>"
+        }
+      },
+      "documentation":"<p>The identity provider configuration for a new access control application.</p>"
+    },
+    "IdpAuthorizingConfigSummary":{
+      "type":"structure",
+      "required":["IdpAuthorizingType"],
+      "members":{
+        "IdpAuthorizingType":{
+          "shape":"IdpAuthorizingType",
+          "documentation":"<p>How users of the access control application are authenticated.</p>"
+        },
+        "IdpAuthorizingConfigurationSummaryDetail":{
+          "shape":"IdpAuthorizingConfigurationSummaryDetail",
+          "documentation":"<p>The details of the external IdP configuration. This is present when the <code>IdpAuthorizingType</code> is <code>EXTERNAL_IDP_PUBLIC_AUTH_CODE</code> or <code>EXTERNAL_IDP_CONFIDENTIAL_AUTH_CODE</code>.</p>"
+        },
+        "IdcTrustedTokenIssuerConfiguration":{
+          "shape":"IdcTrustedTokenIssuerConfig",
+          "documentation":"<p>A trusted token issuer configuration. When you provide it, Quick Sight authenticates the user with the external IdP and then exchanges the token with IAM Identity Center through the specified trusted token issuer. You can't change it after the application is created.</p>"
+        }
+      },
+      "documentation":"<p>A summary of the identity provider configuration of an access control application.</p>"
+    },
+    "IdpAuthorizingConfigUpdateInput":{
+      "type":"structure",
+      "required":["IdpAuthorizingType"],
+      "members":{
+        "IdpAuthorizingType":{
+          "shape":"IdpAuthorizingType",
+          "documentation":"<p>How users of the access control application are authenticated.</p>"
+        },
+        "IdpAuthorizingConfigurationDetailInput":{
+          "shape":"IdpAuthorizingConfigurationDetailUpdateInput",
+          "documentation":"<p>The details of the external IdP configuration. This is present when the <code>IdpAuthorizingType</code> is <code>EXTERNAL_IDP_PUBLIC_AUTH_CODE</code> or <code>EXTERNAL_IDP_CONFIDENTIAL_AUTH_CODE</code>.</p>"
+        },
+        "IdcTrustedTokenIssuerConfiguration":{
+          "shape":"IdcTrustedTokenIssuerConfig",
+          "documentation":"<p>A trusted token issuer configuration. When you provide it, Quick Sight authenticates the user with the external IdP and then exchanges the token with IAM Identity Center through the specified trusted token issuer. You can't change it after the application is created.</p>"
+        }
+      },
+      "documentation":"<p>The identity provider settings to update. To manage client secrets, use the client secret operations instead.</p>"
+    },
+    "IdpAuthorizingConfigurationDetail":{
+      "type":"structure",
+      "members":{
+        "ExternalIdpPublicAuthCode":{
+          "shape":"ExternalIdpPublicAuthCodeAuthorizingConfig",
+          "documentation":"<p>The configuration for an external IdP with a public client.</p>"
+        },
+        "ExternalIdpConfidentialAuthCode":{
+          "shape":"ExternalIdpConfidentialAuthCodeAuthorizingConfig",
+          "documentation":"<p>The configuration for an external IdP with a confidential client.</p>"
+        }
+      },
+      "documentation":"<p>The details of the identity provider configuration.</p>",
+      "union":true
+    },
+    "IdpAuthorizingConfigurationDetailInput":{
+      "type":"structure",
+      "members":{
+        "ExternalIdpPublicAuthCode":{
+          "shape":"ExternalIdpPublicAuthCodeAuthorizingConfig",
+          "documentation":"<p>The configuration for an external IdP with a public client.</p>"
+        },
+        "ExternalIdpConfidentialAuthCode":{
+          "shape":"ExternalIdpConfidentialAuthCodeAuthorizingConfigInput",
+          "documentation":"<p>The configuration for an external IdP with a confidential client.</p>"
+        }
+      },
+      "documentation":"<p>The details of the identity provider configuration.</p>",
+      "union":true
+    },
+    "IdpAuthorizingConfigurationDetailUpdateInput":{
+      "type":"structure",
+      "members":{
+        "ExternalIdpPublicAuthCode":{
+          "shape":"ExternalIdpPublicAuthCodeAuthorizingConfig",
+          "documentation":"<p>The configuration for an external IdP with a public client.</p>"
+        },
+        "ExternalIdpConfidentialAuthCode":{
+          "shape":"ExternalIdpConfidentialAuthCodeAuthorizingConfigUpdateInput",
+          "documentation":"<p>The configuration for an external IdP with a confidential client.</p>"
+        }
+      },
+      "documentation":"<p>The identity provider details to update.</p>",
+      "union":true
+    },
+    "IdpAuthorizingConfigurationSummaryDetail":{
+      "type":"structure",
+      "members":{
+        "ExternalIdpPublicAuthCode":{
+          "shape":"ExternalIdpPublicAuthCodeAuthorizingConfig",
+          "documentation":"<p>The configuration for an external IdP with a public client.</p>"
+        },
+        "ExternalIdpConfidentialAuthCode":{
+          "shape":"ExternalIdpConfidentialAuthCodeAuthorizingConfigSummary",
+          "documentation":"<p>The configuration for an external IdP with a confidential client.</p>"
+        }
+      },
+      "documentation":"<p>A summary of the identity provider configuration details.</p>",
+      "union":true
+    },
+    "IdpAuthorizingType":{
+      "type":"string",
+      "documentation":"<p>How users of the access control application are authenticated. Valid values are the following:</p> <ul> <li> <p> <code>EXTERNAL_IDP_PUBLIC_AUTH_CODE</code>: An external OpenID Connect IdP, using the authorization code flow with PKCE and a public client.</p> </li> <li> <p> <code>EXTERNAL_IDP_CONFIDENTIAL_AUTH_CODE</code>: An external OpenID Connect IdP, using the authorization code flow with a confidential client that has a client secret.</p> </li> <li> <p> <code>QUICK_MANAGED_AUTH_CODE</code>: Quick Sight authenticates users.</p> </li> <li> <p> <code>IDC_AUTH_CODE</code>: IAM Identity Center authenticates users.</p> </li> </ul>",
+      "enum":[
+        "EXTERNAL_IDP_PUBLIC_AUTH_CODE",
+        "EXTERNAL_IDP_CONFIDENTIAL_AUTH_CODE",
+        "QUICK_MANAGED_AUTH_CODE",
+        "IDC_AUTH_CODE"
+      ]
+    },
+    "IdpClientSecretInput":{
+      "type":"structure",
+      "required":["RegionalSecretManagerArns"],
+      "members":{
+        "RegionalSecretManagerArns":{
+          "shape":"RegionalSecretManagerArnMap",
+          "documentation":"<p>The ARN of the Amazon Web Services Secrets Manager secret that holds the client secret, for each Region.</p>"
+        }
+      },
+      "documentation":"<p>An IdP-provided client secret that you store in Amazon Web Services Secrets Manager.</p>"
     },
     "Image":{
       "type":"structure",
@@ -31315,6 +33317,185 @@
         }
       },
       "documentation":"<p>Specifies the source table and column mappings for an import table operation.</p>"
+    },
+    "InboundConnector":{
+      "type":"structure",
+      "required":[
+        "InboundConnectorId",
+        "Arn",
+        "Name",
+        "Status",
+        "TenantUrl",
+        "CreatedTime",
+        "LastUpdatedTime",
+        "InboundConnectorConfiguration"
+      ],
+      "members":{
+        "InboundConnectorId":{
+          "shape":"ShortRestrictiveResourceId",
+          "documentation":"<p>The ID of the inbound connector.</p>"
+        },
+        "Arn":{
+          "shape":"Arn",
+          "documentation":"<p>The ARN of the inbound connector.</p>"
+        },
+        "Name":{
+          "shape":"ResourceName",
+          "documentation":"<p>The name of the inbound connector.</p>"
+        },
+        "Status":{
+          "shape":"InboundConnectorStatus",
+          "documentation":"<p>The status of the inbound connector.</p>"
+        },
+        "TenantUrl":{
+          "shape":"String",
+          "documentation":"<p>The endpoint URL that clients use to reach Quick Sight through the inbound connector.</p>"
+        },
+        "CreatedTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The time when the inbound connector was created.</p>"
+        },
+        "LastUpdatedTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The time when the inbound connector was last updated.</p>"
+        },
+        "InboundConnectorConfiguration":{
+          "shape":"InboundConnectorConfig",
+          "documentation":"<p>The configuration of the inbound connector.</p>"
+        },
+        "Description":{
+          "shape":"InboundConnectorDescription",
+          "documentation":"<p>The description of the inbound connector.</p>"
+        }
+      },
+      "documentation":"<p>An inbound connector. To read or change the access control applications that are associated with the connector, use <code>ListInboundConnectorApplicationAssociations</code> and <code>UpdateInboundConnectorApplicationAssociations</code>.</p>"
+    },
+    "InboundConnectorApplicationAssociationSummary":{
+      "type":"structure",
+      "required":[
+        "AccessControlApplicationArn",
+        "CreatedTime"
+      ],
+      "members":{
+        "AccessControlApplicationArn":{
+          "shape":"Arn",
+          "documentation":"<p>The ARN of the associated access control application.</p>"
+        },
+        "CreatedTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The time when the association was created.</p>"
+        }
+      },
+      "documentation":"<p>An association between an inbound connector and an access control application.</p>"
+    },
+    "InboundConnectorApplicationAssociationSummaryList":{
+      "type":"list",
+      "member":{"shape":"InboundConnectorApplicationAssociationSummary"},
+      "documentation":"<p>A list of inbound connector associations.</p>",
+      "max":100,
+      "min":0
+    },
+    "InboundConnectorAssociationArnList":{
+      "type":"list",
+      "member":{"shape":"Arn"},
+      "documentation":"<p>A list of access control application ARNs.</p>",
+      "max":20,
+      "min":1
+    },
+    "InboundConnectorConfig":{
+      "type":"structure",
+      "required":["InboundConnectorType"],
+      "members":{
+        "InboundConnectorType":{
+          "shape":"InboundConnectorType",
+          "documentation":"<p>The type of the inbound connector. You can't change the type after the connector is created.</p>"
+        }
+      },
+      "documentation":"<p>The configuration of an inbound connector, including its type.</p>"
+    },
+    "InboundConnectorDescription":{
+      "type":"string",
+      "documentation":"<p>A description of the inbound connector, up to 512 characters. If you don't provide a description, the inbound connector has no description.</p>",
+      "max":512,
+      "min":1,
+      "pattern":"[A-Za-z0-9 _.,!?\\-]*"
+    },
+    "InboundConnectorStatus":{
+      "type":"string",
+      "documentation":"<p>The status of an inbound connector. Valid values are <code>ENABLED</code> and <code>DISABLED</code>.</p>",
+      "enum":[
+        "ENABLED",
+        "DISABLED"
+      ]
+    },
+    "InboundConnectorSummary":{
+      "type":"structure",
+      "required":[
+        "InboundConnectorId",
+        "Arn",
+        "Name",
+        "Status",
+        "CreatedTime",
+        "LastUpdatedTime",
+        "TenantUrl",
+        "InboundConnectorConfiguration"
+      ],
+      "members":{
+        "InboundConnectorId":{
+          "shape":"ShortRestrictiveResourceId",
+          "documentation":"<p>The ID of the inbound connector.</p>"
+        },
+        "Arn":{
+          "shape":"Arn",
+          "documentation":"<p>The ARN of the inbound connector.</p>"
+        },
+        "Name":{
+          "shape":"ResourceName",
+          "documentation":"<p>The name of the inbound connector.</p>"
+        },
+        "Status":{
+          "shape":"InboundConnectorStatus",
+          "documentation":"<p>The status of the inbound connector.</p>"
+        },
+        "CreatedTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The time when the inbound connector was created.</p>"
+        },
+        "LastUpdatedTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The time when the inbound connector was last updated.</p>"
+        },
+        "TenantUrl":{
+          "shape":"String",
+          "documentation":"<p>The endpoint URL that clients use to reach Quick Sight through the inbound connector.</p>"
+        },
+        "InboundConnectorConfiguration":{
+          "shape":"InboundConnectorConfig",
+          "documentation":"<p>The configuration of the inbound connector.</p>"
+        },
+        "Description":{
+          "shape":"InboundConnectorDescription",
+          "documentation":"<p>The description of the inbound connector.</p>"
+        }
+      },
+      "documentation":"<p>A summary of an inbound connector, including its ID, ARN, name, status, tenant URL, configuration, and timestamps.</p>"
+    },
+    "InboundConnectorSummaryList":{
+      "type":"list",
+      "member":{"shape":"InboundConnectorSummary"},
+      "documentation":"<p>A list of inbound connector summaries.</p>"
+    },
+    "InboundConnectorType":{
+      "type":"string",
+      "documentation":"<p>The type of an inbound connector. Valid values are the following:</p> <ul> <li> <p> <code>QUICK_DESKTOP</code>: The Quick Sight desktop application.</p> </li> </ul>",
+      "enum":["QUICK_DESKTOP"]
+    },
+    "InboundConnectorTypeFilterList":{
+      "type":"list",
+      "member":{"shape":"InboundConnectorType"},
+      "documentation":"<p>A list that contains one inbound connector type to filter by.</p>",
+      "max":1,
+      "min":1
     },
     "IncludeFolderMembers":{
       "type":"string",
@@ -32326,6 +34507,19 @@
       "min":12,
       "pattern":"[0-9]*"
     },
+    "KbDayOfWeek":{
+      "type":"string",
+      "documentation":"<p>The day of the week on which a weekly refresh runs. Valid values include:</p> <ul> <li> <p> <code>SUNDAY</code> </p> </li> <li> <p> <code>MONDAY</code> </p> </li> <li> <p> <code>TUESDAY</code> </p> </li> <li> <p> <code>WEDNESDAY</code> </p> </li> <li> <p> <code>THURSDAY</code> </p> </li> <li> <p> <code>FRIDAY</code> </p> </li> <li> <p> <code>SATURDAY</code> </p> </li> </ul>",
+      "enum":[
+        "SUNDAY",
+        "MONDAY",
+        "TUESDAY",
+        "WEDNESDAY",
+        "THURSDAY",
+        "FRIDAY",
+        "SATURDAY"
+      ]
+    },
     "KbIngestionId":{
       "type":"string",
       "max":1024,
@@ -32343,6 +34537,16 @@
         "CANCELLED",
         "CANCELLING",
         "TIMEOUT"
+      ]
+    },
+    "KbRefreshInterval":{
+      "type":"string",
+      "documentation":"<p>The interval at which a knowledge base refresh schedule runs. Valid values include:</p> <ul> <li> <p> <code>DAILY</code> – The refresh runs once each day.</p> </li> <li> <p> <code>WEEKLY</code> – The refresh runs once each week.</p> </li> <li> <p> <code>MONTHLY</code> – The refresh runs once each month.</p> </li> <li> <p> <code>HOURLY</code> – The refresh runs once each hour. Available only if your account is enabled for hourly refresh. Otherwise, the request fails with an <code>InvalidParameterValueException</code>.</p> </li> </ul>",
+      "enum":[
+        "DAILY",
+        "WEEKLY",
+        "MONTHLY",
+        "HOURLY"
       ]
     },
     "KbTemplate":{
@@ -32543,6 +34747,69 @@
       "max":128,
       "min":0,
       "pattern":"[\\p{L}\\p{N}][\\p{L}\\p{N} _\\-\\.]*"
+    },
+    "KnowledgeBaseRefreshFrequency":{
+      "type":"structure",
+      "required":["Interval"],
+      "members":{
+        "Interval":{
+          "shape":"KbRefreshInterval",
+          "documentation":"<p>The interval at which the schedule refreshes the knowledge base. Valid values include:</p> <ul> <li> <p> <code>DAILY</code> – The schedule refreshes the knowledge base once each day.</p> </li> <li> <p> <code>WEEKLY</code> – The schedule refreshes the knowledge base once each week, on the day that you specify in <code>RefreshOnDay.DayOfWeek</code>.</p> </li> <li> <p> <code>MONTHLY</code> – The schedule refreshes the knowledge base once each month, on the day that you specify in <code>RefreshOnDay.DayOfMonth</code>.</p> </li> <li> <p> <code>HOURLY</code> – The schedule refreshes the knowledge base once each hour. Available only if your account is enabled for hourly refresh. Otherwise, the request fails with an <code>InvalidParameterValueException</code>.</p> </li> </ul> <p>For <code>DAILY</code>, <code>WEEKLY</code>, and <code>MONTHLY</code> intervals, the service chooses the time of day at which the refresh runs. You can't specify the time of day.</p>"
+        },
+        "RefreshOnDay":{
+          "shape":"KnowledgeBaseScheduleRefreshOnEntity",
+          "documentation":"<p>The day on which the refresh runs. This parameter is required for a <code>WEEKLY</code> or <code>MONTHLY</code> interval: specify the day of the week for <code>WEEKLY</code> or the day of the month for <code>MONTHLY</code>. If you don't specify it for one of these intervals, the request fails. This parameter isn't used for a <code>DAILY</code> or <code>HOURLY</code> interval.</p>"
+        }
+      },
+      "documentation":"<p>Specifies how often a knowledge base refresh schedule runs and, for weekly or monthly schedules, which day the refresh runs.</p>"
+    },
+    "KnowledgeBaseRefreshScheduleList":{
+      "type":"list",
+      "member":{"shape":"KnowledgeBaseRefreshScheduleSummary"}
+    },
+    "KnowledgeBaseRefreshScheduleSummary":{
+      "type":"structure",
+      "required":[
+        "ScheduleId",
+        "ScheduleFrequency"
+      ],
+      "members":{
+        "ScheduleId":{
+          "shape":"ScheduleId",
+          "documentation":"<p>The unique identifier for the refresh schedule.</p>"
+        },
+        "ScheduleFrequency":{
+          "shape":"KnowledgeBaseRefreshFrequency",
+          "documentation":"<p>The frequency configuration for the refresh schedule. The frequency configuration specifies how often the schedule runs and, for weekly or monthly schedules, the day on which it runs.</p>"
+        },
+        "StartTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The date and time, in ISO 8601 format, after which the schedule can start refreshing the knowledge base.</p>"
+        },
+        "State":{
+          "shape":"ScheduleState",
+          "documentation":"<p>The current state of the refresh schedule. A schedule that isn't <code>ENABLED</code> doesn't run refreshes.</p>"
+        }
+      },
+      "documentation":"<p>A summary of a knowledge base refresh schedule, including its identifier, frequency, start time, and state. The <code>DescribeKnowledgeBaseRefreshSchedule</code> and <code>ListKnowledgeBaseRefreshSchedules</code> operations return this summary.</p>"
+    },
+    "KnowledgeBaseScheduleRefreshOnEntity":{
+      "type":"structure",
+      "members":{
+        "DayOfWeek":{
+          "shape":"KbDayOfWeek",
+          "documentation":"<p>The day of the week on which a weekly refresh runs.</p>"
+        },
+        "DayOfMonth":{
+          "shape":"KnowledgeBaseScheduleRefreshOnEntityDayOfMonthString",
+          "documentation":"<p>The day of the month on which a monthly refresh runs. Valid values include:</p> <ul> <li> <p> <code>1</code> through <code>28</code> – The refresh runs on that day of each month.</p> </li> <li> <p> <code>LAST_DAY_OF_MONTH</code> – The refresh runs on the last day of each month.</p> </li> </ul>"
+        }
+      },
+      "documentation":"<p>The day on which the refresh runs. Specify one of the following:</p> <ul> <li> <p> <code>DayOfWeek</code> – For a weekly schedule.</p> </li> <li> <p> <code>DayOfMonth</code> – For a monthly schedule.</p> </li> </ul>"
+    },
+    "KnowledgeBaseScheduleRefreshOnEntityDayOfMonthString":{
+      "type":"string",
+      "pattern":"(?:LAST_DAY_OF_MONTH|1[0-9]|2[0-8]|[12]|[3-9])"
     },
     "KnowledgeBaseSearchFilter":{
       "type":"structure",
@@ -33371,6 +35638,69 @@
       "member":{"shape":"LinkedDataSourceId"},
       "max":5,
       "min":0
+    },
+    "ListAccessControlApplicationsRequest":{
+      "type":"structure",
+      "required":["AwsAccountId"],
+      "members":{
+        "AwsAccountId":{
+          "shape":"AwsAccountId",
+          "documentation":"<p>The ID of the Amazon Web Services account that contains the Quick Sight account.</p>",
+          "location":"uri",
+          "locationName":"AwsAccountId"
+        },
+        "Namespace":{
+          "shape":"Namespace",
+          "documentation":"<p>The namespace to filter by. If you don't specify a namespace, access control applications in all namespaces are returned.</p>",
+          "location":"querystring",
+          "locationName":"namespace"
+        },
+        "MaxResults":{
+          "shape":"ListAccessControlApplicationsRequestMaxResultsInteger",
+          "documentation":"<p>The maximum number of results to return. The default is 100.</p>",
+          "location":"querystring",
+          "locationName":"max-results"
+        },
+        "NextToken":{
+          "shape":"String",
+          "documentation":"<p>The token for the next set of results, or null if there are no more results.</p>",
+          "location":"querystring",
+          "locationName":"next-token"
+        }
+      }
+    },
+    "ListAccessControlApplicationsRequestMaxResultsInteger":{
+      "type":"integer",
+      "box":true,
+      "max":100,
+      "min":1
+    },
+    "ListAccessControlApplicationsResponse":{
+      "type":"structure",
+      "required":[
+        "Status",
+        "RequestId",
+        "AccessControlApplications"
+      ],
+      "members":{
+        "Status":{
+          "shape":"statusCode",
+          "documentation":"<p>The HTTP status of the request.</p>",
+          "location":"statusCode"
+        },
+        "RequestId":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Web Services request ID for this operation.</p>"
+        },
+        "AccessControlApplications":{
+          "shape":"AccessControlApplicationSummaryList",
+          "documentation":"<p>A list of access control application summaries.</p>"
+        },
+        "NextToken":{
+          "shape":"String",
+          "documentation":"<p>The token for the next set of results, or null if there are no more results.</p>"
+        }
+      }
     },
     "ListActionConnectorsRequest":{
       "type":"structure",
@@ -34551,6 +36881,135 @@
       "max":10,
       "min":1
     },
+    "ListInboundConnectorApplicationAssociationsRequest":{
+      "type":"structure",
+      "required":[
+        "AwsAccountId",
+        "InboundConnectorId"
+      ],
+      "members":{
+        "AwsAccountId":{
+          "shape":"AwsAccountId",
+          "documentation":"<p>The ID of the Amazon Web Services account that contains the Quick Sight account.</p>",
+          "location":"uri",
+          "locationName":"AwsAccountId"
+        },
+        "InboundConnectorId":{
+          "shape":"ShortRestrictiveResourceId",
+          "documentation":"<p>The ID of the inbound connector.</p>",
+          "location":"uri",
+          "locationName":"InboundConnectorId"
+        },
+        "MaxResults":{
+          "shape":"ListInboundConnectorApplicationAssociationsRequestMaxResultsInteger",
+          "documentation":"<p>The maximum number of results to return. The default is 100.</p>",
+          "location":"querystring",
+          "locationName":"max-results"
+        },
+        "NextToken":{
+          "shape":"String",
+          "documentation":"<p>The token for the next set of results, or null if there are no more results.</p>",
+          "location":"querystring",
+          "locationName":"next-token"
+        }
+      }
+    },
+    "ListInboundConnectorApplicationAssociationsRequestMaxResultsInteger":{
+      "type":"integer",
+      "box":true,
+      "max":100,
+      "min":1
+    },
+    "ListInboundConnectorApplicationAssociationsResponse":{
+      "type":"structure",
+      "required":[
+        "Status",
+        "RequestId",
+        "ApplicationAssociations"
+      ],
+      "members":{
+        "Status":{
+          "shape":"statusCode",
+          "documentation":"<p>The HTTP status of the request.</p>",
+          "location":"statusCode"
+        },
+        "RequestId":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Web Services request ID for this operation.</p>"
+        },
+        "ApplicationAssociations":{
+          "shape":"InboundConnectorApplicationAssociationSummaryList",
+          "documentation":"<p>A list of the access control applications that are associated with the inbound connector.</p>"
+        },
+        "NextToken":{
+          "shape":"String",
+          "documentation":"<p>The token for the next set of results, or null if there are no more results.</p>"
+        }
+      }
+    },
+    "ListInboundConnectorsRequest":{
+      "type":"structure",
+      "required":["AwsAccountId"],
+      "members":{
+        "AwsAccountId":{
+          "shape":"AwsAccountId",
+          "documentation":"<p>The ID of the Amazon Web Services account that contains the Quick Sight account.</p>",
+          "location":"uri",
+          "locationName":"AwsAccountId"
+        },
+        "MaxResults":{
+          "shape":"ListInboundConnectorsRequestMaxResultsInteger",
+          "documentation":"<p>The maximum number of results to return. The default is 100.</p>",
+          "location":"querystring",
+          "locationName":"max-results"
+        },
+        "NextToken":{
+          "shape":"String",
+          "documentation":"<p>The token for the next set of results, or null if there are no more results.</p>",
+          "location":"querystring",
+          "locationName":"next-token"
+        },
+        "Type":{
+          "shape":"InboundConnectorTypeFilterList",
+          "documentation":"<p>The inbound connector type to filter by.</p>",
+          "location":"querystring",
+          "locationName":"type"
+        }
+      }
+    },
+    "ListInboundConnectorsRequestMaxResultsInteger":{
+      "type":"integer",
+      "box":true,
+      "max":100,
+      "min":1
+    },
+    "ListInboundConnectorsResponse":{
+      "type":"structure",
+      "required":[
+        "Status",
+        "RequestId",
+        "InboundConnectorSummaries"
+      ],
+      "members":{
+        "Status":{
+          "shape":"statusCode",
+          "documentation":"<p>The HTTP status of the request.</p>",
+          "location":"statusCode"
+        },
+        "RequestId":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Web Services request ID for this operation.</p>"
+        },
+        "InboundConnectorSummaries":{
+          "shape":"InboundConnectorSummaryList",
+          "documentation":"<p>A list of inbound connector summaries.</p>"
+        },
+        "NextToken":{
+          "shape":"String",
+          "documentation":"<p>The token for the next set of results, or null if there are no more results.</p>"
+        }
+      }
+    },
     "ListIngestionsRequest":{
       "type":"structure",
       "required":[
@@ -34603,6 +37062,71 @@
         "Status":{
           "shape":"StatusCode",
           "documentation":"<p>The HTTP status of the request.</p>",
+          "location":"statusCode"
+        }
+      }
+    },
+    "ListKnowledgeBaseRefreshSchedulesRequest":{
+      "type":"structure",
+      "required":[
+        "AwsAccountId",
+        "KnowledgeBaseId"
+      ],
+      "members":{
+        "AwsAccountId":{
+          "shape":"KbAwsAccountId",
+          "documentation":"<p>The ID of the Amazon Web Services account that contains the knowledge base.</p>",
+          "location":"uri",
+          "locationName":"AwsAccountId"
+        },
+        "KnowledgeBaseId":{
+          "shape":"KnowledgeBaseId",
+          "documentation":"<p>The unique identifier for the knowledge base.</p>",
+          "location":"uri",
+          "locationName":"KnowledgeBaseId"
+        },
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>The token for the next set of results. If you don't specify a value, the request returns the first page of results.</p>",
+          "location":"querystring",
+          "locationName":"next-token"
+        },
+        "MaxResults":{
+          "shape":"MaxResults",
+          "documentation":"<p>The maximum number of results to return in a single page. Valid values are 1 through 100. If you don't specify a value, the default is 25.</p>",
+          "box":true,
+          "location":"querystring",
+          "locationName":"max-results"
+        }
+      }
+    },
+    "ListKnowledgeBaseRefreshSchedulesResponse":{
+      "type":"structure",
+      "required":[
+        "ScheduleSummaries",
+        "KnowledgeBaseArn"
+      ],
+      "members":{
+        "ScheduleSummaries":{
+          "shape":"KnowledgeBaseRefreshScheduleList",
+          "documentation":"<p>A list of refresh schedules for the knowledge base.</p>"
+        },
+        "KnowledgeBaseArn":{
+          "shape":"KnowledgeBaseArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the knowledge base that the schedules apply to.</p>"
+        },
+        "NextToken":{
+          "shape":"NextToken",
+          "documentation":"<p>The token for the next set of results, or null if there are no more results.</p>"
+        },
+        "RequestId":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Web Services request ID for this operation.</p>"
+        },
+        "Status":{
+          "shape":"StatusCode",
+          "documentation":"<p>The HTTP status of the request.</p>",
+          "box":true,
           "location":"statusCode"
         }
       }
@@ -34799,6 +37323,75 @@
           "location":"statusCode"
         }
       }
+    },
+    "ListPrincipalsForPolicyRequest":{
+      "type":"structure",
+      "required":[
+        "AccountId",
+        "PolicyArn"
+      ],
+      "members":{
+        "AccountId":{
+          "shape":"AwsAccountId",
+          "documentation":"<p>The ID of the Amazon Web Services account that contains the policy.</p>",
+          "location":"uri",
+          "locationName":"AccountId"
+        },
+        "PolicyArn":{
+          "shape":"PolicyArn",
+          "documentation":"<p>The ARN of the policy.</p>",
+          "location":"querystring",
+          "locationName":"PolicyArn"
+        },
+        "PrincipalType":{
+          "shape":"PrincipalType",
+          "documentation":"<p>An optional filter that limits the results to principals of the specified type. If you don't specify a value, the operation returns principals of all types. You can specify one of the following values:</p> <ul> <li> <p> <code>USER</code> – An Amazon Quick Sight user.</p> </li> <li> <p> <code>GROUP</code> – An Amazon Quick Sight group.</p> </li> <li> <p> <code>ACCOUNT</code> – The Amazon Quick Sight account.</p> </li> </ul>",
+          "location":"querystring",
+          "locationName":"PrincipalType"
+        },
+        "MaxResults":{
+          "shape":"ListPrincipalsForPolicyRequestMaxResultsInteger",
+          "documentation":"<p>The maximum number of results to return in a single call. Valid range is 1–100. If you don't specify a value, the operation returns up to 100 results.</p>",
+          "location":"querystring",
+          "locationName":"MaxResults"
+        },
+        "NextToken":{
+          "shape":"ListPrincipalsForPolicyRequestNextTokenString",
+          "documentation":"<p>The token returned by a previous call. Use it to get the next page of results.</p>",
+          "location":"querystring",
+          "locationName":"NextToken"
+        }
+      }
+    },
+    "ListPrincipalsForPolicyRequestMaxResultsInteger":{
+      "type":"integer",
+      "box":true,
+      "max":100,
+      "min":1
+    },
+    "ListPrincipalsForPolicyRequestNextTokenString":{
+      "type":"string",
+      "max":2048,
+      "min":1
+    },
+    "ListPrincipalsForPolicyResponse":{
+      "type":"structure",
+      "required":["Principals"],
+      "members":{
+        "Principals":{
+          "shape":"PolicyPrincipalList",
+          "documentation":"<p>A list of principals that the policy is assigned to.</p>"
+        },
+        "NextToken":{
+          "shape":"ListPrincipalsForPolicyResponseNextTokenString",
+          "documentation":"<p>The token for the next page of results. This value is absent if there are no more results.</p>"
+        }
+      }
+    },
+    "ListPrincipalsForPolicyResponseNextTokenString":{
+      "type":"string",
+      "max":2048,
+      "min":1
     },
     "ListRefreshSchedulesRequest":{
       "type":"structure",
@@ -37133,6 +39726,12 @@
       },
       "documentation":"<p>The measure type field with numerical type columns.</p>"
     },
+    "OAuthApplicationClientId":{
+      "type":"string",
+      "documentation":"<p>An OAuth 2.0 client ID that identifies the client to the authorization server.</p>",
+      "max":256,
+      "min":1
+    },
     "OAuthAuthorizationEndpointUrl":{
       "type":"string",
       "max":2048,
@@ -38149,7 +40748,7 @@
         },
         "Principal":{
           "shape":"PermissionPrincipalString",
-          "documentation":"<p>The Amazon Resource Name (ARN) of the principal. This can be an Amazon Quick user, group or namespace associated with the flow. Namespace principal can only be set as a viewer and will grant everyone in the same namespace viewer permissions.</p>"
+          "documentation":"<p>The Amazon Resource Name (ARN) of the principal. This can be an Quick user, group or namespace associated with the flow. Namespace principal can only be set as a viewer and will grant everyone in the same namespace viewer permissions.</p>"
         }
       },
       "documentation":"<p>A structure that contains the permission information for one principal against one flow.</p>"
@@ -39114,6 +41713,12 @@
       },
       "documentation":"<p>The table query sorting options for the plugin visual.</p>"
     },
+    "PolicyArn":{
+      "type":"string",
+      "max":2048,
+      "min":1,
+      "pattern":"arn:[\\x21-\\x39\\x3b-\\x7e]+:[\\x21-\\x39\\x3b-\\x7e]+:[\\x21-\\x39\\x3b-\\x7e]*:[0-9]{12}:[\\x21-\\x7e]+"
+    },
     "PolicyDescription":{
       "type":"string",
       "max":1024,
@@ -39129,6 +41734,41 @@
       "type":"string",
       "max":256,
       "min":1
+    },
+    "PolicyPrincipal":{
+      "type":"structure",
+      "required":["PrincipalArn"],
+      "members":{
+        "PrincipalArn":{
+          "shape":"PrincipalArn",
+          "documentation":"<p>The ARN of the user, group, or account.</p>"
+        },
+        "PrincipalType":{
+          "shape":"PrincipalType",
+          "documentation":"<p>The type of the principal.</p>"
+        },
+        "UpdatedAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The date and time that the assignment was last updated.</p>"
+        },
+        "Revision":{
+          "shape":"Revision",
+          "documentation":"<p>The current revision of the assignment.</p>"
+        }
+      },
+      "documentation":"<p>A principal that a governance policy is assigned to.</p>"
+    },
+    "PolicyPrincipalList":{
+      "type":"list",
+      "member":{"shape":"PolicyPrincipal"}
+    },
+    "PolicyType":{
+      "type":"string",
+      "documentation":"<p>The type of a governance policy.</p>",
+      "enum":[
+        "LIMITS_PROFILE",
+        "CUSTOM_PERMISSIONS"
+      ]
     },
     "Port":{
       "type":"integer",
@@ -39307,11 +41947,26 @@
       "max":256,
       "min":1
     },
+    "PrincipalArn":{
+      "type":"string",
+      "max":2048,
+      "min":1,
+      "pattern":"arn:.+"
+    },
     "PrincipalList":{
       "type":"list",
       "member":{"shape":"String"},
       "max":100,
       "min":1
+    },
+    "PrincipalType":{
+      "type":"string",
+      "documentation":"<p>The type of an Amazon Quick Sight principal.</p>",
+      "enum":[
+        "USER",
+        "GROUP",
+        "ACCOUNT"
+      ]
     },
     "PrivateKey":{
       "type":"string",
@@ -39449,6 +42104,25 @@
         "AUTO_PURCHASE"
       ]
     },
+    "PutAssignmentEntry":{
+      "type":"structure",
+      "required":["PrincipalArn"],
+      "members":{
+        "PrincipalArn":{
+          "shape":"PrincipalArn",
+          "documentation":"<p>The ARN of the user, group, or account to assign the policy to.</p>"
+        },
+        "ExistingPolicyArn":{
+          "shape":"PolicyArn",
+          "documentation":"<p>The ARN of the policy that you expect the principal to have before this request. If the principal has a different policy of the same type, or no policy of that type, this entry fails with a <code>ConflictException</code> error code and makes no change.</p>"
+        },
+        "Revision":{
+          "shape":"Revision",
+          "documentation":"<p>The revision of the assignment from your most recent read. If the assignment has changed since that revision, this entry fails with a <code>ConflictException</code> error code.</p>"
+        }
+      },
+      "documentation":"<p>A principal to assign a policy to in a <code>BatchPutPolicyAssignmentByPolicy</code> request.</p>"
+    },
     "PutDataSetRefreshPropertiesRequest":{
       "type":"structure",
       "required":[
@@ -39486,6 +42160,59 @@
           "shape":"StatusCode",
           "documentation":"<p>The HTTP status of the request.</p>",
           "location":"statusCode"
+        }
+      }
+    },
+    "PutPolicyAssignmentRequest":{
+      "type":"structure",
+      "required":[
+        "AccountId",
+        "PolicyArn",
+        "PrincipalArn"
+      ],
+      "members":{
+        "AccountId":{
+          "shape":"AwsAccountId",
+          "documentation":"<p>The ID of the Amazon Web Services account that contains the policy and the principal.</p>",
+          "location":"uri",
+          "locationName":"AccountId"
+        },
+        "PolicyArn":{
+          "shape":"PolicyArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the policy to assign.</p>"
+        },
+        "PrincipalArn":{
+          "shape":"PrincipalArn",
+          "documentation":"<p>The ARN of the user, group, or account to assign the policy to.</p>"
+        },
+        "ExistingPolicyArn":{
+          "shape":"PolicyArn",
+          "documentation":"<p>The ARN of the policy that you expect the principal to have before this request. If the principal has a different policy of the same type, or no policy of that type, the request fails with a <code>ConflictException</code> and makes no change. If you don't specify a value, the operation doesn't check the existing assignment.</p>"
+        },
+        "Revision":{
+          "shape":"Revision",
+          "documentation":"<p>The revision of the assignment from your most recent read. If the assignment has changed since that revision, the request fails with a <code>ConflictException</code>. If you don't specify a value, the operation doesn't check the revision.</p>"
+        }
+      }
+    },
+    "PutPolicyAssignmentResponse":{
+      "type":"structure",
+      "required":[
+        "PolicyArn",
+        "Revision"
+      ],
+      "members":{
+        "PolicyArn":{
+          "shape":"PolicyArn",
+          "documentation":"<p>The ARN of the policy that is now assigned to the principal.</p>"
+        },
+        "ReplacedPolicyArn":{
+          "shape":"PolicyArn",
+          "documentation":"<p>The ARN of the policy that this request replaced. This value is absent if the principal had no policy of this type before the request.</p>"
+        },
+        "Revision":{
+          "shape":"Revision",
+          "documentation":"<p>The revision of the assignment after this request. Use this value in later requests to detect concurrent changes.</p>"
         }
       }
     },
@@ -39622,6 +42349,118 @@
         }
       },
       "documentation":"<p>Information about a queued dataset SPICE ingestion.</p>"
+    },
+    "QuickAuthenticationConfig":{
+      "type":"structure",
+      "required":["QuickAuthenticationType"],
+      "members":{
+        "QuickAuthenticationType":{
+          "shape":"QuickAuthenticationType",
+          "documentation":"<p>How the external client authenticates to Quick Sight.</p>"
+        },
+        "QuickAuthenticationConfigurationDetail":{
+          "shape":"QuickAuthenticationConfigurationDetail",
+          "documentation":"<p>The details of the Quick Sight authentication configuration.</p>"
+        }
+      },
+      "documentation":"<p>The Quick Sight authentication configuration of an access control application.</p>"
+    },
+    "QuickAuthenticationConfigCreateOutput":{
+      "type":"structure",
+      "required":["QuickAuthenticationType"],
+      "members":{
+        "QuickAuthenticationType":{
+          "shape":"QuickAuthenticationType",
+          "documentation":"<p>How the external client authenticates to Quick Sight.</p>"
+        },
+        "QuickAuthenticationConfigurationDetailCreateOutput":{
+          "shape":"QuickAuthenticationConfigurationDetailCreateOutput",
+          "documentation":"<p>The details of the Quick Sight authentication configuration.</p>"
+        }
+      },
+      "documentation":"<p>The Quick Sight authentication configuration that is returned when an access control application is created.</p>"
+    },
+    "QuickAuthenticationConfigInput":{
+      "type":"structure",
+      "required":["QuickAuthenticationType"],
+      "members":{
+        "QuickAuthenticationType":{
+          "shape":"QuickAuthenticationType",
+          "documentation":"<p>How the external client authenticates to Quick Sight.</p>"
+        },
+        "QuickAuthenticationConfigurationDetailInput":{
+          "shape":"QuickAuthenticationConfigurationDetailInput",
+          "documentation":"<p>The details of the Quick Sight authentication configuration.</p>"
+        }
+      },
+      "documentation":"<p>The Quick Sight authentication configuration for an access control application.</p>"
+    },
+    "QuickAuthenticationConfigurationDetail":{
+      "type":"structure",
+      "members":{
+        "QuickManagedPublicAuthCode":{
+          "shape":"QuickManagedPublicAuthCodeQuickAuthenticationConfig",
+          "documentation":"<p>The configuration of a Quick Sight-managed public client.</p>"
+        }
+      },
+      "documentation":"<p>The details of the Quick Sight authentication configuration.</p>",
+      "union":true
+    },
+    "QuickAuthenticationConfigurationDetailCreateOutput":{
+      "type":"structure",
+      "members":{
+        "QuickManagedPublicAuthCode":{
+          "shape":"QuickManagedPublicAuthCodeQuickAuthenticationConfig",
+          "documentation":"<p>The configuration of a Quick Sight-managed public client.</p>"
+        }
+      },
+      "documentation":"<p>The details of the Quick Sight authentication configuration that is returned when an access control application is created.</p>",
+      "union":true
+    },
+    "QuickAuthenticationConfigurationDetailInput":{
+      "type":"structure",
+      "members":{
+        "QuickManagedPublicAuthCode":{
+          "shape":"QuickManagedAuthCodeQuickAuthenticationConfigInput",
+          "documentation":"<p>The configuration of a Quick Sight-managed public client.</p>"
+        }
+      },
+      "documentation":"<p>The details of the Quick Sight authentication configuration. Provide redirect URIs.</p>",
+      "union":true
+    },
+    "QuickAuthenticationType":{
+      "type":"string",
+      "documentation":"<p>How the external client authenticates to Quick Sight. The only valid value is <code>QUICK_MANAGED_PUBLIC_AUTH_CODE</code>: A public client that uses PKCE. Quick Sight generates the client ID.</p>",
+      "enum":["QUICK_MANAGED_PUBLIC_AUTH_CODE"]
+    },
+    "QuickManagedAuthCodeQuickAuthenticationConfigInput":{
+      "type":"structure",
+      "required":["RedirectUris"],
+      "members":{
+        "RedirectUris":{
+          "shape":"RedirectUriList",
+          "documentation":"<p>The OAuth 2.0 redirect URIs of the client.</p>"
+        }
+      },
+      "documentation":"<p>The configuration for a Quick Sight-managed client. You provide the redirect URIs, and Quick Sight generates the client ID.</p>"
+    },
+    "QuickManagedPublicAuthCodeQuickAuthenticationConfig":{
+      "type":"structure",
+      "required":[
+        "RedirectUris",
+        "ClientId"
+      ],
+      "members":{
+        "RedirectUris":{
+          "shape":"RedirectUriList",
+          "documentation":"<p>The OAuth 2.0 redirect URIs of the client.</p>"
+        },
+        "ClientId":{
+          "shape":"OAuthApplicationClientId",
+          "documentation":"<p>The OAuth 2.0 client ID.</p>"
+        }
+      },
+      "documentation":"<p>The configuration of a Quick Sight-managed public client that uses PKCE.</p>"
     },
     "QuickSightUserNotFoundException":{
       "type":"structure",
@@ -40133,6 +42972,13 @@
       "max":30,
       "min":7
     },
+    "RedirectUriList":{
+      "type":"list",
+      "member":{"shape":"Uri"},
+      "documentation":"<p>A list of 1 to 10 OAuth 2.0 redirect URIs.</p>",
+      "max":10,
+      "min":1
+    },
     "RedshiftIAMParameters":{
       "type":"structure",
       "required":["RoleArn"],
@@ -40171,6 +43017,10 @@
         "Database":{
           "shape":"Database",
           "documentation":"<p>Database.</p>"
+        },
+        "FederatedCatalog":{
+          "shape":"FederatedCatalog",
+          "documentation":"<p>The federated database to use for table and schema discovery. Specify the exact database name returned by <code>SHOW DATABASES</code>, such as <code>producer_database@catalog_name</code>. This value must differ from <code>Database</code>, which specifies the database used for the connection.</p> <p>For <code>UpdateDataSource</code>, omit this parameter to keep the current catalog, or specify an empty string to clear the configured catalog.</p>"
         },
         "ClusterId":{
           "shape":"ClusterId",
@@ -40490,6 +43340,14 @@
       "type":"string",
       "pattern":"[a-z]+-[a-z]+-[0-9]{1}"
     },
+    "RegionalSecretManagerArnMap":{
+      "type":"map",
+      "key":{"shape":"AwsRegion"},
+      "value":{"shape":"AccessControlApplicationSecretManagerArn"},
+      "documentation":"<p>A map from Amazon Web Services Region code to the ARN of the Amazon Web Services Secrets Manager secret that holds the client secret in that Region. Replicate the secret to each Region where you use the access control application, and provide one ARN for each Region. The Region in each ARN must match its key.</p>",
+      "max":10,
+      "min":1
+    },
     "RegisterUserRequest":{
       "type":"structure",
       "required":[
@@ -40701,7 +43559,7 @@
         },
         "QuickSightConsole":{
           "shape":"RegisteredUserQuickSightConsoleEmbeddingConfiguration",
-          "documentation":"<p>The configuration details for providing each Amazon Quick Sight console embedding experience. This can be used along with custom permissions to restrict access to certain features. For more information, see <a href=\"https://docs.aws.amazon.com/quicksight/latest/user/customizing-permissions-to-the-quicksight-console.html\">Customizing Access to the Amazon Quick Sight Console</a> in the <i>Amazon Quick User Guide</i>.</p> <p>Use <code> <a href=\"https://docs.aws.amazon.com/quicksight/latest/APIReference/API_GenerateEmbedUrlForRegisteredUser.html\">GenerateEmbedUrlForRegisteredUser</a> </code> where you want to provide an authoring portal that allows users to create data sources, datasets, analyses, and dashboards. The users who accesses an embedded Amazon Quick Sight console needs to belong to the author or admin security cohort. If you want to restrict permissions to some of these features, add a custom permissions profile to the user with the <code> <a href=\"https://docs.aws.amazon.com/quicksight/latest/APIReference/API_UpdateUser.html\">UpdateUser</a> </code> API operation. Use the <code> <a href=\"https://docs.aws.amazon.com/quicksight/latest/APIReference/API_RegisterUser.html\">RegisterUser</a> </code> API operation to add a new user with a custom permission profile attached. For more information, see the following sections in the <i>Amazon Quick User Guide</i>:</p> <ul> <li> <p> <a href=\"https://docs.aws.amazon.com/quicksight/latest/user/embedded-analytics-full-console-for-authenticated-users.html\">Embedding the Full Functionality of the Amazon Quick Sight Console for Authenticated Users</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/quicksight/latest/user/customizing-permissions-to-the-quicksight-console.html\">Customizing Access to the Amazon Quick Console</a> </p> </li> </ul> <p>For more information about the high-level steps for embedding and for an interactive demo of the ways you can customize embedding, visit the <a href=\"https://docs.aws.amazon.com/quicksight/latest/user/quicksight-dev-portal.html\">Amazon Quick Developer Portal</a>.</p>"
+          "documentation":"<p>The configuration details for providing each Amazon Quick Sight console embedding experience. This can be used along with custom permissions to restrict access to certain features. For more information, see <a href=\"https://docs.aws.amazon.com/quicksight/latest/user/customizing-permissions-to-the-quicksight-console.html\">Customizing Access to the Amazon Quick Sight Console</a> in the <i>Quick User Guide</i>.</p> <p>Use <code> <a href=\"https://docs.aws.amazon.com/quicksight/latest/APIReference/API_GenerateEmbedUrlForRegisteredUser.html\">GenerateEmbedUrlForRegisteredUser</a> </code> where you want to provide an authoring portal that allows users to create data sources, datasets, analyses, and dashboards. The users who accesses an embedded Amazon Quick Sight console needs to belong to the author or admin security cohort. If you want to restrict permissions to some of these features, add a custom permissions profile to the user with the <code> <a href=\"https://docs.aws.amazon.com/quicksight/latest/APIReference/API_UpdateUser.html\">UpdateUser</a> </code> API operation. Use the <code> <a href=\"https://docs.aws.amazon.com/quicksight/latest/APIReference/API_RegisterUser.html\">RegisterUser</a> </code> API operation to add a new user with a custom permission profile attached. For more information, see the following sections in the <i>Quick User Guide</i>:</p> <ul> <li> <p> <a href=\"https://docs.aws.amazon.com/quicksight/latest/user/embedded-analytics-full-console-for-authenticated-users.html\">Embedding the Full Functionality of the Amazon Quick Sight Console for Authenticated Users</a> </p> </li> <li> <p> <a href=\"https://docs.aws.amazon.com/quicksight/latest/user/customizing-permissions-to-the-quicksight-console.html\">Customizing Access to the Quick Console</a> </p> </li> </ul> <p>For more information about the high-level steps for embedding and for an interactive demo of the ways you can customize embedding, visit the <a href=\"https://docs.aws.amazon.com/quicksight/latest/user/quicksight-dev-portal.html\">Quick Developer Portal</a>.</p>"
         },
         "QSearchBar":{
           "shape":"RegisteredUserQSearchBarEmbeddingConfiguration",
@@ -41151,6 +44009,11 @@
         "INVALID_DATA",
         "MISSING_REQUIRED_FIELDS"
       ]
+    },
+    "Revision":{
+      "type":"long",
+      "box":true,
+      "min":1
     },
     "Role":{
       "type":"string",
@@ -41769,6 +44632,12 @@
       },
       "documentation":"<p>A scatter plot.</p> <p>For more information, see <a href=\"https://docs.aws.amazon.com/quicksight/latest/user/scatter-plot.html\">Using scatter plots</a> in the <i>Amazon Quick Suite User Guide</i>.</p>"
     },
+    "ScheduleId":{
+      "type":"string",
+      "max":1024,
+      "min":1,
+      "pattern":"[0-9a-zA-Z_=-][0-9a-zA-Z_=.-]*"
+    },
     "ScheduleRefreshOnEntity":{
       "type":"structure",
       "members":{
@@ -41782,6 +44651,14 @@
         }
       },
       "documentation":"<p>The refresh on entity for weekly or monthly schedules.</p>"
+    },
+    "ScheduleState":{
+      "type":"string",
+      "documentation":"<p>The state of a knowledge base refresh schedule. Valid values include:</p> <ul> <li> <p> <code>ENABLED</code> – The schedule is active and runs refreshes at the configured frequency.</p> </li> <li> <p> <code>DISABLED</code> – The schedule is inactive and doesn't run refreshes.</p> </li> </ul>",
+      "enum":[
+        "ENABLED",
+        "DISABLED"
+      ]
     },
     "SchedulesConfigurations":{
       "type":"structure",
@@ -44002,7 +46879,7 @@
       "members":{
         "RowLevelPermissionTags":{
           "shape":"SessionTagList",
-          "documentation":"<p>The tags to be used for row-level security (RLS). Make sure that the relevant datasets have RLS tags configured before you start a snapshot export job. You can configure the RLS tags of a dataset with a <code>DataSet$RowLevelPermissionTagConfiguration</code> API call.</p> <p>These are not the tags that are used for Amazon Web Services resource tagging. For more information on row level security in Amazon Quick Sight, see <a href=\"https://docs.aws.amazon.com/quicksight/latest/user/quicksight-dev-rls-tags.html\">Using Row-Level Security (RLS) with Tags</a>in the <i>Amazon Quick User Guide</i>.</p>"
+          "documentation":"<p>The tags to be used for row-level security (RLS). Make sure that the relevant datasets have RLS tags configured before you start a snapshot export job. You can configure the RLS tags of a dataset with a <code>DataSet$RowLevelPermissionTagConfiguration</code> API call.</p> <p>These are not the tags that are used for Amazon Web Services resource tagging. For more information on row level security in Amazon Quick Sight, see <a href=\"https://docs.aws.amazon.com/quicksight/latest/user/quicksight-dev-rls-tags.html\">Using Row-Level Security (RLS) with Tags</a>in the <i>Quick User Guide</i>.</p>"
         }
       },
       "documentation":"<p>A structure that contains information on the anonymous user configuration.</p>"
@@ -49269,7 +52146,9 @@
     },
     "UnicodeIcon":{
       "type":"string",
-      "pattern":"^[^\\u0000-\\u00FF]$"
+      "max":16,
+      "min":1,
+      "pattern":"^[^\\u0000-\\u00FF]+$"
     },
     "UniqueKey":{
       "type":"structure",
@@ -49316,6 +52195,43 @@
     "UnlimitedPixelLength":{
       "type":"string",
       "documentation":"String based length that is composed of value and unit in px with Integer.MAX_VALUE as maximum value"
+    },
+    "UnmaterializedCalculatedColumn":{
+      "type":"structure",
+      "required":[
+        "ColumnId",
+        "ColumnName",
+        "Expression"
+      ],
+      "members":{
+        "ColumnId":{
+          "shape":"ColumnId",
+          "documentation":"<p>A unique ID to identify the unmaterialized calculated column.</p>"
+        },
+        "ColumnName":{
+          "shape":"ColumnName",
+          "documentation":"<p>The name of the unmaterialized calculated column.</p>"
+        },
+        "Expression":{
+          "shape":"DataSetCalculatedFieldExpression",
+          "documentation":"<p>An expression that defines the unmaterialized calculated column.</p>"
+        },
+        "Type":{
+          "shape":"ColumnDataType",
+          "documentation":"<p>The data type of the unmaterialized calculated column.</p>"
+        },
+        "SubType":{
+          "shape":"ColumnDataSubType",
+          "documentation":"<p>The sub data type of the unmaterialized calculated column.</p>"
+        }
+      },
+      "documentation":"<p>A calculated column that is not materialized in the prepared data. The column is computed at analysis time and can use aggregate expressions.</p>"
+    },
+    "UnmaterializedCalculatedColumnList":{
+      "type":"list",
+      "member":{"shape":"UnmaterializedCalculatedColumn"},
+      "max":512,
+      "min":0
     },
     "UnpivotOperation":{
       "type":"structure",
@@ -49436,6 +52352,154 @@
           "shape":"StatusCode",
           "documentation":"<p>The HTTP status of the request.</p>",
           "location":"statusCode"
+        }
+      }
+    },
+    "UpdateAccessControlApplicationRequest":{
+      "type":"structure",
+      "required":[
+        "AwsAccountId",
+        "ApplicationId"
+      ],
+      "members":{
+        "AwsAccountId":{
+          "shape":"AwsAccountId",
+          "documentation":"<p>The ID of the Amazon Web Services account that contains the Quick Sight account.</p>",
+          "location":"uri",
+          "locationName":"AwsAccountId"
+        },
+        "ApplicationId":{
+          "shape":"ShortRestrictiveResourceId",
+          "documentation":"<p>The ID of the access control application.</p>",
+          "location":"uri",
+          "locationName":"ApplicationId"
+        },
+        "Name":{
+          "shape":"ResourceName",
+          "documentation":"<p>The new name of the access control application.</p>"
+        },
+        "Description":{
+          "shape":"AccessControlApplicationDescription",
+          "documentation":"<p>The new description of the access control application.</p>"
+        },
+        "IdpAuthorizingConfiguration":{
+          "shape":"IdpAuthorizingConfigUpdateInput",
+          "documentation":"<p>The identity provider settings to update, such as the client ID and issuer URL. You can't change the <code>IdpAuthorizingType</code> or the trusted token issuer. To manage client secrets, use the client secret operations.</p>"
+        },
+        "QuickAuthenticationConfiguration":{
+          "shape":"QuickAuthenticationConfigInput",
+          "documentation":"<p>The Quick Sight authentication settings to update, such as redirect URIs. You can't change the <code>QuickAuthenticationType</code>.</p>"
+        },
+        "Status":{
+          "shape":"AccessControlApplicationStatus",
+          "documentation":"<p>The new status of the access control application.</p>"
+        }
+      }
+    },
+    "UpdateAccessControlApplicationResponse":{
+      "type":"structure",
+      "required":[
+        "Status",
+        "RequestId",
+        "ApplicationId",
+        "Arn",
+        "AccessControlApplicationStatus",
+        "LastUpdatedTime"
+      ],
+      "members":{
+        "Status":{
+          "shape":"statusCode",
+          "documentation":"<p>The HTTP status of the request.</p>",
+          "location":"statusCode"
+        },
+        "RequestId":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Web Services request ID for this operation.</p>"
+        },
+        "ApplicationId":{
+          "shape":"String",
+          "documentation":"<p>The ID of the access control application.</p>"
+        },
+        "Arn":{
+          "shape":"String",
+          "documentation":"<p>The ARN of the access control application.</p>"
+        },
+        "AccessControlApplicationStatus":{
+          "shape":"AccessControlApplicationStatus",
+          "documentation":"<p>The status of the access control application.</p>"
+        },
+        "LastUpdatedTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The time when the access control application was last updated.</p>"
+        }
+      }
+    },
+    "UpdateAccessControlApplicationSecretRequest":{
+      "type":"structure",
+      "required":[
+        "AwsAccountId",
+        "ApplicationId",
+        "ClientSecretId"
+      ],
+      "members":{
+        "AwsAccountId":{
+          "shape":"AwsAccountId",
+          "documentation":"<p>The ID of the Amazon Web Services account that contains the Quick Sight account.</p>",
+          "location":"uri",
+          "locationName":"AwsAccountId"
+        },
+        "ApplicationId":{
+          "shape":"ShortRestrictiveResourceId",
+          "documentation":"<p>The ID of the access control application.</p>",
+          "location":"uri",
+          "locationName":"ApplicationId"
+        },
+        "ClientSecretId":{
+          "shape":"ShortRestrictiveResourceId",
+          "documentation":"<p>The ID of the client secret.</p>",
+          "location":"uri",
+          "locationName":"ClientSecretId"
+        },
+        "UpdateRegionalSecretManagerArns":{
+          "shape":"RegionalSecretManagerArnMap",
+          "documentation":"<p>The Region ARNs to add or replace. The Region in each ARN must match its key.</p>"
+        },
+        "RemoveRegionalSecretManagerArns":{
+          "shape":"AwsRegionList",
+          "documentation":"<p>The Regions whose ARNs to remove. You can't remove the last remaining Region. To remove it, delete the client secret instead.</p>"
+        }
+      }
+    },
+    "UpdateAccessControlApplicationSecretResponse":{
+      "type":"structure",
+      "required":[
+        "Status",
+        "RequestId",
+        "ClientSecretId",
+        "UpdatedAt",
+        "RegionalSecretManagerArns"
+      ],
+      "members":{
+        "Status":{
+          "shape":"statusCode",
+          "documentation":"<p>The HTTP status of the request.</p>",
+          "location":"statusCode"
+        },
+        "RequestId":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Web Services request ID for this operation.</p>"
+        },
+        "ClientSecretId":{
+          "shape":"ShortRestrictiveResourceId",
+          "documentation":"<p>The ID of the client secret.</p>"
+        },
+        "UpdatedAt":{
+          "shape":"Timestamp",
+          "documentation":"<p>The time when the client secret was updated.</p>"
+        },
+        "RegionalSecretManagerArns":{
+          "shape":"RegionalSecretManagerArnMap",
+          "documentation":"<p>The Region ARNs of the client secret after the update.</p>"
         }
       }
     },
@@ -50725,6 +53789,10 @@
         "SemanticModelConfiguration":{
           "shape":"SemanticModelConfiguration",
           "documentation":"<p>The semantic model configuration for the dataset. This configuration defines how the prepared data is structured for an analysis, including table mappings and row-level security configurations. Required when using the new data preparation experience.</p>"
+        },
+        "UnmaterializedCalculatedColumns":{
+          "shape":"UnmaterializedCalculatedColumnList",
+          "documentation":"<p>A list of unmaterialized calculated columns for the dataset. These columns are computed at analysis time and are not stored in the prepared data. You can only use this with the new data preparation experience.</p>"
         }
       }
     },
@@ -51386,6 +54454,128 @@
         }
       }
     },
+    "UpdateInboundConnectorApplicationAssociationsRequest":{
+      "type":"structure",
+      "required":[
+        "AwsAccountId",
+        "InboundConnectorId"
+      ],
+      "members":{
+        "AwsAccountId":{
+          "shape":"AwsAccountId",
+          "documentation":"<p>The ID of the Amazon Web Services account that contains the Quick Sight account.</p>",
+          "location":"uri",
+          "locationName":"AwsAccountId"
+        },
+        "InboundConnectorId":{
+          "shape":"ShortRestrictiveResourceId",
+          "documentation":"<p>The ID of the inbound connector.</p>",
+          "location":"uri",
+          "locationName":"InboundConnectorId"
+        },
+        "AssociateAccessControlApplications":{
+          "shape":"InboundConnectorAssociationArnList",
+          "documentation":"<p>The ARNs of up to 20 access control applications to associate with the inbound connector. ARNs that are already associated are ignored.</p>"
+        },
+        "DisassociateAccessControlApplications":{
+          "shape":"InboundConnectorAssociationArnList",
+          "documentation":"<p>The ARNs of up to 20 access control applications to disassociate from the inbound connector. ARNs that aren't associated are ignored.</p>"
+        }
+      }
+    },
+    "UpdateInboundConnectorApplicationAssociationsResponse":{
+      "type":"structure",
+      "required":[
+        "Status",
+        "RequestId"
+      ],
+      "members":{
+        "Status":{
+          "shape":"statusCode",
+          "documentation":"<p>The HTTP status of the request.</p>",
+          "location":"statusCode"
+        },
+        "RequestId":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Web Services request ID for this operation.</p>"
+        }
+      }
+    },
+    "UpdateInboundConnectorRequest":{
+      "type":"structure",
+      "required":[
+        "AwsAccountId",
+        "InboundConnectorId"
+      ],
+      "members":{
+        "AwsAccountId":{
+          "shape":"AwsAccountId",
+          "documentation":"<p>The ID of the Amazon Web Services account that contains the Quick Sight account.</p>",
+          "location":"uri",
+          "locationName":"AwsAccountId"
+        },
+        "InboundConnectorId":{
+          "shape":"ShortRestrictiveResourceId",
+          "documentation":"<p>The ID of the inbound connector.</p>",
+          "location":"uri",
+          "locationName":"InboundConnectorId"
+        },
+        "Name":{
+          "shape":"ResourceName",
+          "documentation":"<p>The new name of the inbound connector.</p>"
+        },
+        "Description":{
+          "shape":"InboundConnectorDescription",
+          "documentation":"<p>The new description of the inbound connector.</p>"
+        },
+        "InboundConnectorConfiguration":{
+          "shape":"InboundConnectorConfig",
+          "documentation":"<p>The new configuration of the inbound connector. You can't change the <code>InboundConnectorType</code>.</p>"
+        },
+        "InboundConnectorStatus":{
+          "shape":"InboundConnectorStatus",
+          "documentation":"<p>The new status of the inbound connector.</p>"
+        }
+      }
+    },
+    "UpdateInboundConnectorResponse":{
+      "type":"structure",
+      "required":[
+        "Status",
+        "RequestId",
+        "InboundConnectorId",
+        "Arn",
+        "InboundConnectorStatus",
+        "LastUpdatedTime"
+      ],
+      "members":{
+        "Status":{
+          "shape":"statusCode",
+          "documentation":"<p>The HTTP status of the request.</p>",
+          "location":"statusCode"
+        },
+        "RequestId":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Web Services request ID for this operation.</p>"
+        },
+        "InboundConnectorId":{
+          "shape":"String",
+          "documentation":"<p>The ID of the inbound connector.</p>"
+        },
+        "Arn":{
+          "shape":"String",
+          "documentation":"<p>The ARN of the inbound connector.</p>"
+        },
+        "InboundConnectorStatus":{
+          "shape":"InboundConnectorStatus",
+          "documentation":"<p>The status of the inbound connector.</p>"
+        },
+        "LastUpdatedTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The time when the inbound connector was last updated.</p>"
+        }
+      }
+    },
     "UpdateIpRestrictionRequest":{
       "type":"structure",
       "required":["AwsAccountId"],
@@ -51515,6 +54705,73 @@
         "Permissions":{
           "shape":"ResourcePermissionList",
           "documentation":"<p>The resource permissions for the knowledge base.</p>"
+        },
+        "RequestId":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Web Services request ID for this operation.</p>"
+        },
+        "Status":{
+          "shape":"StatusCode",
+          "documentation":"<p>The HTTP status of the request.</p>",
+          "box":true,
+          "location":"statusCode"
+        }
+      }
+    },
+    "UpdateKnowledgeBaseRefreshScheduleRequest":{
+      "type":"structure",
+      "required":[
+        "AwsAccountId",
+        "KnowledgeBaseId",
+        "ScheduleId"
+      ],
+      "members":{
+        "AwsAccountId":{
+          "shape":"KbAwsAccountId",
+          "documentation":"<p>The ID of the Amazon Web Services account that contains the knowledge base.</p>",
+          "location":"uri",
+          "locationName":"AwsAccountId"
+        },
+        "KnowledgeBaseId":{
+          "shape":"KnowledgeBaseId",
+          "documentation":"<p>The unique identifier for the knowledge base.</p>",
+          "location":"uri",
+          "locationName":"KnowledgeBaseId"
+        },
+        "ScheduleId":{
+          "shape":"ScheduleId",
+          "documentation":"<p>The unique identifier for the refresh schedule to update.</p>",
+          "location":"uri",
+          "locationName":"ScheduleId"
+        },
+        "ScheduleFrequency":{
+          "shape":"KnowledgeBaseRefreshFrequency",
+          "documentation":"<p>The frequency configuration for the refresh schedule. The frequency configuration specifies how often the schedule runs and, for weekly or monthly schedules, the day on which it runs. If you don't specify this parameter, the schedule keeps its existing frequency.</p>"
+        },
+        "StartTime":{
+          "shape":"Timestamp",
+          "documentation":"<p>The date and time, in ISO 8601 format, after which the schedule can start refreshing the knowledge base. The first refresh runs at the next scheduled time after this date and time. If you don't specify this parameter, the schedule keeps its existing start time.</p>"
+        },
+        "State":{
+          "shape":"ScheduleState",
+          "documentation":"<p>The state of the refresh schedule. A schedule that isn't <code>ENABLED</code> doesn't run refreshes. If you don't specify this parameter, the schedule keeps its existing state.</p>"
+        }
+      }
+    },
+    "UpdateKnowledgeBaseRefreshScheduleResponse":{
+      "type":"structure",
+      "required":[
+        "ScheduleId",
+        "KnowledgeBaseArn"
+      ],
+      "members":{
+        "ScheduleId":{
+          "shape":"ScheduleId",
+          "documentation":"<p>The unique identifier for the refresh schedule.</p>"
+        },
+        "KnowledgeBaseArn":{
+          "shape":"KnowledgeBaseArn",
+          "documentation":"<p>The Amazon Resource Name (ARN) of the knowledge base that the schedule applies to.</p>"
         },
         "RequestId":{
           "shape":"String",
@@ -53114,6 +56371,13 @@
       "max":127,
       "min":1
     },
+    "Uri":{
+      "type":"string",
+      "documentation":"<p>An HTTP or HTTPS URI.</p>",
+      "max":2048,
+      "min":1,
+      "pattern":"https?://[-a-zA-Z0-9+&@/%=~_|!:,.;]*[-a-zA-Z0-9+&@/%=~_|]"
+    },
     "User":{
       "type":"structure",
       "members":{
@@ -53483,6 +56747,46 @@
     "VPCConnectionSummaryList":{
       "type":"list",
       "member":{"shape":"VPCConnectionSummary"}
+    },
+    "ValidationException":{
+      "type":"structure",
+      "required":["Message"],
+      "members":{
+        "Message":{"shape":"String"},
+        "RequestId":{
+          "shape":"String",
+          "documentation":"<p>The Amazon Web Services request ID for this request.</p>"
+        },
+        "FieldList":{
+          "shape":"ValidationExceptionFieldList",
+          "documentation":"<p>A list of the request fields that failed validation.</p>"
+        }
+      },
+      "documentation":"<p>The input fails to satisfy the constraints specified by the service.</p>",
+      "error":{"httpStatusCode":400},
+      "exception":true
+    },
+    "ValidationExceptionField":{
+      "type":"structure",
+      "required":[
+        "Name",
+        "Message"
+      ],
+      "members":{
+        "Name":{
+          "shape":"String",
+          "documentation":"<p>The name of the field that failed validation.</p>"
+        },
+        "Message":{
+          "shape":"String",
+          "documentation":"<p>A message that describes why the field failed validation.</p>"
+        }
+      },
+      "documentation":"<p>A request field that failed validation.</p>"
+    },
+    "ValidationExceptionFieldList":{
+      "type":"list",
+      "member":{"shape":"ValidationExceptionField"}
     },
     "ValidationStrategy":{
       "type":"structure",
@@ -54572,5 +57876,5 @@
       "box":true
     }
   },
-  "documentation":"<fullname>Amazon Quick API Reference</fullname> <p>Amazon Quick Sight is a fully managed, serverless business intelligence service for the Amazon Web Services Cloud that makes it easy to extend data and insights to every user in your organization. This API reference contains documentation for a programming interface that you can use to manage Amazon Quick Sight. </p>"
+  "documentation":"<fullname>Quick API Reference</fullname> <p>Amazon Quick Sight is a fully managed, serverless business intelligence service for the Amazon Web Services Cloud that makes it easy to extend data and insights to every user in your organization. This API reference contains documentation for a programming interface that you can use to manage Amazon Quick Sight. </p>"
 }

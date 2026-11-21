@@ -5,7 +5,11 @@ import datetime
 from unittest import mock
 
 import pytest
-from botocore.utils import LoginCredentialsLoader
+from botocore.utils import (
+    JSONFileCache,
+    LoginCredentialsLoader,
+    generate_login_cache_key,
+)
 from dateutil.tz import tzutc
 
 from awscli.botocore.exceptions import (
@@ -262,6 +266,19 @@ class TestLoginCredentialsLoader:
     def test_load_token_not_exists(self):
         loader = LoginCredentialsLoader()
         assert loader.load_token('nonexistant_session') is None
+
+    @pytest.mark.parametrize(
+        'content',
+        [b'', b'\x00' * 64, b'{"accessToken": "tok'],
+        ids=['empty', 'nul_bytes', 'truncated_json'],
+    )
+    def test_load_token_unreadable_cache_file(self, tmp_path, content):
+        loader = LoginCredentialsLoader(JSONFileCache(str(tmp_path)))
+        session_name = 'login_test'
+        cache_key = generate_login_cache_key(session_name)
+        (tmp_path / f'{cache_key}.json').write_bytes(content)
+
+        assert loader.load_token(session_name) is None
 
 
 @mock.patch('awscli.customizations.login.utils.register_feature_id')

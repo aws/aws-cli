@@ -4224,7 +4224,13 @@ class LoginCredentialsLoader:
         cache_key = generate_login_cache_key(session_name)
         if cache_key not in self._cache:
             return None
-        return self._cache[cache_key]
+        try:
+            return self._cache[cache_key]
+        except KeyError:
+            # The cache file exists but cannot be read, for example an
+            # empty or partially written file. Treat it as a missing
+            # session so the caller asks the user to run `aws login`.
+            return None
 
 
 def base64_url_encode_no_padding(data):

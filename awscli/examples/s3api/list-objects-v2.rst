@@ -41,3 +41,23 @@ Output::
     }
 
 For more information, see `Listing object keys programmatically <https://docs.aws.amazon.com/AmazonS3/latest/userguide/ListingKeysUsingAPIs.html>`__ in the *Amazon S3 User Guide*.
+
+**To list the immediate child prefixes under a prefix**
+
+The following ``list-objects-v2`` example lists the child prefixes under ``photos/``. For example, if the bucket contains ``photos/2024/jan.jpg``, ``photos/2025/feb.jpg``, and ``photos/cover.jpg``, the output contains only the two year prefixes. ::
+
+    aws s3api list-objects-v2 \
+        --bucket amzn-s3-demo-bucket \
+        --prefix photos/ \
+        --delimiter / \
+        --query 'CommonPrefixes[].Prefix' \
+        --output json
+
+Output::
+
+    [
+        "photos/2024/",
+        "photos/2025/"
+    ]
+
+The delimiter groups keys at the next slash. The query selects those groups from ``CommonPrefixes``, so objects directly under ``photos/`` are omitted.

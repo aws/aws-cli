@@ -267,11 +267,11 @@ class RequestParamsDocumenter(BaseParamsDocumenter):
             is_required_section = section.add_new_section('is-required')
             is_required_section.style.indent()
             is_required_section.style.bold('[REQUIRED] ')
+        # Always create the documentation section, even for undocumented
+        # members, so that handlers can append to it.
+        documentation_section = section.add_new_section('param-documentation')
+        documentation_section.style.indent()
         if shape.documentation:
-            documentation_section = section.add_new_section(
-                'param-documentation'
-            )
-            documentation_section.style.indent()
             if getattr(shape, 'is_tagged_union', False):
                 tagged_union_docs = section.add_new_section(
                     'param-tagged-union-docs'

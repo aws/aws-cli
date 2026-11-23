@@ -10,6 +10,7 @@
 # distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
+from botocore.docs.params import RequestParamsDocumenter
 from botocore.docs.utils import (
     AppendParamDocumentation,
     AutoPopulatedParam,
@@ -19,9 +20,18 @@ from botocore.docs.utils import (
     py_default,
     py_type_name,
 )
+from botocore.hooks import HierarchicalEmitter
 
 from tests import unittest
 from tests.unit.botocore.docs import BaseDocsTest
+
+
+def _document_request_params(section, input_shape):
+    RequestParamsDocumenter(
+        service_id='myservice',
+        operation_name='SampleOperation',
+        event_emitter=HierarchicalEmitter(),
+    ).document_params(section, input_shape)
 
 
 class TestPythonTypeName(unittest.TestCase):
@@ -155,6 +165,30 @@ class TestAutopopulatedParam(BaseDocsTest):
         )
         self.assert_contains_line(description)
 
+    def test_request_param_without_documentation(self):
+        self.add_shape_to_params(self.name, 'String')
+        _document_request_params(
+            self.doc_structure, self.operation_model.input_shape
+        )
+        self.param.document_auto_populated_param(
+            'docs.request-params', self.doc_structure
+        )
+        self.assert_contains_line(
+            ':param MyMember:   Please note that this parameter is '
+            'automatically populated'
+        )
+
+    def test_required_request_param_without_documentation(self):
+        self.add_shape_to_params(self.name, 'String', is_required=True)
+        _document_request_params(
+            self.doc_structure, self.operation_model.input_shape
+        )
+        self.param.document_auto_populated_param(
+            'docs.request-params', self.doc_structure
+        )
+        self.assert_not_contains_line('**[REQUIRED]**')
+        self.assert_contains_line('this parameter is automatically populated')
+
     def test_request_example(self):
         top_section = self.doc_structure.add_new_section('structure-value')
         section = top_section.add_new_section(self.name)
@@ -234,6 +268,16 @@ class TestAppendParamDocumentation(BaseDocsTest):
         )
         self.assert_contains_line('foo\n')
         self.assert_contains_line('hello!')
+
+    def test_appends_documentation_to_undocumented_param(self):
+        self.add_shape_to_params(self.name, 'String')
+        _document_request_params(
+            self.doc_structure, self.operation_model.input_shape
+        )
+        self.param.append_documentation(
+            'docs.request-params', self.doc_structure
+        )
+        self.assert_contains_line(':param MyMember:   hello!')
 
 
 class TestEscapeControls(unittest.TestCase):

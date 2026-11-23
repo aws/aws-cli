@@ -1,9 +1,9 @@
 {
     "testCases": [
         {
-            "documentation": "FIPS should error",
+            "documentation": "FIPS without a KVS ARN, should error on the missing ARN",
             "expect": {
-                "error": "Invalid Configuration: FIPS is not supported with CloudFront-KeyValueStore."
+                "error": "KVS ARN must be provided to use this service"
             },
             "params": {
                 "UseFIPS": true
@@ -125,13 +125,82 @@
             }
         },
         {
-            "documentation": "Valid account based endpoint with FIPS, should error",
+            "documentation": "Valid account based endpoint with FIPS resolves to the same endpoint",
             "expect": {
-                "error": "Invalid Configuration: FIPS is not supported with CloudFront-KeyValueStore."
+                "endpoint": {
+                    "properties": {
+                        "authSchemes": [
+                            {
+                                "signingName": "cloudfront-keyvaluestore",
+                                "name": "sigv4a",
+                                "signingRegionSet": [
+                                    "*"
+                                ]
+                            }
+                        ]
+                    },
+                    "url": "https://123456789012.cloudfront-kvs.global.api.aws"
+                }
             },
             "params": {
                 "KvsARN": "arn:aws:cloudfront::123456789012:key-value-store/my-first-kvs-e10b1dce4f394248811e77167e0451ba",
                 "Region": "us-east-1",
+                "UseFIPS": true
+            }
+        },
+        {
+            "documentation": "Valid account based endpoint with FIPS, without SDK region",
+            "expect": {
+                "endpoint": {
+                    "properties": {
+                        "authSchemes": [
+                            {
+                                "signingName": "cloudfront-keyvaluestore",
+                                "name": "sigv4a",
+                                "signingRegionSet": [
+                                    "*"
+                                ]
+                            }
+                        ]
+                    },
+                    "url": "https://123456789012.cloudfront-kvs.global.api.aws"
+                }
+            },
+            "params": {
+                "KvsARN": "arn:aws:cloudfront::123456789012:key-value-store/my-first-kvs-e10b1dce4f394248811e77167e0451ba",
+                "UseFIPS": true
+            }
+        },
+        {
+            "documentation": "FIPS with a custom sdk endpoint override, should error",
+            "expect": {
+                "error": "Invalid Configuration: FIPS and custom endpoint are not supported"
+            },
+            "params": {
+                "KvsARN": "arn:aws:cloudfront::123456789012:key-value-store/my-first-kvs-e10b1dce4f394248811e77167e0451ba",
+                "Region": "us-east-1",
+                "Endpoint": "https://my-override.example.com",
+                "UseFIPS": true
+            }
+        },
+        {
+            "documentation": "FIPS with a custom sdk endpoint override, without SDK region, should error",
+            "expect": {
+                "error": "Invalid Configuration: FIPS and custom endpoint are not supported"
+            },
+            "params": {
+                "KvsARN": "arn:aws:cloudfront::123456789012:key-value-store/my-first-kvs-e10b1dce4f394248811e77167e0451ba",
+                "Endpoint": "https://my-override.example.com",
+                "UseFIPS": true
+            }
+        },
+        {
+            "documentation": "FIPS in an unsupported partition reports the partition, not FIPS",
+            "expect": {
+                "error": "CloudFront-KeyValueStore is not supported in partition `aws-cn`"
+            },
+            "params": {
+                "KvsARN": "arn:aws-cn:cloudfront::123456789012:key-value-store/my-first-kvs-e10b1dce4f394248811e77167e0451ba",
                 "UseFIPS": true
             }
         },
@@ -190,6 +259,161 @@
             "params": {
                 "KvsARN": "arn:aws:cloudfront::123456789012:key-value-store/my-first-kvs-e10b1dce4f394248811e77167e0451ba",
                 "Region": "us-gov-east-1",
+                "Endpoint": "https://my-override.example.com"
+            }
+        },
+        {
+            "documentation": "Valid aws ARN, aws-eusc SDK region, should error",
+            "expect": {
+                "error": "Client was configured for partition `aws-eusc` but Kvs ARN has `aws`"
+            },
+            "params": {
+                "KvsARN": "arn:aws:cloudfront::123456789012:key-value-store/my-first-kvs-e10b1dce4f394248811e77167e0451ba",
+                "Region": "eusc-de-east-1"
+            }
+        },
+        {
+            "documentation": "Empty ARN resource type should error",
+            "expect": {
+                "error": "No resource type found in the KVS ARN. Resource type must be `key-value-store`."
+            },
+            "params": {
+                "KvsARN": "arn:aws:cloudfront::123456789012:/my-first-kvs-e10b1dce4f394248811e77167e0451ba"
+            }
+        },
+        {
+            "documentation": "Valid account based endpoint in aws-eusc",
+            "expect": {
+                "endpoint": {
+                    "properties": {
+                        "authSchemes": [
+                            {
+                                "signingName": "cloudfront-keyvaluestore",
+                                "name": "sigv4a",
+                                "signingRegionSet": [
+                                    "*"
+                                ]
+                            }
+                        ]
+                    },
+                    "url": "https://123456789012.cloudfront-kvs.global.api.amazonwebservices.eu"
+                }
+            },
+            "params": {
+                "KvsARN": "arn:aws-eusc:cloudfront::123456789012:key-value-store/my-first-kvs-e10b1dce4f394248811e77167e0451ba"
+            }
+        },
+        {
+            "documentation": "Valid account based endpoint in aws-eusc, with SDK region",
+            "expect": {
+                "endpoint": {
+                    "properties": {
+                        "authSchemes": [
+                            {
+                                "signingName": "cloudfront-keyvaluestore",
+                                "name": "sigv4a",
+                                "signingRegionSet": [
+                                    "*"
+                                ]
+                            }
+                        ]
+                    },
+                    "url": "https://123456789012.cloudfront-kvs.global.api.amazonwebservices.eu"
+                }
+            },
+            "params": {
+                "KvsARN": "arn:aws-eusc:cloudfront::123456789012:key-value-store/my-first-kvs-e10b1dce4f394248811e77167e0451ba",
+                "Region": "eusc-de-east-1"
+            }
+        },
+        {
+            "documentation": "Valid aws-eusc ARN, aws SDK region, should error",
+            "expect": {
+                "error": "Client was configured for partition `aws` but Kvs ARN has `aws-eusc`"
+            },
+            "params": {
+                "KvsARN": "arn:aws-eusc:cloudfront::123456789012:key-value-store/my-first-kvs-e10b1dce4f394248811e77167e0451ba",
+                "Region": "us-east-1"
+            }
+        },
+        {
+            "documentation": "Valid account based endpoint in aws-eusc with FIPS, should error",
+            "expect": {
+                "error": "Invalid Configuration: FIPS is not supported with CloudFront-KeyValueStore."
+            },
+            "params": {
+                "KvsARN": "arn:aws-eusc:cloudfront::123456789012:key-value-store/my-first-kvs-e10b1dce4f394248811e77167e0451ba",
+                "Region": "eusc-de-east-1",
+                "UseFIPS": true
+            }
+        },
+        {
+            "documentation": "aws-eusc with FIPS and a custom endpoint override reports the partition-level FIPS error",
+            "expect": {
+                "error": "Invalid Configuration: FIPS is not supported with CloudFront-KeyValueStore."
+            },
+            "params": {
+                "KvsARN": "arn:aws-eusc:cloudfront::123456789012:key-value-store/my-first-kvs-e10b1dce4f394248811e77167e0451ba",
+                "Region": "eusc-de-east-1",
+                "Endpoint": "https://my-override.example.com",
+                "UseFIPS": true
+            }
+        },
+        {
+            "documentation": "Custom sdk endpoint override in aws-eusc",
+            "expect": {
+                "endpoint": {
+                    "properties": {
+                        "authSchemes": [
+                            {
+                                "signingName": "cloudfront-keyvaluestore",
+                                "name": "sigv4a",
+                                "signingRegionSet": [
+                                    "*"
+                                ]
+                            }
+                        ]
+                    },
+                    "url": "https://123456789012.my-override.example.com"
+                }
+            },
+            "params": {
+                "KvsARN": "arn:aws-eusc:cloudfront::123456789012:key-value-store/my-first-kvs-e10b1dce4f394248811e77167e0451ba",
+                "Region": "eusc-de-east-1",
+                "Endpoint": "https://my-override.example.com"
+            }
+        },
+        {
+            "documentation": "Custom sdk endpoint override with path and http in aws-eusc",
+            "expect": {
+                "endpoint": {
+                    "properties": {
+                        "authSchemes": [
+                            {
+                                "signingName": "cloudfront-keyvaluestore",
+                                "name": "sigv4a",
+                                "signingRegionSet": [
+                                    "*"
+                                ]
+                            }
+                        ]
+                    },
+                    "url": "http://123456789012.my-override.example.com/custom-path"
+                }
+            },
+            "params": {
+                "KvsARN": "arn:aws-eusc:cloudfront::123456789012:key-value-store/my-first-kvs-e10b1dce4f394248811e77167e0451ba",
+                "Endpoint": "http://my-override.example.com/custom-path"
+            }
+        },
+        {
+            "documentation": "Custom override in aws-eusc with different partition should error",
+            "expect": {
+                "error": "Client was configured for partition `aws` but Kvs ARN has `aws-eusc`"
+            },
+            "params": {
+                "KvsARN": "arn:aws-eusc:cloudfront::123456789012:key-value-store/my-first-kvs-e10b1dce4f394248811e77167e0451ba",
+                "Region": "us-east-1",
                 "Endpoint": "https://my-override.example.com"
             }
         }

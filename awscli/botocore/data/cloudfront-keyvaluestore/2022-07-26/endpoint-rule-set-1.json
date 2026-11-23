@@ -28,17 +28,7 @@
     },
     "rules": [
         {
-            "conditions": [
-                {
-                    "fn": "booleanEquals",
-                    "argv": [
-                        {
-                            "ref": "UseFIPS"
-                        },
-                        false
-                    ]
-                }
-            ],
+            "conditions": [],
             "rules": [
                 {
                     "conditions": [
@@ -53,87 +43,45 @@
                     ],
                     "rules": [
                         {
-                            "conditions": [
-                                {
-                                    "fn": "aws.parseArn",
-                                    "argv": [
-                                        {
-                                            "ref": "KvsARN"
-                                        }
-                                    ],
-                                    "assign": "parsedArn"
-                                }
-                            ],
+                            "conditions": [],
                             "rules": [
                                 {
                                     "conditions": [
                                         {
-                                            "fn": "stringEquals",
+                                            "fn": "aws.parseArn",
                                             "argv": [
                                                 {
-                                                    "fn": "getAttr",
-                                                    "argv": [
-                                                        {
-                                                            "ref": "parsedArn"
-                                                        },
-                                                        "service"
-                                                    ]
-                                                },
-                                                "cloudfront"
-                                            ]
+                                                    "ref": "KvsARN"
+                                                }
+                                            ],
+                                            "assign": "parsedArn"
                                         }
                                     ],
                                     "rules": [
                                         {
-                                            "conditions": [
-                                                {
-                                                    "fn": "stringEquals",
-                                                    "argv": [
-                                                        {
-                                                            "fn": "getAttr",
-                                                            "argv": [
-                                                                {
-                                                                    "ref": "parsedArn"
-                                                                },
-                                                                "region"
-                                                            ]
-                                                        },
-                                                        ""
-                                                    ]
-                                                }
-                                            ],
+                                            "conditions": [],
                                             "rules": [
                                                 {
                                                     "conditions": [
                                                         {
-                                                            "fn": "getAttr",
+                                                            "fn": "stringEquals",
                                                             "argv": [
                                                                 {
-                                                                    "ref": "parsedArn"
+                                                                    "fn": "getAttr",
+                                                                    "argv": [
+                                                                        {
+                                                                            "ref": "parsedArn"
+                                                                        },
+                                                                        "service"
+                                                                    ]
                                                                 },
-                                                                "resourceId[0]"
-                                                            ],
-                                                            "assign": "arnType"
+                                                                "cloudfront"
+                                                            ]
                                                         }
                                                     ],
                                                     "rules": [
                                                         {
-                                                            "conditions": [
-                                                                {
-                                                                    "fn": "not",
-                                                                    "argv": [
-                                                                        {
-                                                                            "fn": "stringEquals",
-                                                                            "argv": [
-                                                                                {
-                                                                                    "ref": "arnType"
-                                                                                },
-                                                                                ""
-                                                                            ]
-                                                                        }
-                                                                    ]
-                                                                }
-                                                            ],
+                                                            "conditions": [],
                                                             "rules": [
                                                                 {
                                                                     "conditions": [
@@ -141,156 +89,684 @@
                                                                             "fn": "stringEquals",
                                                                             "argv": [
                                                                                 {
-                                                                                    "ref": "arnType"
+                                                                                    "fn": "getAttr",
+                                                                                    "argv": [
+                                                                                        {
+                                                                                            "ref": "parsedArn"
+                                                                                        },
+                                                                                        "region"
+                                                                                    ]
                                                                                 },
-                                                                                "key-value-store"
+                                                                                ""
                                                                             ]
                                                                         }
                                                                     ],
                                                                     "rules": [
                                                                         {
-                                                                            "conditions": [
+                                                                            "conditions": [],
+                                                                            "rules": [
                                                                                 {
-                                                                                    "fn": "stringEquals",
-                                                                                    "argv": [
+                                                                                    "conditions": [
                                                                                         {
                                                                                             "fn": "getAttr",
                                                                                             "argv": [
                                                                                                 {
                                                                                                     "ref": "parsedArn"
                                                                                                 },
-                                                                                                "partition"
-                                                                                            ]
-                                                                                        },
-                                                                                        "aws"
-                                                                                    ]
-                                                                                }
-                                                                            ],
-                                                                            "rules": [
-                                                                                {
-                                                                                    "conditions": [
-                                                                                        {
-                                                                                            "fn": "isSet",
-                                                                                            "argv": [
-                                                                                                {
-                                                                                                    "ref": "Region"
-                                                                                                }
-                                                                                            ]
+                                                                                                "resourceId[0]"
+                                                                                            ],
+                                                                                            "assign": "arnType"
                                                                                         }
                                                                                     ],
                                                                                     "rules": [
                                                                                         {
-                                                                                            "conditions": [
-                                                                                                {
-                                                                                                    "fn": "aws.partition",
-                                                                                                    "argv": [
-                                                                                                        {
-                                                                                                            "ref": "Region"
-                                                                                                        }
-                                                                                                    ],
-                                                                                                    "assign": "partitionResult"
-                                                                                                }
-                                                                                            ],
+                                                                                            "conditions": [],
                                                                                             "rules": [
                                                                                                 {
                                                                                                     "conditions": [
                                                                                                         {
-                                                                                                            "fn": "stringEquals",
+                                                                                                            "fn": "not",
                                                                                                             "argv": [
                                                                                                                 {
-                                                                                                                    "fn": "getAttr",
+                                                                                                                    "fn": "stringEquals",
                                                                                                                     "argv": [
                                                                                                                         {
-                                                                                                                            "ref": "partitionResult"
+                                                                                                                            "ref": "arnType"
                                                                                                                         },
-                                                                                                                        "name"
+                                                                                                                        ""
                                                                                                                     ]
-                                                                                                                },
-                                                                                                                "{parsedArn#partition}"
+                                                                                                                }
                                                                                                             ]
                                                                                                         }
                                                                                                     ],
                                                                                                     "rules": [
                                                                                                         {
-                                                                                                            "conditions": [
-                                                                                                                {
-                                                                                                                    "fn": "isSet",
-                                                                                                                    "argv": [
-                                                                                                                        {
-                                                                                                                            "ref": "Endpoint"
-                                                                                                                        }
-                                                                                                                    ]
-                                                                                                                }
-                                                                                                            ],
+                                                                                                            "conditions": [],
                                                                                                             "rules": [
                                                                                                                 {
                                                                                                                     "conditions": [
                                                                                                                         {
-                                                                                                                            "fn": "parseURL",
+                                                                                                                            "fn": "stringEquals",
                                                                                                                             "argv": [
                                                                                                                                 {
-                                                                                                                                    "ref": "Endpoint"
-                                                                                                                                }
-                                                                                                                            ],
-                                                                                                                            "assign": "url"
+                                                                                                                                    "ref": "arnType"
+                                                                                                                                },
+                                                                                                                                "key-value-store"
+                                                                                                                            ]
                                                                                                                         }
                                                                                                                     ],
                                                                                                                     "rules": [
                                                                                                                         {
                                                                                                                             "conditions": [],
-                                                                                                                            "endpoint": {
-                                                                                                                                "url": "{url#scheme}://{parsedArn#accountId}.{url#authority}{url#path}",
-                                                                                                                                "properties": {
-                                                                                                                                    "authSchemes": [
+                                                                                                                            "rules": [
+                                                                                                                                {
+                                                                                                                                    "conditions": [
                                                                                                                                         {
-                                                                                                                                            "name": "sigv4a",
-                                                                                                                                            "signingName": "cloudfront-keyvaluestore",
-                                                                                                                                            "signingRegionSet": [
-                                                                                                                                                "*"
+                                                                                                                                            "fn": "stringEquals",
+                                                                                                                                            "argv": [
+                                                                                                                                                {
+                                                                                                                                                    "fn": "getAttr",
+                                                                                                                                                    "argv": [
+                                                                                                                                                        {
+                                                                                                                                                            "ref": "parsedArn"
+                                                                                                                                                        },
+                                                                                                                                                        "partition"
+                                                                                                                                                    ]
+                                                                                                                                                },
+                                                                                                                                                "aws"
                                                                                                                                             ]
                                                                                                                                         }
-                                                                                                                                    ]
+                                                                                                                                    ],
+                                                                                                                                    "rules": [
+                                                                                                                                        {
+                                                                                                                                            "conditions": [
+                                                                                                                                                {
+                                                                                                                                                    "fn": "isSet",
+                                                                                                                                                    "argv": [
+                                                                                                                                                        {
+                                                                                                                                                            "ref": "Region"
+                                                                                                                                                        }
+                                                                                                                                                    ]
+                                                                                                                                                }
+                                                                                                                                            ],
+                                                                                                                                            "rules": [
+                                                                                                                                                {
+                                                                                                                                                    "conditions": [
+                                                                                                                                                        {
+                                                                                                                                                            "fn": "aws.partition",
+                                                                                                                                                            "argv": [
+                                                                                                                                                                {
+                                                                                                                                                                    "ref": "Region"
+                                                                                                                                                                }
+                                                                                                                                                            ],
+                                                                                                                                                            "assign": "partitionResult"
+                                                                                                                                                        }
+                                                                                                                                                    ],
+                                                                                                                                                    "rules": [
+                                                                                                                                                        {
+                                                                                                                                                            "conditions": [],
+                                                                                                                                                            "rules": [
+                                                                                                                                                                {
+                                                                                                                                                                    "conditions": [
+                                                                                                                                                                        {
+                                                                                                                                                                            "fn": "stringEquals",
+                                                                                                                                                                            "argv": [
+                                                                                                                                                                                {
+                                                                                                                                                                                    "fn": "getAttr",
+                                                                                                                                                                                    "argv": [
+                                                                                                                                                                                        {
+                                                                                                                                                                                            "ref": "partitionResult"
+                                                                                                                                                                                        },
+                                                                                                                                                                                        "name"
+                                                                                                                                                                                    ]
+                                                                                                                                                                                },
+                                                                                                                                                                                "{parsedArn#partition}"
+                                                                                                                                                                            ]
+                                                                                                                                                                        }
+                                                                                                                                                                    ],
+                                                                                                                                                                    "rules": [
+                                                                                                                                                                        {
+                                                                                                                                                                            "conditions": [],
+                                                                                                                                                                            "rules": [
+                                                                                                                                                                                {
+                                                                                                                                                                                    "conditions": [
+                                                                                                                                                                                        {
+                                                                                                                                                                                            "fn": "isSet",
+                                                                                                                                                                                            "argv": [
+                                                                                                                                                                                                {
+                                                                                                                                                                                                    "ref": "Endpoint"
+                                                                                                                                                                                                }
+                                                                                                                                                                                            ]
+                                                                                                                                                                                        }
+                                                                                                                                                                                    ],
+                                                                                                                                                                                    "rules": [
+                                                                                                                                                                                        {
+                                                                                                                                                                                            "conditions": [
+                                                                                                                                                                                                {
+                                                                                                                                                                                                    "fn": "booleanEquals",
+                                                                                                                                                                                                    "argv": [
+                                                                                                                                                                                                        {
+                                                                                                                                                                                                            "ref": "UseFIPS"
+                                                                                                                                                                                                        },
+                                                                                                                                                                                                        false
+                                                                                                                                                                                                    ]
+                                                                                                                                                                                                }
+                                                                                                                                                                                            ],
+                                                                                                                                                                                            "rules": [
+                                                                                                                                                                                                {
+                                                                                                                                                                                                    "conditions": [],
+                                                                                                                                                                                                    "rules": [
+                                                                                                                                                                                                        {
+                                                                                                                                                                                                            "conditions": [
+                                                                                                                                                                                                                {
+                                                                                                                                                                                                                    "fn": "parseURL",
+                                                                                                                                                                                                                    "argv": [
+                                                                                                                                                                                                                        {
+                                                                                                                                                                                                                            "ref": "Endpoint"
+                                                                                                                                                                                                                        }
+                                                                                                                                                                                                                    ],
+                                                                                                                                                                                                                    "assign": "url"
+                                                                                                                                                                                                                }
+                                                                                                                                                                                                            ],
+                                                                                                                                                                                                            "rules": [
+                                                                                                                                                                                                                {
+                                                                                                                                                                                                                    "conditions": [],
+                                                                                                                                                                                                                    "endpoint": {
+                                                                                                                                                                                                                        "url": "{url#scheme}://{parsedArn#accountId}.{url#authority}{url#path}",
+                                                                                                                                                                                                                        "properties": {
+                                                                                                                                                                                                                            "authSchemes": [
+                                                                                                                                                                                                                                {
+                                                                                                                                                                                                                                    "name": "sigv4a",
+                                                                                                                                                                                                                                    "signingName": "cloudfront-keyvaluestore",
+                                                                                                                                                                                                                                    "signingRegionSet": [
+                                                                                                                                                                                                                                        "*"
+                                                                                                                                                                                                                                    ]
+                                                                                                                                                                                                                                }
+                                                                                                                                                                                                                            ]
+                                                                                                                                                                                                                        },
+                                                                                                                                                                                                                        "headers": {}
+                                                                                                                                                                                                                    },
+                                                                                                                                                                                                                    "type": "endpoint"
+                                                                                                                                                                                                                }
+                                                                                                                                                                                                            ],
+                                                                                                                                                                                                            "type": "tree"
+                                                                                                                                                                                                        },
+                                                                                                                                                                                                        {
+                                                                                                                                                                                                            "conditions": [],
+                                                                                                                                                                                                            "error": "Provided endpoint is not a valid URL",
+                                                                                                                                                                                                            "type": "error"
+                                                                                                                                                                                                        }
+                                                                                                                                                                                                    ],
+                                                                                                                                                                                                    "type": "tree"
+                                                                                                                                                                                                }
+                                                                                                                                                                                            ],
+                                                                                                                                                                                            "type": "tree"
+                                                                                                                                                                                        },
+                                                                                                                                                                                        {
+                                                                                                                                                                                            "conditions": [],
+                                                                                                                                                                                            "error": "Invalid Configuration: FIPS and custom endpoint are not supported",
+                                                                                                                                                                                            "type": "error"
+                                                                                                                                                                                        }
+                                                                                                                                                                                    ],
+                                                                                                                                                                                    "type": "tree"
+                                                                                                                                                                                },
+                                                                                                                                                                                {
+                                                                                                                                                                                    "conditions": [],
+                                                                                                                                                                                    "endpoint": {
+                                                                                                                                                                                        "url": "https://{parsedArn#accountId}.cloudfront-kvs.global.api.aws",
+                                                                                                                                                                                        "properties": {
+                                                                                                                                                                                            "authSchemes": [
+                                                                                                                                                                                                {
+                                                                                                                                                                                                    "name": "sigv4a",
+                                                                                                                                                                                                    "signingName": "cloudfront-keyvaluestore",
+                                                                                                                                                                                                    "signingRegionSet": [
+                                                                                                                                                                                                        "*"
+                                                                                                                                                                                                    ]
+                                                                                                                                                                                                }
+                                                                                                                                                                                            ]
+                                                                                                                                                                                        },
+                                                                                                                                                                                        "headers": {}
+                                                                                                                                                                                    },
+                                                                                                                                                                                    "type": "endpoint"
+                                                                                                                                                                                }
+                                                                                                                                                                            ],
+                                                                                                                                                                            "type": "tree"
+                                                                                                                                                                        }
+                                                                                                                                                                    ],
+                                                                                                                                                                    "type": "tree"
+                                                                                                                                                                },
+                                                                                                                                                                {
+                                                                                                                                                                    "conditions": [],
+                                                                                                                                                                    "error": "Client was configured for partition `{partitionResult#name}` but Kvs ARN has `{parsedArn#partition}`",
+                                                                                                                                                                    "type": "error"
+                                                                                                                                                                }
+                                                                                                                                                            ],
+                                                                                                                                                            "type": "tree"
+                                                                                                                                                        }
+                                                                                                                                                    ],
+                                                                                                                                                    "type": "tree"
+                                                                                                                                                },
+                                                                                                                                                {
+                                                                                                                                                    "conditions": [],
+                                                                                                                                                    "error": "A valid partition could not be determined",
+                                                                                                                                                    "type": "error"
+                                                                                                                                                }
+                                                                                                                                            ],
+                                                                                                                                            "type": "tree"
+                                                                                                                                        },
+                                                                                                                                        {
+                                                                                                                                            "conditions": [],
+                                                                                                                                            "rules": [
+                                                                                                                                                {
+                                                                                                                                                    "conditions": [
+                                                                                                                                                        {
+                                                                                                                                                            "fn": "isSet",
+                                                                                                                                                            "argv": [
+                                                                                                                                                                {
+                                                                                                                                                                    "ref": "Endpoint"
+                                                                                                                                                                }
+                                                                                                                                                            ]
+                                                                                                                                                        }
+                                                                                                                                                    ],
+                                                                                                                                                    "rules": [
+                                                                                                                                                        {
+                                                                                                                                                            "conditions": [
+                                                                                                                                                                {
+                                                                                                                                                                    "fn": "booleanEquals",
+                                                                                                                                                                    "argv": [
+                                                                                                                                                                        {
+                                                                                                                                                                            "ref": "UseFIPS"
+                                                                                                                                                                        },
+                                                                                                                                                                        false
+                                                                                                                                                                    ]
+                                                                                                                                                                }
+                                                                                                                                                            ],
+                                                                                                                                                            "rules": [
+                                                                                                                                                                {
+                                                                                                                                                                    "conditions": [],
+                                                                                                                                                                    "rules": [
+                                                                                                                                                                        {
+                                                                                                                                                                            "conditions": [
+                                                                                                                                                                                {
+                                                                                                                                                                                    "fn": "parseURL",
+                                                                                                                                                                                    "argv": [
+                                                                                                                                                                                        {
+                                                                                                                                                                                            "ref": "Endpoint"
+                                                                                                                                                                                        }
+                                                                                                                                                                                    ],
+                                                                                                                                                                                    "assign": "url"
+                                                                                                                                                                                }
+                                                                                                                                                                            ],
+                                                                                                                                                                            "rules": [
+                                                                                                                                                                                {
+                                                                                                                                                                                    "conditions": [],
+                                                                                                                                                                                    "endpoint": {
+                                                                                                                                                                                        "url": "{url#scheme}://{parsedArn#accountId}.{url#authority}{url#path}",
+                                                                                                                                                                                        "properties": {
+                                                                                                                                                                                            "authSchemes": [
+                                                                                                                                                                                                {
+                                                                                                                                                                                                    "name": "sigv4a",
+                                                                                                                                                                                                    "signingName": "cloudfront-keyvaluestore",
+                                                                                                                                                                                                    "signingRegionSet": [
+                                                                                                                                                                                                        "*"
+                                                                                                                                                                                                    ]
+                                                                                                                                                                                                }
+                                                                                                                                                                                            ]
+                                                                                                                                                                                        },
+                                                                                                                                                                                        "headers": {}
+                                                                                                                                                                                    },
+                                                                                                                                                                                    "type": "endpoint"
+                                                                                                                                                                                }
+                                                                                                                                                                            ],
+                                                                                                                                                                            "type": "tree"
+                                                                                                                                                                        },
+                                                                                                                                                                        {
+                                                                                                                                                                            "conditions": [],
+                                                                                                                                                                            "error": "Provided endpoint is not a valid URL",
+                                                                                                                                                                            "type": "error"
+                                                                                                                                                                        }
+                                                                                                                                                                    ],
+                                                                                                                                                                    "type": "tree"
+                                                                                                                                                                }
+                                                                                                                                                            ],
+                                                                                                                                                            "type": "tree"
+                                                                                                                                                        },
+                                                                                                                                                        {
+                                                                                                                                                            "conditions": [],
+                                                                                                                                                            "error": "Invalid Configuration: FIPS and custom endpoint are not supported",
+                                                                                                                                                            "type": "error"
+                                                                                                                                                        }
+                                                                                                                                                    ],
+                                                                                                                                                    "type": "tree"
+                                                                                                                                                },
+                                                                                                                                                {
+                                                                                                                                                    "conditions": [],
+                                                                                                                                                    "endpoint": {
+                                                                                                                                                        "url": "https://{parsedArn#accountId}.cloudfront-kvs.global.api.aws",
+                                                                                                                                                        "properties": {
+                                                                                                                                                            "authSchemes": [
+                                                                                                                                                                {
+                                                                                                                                                                    "name": "sigv4a",
+                                                                                                                                                                    "signingName": "cloudfront-keyvaluestore",
+                                                                                                                                                                    "signingRegionSet": [
+                                                                                                                                                                        "*"
+                                                                                                                                                                    ]
+                                                                                                                                                                }
+                                                                                                                                                            ]
+                                                                                                                                                        },
+                                                                                                                                                        "headers": {}
+                                                                                                                                                    },
+                                                                                                                                                    "type": "endpoint"
+                                                                                                                                                }
+                                                                                                                                            ],
+                                                                                                                                            "type": "tree"
+                                                                                                                                        }
+                                                                                                                                    ],
+                                                                                                                                    "type": "tree"
                                                                                                                                 },
-                                                                                                                                "headers": {}
-                                                                                                                            },
-                                                                                                                            "type": "endpoint"
+                                                                                                                                {
+                                                                                                                                    "conditions": [
+                                                                                                                                        {
+                                                                                                                                            "fn": "stringEquals",
+                                                                                                                                            "argv": [
+                                                                                                                                                {
+                                                                                                                                                    "fn": "getAttr",
+                                                                                                                                                    "argv": [
+                                                                                                                                                        {
+                                                                                                                                                            "ref": "parsedArn"
+                                                                                                                                                        },
+                                                                                                                                                        "partition"
+                                                                                                                                                    ]
+                                                                                                                                                },
+                                                                                                                                                "aws-eusc"
+                                                                                                                                            ]
+                                                                                                                                        }
+                                                                                                                                    ],
+                                                                                                                                    "rules": [
+                                                                                                                                        {
+                                                                                                                                            "conditions": [
+                                                                                                                                                {
+                                                                                                                                                    "fn": "booleanEquals",
+                                                                                                                                                    "argv": [
+                                                                                                                                                        {
+                                                                                                                                                            "ref": "UseFIPS"
+                                                                                                                                                        },
+                                                                                                                                                        false
+                                                                                                                                                    ]
+                                                                                                                                                }
+                                                                                                                                            ],
+                                                                                                                                            "rules": [
+                                                                                                                                                {
+                                                                                                                                                    "conditions": [],
+                                                                                                                                                    "rules": [
+                                                                                                                                                        {
+                                                                                                                                                            "conditions": [
+                                                                                                                                                                {
+                                                                                                                                                                    "fn": "isSet",
+                                                                                                                                                                    "argv": [
+                                                                                                                                                                        {
+                                                                                                                                                                            "ref": "Region"
+                                                                                                                                                                        }
+                                                                                                                                                                    ]
+                                                                                                                                                                }
+                                                                                                                                                            ],
+                                                                                                                                                            "rules": [
+                                                                                                                                                                {
+                                                                                                                                                                    "conditions": [
+                                                                                                                                                                        {
+                                                                                                                                                                            "fn": "aws.partition",
+                                                                                                                                                                            "argv": [
+                                                                                                                                                                                {
+                                                                                                                                                                                    "ref": "Region"
+                                                                                                                                                                                }
+                                                                                                                                                                            ],
+                                                                                                                                                                            "assign": "partitionResult"
+                                                                                                                                                                        }
+                                                                                                                                                                    ],
+                                                                                                                                                                    "rules": [
+                                                                                                                                                                        {
+                                                                                                                                                                            "conditions": [],
+                                                                                                                                                                            "rules": [
+                                                                                                                                                                                {
+                                                                                                                                                                                    "conditions": [
+                                                                                                                                                                                        {
+                                                                                                                                                                                            "fn": "stringEquals",
+                                                                                                                                                                                            "argv": [
+                                                                                                                                                                                                {
+                                                                                                                                                                                                    "fn": "getAttr",
+                                                                                                                                                                                                    "argv": [
+                                                                                                                                                                                                        {
+                                                                                                                                                                                                            "ref": "partitionResult"
+                                                                                                                                                                                                        },
+                                                                                                                                                                                                        "name"
+                                                                                                                                                                                                    ]
+                                                                                                                                                                                                },
+                                                                                                                                                                                                "{parsedArn#partition}"
+                                                                                                                                                                                            ]
+                                                                                                                                                                                        }
+                                                                                                                                                                                    ],
+                                                                                                                                                                                    "rules": [
+                                                                                                                                                                                        {
+                                                                                                                                                                                            "conditions": [],
+                                                                                                                                                                                            "rules": [
+                                                                                                                                                                                                {
+                                                                                                                                                                                                    "conditions": [
+                                                                                                                                                                                                        {
+                                                                                                                                                                                                            "fn": "isSet",
+                                                                                                                                                                                                            "argv": [
+                                                                                                                                                                                                                {
+                                                                                                                                                                                                                    "ref": "Endpoint"
+                                                                                                                                                                                                                }
+                                                                                                                                                                                                            ]
+                                                                                                                                                                                                        }
+                                                                                                                                                                                                    ],
+                                                                                                                                                                                                    "rules": [
+                                                                                                                                                                                                        {
+                                                                                                                                                                                                            "conditions": [
+                                                                                                                                                                                                                {
+                                                                                                                                                                                                                    "fn": "parseURL",
+                                                                                                                                                                                                                    "argv": [
+                                                                                                                                                                                                                        {
+                                                                                                                                                                                                                            "ref": "Endpoint"
+                                                                                                                                                                                                                        }
+                                                                                                                                                                                                                    ],
+                                                                                                                                                                                                                    "assign": "url"
+                                                                                                                                                                                                                }
+                                                                                                                                                                                                            ],
+                                                                                                                                                                                                            "rules": [
+                                                                                                                                                                                                                {
+                                                                                                                                                                                                                    "conditions": [],
+                                                                                                                                                                                                                    "endpoint": {
+                                                                                                                                                                                                                        "url": "{url#scheme}://{parsedArn#accountId}.{url#authority}{url#path}",
+                                                                                                                                                                                                                        "properties": {
+                                                                                                                                                                                                                            "authSchemes": [
+                                                                                                                                                                                                                                {
+                                                                                                                                                                                                                                    "name": "sigv4a",
+                                                                                                                                                                                                                                    "signingName": "cloudfront-keyvaluestore",
+                                                                                                                                                                                                                                    "signingRegionSet": [
+                                                                                                                                                                                                                                        "*"
+                                                                                                                                                                                                                                    ]
+                                                                                                                                                                                                                                }
+                                                                                                                                                                                                                            ]
+                                                                                                                                                                                                                        },
+                                                                                                                                                                                                                        "headers": {}
+                                                                                                                                                                                                                    },
+                                                                                                                                                                                                                    "type": "endpoint"
+                                                                                                                                                                                                                }
+                                                                                                                                                                                                            ],
+                                                                                                                                                                                                            "type": "tree"
+                                                                                                                                                                                                        },
+                                                                                                                                                                                                        {
+                                                                                                                                                                                                            "conditions": [],
+                                                                                                                                                                                                            "error": "Provided endpoint is not a valid URL",
+                                                                                                                                                                                                            "type": "error"
+                                                                                                                                                                                                        }
+                                                                                                                                                                                                    ],
+                                                                                                                                                                                                    "type": "tree"
+                                                                                                                                                                                                },
+                                                                                                                                                                                                {
+                                                                                                                                                                                                    "conditions": [],
+                                                                                                                                                                                                    "endpoint": {
+                                                                                                                                                                                                        "url": "https://{parsedArn#accountId}.cloudfront-kvs.global.api.amazonwebservices.eu",
+                                                                                                                                                                                                        "properties": {
+                                                                                                                                                                                                            "authSchemes": [
+                                                                                                                                                                                                                {
+                                                                                                                                                                                                                    "name": "sigv4a",
+                                                                                                                                                                                                                    "signingName": "cloudfront-keyvaluestore",
+                                                                                                                                                                                                                    "signingRegionSet": [
+                                                                                                                                                                                                                        "*"
+                                                                                                                                                                                                                    ]
+                                                                                                                                                                                                                }
+                                                                                                                                                                                                            ]
+                                                                                                                                                                                                        },
+                                                                                                                                                                                                        "headers": {}
+                                                                                                                                                                                                    },
+                                                                                                                                                                                                    "type": "endpoint"
+                                                                                                                                                                                                }
+                                                                                                                                                                                            ],
+                                                                                                                                                                                            "type": "tree"
+                                                                                                                                                                                        }
+                                                                                                                                                                                    ],
+                                                                                                                                                                                    "type": "tree"
+                                                                                                                                                                                },
+                                                                                                                                                                                {
+                                                                                                                                                                                    "conditions": [],
+                                                                                                                                                                                    "error": "Client was configured for partition `{partitionResult#name}` but Kvs ARN has `{parsedArn#partition}`",
+                                                                                                                                                                                    "type": "error"
+                                                                                                                                                                                }
+                                                                                                                                                                            ],
+                                                                                                                                                                            "type": "tree"
+                                                                                                                                                                        }
+                                                                                                                                                                    ],
+                                                                                                                                                                    "type": "tree"
+                                                                                                                                                                },
+                                                                                                                                                                {
+                                                                                                                                                                    "conditions": [],
+                                                                                                                                                                    "error": "A valid partition could not be determined",
+                                                                                                                                                                    "type": "error"
+                                                                                                                                                                }
+                                                                                                                                                            ],
+                                                                                                                                                            "type": "tree"
+                                                                                                                                                        },
+                                                                                                                                                        {
+                                                                                                                                                            "conditions": [],
+                                                                                                                                                            "rules": [
+                                                                                                                                                                {
+                                                                                                                                                                    "conditions": [
+                                                                                                                                                                        {
+                                                                                                                                                                            "fn": "isSet",
+                                                                                                                                                                            "argv": [
+                                                                                                                                                                                {
+                                                                                                                                                                                    "ref": "Endpoint"
+                                                                                                                                                                                }
+                                                                                                                                                                            ]
+                                                                                                                                                                        }
+                                                                                                                                                                    ],
+                                                                                                                                                                    "rules": [
+                                                                                                                                                                        {
+                                                                                                                                                                            "conditions": [
+                                                                                                                                                                                {
+                                                                                                                                                                                    "fn": "parseURL",
+                                                                                                                                                                                    "argv": [
+                                                                                                                                                                                        {
+                                                                                                                                                                                            "ref": "Endpoint"
+                                                                                                                                                                                        }
+                                                                                                                                                                                    ],
+                                                                                                                                                                                    "assign": "url"
+                                                                                                                                                                                }
+                                                                                                                                                                            ],
+                                                                                                                                                                            "rules": [
+                                                                                                                                                                                {
+                                                                                                                                                                                    "conditions": [],
+                                                                                                                                                                                    "endpoint": {
+                                                                                                                                                                                        "url": "{url#scheme}://{parsedArn#accountId}.{url#authority}{url#path}",
+                                                                                                                                                                                        "properties": {
+                                                                                                                                                                                            "authSchemes": [
+                                                                                                                                                                                                {
+                                                                                                                                                                                                    "name": "sigv4a",
+                                                                                                                                                                                                    "signingName": "cloudfront-keyvaluestore",
+                                                                                                                                                                                                    "signingRegionSet": [
+                                                                                                                                                                                                        "*"
+                                                                                                                                                                                                    ]
+                                                                                                                                                                                                }
+                                                                                                                                                                                            ]
+                                                                                                                                                                                        },
+                                                                                                                                                                                        "headers": {}
+                                                                                                                                                                                    },
+                                                                                                                                                                                    "type": "endpoint"
+                                                                                                                                                                                }
+                                                                                                                                                                            ],
+                                                                                                                                                                            "type": "tree"
+                                                                                                                                                                        },
+                                                                                                                                                                        {
+                                                                                                                                                                            "conditions": [],
+                                                                                                                                                                            "error": "Provided endpoint is not a valid URL",
+                                                                                                                                                                            "type": "error"
+                                                                                                                                                                        }
+                                                                                                                                                                    ],
+                                                                                                                                                                    "type": "tree"
+                                                                                                                                                                },
+                                                                                                                                                                {
+                                                                                                                                                                    "conditions": [],
+                                                                                                                                                                    "endpoint": {
+                                                                                                                                                                        "url": "https://{parsedArn#accountId}.cloudfront-kvs.global.api.amazonwebservices.eu",
+                                                                                                                                                                        "properties": {
+                                                                                                                                                                            "authSchemes": [
+                                                                                                                                                                                {
+                                                                                                                                                                                    "name": "sigv4a",
+                                                                                                                                                                                    "signingName": "cloudfront-keyvaluestore",
+                                                                                                                                                                                    "signingRegionSet": [
+                                                                                                                                                                                        "*"
+                                                                                                                                                                                    ]
+                                                                                                                                                                                }
+                                                                                                                                                                            ]
+                                                                                                                                                                        },
+                                                                                                                                                                        "headers": {}
+                                                                                                                                                                    },
+                                                                                                                                                                    "type": "endpoint"
+                                                                                                                                                                }
+                                                                                                                                                            ],
+                                                                                                                                                            "type": "tree"
+                                                                                                                                                        }
+                                                                                                                                                    ],
+                                                                                                                                                    "type": "tree"
+                                                                                                                                                }
+                                                                                                                                            ],
+                                                                                                                                            "type": "tree"
+                                                                                                                                        },
+                                                                                                                                        {
+                                                                                                                                            "conditions": [],
+                                                                                                                                            "error": "Invalid Configuration: FIPS is not supported with CloudFront-KeyValueStore.",
+                                                                                                                                            "type": "error"
+                                                                                                                                        }
+                                                                                                                                    ],
+                                                                                                                                    "type": "tree"
+                                                                                                                                },
+                                                                                                                                {
+                                                                                                                                    "conditions": [],
+                                                                                                                                    "error": "CloudFront-KeyValueStore is not supported in partition `{parsedArn#partition}`",
+                                                                                                                                    "type": "error"
+                                                                                                                                }
+                                                                                                                            ],
+                                                                                                                            "type": "tree"
                                                                                                                         }
                                                                                                                     ],
                                                                                                                     "type": "tree"
                                                                                                                 },
                                                                                                                 {
                                                                                                                     "conditions": [],
-                                                                                                                    "error": "Provided endpoint is not a valid URL",
+                                                                                                                    "error": "ARN resource type is invalid. Expected `key-value-store`, found: `{arnType}`",
                                                                                                                     "type": "error"
                                                                                                                 }
                                                                                                             ],
                                                                                                             "type": "tree"
-                                                                                                        },
-                                                                                                        {
-                                                                                                            "conditions": [],
-                                                                                                            "endpoint": {
-                                                                                                                "url": "https://{parsedArn#accountId}.cloudfront-kvs.global.api.aws",
-                                                                                                                "properties": {
-                                                                                                                    "authSchemes": [
-                                                                                                                        {
-                                                                                                                            "name": "sigv4a",
-                                                                                                                            "signingName": "cloudfront-keyvaluestore",
-                                                                                                                            "signingRegionSet": [
-                                                                                                                                "*"
-                                                                                                                            ]
-                                                                                                                        }
-                                                                                                                    ]
-                                                                                                                },
-                                                                                                                "headers": {}
-                                                                                                            },
-                                                                                                            "type": "endpoint"
                                                                                                         }
                                                                                                     ],
                                                                                                     "type": "tree"
                                                                                                 },
                                                                                                 {
                                                                                                     "conditions": [],
-                                                                                                    "error": "Client was configured for partition `{partitionResult#name}` but Kvs ARN has `{parsedArn#partition}`",
+                                                                                                    "error": "No resource type found in the KVS ARN. Resource type must be `key-value-store`.",
                                                                                                     "type": "error"
                                                                                                 }
                                                                                             ],
@@ -300,134 +776,45 @@
                                                                                     "type": "tree"
                                                                                 },
                                                                                 {
-                                                                                    "conditions": [
-                                                                                        {
-                                                                                            "fn": "isSet",
-                                                                                            "argv": [
-                                                                                                {
-                                                                                                    "ref": "Endpoint"
-                                                                                                }
-                                                                                            ]
-                                                                                        }
-                                                                                    ],
-                                                                                    "rules": [
-                                                                                        {
-                                                                                            "conditions": [
-                                                                                                {
-                                                                                                    "fn": "parseURL",
-                                                                                                    "argv": [
-                                                                                                        {
-                                                                                                            "ref": "Endpoint"
-                                                                                                        }
-                                                                                                    ],
-                                                                                                    "assign": "url"
-                                                                                                }
-                                                                                            ],
-                                                                                            "rules": [
-                                                                                                {
-                                                                                                    "conditions": [],
-                                                                                                    "endpoint": {
-                                                                                                        "url": "{url#scheme}://{parsedArn#accountId}.{url#authority}{url#path}",
-                                                                                                        "properties": {
-                                                                                                            "authSchemes": [
-                                                                                                                {
-                                                                                                                    "name": "sigv4a",
-                                                                                                                    "signingName": "cloudfront-keyvaluestore",
-                                                                                                                    "signingRegionSet": [
-                                                                                                                        "*"
-                                                                                                                    ]
-                                                                                                                }
-                                                                                                            ]
-                                                                                                        },
-                                                                                                        "headers": {}
-                                                                                                    },
-                                                                                                    "type": "endpoint"
-                                                                                                }
-                                                                                            ],
-                                                                                            "type": "tree"
-                                                                                        },
-                                                                                        {
-                                                                                            "conditions": [],
-                                                                                            "error": "Provided endpoint is not a valid URL",
-                                                                                            "type": "error"
-                                                                                        }
-                                                                                    ],
-                                                                                    "type": "tree"
-                                                                                },
-                                                                                {
                                                                                     "conditions": [],
-                                                                                    "endpoint": {
-                                                                                        "url": "https://{parsedArn#accountId}.cloudfront-kvs.global.api.aws",
-                                                                                        "properties": {
-                                                                                            "authSchemes": [
-                                                                                                {
-                                                                                                    "name": "sigv4a",
-                                                                                                    "signingName": "cloudfront-keyvaluestore",
-                                                                                                    "signingRegionSet": [
-                                                                                                        "*"
-                                                                                                    ]
-                                                                                                }
-                                                                                            ]
-                                                                                        },
-                                                                                        "headers": {}
-                                                                                    },
-                                                                                    "type": "endpoint"
+                                                                                    "error": "No resource type found in the KVS ARN. Resource type must be `key-value-store`.",
+                                                                                    "type": "error"
                                                                                 }
                                                                             ],
                                                                             "type": "tree"
-                                                                        },
-                                                                        {
-                                                                            "conditions": [],
-                                                                            "error": "CloudFront-KeyValueStore is not supported in partition `{parsedArn#partition}`",
-                                                                            "type": "error"
                                                                         }
                                                                     ],
                                                                     "type": "tree"
                                                                 },
                                                                 {
                                                                     "conditions": [],
-                                                                    "error": "ARN resource type is invalid. Expected `key-value-store`, found: `{arnType}`",
+                                                                    "error": "Provided ARN must be a global resource ARN. Found: `{parsedArn#region}`",
                                                                     "type": "error"
                                                                 }
                                                             ],
                                                             "type": "tree"
-                                                        },
-                                                        {
-                                                            "conditions": [],
-                                                            "error": "No resource type found in the KVS ARN. Resource type must be `key-value-store`.",
-                                                            "type": "error"
                                                         }
                                                     ],
                                                     "type": "tree"
                                                 },
                                                 {
                                                     "conditions": [],
-                                                    "error": "No resource type found in the KVS ARN. Resource type must be `key-value-store`.",
+                                                    "error": "Provided ARN is not a valid CloudFront Service ARN. Found: `{parsedArn#service}`",
                                                     "type": "error"
                                                 }
                                             ],
                                             "type": "tree"
-                                        },
-                                        {
-                                            "conditions": [],
-                                            "error": "Provided ARN must be a global resource ARN. Found: `{parsedArn#region}`",
-                                            "type": "error"
                                         }
                                     ],
                                     "type": "tree"
                                 },
                                 {
                                     "conditions": [],
-                                    "error": "Provided ARN is not a valid CloudFront Service ARN. Found: `{parsedArn#service}`",
+                                    "error": "KVS ARN must be a valid ARN",
                                     "type": "error"
                                 }
                             ],
                             "type": "tree"
-                        },
-                        {
-                            "conditions": [],
-                            "error": "KVS ARN must be a valid ARN",
-                            "type": "error"
                         }
                     ],
                     "type": "tree"
@@ -439,11 +826,6 @@
                 }
             ],
             "type": "tree"
-        },
-        {
-            "conditions": [],
-            "error": "Invalid Configuration: FIPS is not supported with CloudFront-KeyValueStore.",
-            "type": "error"
         }
     ]
 }

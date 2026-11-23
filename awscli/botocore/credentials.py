@@ -2725,7 +2725,7 @@ class LoginCredentialFetcher:
 
         try:
             return EC.new_key_from_der_data(base64.b64decode(contents))
-        except ValueError as e:
+        except (ValueError, RuntimeError) as e:
             raise LoginTokenLoadError(
                 error_msg='Unable to load private key from cached token.'
             ) from e

@@ -4639,3 +4639,21 @@ def test_build_dpop_header_structure():
     assert payload['htu'] == uri
     assert payload['iat'] == test_timestamp
     assert payload['jti'] == test_uid
+
+
+@requires_crt()
+def test_load_private_key_wraps_crt_runtime_error():
+    token = {
+        'dpopKey': (
+            '-----BEGIN EC PRIVATE KEY-----\n'
+            'AAAA\n'
+            '-----END EC PRIVATE KEY-----'
+        )
+    }
+    with mock.patch.object(
+        credentials.EC,
+        'new_key_from_der_data',
+        side_effect=RuntimeError('AWS_ERROR_CAL_UNSUPPORTED_KEY_FORMAT'),
+    ):
+        with pytest.raises(credentials.LoginTokenLoadError):
+            credentials.LoginCredentialFetcher._load_private_key(token)

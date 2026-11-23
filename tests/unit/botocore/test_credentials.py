@@ -4947,3 +4947,20 @@ def test_login_refresh_without_sign_in_region(extra):
 
     client_creator.assert_called_once_with('signin', config=mock.ANY)
     assert 'region_name' not in client_creator.call_args.kwargs
+
+
+def test_login_credential_fetcher_load_private_key_runtime_error():
+    token = {
+        'clientId': 'test-client',
+        'refreshToken': 'test-refresh-token',
+        'dpopKey': SAMPLE_SIGN_IN_DPOP_PEM,
+        'accessToken': {'expiresAt': '2020-01-01T00:00:00Z'},
+    }
+    with mock.patch(
+        'botocore.credentials.EC.new_key_from_der_data',
+        side_effect=RuntimeError('7178 (AWS_ERROR_CAL_UNSUPPORTED_KEY_FORMAT)'),
+    ):
+        with pytest.raises(botocore.exceptions.LoginTokenLoadError) as exc_info:
+            credentials.LoginCredentialFetcher._load_private_key(token)
+        assert 'Unable to load private key from cached token' in str(exc_info.value)
+

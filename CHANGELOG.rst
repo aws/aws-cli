@@ -2,6 +2,13 @@
 CHANGELOG
 =========
 
+2.42.3
+======
+
+* api-change:``globalaccelerator``: AWS Global Accelerator supports Client IP Preservation for NLBs with TLS Listener endpoints.
+* api-change:``bedrock-agentcore``: Adds the optional userLocation parameter to InvokeWebSearch. Specify a two-letter ISO 3166-1 alpha-2 country code to refine web search results for that country. InvokeWebSearch also accepts search queries in languages other than English.
+
+
 2.42.2
 ======
 

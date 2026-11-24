@@ -25,6 +25,7 @@ import re
 import secrets
 import socket
 import string
+import tempfile
 import threading
 import time
 import uuid
@@ -4021,11 +4022,22 @@ class JSONFileCache:
             )
         if not os.path.isdir(self._working_dir):
             os.makedirs(self._working_dir, exist_ok=True)
-        with os.fdopen(
-            os.open(full_key, os.O_WRONLY | os.O_CREAT, 0o600), 'w'
-        ) as f:
-            f.truncate()
-            f.write(file_content)
+        # Write to a temporary file in the same directory and atomically
+        # replace the cache file, so an interrupted write can't leave an
+        # empty or partial file behind.
+        fd, temp_path = tempfile.mkstemp(dir=self._working_dir, prefix='.tmp-')
+        try:
+            with os.fdopen(fd, 'w') as f:
+                f.write(file_content)
+                f.flush()
+                os.fsync(f.fileno())
+            os.replace(temp_path, full_key)
+        except BaseException:
+            try:
+                os.unlink(temp_path)
+            except OSError:
+                pass
+            raise
 
     def _convert_cache_key(self, cache_key):
         full_path = os.path.join(self._working_dir, cache_key + '.json')
@@ -4222,9 +4234,10 @@ class LoginCredentialsLoader:
 
     def load_token(self, session_name):
         cache_key = generate_login_cache_key(session_name)
-        if cache_key not in self._cache:
+        try:
+            return self._cache[cache_key]
+        except KeyError:
             return None
-        return self._cache[cache_key]
 
 
 def base64_url_encode_no_padding(data):

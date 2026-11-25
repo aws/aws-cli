@@ -2769,7 +2769,7 @@ class TestStreamingCPCommand:
         err = stderr.decode()
         error_message = (
             'An error occurred (NoSuchBucket) when calling '
-            'the PutObject operation (reached max retries: 0): '
+            'the PutObject operation: '
             'The specified bucket does not exist'
         )
         assert error_message in err
@@ -3004,18 +3004,34 @@ class TestCpCommandWithRequesterPayer:
 
     async def test_ranged_download(self, aws_cli, tmp_path):
         """cp s3://bucket/key local --request-payer with large file sends requester-payer on ranged Gets."""
+        content = b"a" * 10 * (1024**2)
+
+        def handler(ctx):
+            req = ctx.request
+            if req.method == "HEAD":
+                return head_object_response(content_length=len(content))
+            # Serve the requested range of one consistent object, since
+            # the transfer clients split the download differently.
+            range_header = req.headers.get("range")
+            if range_header is None:
+                return get_object_response(content)
+            first, _, last = range_header.removeprefix("bytes=").partition("-")
+            first = int(first)
+            last = min(int(last), len(content) - 1) if last else len(content) - 1
+            return HTTPResponse.raw(
+                content[first : last + 1],
+                status=206,
+                headers={
+                    "Content-Range": f"bytes {first}-{last}/{len(content)}",
+                    "ETag": '"foo-1"',
+                },
+            )
+
         async with mock_server(on_headers_received=handle_expect_header) as (
             server,
             proxy,
         ):
-            setup_responses(
-                server,
-                [
-                    head_object_response(content_length=10 * (1024**2)),
-                    get_object_response(b"a" * 5 * (1024**2)),
-                    get_object_response(b"a" * 5 * (1024**2)),
-                ],
-            )
+            server.handler = handler
             stdout, stderr, rc = await run_cli(
                 aws_cli,
                 [
@@ -3029,7 +3045,7 @@ class TestCpCommandWithRequesterPayer:
             )
 
         assert rc == 0, stderr.decode()
-        assert len(server.requests) == 3, format_requests(server)
+        assert (tmp_path / "mykey").read_bytes() == content
         assert_head_object(
             server.requests[0],
             Bucket="mybucket",
@@ -3037,21 +3053,30 @@ class TestCpCommandWithRequesterPayer:
             RequestPayer="requester",
             ChecksumMode="ENABLED",
         )
+        # The CRT transfer client sends its own HeadObject before the
+        # ranged GetObjects, so match the rest by method, not position.
+        head_requests = [r for r in server.requests if r.method == "HEAD"]
+        get_requests = [r for r in server.requests if r.method == "GET"]
+        assert len(head_requests) + len(get_requests) == len(
+            server.requests
+        ), format_requests(server)
+        for request in head_requests:
+            assert_head_object(
+                request,
+                Bucket="mybucket",
+                Key="mykey",
+                RequestPayer="requester",
+            )
         # GetObject requests should have requester-payer and Range
-        assert_get_object(
-            server.requests[1],
-            Bucket="mybucket",
-            Key="mykey",
-            RequestPayer="requester",
-        )
-        assert server.requests[1].headers.get("range") is not None
-        assert_get_object(
-            server.requests[2],
-            Bucket="mybucket",
-            Key="mykey",
-            RequestPayer="requester",
-        )
-        assert server.requests[2].headers.get("range") is not None
+        assert len(get_requests) >= 2, format_requests(server)
+        for request in get_requests:
+            assert_get_object(
+                request,
+                Bucket="mybucket",
+                Key="mykey",
+                RequestPayer="requester",
+            )
+            assert request.headers.get("range") is not None
 
     async def test_recursive_download(self, aws_cli, tmp_path):
         """cp s3://bucket/ local --recursive --request-payer sends requester-payer on List+Get."""
@@ -5867,9 +5892,6 @@ async def test_content_disposition(aws_cli, tmp_path):
     )
 
 
-@pytest.mark.skip(
-    reason="localstub 0.0.3 decodes non-ASCII header bytes; needs wire-level access"
-)
 @pytest.mark.asyncio
 async def test_content_disposition_non_ascii(aws_cli, tmp_path):
     """cp --content-disposition with non-ASCII character (×) sends UTF-8 bytes."""
@@ -5895,15 +5917,16 @@ async def test_content_disposition_non_ascii(aws_cli, tmp_path):
 
     assert rc == 0, stderr.decode()
     assert len(server.requests) == 1, format_requests(server)
-    req = server.requests[0]
-    # The × character (U+00D7) is sent as UTF-8 bytes on the wire
-    cd = req.headers.get("Content-Disposition") or req.headers.get(
-        "content-disposition"
-    )
-    assert cd is not None, "Content-Disposition header missing"
-    assert (
-        "500\u00d7500.jpg" in cd
-    ), f"Expected \u00d7 in Content-Disposition, got {cd!r}"
+    # The × character (U+00D7) is sent as UTF-8 bytes on the wire.
+    # Header lookups decode values as Latin-1, so compare the raw bytes.
+    raw_values = [
+        value
+        for name, value in server.requests[0].headers.raw
+        if name.lower() == b"content-disposition"
+    ]
+    assert raw_values == [
+        'inline; filename="500\u00d7500.jpg"'.encode("utf-8")
+    ], f"Unexpected Content-Disposition bytes: {raw_values!r}"
 
 
 @pytest.mark.asyncio
@@ -6474,10 +6497,12 @@ async def test_download_checksum_mismatch_fails(aws_cli, tmp_path):
 
     assert rc == 1
     assert len(server.requests) == 2, format_requests(server)
+    # The classic transfer client reports both checksums, while the CRT
+    # transfer client only reports that they did not match.
     assert (
         b"Expected checksum AAAAAA== did not "
         b"match calculated checksum: jHNlIQ=="
-    ) in stderr
+    ) in stderr or b"AWS_ERROR_S3_RESPONSE_CHECKSUM_MISMATCH" in stderr, stderr
 
 
 @pytest.mark.asyncio
@@ -6520,46 +6545,39 @@ async def test_download_content_length_mismatch_fails(aws_cli, tmp_path):
         server,
         proxy,
     ):
-        setup_responses(
-            server,
-            [
-                head_object_response(content_length=100),
-                # Content-Length says 100 but body is only 3 bytes
-                HTTPResponse.raw(
-                    b"foo",
-                    status=200,
-                    headers={
-                        "Content-Length": "100",
-                        "ETag": '"foo-1"',
-                    },
-                ),
-            ],
-        )
-
-        async def inject_fault():
-            # HeadObject completes
-            await server.next_request()
-            # Drop connection after sending the short body so the
-            # CLI sees EOF instead of blocking for remaining bytes.
-            server.set_transmission_strategy(
-                FaultyTransmission([DropConnection(after_bytes=3)])
+        def handler(ctx):
+            if ctx.request.method == "HEAD":
+                return head_object_response(content_length=100)
+            # Content-Length says 100 but body is only 3 bytes
+            return HTTPResponse.raw(
+                b"foo",
+                status=200,
+                headers={
+                    "Content-Length": "100",
+                    "ETag": '"foo-1"',
+                },
             )
 
-        (stdout, stderr, rc), _ = await asyncio.gather(
-            run_cli(
-                aws_cli,
-                ["s3", "cp", "s3://bucket/key.txt", str(tmp_path)],
-                cli_env(proxy),
-            ),
-            inject_fault(),
+        # Every GET is truncated, so the download fails however many
+        # times the CLI retries it.
+        server.handler = handler
+        # Drop connection after sending the short body so the
+        # CLI sees EOF instead of blocking for remaining bytes.
+        server.set_transmission_strategy(
+            FaultyTransmission([DropConnection(after_bytes=3)])
+        )
+        stdout, stderr, rc = await run_cli(
+            aws_cli,
+            ["s3", "cp", "s3://bucket/key.txt", str(tmp_path)],
+            cli_env(proxy),
         )
 
-    assert rc == 1
-    assert len(server.requests) == 2, format_requests(server)
-    assert (
-        b"download failed" in stderr
-        and b"Connection broken: IncompleteRead" in stderr
-    )
+    assert rc == 1, stderr.decode()
+    assert b"download failed" in stderr
+    # Both transfer clients retry a truncated download before giving up.
+    get_requests = [r for r in server.requests if r.method == "GET"]
+    assert len(get_requests) > 1, format_requests(server)
+    assert not (tmp_path / "key.txt").exists()
 
 
 @pytest.mark.asyncio

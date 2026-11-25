@@ -39,6 +39,20 @@ class TestMvCommand(BaseS3TransferCommandTest):
         stderr = self.run_cmd(cmdline, expected_rc=252)[1]
         self.assertIn('Cannot mv a file onto itself', stderr)
 
+    def test_cant_mv_prefix_onto_itself_with_trailing_slash(self):
+        cmdline = '%s s3://bucket/prefix s3://bucket/prefix/ --recursive' % (
+            self.prefix
+        )
+        stderr = self.run_cmd(cmdline, expected_rc=252)[1]
+        self.assertIn('Cannot mv a file onto itself', stderr)
+
+    def test_cant_mv_prefix_with_trailing_slash_onto_itself(self):
+        cmdline = '%s s3://bucket/prefix/ s3://bucket/prefix --recursive' % (
+            self.prefix
+        )
+        stderr = self.run_cmd(cmdline, expected_rc=252)[1]
+        self.assertIn('Cannot mv a file onto itself', stderr)
+
     def test_dryrun_move(self):
         self.parsed_responses = [self.head_object_response()]
         cmdline = (

@@ -1883,6 +1883,10 @@ class CommandParameters:
             return False
         elif src == dest:
             return True
+        elif self.parameters['dir_op'] and (
+            src.removesuffix('/') == dest.removesuffix('/')
+        ):
+            return True
         elif dest.endswith('/'):
             src_base = os.path.basename(src)
             return src == os.path.join(dest, src_base)

@@ -173,6 +173,16 @@ def test_wizard_is_pinned_to_agent_toolkit_region(
     assert wizard_globals.region == 'us-east-1'
 
 
+@pytest.mark.parametrize('region', ['us-east-1', 'eu-west-1', None])
+def test_wizard_gets_resolved_region_for_mcp_server(
+    state_file, wizard_cls, region
+):
+    # The Agent Toolkit client is pinned, but the AWS MCP server follows the
+    # region the calling command resolved.
+    _run(choice='yes', region=region)
+    assert wizard_cls.call_args.kwargs['region'] == region
+
+
 def test_swapping_the_region_is_logged(state_file, wizard_cls, caplog):
     # The resolved region drives the message, not ``--region``: a plain
     # "aws configure" that sets us-west-2 passes no --region at all.

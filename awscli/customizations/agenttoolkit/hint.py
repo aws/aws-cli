@@ -151,5 +151,7 @@ def maybe_prompt_agent_toolkit(session, parsed_globals, region):
         return
 
     if run_wizard:
-        command = ConfigureAgentToolkitCommand(session)
+        # The Agent Toolkit API client is pinned to AGENT_TOOLKIT_REGION,
+        # but the AWS MCP server should still follow the profile's region.
+        command = ConfigureAgentToolkitCommand(session, region=region)
         command([], _wizard_globals(parsed_globals, region))

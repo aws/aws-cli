@@ -16,6 +16,7 @@ from io import StringIO
 from unittest.mock import MagicMock, patch
 
 import pytest
+from botocore.exceptions import ProfileNotFound
 
 from awscli.customizations.agenttoolkit import state
 from awscli.customizations.agenttoolkit.agents import (
@@ -89,13 +90,28 @@ def _run(
     yes=False,
     prompts=None,
     no_auto_update=False,
+    session_region=None,
+    region=None,
 ):
     stream = StringIO()
     session = make_session()
+
+    def get_config_variable(name):
+        if name != 'region':
+            return 'json'
+        if isinstance(session_region, Exception):
+            raise session_region
+        return session_region
+
+    session.get_config_variable.side_effect = get_config_variable
     if client is None:
         client = _make_client()
     cmd = ConfigureAgentToolkitCommand(
-        session, stream=stream, agent_configs=agent_configs, client=client
+        session,
+        stream=stream,
+        agent_configs=agent_configs,
+        client=client,
+        region=region,
     )
     parsed_args = MagicMock()
     parsed_args.yes = yes
@@ -152,6 +168,91 @@ def test_mcp_configured_on_yes(tmp_path):
     data = json.loads(mcp_path.read_text())
     assert 'aws-mcp' in data['mcpServers']
     assert data['mcpServers']['aws-mcp']['command'] == 'uvx'
+
+
+def _mcp_url(tmp_path):
+    data = json.loads((tmp_path / '.agent-0' / 'mcp.json').read_text())
+    return data['mcpServers']['aws-mcp']['args'][1]
+
+
+def test_mcp_defaults_to_us_east_1_without_region(tmp_path):
+    configs = _make_agent_configs(tmp_path, count=1)
+    _, stream = _run(configs, yes_no_return=True)
+    assert _mcp_url(tmp_path) == 'https://aws-mcp.us-east-1.api.aws/mcp'
+    output = stream.getvalue()
+    assert 'updated (us-east-1)' in output
+    assert 'not available in' not in output
+
+
+def test_mcp_uses_supported_session_region(tmp_path):
+    configs = _make_agent_configs(tmp_path, count=1)
+    _, stream = _run(configs, yes_no_return=True, session_region='eu-west-2')
+    assert _mcp_url(tmp_path) == 'https://aws-mcp.eu-west-2.api.aws/mcp'
+    output = stream.getvalue()
+    assert 'updated (eu-west-2)' in output
+    assert 'not available in' not in output
+
+
+def test_mcp_falls_back_to_us_east_1_for_unsupported_region(tmp_path):
+    configs = _make_agent_configs(tmp_path, count=1)
+    _, stream = _run(configs, yes_no_return=True, session_region='sa-east-1')
+    assert _mcp_url(tmp_path) == 'https://aws-mcp.us-east-1.api.aws/mcp'
+    output = stream.getvalue()
+    assert 'updated (us-east-1)' in output
+    assert (
+        'The AWS MCP server is not available in sa-east-1, '
+        'so us-east-1 was used instead.'
+    ) in output
+
+
+def test_mcp_falls_back_when_profile_not_found(tmp_path):
+    configs = _make_agent_configs(tmp_path, count=1)
+    _, stream = _run(
+        configs,
+        yes_no_return=True,
+        session_region=ProfileNotFound(profile='missing'),
+    )
+    assert _mcp_url(tmp_path) == 'https://aws-mcp.us-east-1.api.aws/mcp'
+    assert 'not available in' not in stream.getvalue()
+
+
+def test_mcp_no_fallback_note_when_nothing_newly_configured(tmp_path):
+    configs = _make_agent_configs(tmp_path, count=1)
+    mcp_path = tmp_path / '.agent-0' / 'mcp.json'
+    mcp_path.write_text(
+        json.dumps({'mcpServers': {'aws-mcp': {'command': 'custom'}}})
+    )
+    _, stream = _run(configs, yes_no_return=True, session_region='sa-east-1')
+    assert 'not available in' not in stream.getvalue()
+
+
+def test_mcp_region_argument_overrides_session_region(tmp_path):
+    configs = _make_agent_configs(tmp_path, count=1)
+    _run(
+        configs,
+        yes_no_return=True,
+        session_region='us-east-1',
+        region='ap-northeast-1',
+    )
+    assert _mcp_url(tmp_path) == 'https://aws-mcp.ap-northeast-1.api.aws/mcp'
+
+
+def test_mcp_already_configured_keeps_existing_region(tmp_path):
+    # Re-running the wizard does not migrate an existing AWS MCP server entry
+    # to the newly configured region.
+    configs = _make_agent_configs(tmp_path, count=1)
+    mcp_path = tmp_path / '.agent-0' / 'mcp.json'
+    existing = {
+        'command': 'uvx',
+        'args': [
+            'mcp-proxy-for-aws@latest',
+            'https://aws-mcp.us-east-1.api.aws/mcp',
+        ],
+    }
+    mcp_path.write_text(json.dumps({'mcpServers': {'aws-mcp': existing}}))
+    _run(configs, yes_no_return=True, session_region='eu-west-1')
+    data = json.loads(mcp_path.read_text())
+    assert data['mcpServers']['aws-mcp'] == existing
 
 
 def test_mcp_skipped_on_no(tmp_path):

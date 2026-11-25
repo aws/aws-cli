@@ -14,15 +14,18 @@ import json
 import os
 from unittest.mock import patch
 
+import pytest
+
 from awscli.customizations.agenttoolkit.agents import (
     AGENT_CONFIGS,
-    DEFAULT_MCP_SERVER_CONFIG,
     UNIVERSAL_ROW_ID,
     AgentConfig,
     DetectedAgent,
     McpConfigureAction,
+    aws_mcp_proxy_args,
     get_detected_agents,
     get_detected_real_agents,
+    resolve_mcp_server_region,
 )
 from awscli.testutils import skip_if_windows
 from tests.unit.customizations.agenttoolkit.utils import (
@@ -320,7 +323,7 @@ def test_configure_mcp_server_entry_overrides_default(tmp_path):
         tmp_path,
         mcp_config_path='mcp.json',
         mcp_servers_key='mcp',
-        mcp_server_entry=custom_entry,
+        mcp_server_entry=lambda proxy_args: custom_entry,
     ).detect()
     agent.configure_mcp_server()
     mcp_path = tmp_path / '.test-agent' / 'mcp.json'
@@ -334,7 +337,13 @@ def test_configure_mcp_shell_command_runs_when_executable_present(tmp_path):
     (tmp_path / '.test-agent').mkdir()
     config = make_config(
         tmp_path,
-        mcp_shell_command=['some-cli', 'mcp', 'add', 'aws-mcp'],
+        mcp_shell_command=lambda proxy_args: [
+            'some-cli',
+            'mcp',
+            'add',
+            'aws-mcp',
+            *proxy_args,
+        ],
     )
     agent = config.detect()
     with (
@@ -350,7 +359,8 @@ def test_configure_mcp_shell_command_runs_when_executable_present(tmp_path):
     assert action is McpConfigureAction.CONFIGURED
     assert detail == 'some-cli'
     run_mock.assert_called_once_with(
-        ['some-cli', 'mcp', 'add', 'aws-mcp'], check=True
+        ['some-cli', 'mcp', 'add', 'aws-mcp', *aws_mcp_proxy_args()],
+        check=True,
     )
 
 
@@ -358,7 +368,12 @@ def test_configure_mcp_shell_command_skipped_when_executable_missing(tmp_path):
     (tmp_path / '.test-agent').mkdir()
     config = make_config(
         tmp_path,
-        mcp_shell_command=['missing-cli', 'mcp', 'add', 'aws-mcp'],
+        mcp_shell_command=lambda proxy_args: [
+            'missing-cli',
+            'mcp',
+            'add',
+            'aws-mcp',
+        ],
     )
     agent = config.detect()
     with (
@@ -443,4 +458,71 @@ def test_devin_configure_mcp_writes_default_entry(tmp_path, monkeypatch):
         str(devin_dir / 'mcp_config.json')
     )
     data = json.loads((devin_dir / 'mcp_config.json').read_text())
-    assert data == {'mcpServers': {'aws-mcp': DEFAULT_MCP_SERVER_CONFIG}}
+    assert data == {
+        'mcpServers': {
+            'aws-mcp': {
+                'command': 'uvx',
+                'args': [
+                    'mcp-proxy-for-aws@latest',
+                    'https://aws-mcp.us-east-1.api.aws/mcp',
+                    '--metadata',
+                    'INSTALL_SOURCE=aws-cli',
+                ],
+            }
+        }
+    }
+
+
+@pytest.mark.parametrize(
+    'region, expected',
+    [
+        ('us-east-1', 'us-east-1'),
+        ('us-west-2', 'us-west-2'),
+        ('ap-northeast-1', 'ap-northeast-1'),
+        ('ap-southeast-1', 'ap-southeast-1'),
+        ('ap-southeast-2', 'ap-southeast-2'),
+        ('eu-central-1', 'eu-central-1'),
+        ('eu-west-1', 'eu-west-1'),
+        ('eu-west-2', 'eu-west-2'),
+        ('us-east-2', 'us-east-1'),
+        ('cn-north-1', 'us-east-1'),
+        ('', 'us-east-1'),
+        (None, 'us-east-1'),
+    ],
+)
+def test_resolve_mcp_server_region(region, expected):
+    assert resolve_mcp_server_region(region) == expected
+
+
+def test_configure_mcp_uses_given_region(tmp_path):
+    (tmp_path / '.test-agent').mkdir()
+    agent = make_config(tmp_path, mcp_config_path='mcp.json').detect()
+    _, path = agent.configure_mcp_server('eu-west-1')
+    data = json.loads(open(path).read())
+    assert (
+        'https://aws-mcp.eu-west-1.api.aws/mcp'
+        in data['mcpServers']['aws-mcp']['args']
+    )
+
+
+def test_configure_mcp_passes_regional_args_to_entry_builder(tmp_path):
+    (tmp_path / '.test-agent').mkdir()
+    agent = make_config(
+        tmp_path,
+        mcp_config_path='mcp.json',
+        mcp_server_entry=lambda proxy_args: {'command': ['uvx', *proxy_args]},
+    ).detect()
+    _, path = agent.configure_mcp_server('ap-southeast-2')
+    data = json.loads(open(path).read())
+    assert data['mcpServers']['aws-mcp'] == {
+        'command': ['uvx', *aws_mcp_proxy_args('ap-southeast-2')]
+    }
+
+
+@pytest.mark.parametrize('agent_id', ['codex', 'opencode'])
+def test_builtin_mcp_builders_use_regional_endpoint(agent_id):
+    config = _get_agent_config(agent_id)
+    builder = config.mcp_shell_command or config.mcp_server_entry
+    rendered = json.dumps(builder(aws_mcp_proxy_args('eu-central-1')))
+    assert 'https://aws-mcp.eu-central-1.api.aws/mcp' in rendered
+    assert 'us-east-1' not in rendered

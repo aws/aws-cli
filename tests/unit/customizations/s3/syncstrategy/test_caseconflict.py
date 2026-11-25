@@ -137,6 +137,7 @@ class TestCaseConflictSync:
         captured = capsys.readouterr()
         assert should_sync is True
         assert 'warning: ' in captured.err
+        assert case_conflict_sync.protected_keys == {upper_key}
 
     def test_skip_with_no_conflict_syncs(
         self, no_conflict_file_stat, lower_file_stat, capsys
@@ -160,6 +161,9 @@ class TestCaseConflictSync:
         captured = capsys.readouterr()
         assert should_sync is False
         assert 'warning: Skipping' in captured.err
+        assert case_conflict_sync.protected_keys == {
+            upper_file_stat.compare_key.lower()
+        }
 
     def test_skip_with_case_conflicts_in_s3(
         self, lower_file_stat, upper_file_stat, upper_key, capsys
@@ -174,3 +178,15 @@ class TestCaseConflictSync:
         captured = capsys.readouterr()
         assert should_sync is False
         assert 'warning: Skipping' in captured.err
+
+    def test_ignore_does_not_protect_case_conflict(
+        self, lower_file_stat, upper_file_stat, upper_key
+    ):
+        case_conflict_sync = CaseConflictSync(
+            on_case_conflict='ignore', submitted={upper_key}
+        )
+        should_sync = case_conflict_sync.determine_should_sync(
+            lower_file_stat, upper_file_stat
+        )
+        assert should_sync is True
+        assert case_conflict_sync.protected_keys == set()

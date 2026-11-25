@@ -1321,6 +1321,23 @@ class TestSyncCaseConflict(BaseS3TransferCommandTest):
         assert f"warning: Downloading bucket/{self.lower_key}" in stderr
 
     @skip_if_case_sensitive()
+    def test_warn_with_existing_file_and_delete(self):
+        full_path = os.path.join(self.files.rootdir, self.lower_key)
+        self.files.create_file(self.lower_key, 'mycontent')
+        cmd = (
+            f"{self.prefix} s3://bucket {self.files.rootdir} "
+            "--delete --case-conflict warn"
+        )
+        self.parsed_responses = [
+            self.list_objects_response([self.upper_key]),
+            self.get_object_response(),
+        ]
+        _, stderr, _ = self.run_cmd(cmd, expected_rc=0)
+
+        assert f"warning: Downloading bucket/{self.upper_key}" in stderr
+        self.assertTrue(os.path.exists(full_path))
+
+    @skip_if_case_sensitive()
     def test_skip_with_existing_file(self):
         self.files.create_file(self.lower_key, 'mycontent')
         cmd = (
@@ -1330,6 +1347,24 @@ class TestSyncCaseConflict(BaseS3TransferCommandTest):
         self.parsed_responses = [self.list_objects_response([self.upper_key])]
         _, stderr, _ = self.run_cmd(cmd, expected_rc=0)
         assert f"warning: Skipping bucket/{self.upper_key}" in stderr
+
+    @skip_if_case_sensitive()
+    def test_skip_with_existing_file_and_delete(self):
+        full_path = os.path.join(self.files.rootdir, self.lower_key)
+        self.files.create_file(self.lower_key, 'mycontent')
+        cmd = (
+            f"{self.prefix} s3://bucket {self.files.rootdir} "
+            "--delete --case-conflict skip"
+        )
+        self.parsed_responses = [
+            self.list_objects_response([self.upper_key])
+        ]
+        _, stderr, _ = self.run_cmd(cmd, expected_rc=0)
+
+        assert f"warning: Skipping bucket/{self.upper_key}" in stderr
+        self.assertTrue(os.path.exists(full_path))
+        with open(full_path) as file:
+            self.assertEqual(file.read(), 'mycontent')
 
     def test_skip_with_case_conflicts_in_s3(self):
         cmd = (

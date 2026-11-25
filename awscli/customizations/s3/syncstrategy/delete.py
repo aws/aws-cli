@@ -31,7 +31,20 @@ DELETE = {
 class DeleteSync(BaseSync):
     ARGUMENT = DELETE
 
+    def __init__(self, sync_type='file_not_at_src', protected_keys=None):
+        super().__init__(sync_type)
+        self.protected_keys = (
+            protected_keys if protected_keys is not None else set()
+        )
+
     def determine_should_sync(self, src_file, dest_file):
+        if dest_file.compare_key.lower() in self.protected_keys:
+            LOG.debug(
+                "not deleting %s because it has a case-conflicting source",
+                dest_file.dest,
+            )
+            return False
+
         dest_file.operation_name = 'delete'
         LOG.debug(
             "syncing: (None) -> %s (remove), file does not "

@@ -146,6 +146,12 @@ class AgentConfig:
     arguments. Used for agents whose MCP config is not JSON. The wizard
     skips MCP setup if the executable is not on PATH."""
 
+    mcp_check_command: Optional[list] = None
+    """Argv for a CLI invocation that exits 0 when the AWS MCP server is
+    already registered (e.g. ``codex mcp get ...``). When it does,
+    ``mcp_shell_command`` is not run, so an existing entry is left
+    untouched, matching JSON-based agents."""
+
     def __post_init__(self):
         if self.mcp_extra_config is None:
             self.mcp_extra_config = {}
@@ -284,13 +290,26 @@ class DetectedAgent:
         self._write_mcp_config(config_path, existing_config)
         return McpConfigureAction.CONFIGURED, config_path
 
-    @staticmethod
-    def _configure_via_shell(argv):
+    def _configure_via_shell(self, argv):
         executable = argv[0]
         if shutil.which(executable) is None:
             return McpConfigureAction.SKIPPED, executable
+        if self._is_registered_via_shell():
+            return McpConfigureAction.ALREADY_CONFIGURED, executable
         subprocess.run(argv, check=True)
         return McpConfigureAction.CONFIGURED, executable
+
+    def _is_registered_via_shell(self):
+        argv = self.config.mcp_check_command
+        if argv is None:
+            return False
+        result = subprocess.run(
+            argv,
+            stdout=subprocess.DEVNULL,
+            stderr=subprocess.DEVNULL,
+            check=False,
+        )
+        return result.returncode == 0
 
     @staticmethod
     def _read_mcp_config(path):
@@ -359,6 +378,7 @@ AGENT_CONFIGS = [
             'uvx',
             *proxy_args,
         ],
+        mcp_check_command=['codex', 'mcp', 'get', AWS_MCP_SERVER_KEY],
     ),
     # https://docs.cursor.com/context/model-context-protocol
     # https://cursor.com/docs/skills

@@ -391,6 +391,77 @@ def test_configure_mcp_shell_command_skipped_when_executable_missing(tmp_path):
     run_mock.assert_not_called()
 
 
+def _shell_agent_with_check(tmp_path):
+    (tmp_path / '.test-agent').mkdir()
+    return make_config(
+        tmp_path,
+        mcp_shell_command=lambda proxy_args: [
+            'some-cli',
+            'mcp',
+            'add',
+            'aws-mcp',
+            *proxy_args,
+        ],
+        mcp_check_command=['some-cli', 'mcp', 'get', 'aws-mcp'],
+    ).detect()
+
+
+def test_configure_mcp_shell_command_skips_existing_entry(tmp_path):
+    agent = _shell_agent_with_check(tmp_path)
+    with (
+        patch(
+            'awscli.customizations.agenttoolkit.agents.shutil.which',
+            return_value='/usr/local/bin/some-cli',
+        ),
+        patch(
+            'awscli.customizations.agenttoolkit.agents.subprocess.run'
+        ) as run_mock,
+    ):
+        run_mock.return_value.returncode = 0
+        action, detail = agent.configure_mcp_server('eu-west-1')
+    assert action is McpConfigureAction.ALREADY_CONFIGURED
+    assert detail == 'some-cli'
+    run_mock.assert_called_once()
+    assert run_mock.call_args.args[0] == [
+        'some-cli',
+        'mcp',
+        'get',
+        'aws-mcp',
+    ]
+
+
+def test_configure_mcp_shell_command_adds_when_check_fails(tmp_path):
+    agent = _shell_agent_with_check(tmp_path)
+    with (
+        patch(
+            'awscli.customizations.agenttoolkit.agents.shutil.which',
+            return_value='/usr/local/bin/some-cli',
+        ),
+        patch(
+            'awscli.customizations.agenttoolkit.agents.subprocess.run'
+        ) as run_mock,
+    ):
+        run_mock.return_value.returncode = 1
+        action, _ = agent.configure_mcp_server('eu-west-1')
+    assert action is McpConfigureAction.CONFIGURED
+    assert run_mock.call_count == 2
+    run_mock.assert_called_with(
+        [
+            'some-cli',
+            'mcp',
+            'add',
+            'aws-mcp',
+            *aws_mcp_proxy_args('eu-west-1'),
+        ],
+        check=True,
+    )
+
+
+def test_codex_checks_for_existing_entry():
+    config = _get_agent_config('codex')
+    assert config.mcp_check_command == ['codex', 'mcp', 'get', 'aws-mcp']
+
+
 def test_configure_mcp_creates_parent_directories(tmp_path):
     (tmp_path / '.test-agent').mkdir()
     agent = make_config(

@@ -17,7 +17,7 @@ import json
 import os
 import shutil
 import subprocess
-from typing import Optional
+from typing import Callable, Optional
 
 SKILL_FILENAME = 'SKILL.md'
 SKILL_METADATA_FILENAME = '.aws-skill-metadata'
@@ -40,18 +40,45 @@ class McpConfigureAction(enum.Enum):
     SKIPPED = 'skipped'
 
 
-_AWS_MCP_PROXY_ARGS = [
-    'mcp-proxy-for-aws@latest',
-    'https://aws-mcp.us-east-1.api.aws/mcp',
-    '--metadata',
-    'INSTALL_SOURCE=aws-cli',
-]
+# Regions the AWS MCP Server is available in. The server is not modeled as
+# a regular service, so this list is maintained by hand. See
+# https://docs.aws.amazon.com/agent-toolkit/latest/userguide/getting-started-aws-mcp-server.html
+AWS_MCP_SERVER_REGIONS = (
+    'us-east-1',
+    'us-west-2',
+    'ap-northeast-1',
+    'ap-southeast-1',
+    'ap-southeast-2',
+    'eu-central-1',
+    'eu-west-1',
+    'eu-west-2',
+)
+
+# Used when the configured region does not host the AWS MCP Server.
+DEFAULT_AWS_MCP_SERVER_REGION = 'us-east-1'
 
 
-DEFAULT_MCP_SERVER_CONFIG = {
-    'command': 'uvx',
-    'args': _AWS_MCP_PROXY_ARGS,
-}
+def resolve_mcp_server_region(region):
+    """Return ``region`` if it hosts the AWS MCP Server, else the default."""
+    if region in AWS_MCP_SERVER_REGIONS:
+        return region
+    return DEFAULT_AWS_MCP_SERVER_REGION
+
+
+def aws_mcp_proxy_args(region=DEFAULT_AWS_MCP_SERVER_REGION):
+    return [
+        'mcp-proxy-for-aws@latest',
+        f'https://aws-mcp.{region}.api.aws/mcp',
+        '--metadata',
+        'INSTALL_SOURCE=aws-cli',
+    ]
+
+
+def default_mcp_server_config(region=DEFAULT_AWS_MCP_SERVER_REGION):
+    return {
+        'command': 'uvx',
+        'args': aws_mcp_proxy_args(region),
+    }
 
 
 @dataclasses.dataclass
@@ -107,16 +134,23 @@ class AgentConfig:
     Kiro requires ``timeout`` and ``transport``). Used only when
     ``mcp_server_entry`` is not set."""
 
-    mcp_server_entry: Optional[dict] = None
-    """Complete MCP server entry, replacing the default schema. Use
-    when an agent expects a different shape than ``{command, args}``
-    (e.g. OpenCode expects ``{type, command: [...]}``)."""
+    mcp_server_entry: Optional[Callable[[list], dict]] = None
+    """Builds the complete MCP server entry, replacing the default
+    schema, from the ``mcp-proxy-for-aws`` arguments. Use when an agent
+    expects a different shape than ``{command, args}`` (e.g. OpenCode
+    expects ``{type, command: [...]}``)."""
 
-    mcp_shell_command: Optional[list] = None
-    """Argv for a CLI invocation that registers the AWS MCP server
-    (e.g. ``codex mcp add ...``). Used for agents whose MCP config is
-    not JSON. The wizard skips MCP setup if the executable is not on
-    PATH."""
+    mcp_shell_command: Optional[Callable[[list], list]] = None
+    """Builds the argv for a CLI invocation that registers the AWS MCP
+    server (e.g. ``codex mcp add ...``) from the ``mcp-proxy-for-aws``
+    arguments. Used for agents whose MCP config is not JSON. The wizard
+    skips MCP setup if the executable is not on PATH."""
+
+    mcp_check_command: Optional[list] = None
+    """Argv for a CLI invocation that exits 0 when the AWS MCP server is
+    already registered (e.g. ``codex mcp get ...``). When it does,
+    ``mcp_shell_command`` is not run, so an existing entry is left
+    untouched, matching JSON-based agents."""
 
     def __post_init__(self):
         if self.mcp_extra_config is None:
@@ -221,7 +255,7 @@ class DetectedAgent:
             results.append(InstalledSkill(self, skill_dir, skill_path))
         return results
 
-    def configure_mcp_server(self):
+    def configure_mcp_server(self, region=DEFAULT_AWS_MCP_SERVER_REGION):
         """Configure the AWS MCP server entry for this agent.
 
         Returns a tuple of (action, detail) where action is a member of
@@ -229,8 +263,11 @@ class DetectedAgent:
         agents, the executable name for shell-based agents, or None when
         no MCP setup is wired up.
         """
+        proxy_args = aws_mcp_proxy_args(region)
         if self.config.mcp_shell_command is not None:
-            return self._configure_via_shell()
+            return self._configure_via_shell(
+                self.config.mcp_shell_command(proxy_args)
+            )
 
         config_path = self.mcp_config_file
         if config_path is None:
@@ -243,23 +280,36 @@ class DetectedAgent:
             return McpConfigureAction.ALREADY_CONFIGURED, config_path
 
         if self.config.mcp_server_entry is not None:
-            server_entry = self.config.mcp_server_entry
+            server_entry = self.config.mcp_server_entry(proxy_args)
         else:
             server_entry = {
-                **DEFAULT_MCP_SERVER_CONFIG,
+                **default_mcp_server_config(region),
                 **self.config.mcp_extra_config,
             }
         servers[AWS_MCP_SERVER_KEY] = server_entry
         self._write_mcp_config(config_path, existing_config)
         return McpConfigureAction.CONFIGURED, config_path
 
-    def _configure_via_shell(self):
-        argv = list(self.config.mcp_shell_command)
+    def _configure_via_shell(self, argv):
         executable = argv[0]
         if shutil.which(executable) is None:
             return McpConfigureAction.SKIPPED, executable
+        if self._is_registered_via_shell():
+            return McpConfigureAction.ALREADY_CONFIGURED, executable
         subprocess.run(argv, check=True)
         return McpConfigureAction.CONFIGURED, executable
+
+    def _is_registered_via_shell(self):
+        argv = self.config.mcp_check_command
+        if argv is None:
+            return False
+        result = subprocess.run(
+            argv,
+            stdout=subprocess.DEVNULL,
+            stderr=subprocess.DEVNULL,
+            check=False,
+        )
+        return result.returncode == 0
 
     @staticmethod
     def _read_mcp_config(path):
@@ -319,15 +369,16 @@ AGENT_CONFIGS = [
         detection_path='~/.codex/',
         skills_path_override='~/.agents/skills/',
         detection_path_env_override='CODEX_HOME',
-        mcp_shell_command=[
+        mcp_shell_command=lambda proxy_args: [
             'codex',
             'mcp',
             'add',
             AWS_MCP_SERVER_KEY,
             '--',
             'uvx',
-            *_AWS_MCP_PROXY_ARGS,
+            *proxy_args,
         ],
+        mcp_check_command=['codex', 'mcp', 'get', AWS_MCP_SERVER_KEY],
     ),
     # https://docs.cursor.com/context/model-context-protocol
     # https://cursor.com/docs/skills
@@ -388,9 +439,9 @@ AGENT_CONFIGS = [
         skills_path_override='~/.agents/skills/',
         mcp_config_path='opencode.json',
         mcp_servers_key='mcp',
-        mcp_server_entry={
+        mcp_server_entry=lambda proxy_args: {
             'type': 'local',
-            'command': ['uvx', *_AWS_MCP_PROXY_ARGS],
+            'command': ['uvx', *proxy_args],
         },
     ),
     # https://github.com/badlogic/pi-mono/blob/main/packages/coding-agent/docs/settings.md

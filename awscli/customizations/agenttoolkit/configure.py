@@ -14,11 +14,14 @@ import io
 import os
 import sys
 
+from botocore.exceptions import ProfileNotFound
+
 from awscli.customizations.agenttoolkit.agents import (
     AGENT_CONFIGS,
     UNIVERSAL_ROW_ID,
     McpConfigureAction,
     collapse_home,
+    resolve_mcp_server_region,
     universal_first,
 )
 from awscli.customizations.agenttoolkit.hooks import (
@@ -102,13 +105,21 @@ class ConfigureAgentToolkitCommand(BasicCommand):
         },
     ]
 
-    def __init__(self, session, stream=None, agent_configs=None, client=None):
+    def __init__(
+        self,
+        session,
+        stream=None,
+        agent_configs=None,
+        client=None,
+        region=None,
+    ):
         super().__init__(session)
         self._stream = stream or sys.stdout
         self._agent_configs = (
             agent_configs if agent_configs is not None else AGENT_CONFIGS
         )
         self._client = client
+        self._region = region
 
     def _run_main(self, parsed_args, parsed_globals):
         yes = getattr(parsed_args, 'yes', False)
@@ -432,30 +443,56 @@ class ConfigureAgentToolkitCommand(BasicCommand):
             self._stream,
         )
 
+    def _resolve_configured_region(self):
+        if self._region:
+            return self._region
+        try:
+            return self._session.get_config_variable('region')
+        except ProfileNotFound:
+            return None
+
     def _configure_mcp(self, agents, yes=False):
         if not yes and not yes_no_choice(
             '\nConfigure AWS MCP server connection? [Y/n]: ', default=True
         ):
             return
 
+        configured_region = self._resolve_configured_region()
+        mcp_region = resolve_mcp_server_region(configured_region)
+
         uni_print('\nAWS MCP server configured for:\n', self._stream)
         skipped = []
+        any_configured = False
         for agent in agents:
-            action, detail = agent.configure_mcp_server()
+            action, detail = agent.configure_mcp_server(mcp_region)
             if action is McpConfigureAction.SKIPPED:
                 skipped.append((agent, detail))
             elif action is McpConfigureAction.ALREADY_CONFIGURED:
+                # Existing entries are left untouched, so their region may
+                # differ from mcp_region.
                 uni_print(
                     f'  \u2713 {agent.display_name} \u2014 '
                     f'{collapse_home(detail)}: already configured\n',
                     self._stream,
                 )
             else:
+                any_configured = True
                 uni_print(
                     f'  \u2713 {agent.display_name} \u2014 '
-                    f'{collapse_home(detail)}: updated\n',
+                    f'{collapse_home(detail)}: updated ({mcp_region})\n',
                     self._stream,
                 )
+
+        if (
+            any_configured
+            and configured_region
+            and configured_region != mcp_region
+        ):
+            uni_print(
+                f'\nThe AWS MCP server is not available in '
+                f'{configured_region}, so {mcp_region} was used instead.\n',
+                self._stream,
+            )
 
         if skipped:
             uni_print(

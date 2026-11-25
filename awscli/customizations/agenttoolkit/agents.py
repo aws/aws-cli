@@ -153,7 +153,12 @@ class AgentConfig:
 
     @property
     def _display_skills_path(self):
-        return f'~/{self.skills_paths[0]}'.rstrip('/')
+        # Built like DetectedAgent.skills_paths so detected and undetected
+        # agents are labeled with the same separators.
+        home = self.expand_path('~')
+        return collapse_home(
+            os.path.normpath(os.path.join(home, self.skills_paths[0]))
+        )
 
     @property
     def display_label(self):

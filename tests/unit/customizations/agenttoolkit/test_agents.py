@@ -485,6 +485,17 @@ def test_skills_paths_resolved_in_priority_order(tmp_path):
     assert agent.skills_path == agent.skills_paths[0]
 
 
+def test_undetected_label_matches_detected_label(tmp_path):
+    config = make_config(tmp_path, skills_paths=['.test-agent/skills'])
+    undetected_label = config.display_label
+    (tmp_path / '.test-agent').mkdir()
+    detected_label = config.detect().display_label
+    assert undetected_label == detected_label
+    assert undetected_label == (
+        f'Test Agent — ~{os.sep}{os.path.join(".test-agent", "skills")}'
+    )
+
+
 def test_skills_paths_must_not_be_empty(tmp_path):
     with pytest.raises(ValueError, match='at least one skills path'):
         make_config(tmp_path, skills_paths=[])

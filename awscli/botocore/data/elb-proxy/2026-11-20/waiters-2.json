@@ -1,0 +1,67 @@
+{
+  "version" : 2,
+  "waiters" : {
+    "ProxyActive" : {
+      "delay" : 15,
+      "maxAttempts" : 40,
+      "operation" : "GetProxy",
+      "acceptors" : [ {
+        "matcher" : "path",
+        "argument" : "status.code",
+        "state" : "success",
+        "expected" : "active"
+      }, {
+        "matcher" : "path",
+        "argument" : "status.code",
+        "state" : "failure",
+        "expected" : "create-failed"
+      }, {
+        "matcher" : "path",
+        "argument" : "status.code",
+        "state" : "failure",
+        "expected" : "action-required"
+      } ]
+    },
+    "ProxyDeleted" : {
+      "delay" : 15,
+      "maxAttempts" : 40,
+      "operation" : "GetProxy",
+      "acceptors" : [ {
+        "matcher" : "error",
+        "state" : "success",
+        "expected" : "ResourceNotFoundException"
+      } ]
+    },
+    "ProxyUpdateComplete" : {
+      "delay" : 5,
+      "maxAttempts" : 24,
+      "operation" : "GetProxyUpdate",
+      "acceptors" : [ {
+        "matcher" : "path",
+        "argument" : "state.propagationStatus",
+        "state" : "success",
+        "expected" : "complete"
+      }, {
+        "matcher" : "path",
+        "argument" : "state.propagationStatus",
+        "state" : "failure",
+        "expected" : "failed"
+      }, {
+        "matcher" : "path",
+        "argument" : "state.propagationStatus",
+        "state" : "failure",
+        "expected" : "cancelled"
+      }, {
+        "matcher" : "path",
+        "argument" : "state.propagationStatus",
+        "state" : "failure",
+        "expected" : "skipped"
+      }, {
+        "matcher" : "path",
+        "argument" : "state.validationStatus",
+        "state" : "failure",
+        "expected" : "invalid"
+      } ]
+    }
+  }
+}

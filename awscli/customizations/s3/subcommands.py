@@ -42,6 +42,7 @@ from awscli.customizations.s3.syncstrategy.base import (
     SizeAndLastModifiedSync,
 )
 from awscli.customizations.s3.syncstrategy.caseconflict import CaseConflictSync
+from awscli.customizations.s3.syncstrategy.delete import DeleteSync
 from awscli.customizations.s3.utils import (
     AppendFilter,
     RequestParamsMapper,
@@ -1433,6 +1434,7 @@ class CommandArchitecture:
         of its self when the event is emitted.
         """
         sync_strategies = {}
+        protected_keys = set()
         # Set the default strategies.
         sync_strategies['file_at_src_and_dest_sync_strategy'] = (
             SizeAndLastModifiedSync()
@@ -1440,7 +1442,8 @@ class CommandArchitecture:
         if self._should_handle_case_conflicts():
             sync_strategies['file_not_at_dest_sync_strategy'] = (
                 CaseConflictSync(
-                    on_case_conflict=self.parameters['case_conflict']
+                    on_case_conflict=self.parameters['case_conflict'],
+                    protected_keys=protected_keys,
                 )
             )
         else:
@@ -1457,6 +1460,10 @@ class CommandArchitecture:
             for response in responses:
                 override_sync_strategy = response[1]
                 if override_sync_strategy is not None:
+                    if isinstance(override_sync_strategy, DeleteSync):
+                        override_sync_strategy.protected_keys = (
+                            protected_keys
+                        )
                     sync_type = override_sync_strategy.sync_type
                     sync_type += '_sync_strategy'
                     sync_strategies[sync_type] = override_sync_strategy

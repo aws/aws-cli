@@ -39,6 +39,24 @@ class TestDeleteSync(unittest.TestCase):
         self.assertTrue(should_sync)
         self.assertEqual(dst_file.operation_name, 'delete')
 
+    def test_does_not_delete_case_conflict_file(self):
+        self.sync_strategy.protected_keys = {'test.py'}
+        dst_file = FileStat(
+            src='',
+            dest='',
+            compare_key='TEST.py',
+            size=10,
+            last_update=datetime.datetime.now(),
+            src_type='local',
+            dest_type='s3',
+            operation_name='',
+        )
+
+        should_sync = self.sync_strategy.determine_should_sync(None, dst_file)
+
+        self.assertFalse(should_sync)
+        self.assertEqual(dst_file.operation_name, '')
+
 
 if __name__ == "__main__":
     unittest.main()

@@ -25,12 +25,16 @@ class CaseConflictSync(BaseSync):
         sync_type='file_not_at_dest',
         on_case_conflict='ignore',
         submitted=None,
+        protected_keys=None,
     ):
         super().__init__(sync_type)
         self._on_case_conflict = on_case_conflict
         if submitted is None:
             submitted = set()
         self._submitted = submitted
+        self.protected_keys = (
+            protected_keys if protected_keys is not None else set()
+        )
 
     @property
     def submitted(self):
@@ -48,6 +52,8 @@ class CaseConflictSync(BaseSync):
         if lower_compare_key in self._submitted or os.path.exists(
             src_file.dest
         ):
+            if self._on_case_conflict in ('skip', 'warn'):
+                self.protected_keys.add(lower_compare_key)
             handler = getattr(self, f"_handle_{self._on_case_conflict}")
             should_sync = handler(src_file)
         if should_sync:

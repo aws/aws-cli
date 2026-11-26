@@ -1,3 +1,4 @@
+import json
 import logging
 import os
 import sqlite3
@@ -10,12 +11,84 @@ LOG = logging.getLogger(__name__)
 # of our shipped distributable, but for now we'll add this to our cache
 # dir.
 INDEX_DIR = os.path.expanduser(os.path.join('~', '.aws', 'cli', 'cache'))
-INDEX_FILE = os.path.join(INDEX_DIR, '%s.index' % cli_version)
+INDEX_FILE = os.path.join(INDEX_DIR, f'{cli_version}.index')
+# Where ``aws configure add-model`` installs models.  This mirrors
+# botocore.loaders.Loader.CUSTOMER_DATA_PATH without importing botocore.
+CUSTOMER_MODELS_DIR = os.path.expanduser(os.path.join('~', '.aws', 'models'))
 BUILTIN_INDEX_FILE = os.path.join(
     os.path.dirname(os.path.dirname(os.path.abspath(__file__))),
     'data',
     'ac.index',
 )
+
+
+# Key in the user index's metadata table that records which custom models
+# the index was built from.
+CUSTOM_MODELS_KEY = 'custom_models'
+
+
+def list_custom_models(models_dir=None):
+    """Return ``[service, api_version, size, mtime_ns]`` for each model.
+
+    This only stats files, so it is cheap enough to run on every Tab press.
+    """
+    if models_dir is None:
+        models_dir = CUSTOMER_MODELS_DIR
+    models = []
+    for service in _scandir(models_dir):
+        if not service.is_dir():
+            continue
+        for version in _scandir(service.path):
+            try:
+                stat = os.stat(os.path.join(version.path, 'service-2.json'))
+            except OSError:
+                continue
+            models.append(
+                [service.name, version.name, stat.st_size, stat.st_mtime_ns]
+            )
+    return sorted(models)
+
+
+def custom_models_fingerprint(models):
+    """Return a string that changes whenever ``models`` change.
+
+    An empty string means no models are installed.
+    """
+    return json.dumps(models) if models else ''
+
+
+def get_index_custom_models_fingerprint(index_filename):
+    """Return the fingerprint stored in an index, or None if unreadable.
+
+    Indexes without the metadata table (such as the bundled index) were
+    built without custom models, so they return an empty string.
+    """
+    if not os.path.isfile(index_filename):
+        return ''
+    try:
+        conn = sqlite3.connect(index_filename)
+        try:
+            row = conn.execute(
+                'SELECT value FROM index_metadata WHERE key = ?',
+                (CUSTOM_MODELS_KEY,),
+            ).fetchone()
+        finally:
+            conn.close()
+    except sqlite3.OperationalError as e:
+        if 'no such table' in str(e):
+            return ''
+        return None
+    except sqlite3.Error:
+        return None
+    return row[0] if row else ''
+
+
+def _scandir(path):
+    try:
+        with os.scandir(path) as entries:
+            return list(entries)
+    except OSError:
+        return []
 
 
 # This is similar to DBConnection in awscli.customization.history.

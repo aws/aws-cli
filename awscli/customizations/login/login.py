@@ -24,6 +24,7 @@ from awscli.customizations.login.utils import (
     LoginType,
     SameDeviceLoginTokenFetcher,
     _generate_dpop_private_key,
+    decode_id_token_payload,
 )
 from awscli.customizations.prompts import yes_no_choice
 from awscli.customizations.sso.utils import (
@@ -35,6 +36,7 @@ from awscli.customizations.sso.utils import (
     validate_redirect_port,
 )
 from awscli.customizations.utils import load_all_regions, uni_print
+from awscli.utils import is_stdin_a_tty
 
 DEFAULT_REGION_FOR_PROMPT = 'us-east-1'
 
@@ -68,6 +70,8 @@ class LoginCommand(BasicCommand):
         },
         REDIRECT_PORT_ARG,
     ]
+    # Sent as the OIDC prompt parameter on the authorize request.
+    AUTHORIZE_PROMPT = None
 
     def __init__(
         self,
@@ -130,12 +134,14 @@ class LoginCommand(BasicCommand):
                     open_browser=open_browser_with_original_ld_path
                 ),
                 private_key=private_key,
+                prompt=self.AUTHORIZE_PROMPT,
             )
         else:  # Cross-Device
             token_fetcher = CrossDeviceLoginTokenFetcher(
                 client=client,
                 on_pending_authorization=PrintOnlyHandler(),
                 private_key=private_key,
+                prompt=self.AUTHORIZE_PROMPT,
             )
 
         # Execute the browser flow, and the initial call to the token endpoint
@@ -158,8 +164,11 @@ class LoginCommand(BasicCommand):
         self._token_loader.save_token(session_id, access_token)
 
         # Update the specified profile with the session (and region if not set)
+        profile_region = self._resolve_profile_region(
+            profile_name, region, access_token
+        )
         self._update_profile_with_login_session(
-            profile_name, session_id, region
+            profile_name, session_id, profile_region
         )
 
         uni_print(
@@ -220,9 +229,9 @@ class LoginCommand(BasicCommand):
             raise ConfigurationError(
                 f'Profile \'{profile_name}\' is already configured '
                 f'with {existing_credentials_style} credentials.\n\n'
-                f'You may run \'aws login --profile new-profile-name\' to '
-                f'create a new profile with the specified name. Otherwise you '
-                f'must first manually remove the existing credentials '
+                f'You may run \'aws {self.NAME} --profile new-profile-name\' '
+                f'to create a new profile with the specified name. Otherwise '
+                f'you must first manually remove the existing credentials '
                 f'from \'{profile_name}\'.\n'
             )
 
@@ -291,6 +300,90 @@ class LoginCommand(BasicCommand):
 
         return new_region if new_region else DEFAULT_REGION_FOR_PROMPT
 
+    def _resolve_profile_region(self, profile_name, region, access_token):
+        home_region = self._get_home_region(access_token)
+        if self._prompted_for_region:
+            # The customer picked this before we knew the home region.
+            if self._should_use_home_region(profile_name, region, home_region):
+                return home_region
+            return region
+
+        existing_region = self._get_profile_region(profile_name)
+        if existing_region:
+            if self._should_use_home_region(
+                profile_name, existing_region, home_region
+            ):
+                return home_region
+            return None
+
+        # The region came from --region or the environment. Ask instead of
+        # saving it, since the region used to sign in isn't necessarily the
+        # one the customer wants as the profile's default. The home region
+        # is the better default, as regional services only work there.
+        if not is_stdin_a_tty():
+            # Passing --region is how a login runs without a terminal, so
+            # leave the region unset rather than prompting where no one can
+            # answer. The sign-in has already succeeded either way.
+            return None
+        try:
+            return self._prompt_for_profile_region(
+                profile_name, home_region or region
+            )
+        except (KeyboardInterrupt, EOFError):
+            return None
+
+    def _get_profile_region(self, profile_name):
+        profile = self._session.full_config['profiles'].get(profile_name, {})
+        return profile.get('region')
+
+    @staticmethod
+    def _get_home_region(access_token):
+        # Sign-In only includes this for accounts that have a home region.
+        return decode_id_token_payload(access_token['idToken']).get(
+            'aws_home_region'
+        )
+
+    def _should_use_home_region(self, profile_name, region, home_region):
+        if not home_region or home_region == region:
+            return False
+        if not is_stdin_a_tty():
+            return False
+        try:
+            if not yes_no_choice(
+                f'\nProfile {profile_name} is configured for region '
+                f'{region}, but the home region for this account is '
+                f'{home_region}. Regional services outside the home region '
+                f'are denied. Do you want to set the region to '
+                f'{home_region}? (y/n): '
+            ):
+                return False
+        except (KeyboardInterrupt, EOFError):
+            return False
+        self._print_home_region_set(home_region)
+        return True
+
+    @staticmethod
+    def _print_home_region_set(home_region):
+        uni_print(
+            f'\nSet region to {home_region}, '
+            'the home region for this account.\n'
+        )
+
+    def _prompt_for_profile_region(self, profile_name, default_region):
+        from awscli.customizations.configure.sso import (
+            PTKPrompt,
+            RequiredInputValidator,
+        )
+
+        uni_print(f'\nNo region is set for profile {profile_name}.\n')
+        new_region = PTKPrompt().get_value(
+            default_region,
+            'AWS Region',
+            completions=list(load_all_regions()),
+            validator=RequiredInputValidator(default_region),
+        )
+        return new_region if new_region else default_region
+
     def _update_profile_with_login_session(
         self, profile_name, session_id, region
     ):
@@ -309,7 +402,7 @@ class LoginCommand(BasicCommand):
             'login_session': session_id,
         }
 
-        if self._prompted_for_region:
+        if region:
             new_values['region'] = region
 
         self._config_file_writer.update_config(new_values, config_filename)

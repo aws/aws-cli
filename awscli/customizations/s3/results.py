@@ -150,11 +150,17 @@ class DoneResultSubscriber(BaseResultSubscriber, OnDoneFilteredSubscriber):
 
     def _is_existing_object_skipped(self, future, exception):
         # --no-overwrite sends IfNoneMatch, which fails if the object exists.
+        response = getattr(exception, 'response', None)
+        if not isinstance(response, dict):
+            return False
+        error = response.get('Error', {})
+        if not isinstance(error, dict):
+            return False
+        call_args = getattr(getattr(future, 'meta', None), 'call_args', None)
+        extra_args = getattr(call_args, 'extra_args', {}) or {}
         return (
-            hasattr(exception, 'response')
-            and exception.response.get('Error', {}).get('Code')
-            == 'PreconditionFailed'
-            and 'IfNoneMatch' in future.meta.call_args.extra_args
+            error.get('Code') == 'PreconditionFailed'
+            and 'IfNoneMatch' in extra_args
         )
 
 

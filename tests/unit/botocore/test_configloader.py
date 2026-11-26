@@ -207,6 +207,97 @@ class TestConfigLoader(BaseEnvVar):
             'https://localhost:8888/',
         )
 
+    def test_duplicate_profile_error_message(self):
+        contents = (
+            '[default]\n'
+            'region = us-west-2\n\n'
+            '[profile xyz]\n'
+            'aws_access_key_id = foo\n'
+            'aws_secret_access_key = bar\n\n'
+            '[profile other]\n'
+            'region = eu-west-1\n\n'
+            '[profile xyz]\n'
+            'aws_access_key_id = baz\n'
+        )
+        full_path = os.path.join(self.tempdir, 'aws_config_dup_profile')
+        with open(full_path, 'w') as f:
+            f.write(contents)
+
+        with self.assertRaises(botocore.exceptions.ConfigParseError) as cm:
+            raw_config_parse(full_path)
+        expected_msg = (
+            f"Unable to parse config file: {full_path} - "
+            "Found duplicate profile 'xyz' "
+            "(first seen on line 4, duplicated on line 11)"
+        )
+        self.assertEqual(str(cm.exception), expected_msg)
+
+        # Also verify load_config raises the same error
+        with self.assertRaises(botocore.exceptions.ConfigParseError) as cm:
+            load_config(full_path)
+        self.assertEqual(str(cm.exception), expected_msg)
+
+    def test_duplicate_profile_with_quotes_error_message(self):
+        contents = (
+            '[profile "personal"]\n'
+            'aws_access_key_id = foo\n'
+            'aws_secret_access_key = bar\n\n'
+            '[profile "personal"]\n'
+            'aws_access_key_id = baz\n'
+        )
+        full_path = os.path.join(self.tempdir, 'aws_config_dup_quotes')
+        with open(full_path, 'w') as f:
+            f.write(contents)
+
+        with self.assertRaises(botocore.exceptions.ConfigParseError) as cm:
+            raw_config_parse(full_path)
+        expected_msg = (
+            f"Unable to parse config file: {full_path} - "
+            "Found duplicate profile 'personal' "
+            "(first seen on line 1, duplicated on line 5)"
+        )
+        self.assertEqual(str(cm.exception), expected_msg)
+
+    def test_duplicate_default_profile_error_message(self):
+        contents = (
+            '[default]\n'
+            'region = us-west-2\n\n'
+            '[default]\n'
+            'region = us-east-1\n'
+        )
+        full_path = os.path.join(self.tempdir, 'aws_config_dup_default')
+        with open(full_path, 'w') as f:
+            f.write(contents)
+
+        with self.assertRaises(botocore.exceptions.ConfigParseError) as cm:
+            raw_config_parse(full_path)
+        expected_msg = (
+            f"Unable to parse config file: {full_path} - "
+            "Found duplicate profile 'default' "
+            "(first seen on line 1, duplicated on line 4)"
+        )
+        self.assertEqual(str(cm.exception), expected_msg)
+
+    def test_duplicate_section_error_message(self):
+        contents = (
+            '[sso-session my-session]\n'
+            'sso_region = us-west-2\n\n'
+            '[sso-session my-session]\n'
+            'sso_region = us-east-1\n'
+        )
+        full_path = os.path.join(self.tempdir, 'aws_config_dup_section')
+        with open(full_path, 'w') as f:
+            f.write(contents)
+
+        with self.assertRaises(botocore.exceptions.ConfigParseError) as cm:
+            raw_config_parse(full_path)
+        expected_msg = (
+            f"Unable to parse config file: {full_path} - "
+            "Found duplicate section 'sso-session my-session' "
+            "(first seen on line 1, duplicated on line 4)"
+        )
+        self.assertEqual(str(cm.exception), expected_msg)
+
 
 if __name__ == "__main__":
     unittest.main()

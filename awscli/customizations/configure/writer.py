@@ -12,6 +12,7 @@
 # language governing permissions and limitations under the License.
 import os
 import re
+import tempfile
 
 from . import SectionNotFoundError, warn_if_permissive
 
@@ -111,8 +112,7 @@ class ConfigFileWriter:
         # to find the section in question
         try:
             self._update_section_contents(contents, section_name, new_values)
-            with open(config_filename, 'w') as f:
-                f.write(''.join(contents))
+            self._write_file_contents(config_filename, ''.join(contents))
         except SectionNotFoundError:
             self._write_new_section(section_name, new_values, config_filename)
         if check_permissions:
@@ -127,6 +127,33 @@ class ConfigFileWriter:
             os.open(config_filename, os.O_WRONLY | os.O_CREAT, 0o600), 'w'
         ):
             pass
+
+    def _write_file_contents(self, config_filename, contents):
+        target_filename = os.path.realpath(config_filename)
+        dirname, filename = os.path.split(target_filename)
+        dirpath = dirname or '.'
+        try:
+            st = os.stat(target_filename)
+            mode = st.st_mode & 0o777
+        except OSError:
+            mode = 0o600
+        fd, temp_path = tempfile.mkstemp(
+            dir=dirpath, prefix=f'.{filename}.'
+        )
+        try:
+            try:
+                os.chmod(temp_path, mode)
+            except OSError:
+                pass
+            with os.fdopen(fd, 'w') as f:
+                f.write(contents)
+            os.replace(temp_path, target_filename)
+        except BaseException:
+            try:
+                os.remove(temp_path)
+            except OSError:
+                pass
+            raise
 
     def _check_file_needs_newline(self, filename):
         # check if the last byte is a newline

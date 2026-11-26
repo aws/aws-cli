@@ -371,3 +371,40 @@ class TestConfigFileWriter(unittest.TestCase):
             self.config_filename,
         )
         mock_warn.assert_not_called()
+
+    def test_update_config_failure_preserves_original_file(self):
+        original = '[default]\nfoo = bar\n'
+        with open(self.config_filename, 'w') as f:
+            f.write(original)
+        with mock.patch(
+            'awscli.customizations.configure.writer.os.replace',
+            side_effect=IOError("Disk full"),
+        ):
+            with self.assertRaises(IOError):
+                self.writer.update_config(
+                    {'foo': 'newvalue'}, self.config_filename
+                )
+        with open(self.config_filename) as f:
+            contents = f.read()
+        self.assertEqual(contents, original)
+
+    def test_update_config_preserves_permissions(self):
+        original = '[default]\nfoo = bar\n'
+        with open(self.config_filename, 'w') as f:
+            f.write(original)
+        os.chmod(self.config_filename, 0o600)
+        self.writer.update_config({'foo': 'newvalue'}, self.config_filename)
+        mode = os.stat(self.config_filename).st_mode & 0o777
+        self.assertEqual(mode, 0o600)
+
+    @skip_if_windows('Symlinks behave differently on Windows')
+    def test_update_config_symlink_preserves_symlink_and_updates_target(self):
+        target_path = os.path.join(self.dirname, 'real_config')
+        with open(target_path, 'w') as f:
+            f.write('[default]\nfoo = bar\n')
+        symlink_path = os.path.join(self.dirname, 'symlink_config')
+        os.symlink(target_path, symlink_path)
+        self.writer.update_config({'foo': 'newvalue'}, symlink_path)
+        self.assertTrue(os.path.islink(symlink_path))
+        with open(target_path) as f:
+            self.assertEqual(f.read(), '[default]\nfoo = newvalue\n')

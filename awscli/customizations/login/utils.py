@@ -69,7 +69,15 @@ class BaseLoginTokenFetcher:
         ).decode()
 
         if private_key is None:
-            private_key = EC.new_generate(ECType.P_256)
+            while True:
+                candidate_key = EC.new_generate(ECType.P_256)
+                try:
+                    der = candidate_key.export_key(ECExportFormat.SEC1)
+                    EC.new_key_from_der_data(der)
+                    private_key = candidate_key
+                    break
+                except Exception:
+                    continue
         self._private_key = private_key
 
         if base_uri_builder is None:

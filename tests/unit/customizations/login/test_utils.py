@@ -361,3 +361,29 @@ def test_authorization_uri_prompt(prompt, expected_prompt_param):
         '&redirect_uri=http%3A%2F%2F127.0.0.1%3A8080%2Foauth%2Fcallback'
         f'{expected_prompt_param}&code_challenge=challenge'
     )
+
+
+def test_login_fetcher_retries_key_generation_if_unreadable(
+    mock_client, mock_auth_code_fetcher, mock_on_pending_auth
+):
+    bad_key = mock.Mock()
+    bad_key.export_key.return_value = b'bad-der'
+    good_key = mock.Mock()
+    good_key.export_key.return_value = b'good-der'
+
+    with mock.patch(
+        'awscli.customizations.login.utils.EC.new_generate',
+        side_effect=[bad_key, good_key],
+    ) as mock_generate:
+        with mock.patch(
+            'awscli.customizations.login.utils.EC.new_key_from_der_data',
+            side_effect=[RuntimeError('unsupported format'), good_key],
+        ):
+            fetcher = SameDeviceLoginTokenFetcher(
+                mock_client,
+                mock_auth_code_fetcher,
+                mock_on_pending_auth,
+                base_uri_builder=lambda client: 'https://foobar',
+            )
+            assert fetcher._private_key is good_key
+            assert mock_generate.call_count == 2

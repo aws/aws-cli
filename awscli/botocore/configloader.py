@@ -145,7 +145,7 @@ def raw_config_parse(config_filename, parse_subsections=True):
             raise botocore.exceptions.ConfigNotFound(path=_unicode_path(path))
         cp = configparser.RawConfigParser()
         try:
-            cp.read([path])
+            cp.read([path], encoding='utf-8-sig')
         except (configparser.Error, UnicodeDecodeError):
             raise botocore.exceptions.ConfigParseError(
                 path=_unicode_path(path)

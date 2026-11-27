@@ -15,6 +15,7 @@ import logging
 from botocore import model
 
 from awscli.arguments import BaseCLIArgument
+from awscli.customizations.exceptions import ParamValidationError
 
 logger = logging.getLogger(__name__)
 

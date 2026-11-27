@@ -22,6 +22,7 @@ from awscli.customizations.agenttoolkit.agents import SKILL_METADATA_FILENAME
 from awscli.customizations.agenttoolkit.remove_skill import RemoveCommand
 from awscli.customizations.exceptions import ParamValidationError
 from tests.unit.customizations.agenttoolkit.utils import (
+    home_relative,
     make_config,
     make_skill,
     requires_symlinks,
@@ -127,14 +128,14 @@ def test_remove_skill_dedupes_shared_skills_path(tmp_path):
             id='a',
             display_name='Agent A',
             detection_path=str(tmp_path / '.agent-a'),
-            skills_path_override=str(shared),
+            skills_paths=[home_relative(tmp_path, shared)],
         ),
         make_config(
             tmp_path,
             id='b',
             display_name='Agent B',
             detection_path=str(tmp_path / '.agent-b'),
-            skills_path_override=str(shared),
+            skills_paths=[home_relative(tmp_path, shared)],
         ),
     ]
     rc, output = _run_remove(configs, ['--skill-name', 'aws-s3'])
@@ -159,7 +160,7 @@ def test_remove_skill_universal_row_coexists_with_override_agent(tmp_path):
             id='codex',
             display_name='Codex',
             detection_path=str(tmp_path / '.codex'),
-            skills_path_override=str(shared),
+            skills_paths=[home_relative(tmp_path, shared)],
         ),
         make_config(
             tmp_path,
@@ -308,7 +309,7 @@ def test_remove_skill_deletes_leftover_backup(tmp_path):
     assert rc == 0
     assert not os.path.exists(backup)
     utils._recover_interrupted_changes(
-        [Mock(skills_path=str(skill_dir.parent))]
+        [Mock(skills_paths=[str(skill_dir.parent)])]
     )
     assert not skill_dir.exists()
 
@@ -351,3 +352,24 @@ def test_remove_skill_already_removed_by_another_process(tmp_path):
         )
     assert rc == 0
     assert not skill_dir.exists()
+
+
+def test_remove_skill_from_every_skills_path(tmp_path):
+    (tmp_path / '.test-agent').mkdir()
+    config = make_config(
+        tmp_path,
+        skills_paths=[
+            home_relative(tmp_path, tmp_path / '.test-agent' / 'skills'),
+            home_relative(tmp_path, tmp_path / 'secondary'),
+        ],
+    )
+    make_skill(tmp_path, '.test-agent', 'aws-s3')
+    make_skill(tmp_path, 'secondary', 'aws-s3')
+    secondary = tmp_path / 'secondary'
+    (secondary / 'skills' / 'aws-s3').rename(secondary / 'aws-s3')
+    rc, output = _run_remove([config], ['--skill-name', 'aws-s3'])
+    assert rc == 0
+    assert output.count('Removed aws-s3') == 2
+    assert 'secondary' in output
+    assert not (tmp_path / '.test-agent' / 'skills' / 'aws-s3').exists()
+    assert not (secondary / 'aws-s3').exists()

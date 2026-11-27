@@ -24,6 +24,7 @@ from awscli.customizations.agenttoolkit.check_skill_updates import (
 )
 from awscli.customizations.exceptions import ParamValidationError
 from tests.unit.customizations.agenttoolkit.utils import (
+    home_relative,
     make_config,
     make_parsed_globals,
     make_session,
@@ -282,7 +283,7 @@ def test_check_skill_updates_shared_skills_dir_reported_once(
             id='codex',
             display_name='Codex',
             detection_path=str(tmp_path / '.codex'),
-            skills_path_override=str(shared),
+            skills_paths=[home_relative(tmp_path, shared)],
         ),
         make_config(
             tmp_path,

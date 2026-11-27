@@ -23,3 +23,11 @@ def _isolate_agent_toolkit_home(tmp_path_factory):
     home = tmp_path_factory.mktemp('agent-toolkit-home')
     with patch.object(state, 'STATE_PATH', str(home / 'state.json')):
         yield home
+
+
+@pytest.fixture(autouse=True)
+def _home_is_tmp_path(tmp_path, monkeypatch):
+    # Skills paths are relative to the home directory, so point it at the
+    # test's directory. Tests that need another home set it themselves.
+    monkeypatch.setenv('HOME', str(tmp_path))
+    monkeypatch.setenv('USERPROFILE', str(tmp_path))

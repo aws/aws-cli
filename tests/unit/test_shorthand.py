@@ -194,6 +194,9 @@ PARSING_TEST_CASES = (
         # Duplicate keys should error otherwise they silently
         # set only one of the values.
         'foo=bar,foo=qux',
+        'foo={bar=a,bar=b}',
+        'foo=[{k=1,k=2}]',
+        'a={b={x=1,x=2}}',
     ),
 )
 def test_error_parsing(expr):

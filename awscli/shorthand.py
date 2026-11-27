@@ -308,6 +308,7 @@ class ShorthandParser:
         self._expect('{', consume_whitespace=True)
         keyvals = {}
         while self._current() != '}':
+            key_start = self._index
             key = self._key()
             self._should_resolve_paramfiles = False
             try:
@@ -321,6 +322,10 @@ class ShorthandParser:
             if self._current() != '}':
                 self._expect(',')
                 self._consume_whitespace()
+            if key in keyvals:
+                raise DuplicateKeyInObjectError(
+                    key, self._input_value, key_start
+                )
             keyvals[key] = v
         self._expect('}')
         return keyvals

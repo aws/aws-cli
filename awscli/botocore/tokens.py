@@ -22,12 +22,17 @@ import dateutil.parser
 from botocore import UNSIGNED
 from botocore.compat import total_seconds
 from botocore.config import Config
+from botocore.credential_daemon.config import (
+    CREDENTIAL_DAEMON_KEY,
+    profiles_with_config_file_keys,
+)
 from botocore.exceptions import (
     ClientError,
     InvalidConfigError,
     TokenRetrievalError,
 )
 from botocore.utils import (
+    SSO_ROLE_CONFIG_VARS,
     CachedProperty,
     JSONFileCache,
     SSOTokenLoader,
@@ -248,6 +253,31 @@ class SSOTokenProvider:
         }
 
     @CachedProperty
+    def _credential_daemon_session(self):
+        # The sso_session of a daemon profile with an account and a role, or
+        # None. SEP rule 4: such a profile is treated as having no
+        # sso_session, so its sso-session isn't checked and no token file is
+        # read.
+        profiles = self._session.full_config.get("profiles", {})
+        profile_config = profiles.get(self._profile_name, {})
+        if "sso_session" not in profile_config:
+            return None
+        if not self._is_daemon_sso_profile(profile_config):
+            return None
+        return profile_config["sso_session"]
+
+    def _is_daemon_sso_profile(self, profile_config):
+        # A daemon profile with an account and a role gets its credentials
+        # from the credential daemon, which keeps the SSO session and never
+        # hands out its access token. credential_daemon is read from the
+        # config file only, as the credential provider reads it.
+        if not all(key in profile_config for key in SSO_ROLE_CONFIG_VARS):
+            return False
+        profiles = profiles_with_config_file_keys(self._session)
+        profile = profiles.get(self._profile_name, {})
+        return profile.get(CREDENTIAL_DAEMON_KEY) is not None
+
+    @CachedProperty
     def _sso_config(self):
         return self._load_sso_config()
 
@@ -328,7 +358,27 @@ class SSOTokenProvider:
             token_dict["accessToken"], expiration=expiration
         )
 
+    def _in_daemon_refresher(self):
+        session_name = self._credential_daemon_session
+        raise TokenRetrievalError(
+            provider=self.METHOD,
+            error_msg=(
+                f'The profile "{self._profile_name}" uses the credential '
+                f'daemon, which keeps the SSO session "{session_name}" and '
+                f'doesn\'t hand out its access token. Services that need a '
+                f'bearer token need an SSO session stored in files.'
+            ),
+        )
+
     def load_token(self, **kwargs):
+        if self._credential_daemon_session is not None:
+            # Only a request to a bearer-token service needs the token, so
+            # the error comes then, and clients for other services still
+            # work with the profile.
+            return DeferredRefreshableToken(
+                self.METHOD, self._in_daemon_refresher, time_fetcher=self._now
+            )
+
         if self._sso_config is None:
             return None
 

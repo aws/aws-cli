@@ -12,7 +12,12 @@
 # language governing permissions and limitations under the License.
 import collections
 import logging
+import os
+import pathlib
 import platform
+import sys
+import tempfile
+from unittest import mock
 
 import pytest
 from botocore.model import OperationModel
@@ -22,6 +27,7 @@ from prompt_toolkit.output import DummyOutput
 
 import awscli.logger
 from awscli.clidriver import ServiceCommand, create_clidriver
+from awscli.compat import is_windows
 
 
 @pytest.fixture
@@ -126,6 +132,24 @@ def clear_loggers():
     awscli.logger.disable_crt_logging()
 
 
+@pytest.fixture(autouse=True)
+def fake_credential_daemon_counts_as_signed(request):
+    """On macOS, commands check that the credential daemon on the socket is
+    the signed release. The fake credential daemon runs in the test
+    process, which isn't, so its signature counts as valid here. Tests
+    marked ``real_code_signature`` run the real check."""
+    if sys.platform != 'darwin' or request.node.get_closest_marker(
+        'real_code_signature'
+    ):
+        yield
+        return
+    with mock.patch(
+        'botocore.credential_daemon.codesign._code_signature_status',
+        return_value=0,
+    ):
+        yield
+
+
 @pytest.fixture
 def ptk_app_session():
     with create_pipe_input() as pipe_input:
@@ -137,3 +161,26 @@ def ptk_app_session():
                 yield session
         finally:
             pipe_input.close()
+
+
+@pytest.fixture
+def sock_dir():
+    # A short directory for sockets: pytest's tmp_path can pass sun_path's
+    # limit (104 bytes on macOS, 108 on Linux), and bind() or connect()
+    # then fails with a different error.
+    if is_windows:
+        pytest.skip('Needs Unix sockets')
+    with tempfile.TemporaryDirectory(dir='/tmp', prefix='cd') as path:
+        yield pathlib.Path(path)
+
+
+@pytest.fixture
+def private_dir(sock_dir):
+    # sock_dir closed to other users, through any link (/tmp on macOS), as
+    # the credential daemon socket checks want it.
+    os.chmod(sock_dir, 0o700)
+    yield pathlib.Path(os.path.realpath(sock_dir))
+    # Tests may close folders inside it; open them so they can be removed.
+    for root, dirs, _ in os.walk(sock_dir):
+        for name in dirs:
+            os.chmod(os.path.join(root, name), 0o700)

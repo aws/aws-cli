@@ -501,6 +501,97 @@ Example configuration with parameters::
     credential_process = /opt/bin/awscreds-custom --username monty
 
 
+Storing Credentials in a Credential Daemon
+------------------------------------------
+
+A credential daemon keeps a profile's credentials on this machine instead of
+in plaintext files under ``~/.aws``. Two values in the AWS CLI config file
+control it:
+
+* ``credential_daemon`` - The name of the credential in the credential daemon
+  that holds the profile's credentials. It says where the credentials are
+  now: every command that uses the profile gets its credentials from the
+  credential daemon, whatever ``credential_storage`` says. The AWS CLI reads
+  it only from the config file (``~/.aws/config``), not from the shared
+  credentials file. The AWS CLI adds it when credentials move into the
+  credential daemon and removes it when they move back to files.
+* ``credential_storage`` - Where the profile's next sign-in or key store
+  goes: ``daemon`` for the credential daemon, or ``file`` for files under
+  ``~/.aws``. A sign-in or key store is ``aws login``, or ``aws configure``
+  when you enter access keys.
+  Like ``credential_daemon``, it's read only from the config file.
+
+Setting ``credential_storage`` moves nothing. With
+``credential_storage = file`` on a profile that has ``credential_daemon``,
+the profile keeps using the credential daemon until its credentials move:
+
+* A session moves at the next sign-in. The sign-in writes the session to
+  files, removes ``credential_daemon``, and signs out the credential daemon's
+  copy. If the credential daemon isn't installed, its copy stays in its
+  storage on your computer, and the AWS CLI prints a warning that it wasn't
+  signed out.
+* Access keys move when you enter them again with ``aws configure``. The AWS
+  CLI writes them to files, removes ``credential_daemon``, and deletes the
+  credential daemon's copy. The credential daemon asks you to approve the
+  deletion with Touch ID or sudo. If you decline, the keys stay in the
+  credential daemon and the AWS CLI prints a warning that they weren't
+  deleted. If another profile's ``credential_daemon`` names the same
+  credential, the AWS CLI keeps it and says which profile uses it.
+
+``aws login`` fails for a profile whose credential in the credential daemon
+holds access keys, regardless of the ``credential_storage`` value.
+
+If a profile has neither setting, the AWS CLI asks once where to store its
+credentials and saves the answer as ``credential_storage``. It asks only in a
+terminal, with the credential daemon running. Otherwise, the credentials go to
+files and the AWS CLI saves nothing.
+
+A profile with ``sso_session`` or ``sso_start_url`` and neither
+``sso_account_id`` nor ``sso_role_name`` keeps its own credentials in files.
+The AWS CLI never asks for it, and refuses ``AWS_CREDENTIAL_STORAGE=daemon``
+for it.
+
+If you haven't installed the credential daemon and ``aws login`` writes a
+session to files, or ``aws configure`` writes access keys to them, the AWS CLI
+prints a note on how to install it, in a terminal. To stop this note, set ``credential_storage = file`` or
+``AWS_CREDENTIAL_STORAGE = file``.
+
+Example: a profile in the credential daemon that moves back to files at its
+next sign-in::
+
+  # In ~/.aws/config
+  [profile dev]
+  credential_daemon = login.dev
+  credential_storage = file
+
+  $ aws login --profile dev
+
+``dev`` uses the credential daemon until ``aws login`` runs. After that,
+``dev`` uses files, and ``credential_daemon`` is gone.
+
+This setting can also be configured via the environment:
+
+``AWS_CREDENTIAL_STORAGE``
+    ``daemon`` or ``file``. Overrides ``credential_storage`` in every
+    profile.
+
+Finding the credential daemon
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+The AWS CLI and SDKs find the credential daemon at
+``AWS_CREDENTIAL_DAEMON_SOCKET`` if it's set, or else at
+``~/.aws/credential-daemon.sock``, and look nowhere else. That path is usually
+a link to the credential daemon's own socket. ``aws configure
+credential-daemon install`` creates the link for the user who installs, and
+``aws configure credential-daemon link`` creates it for other users. Without
+the link, commands that need the credential daemon fail with an error.
+
+``AWS_CREDENTIAL_DAEMON_SOCKET``
+    The absolute path of the credential daemon's socket, used instead of
+    ``~/.aws/credential-daemon.sock``. An empty or relative value counts as
+    unset.
+
+
 Service Specific Configuration
 ==============================
 

@@ -792,6 +792,213 @@ class LoginAuthorizationCodeError(LoginError):
     fmt = "Error loading or redeeming a login authorization code: {error_msg} "
 
 
+class CredentialDaemonError(BotoCoreError):
+    """An error from the credential daemon.
+
+    :ivar code: The credential daemon's error code, such as
+        ``REAUTH_REQUIRED``, if any.
+    :ivar data: Any other details the credential daemon sent with the error.
+    :ivar daemon_message: The credential daemon's own message, control
+        characters removed, if the error came from a credential daemon error
+        reply.
+
+    Raise it with ``error_msg``, the whole message, or, for a subclass whose
+    ``fmt`` names fields, with those fields, such as ``credential_name``.
+    ``error_msg`` wins over the subclass's ``fmt``. A message built from
+    fields ends with what the credential daemon said, if anything
+    (``{daemon_said}``).
+    """
+
+    fmt = '{error_msg}'
+
+    def __init__(self, **kwargs):
+        kwargs.setdefault('code', None)
+        kwargs.setdefault('data', {})
+        kwargs.setdefault('daemon_message', None)
+        if 'error_msg' in kwargs:
+            self.fmt = CredentialDaemonError.fmt
+        super().__init__(**kwargs, daemon_said=self._daemon_said(kwargs))
+        # The fields as passed, so the error pickles as raised.
+        self.kwargs = kwargs
+        self.code = kwargs['code']
+        self.data = kwargs['data']
+        self.daemon_message = kwargs['daemon_message']
+
+    @staticmethod
+    def _daemon_said(kwargs):
+        # The SEP: an error from a daemon error reply shows the daemon's
+        # message too, so the customer sees what the credential daemon said.
+        if not kwargs['daemon_message']:
+            return ''
+        return f" The credential daemon said: {kwargs['daemon_message']}"
+
+
+class CredentialDaemonConnectionError(CredentialDaemonError):
+    """The CLI couldn't reach the credential daemon, or lost its connection to
+    it."""
+
+
+class CredentialDaemonUnsupportedPlatformError(
+    CredentialDaemonConnectionError
+):
+    """The credential daemon doesn't run on this platform, such as Windows,
+    so the CLI can't connect to it."""
+
+
+class CredentialDaemonNotRunningError(CredentialDaemonConnectionError):
+    """Nothing is listening on the credential daemon's socket.
+
+    :ivar hint: What to tell the customer to do, if not how to start the
+        credential daemon: the empty string when the message already says
+        it, or None for the usual hint (``credential_daemon.start_hint``).
+    """
+
+    def __init__(self, **kwargs):
+        kwargs.setdefault('hint', None)
+        super().__init__(**kwargs)
+        self.hint = kwargs['hint']
+
+
+class CredentialDaemonTimeoutError(CredentialDaemonNotRunningError):
+    """The credential daemon didn't accept the connection or answer before the
+    timeout.
+
+    The SEP counts a timeout as NOT_RUNNING.
+    """
+
+
+class CredentialDaemonUntrustedSocketError(CredentialDaemonConnectionError):
+    """The CLI didn't trust what's on the credential daemon's socket, so it
+    sent nothing (``UNTRUSTED_SOCKET``).
+
+    Another user could own the socket, a folder above it, or the process
+    serving it, or on macOS the process serving it isn't the signed
+    credential daemon (or its signature couldn't be checked). Commands treat
+    it as the credential daemon being unavailable, but never suggest
+    starting it.
+    """
+
+    def __init__(self, **kwargs):
+        kwargs.setdefault('code', 'UNTRUSTED_SOCKET')
+        super().__init__(**kwargs)
+
+
+class CredentialDaemonProtocolError(CredentialDaemonError):
+    """The credential daemon sent something this version of the CLI doesn't
+    understand.
+
+    For a credential/get reply the CLI can't use, raise it with
+    ``credential_name`` and ``problem``, which never holds a value from the
+    reply.
+    """
+
+    fmt = (
+        "The credential daemon sent a reply the CLI can't use for "
+        "'{credential_name}': {problem}."
+    )
+
+
+class CredentialDaemonUnsupportedMaterialError(CredentialDaemonError):
+    """The credential daemon sent a type of credential this version of the
+    CLI can't use, such as a bearer token (the SEP's UNSUPPORTED_MATERIAL).
+
+    ``material_type`` is shown as passed, so it has its control characters
+    removed first.
+    """
+
+    fmt = (
+        "This version of the AWS CLI doesn't support material type "
+        "{material_type} from the credential daemon for '{credential_name}'. "
+        "Update the AWS CLI."
+    )
+
+
+class CredentialDaemonReauthRequiredError(CredentialDaemonError):
+    """The credential was signed out, or its session ended.
+
+    ``advice`` says what ended and how to sign in again.
+    """
+
+    fmt = '{advice}{daemon_said}'
+
+
+class CredentialDaemonCredentialNotFoundError(CredentialDaemonError):
+    """The credential daemon has no credential with the name the CLI asked
+    for.
+
+    ``advice`` says how to create it again.
+    """
+
+    fmt = (
+        "The credential daemon has no credential named '{credential_name}'. "
+        "{advice}{daemon_said}"
+    )
+
+
+class CredentialDaemonProviderUnavailableError(CredentialDaemonError):
+    """The credential daemon couldn't get credentials from AWS: it couldn't
+    reach AWS, or AWS refused the request.
+
+    The credential daemon uses this code for both, so the message doesn't
+    say which. It runs as a service and calls AWS with its own settings,
+    never the caller's, so the message says where proxy settings go.
+    """
+
+    fmt = (
+        "The credential daemon couldn't get credentials from AWS."
+        "{daemon_said} If you use a proxy, set HTTPS_PROXY (and "
+        "AWS_CA_BUNDLE, if the proxy inspects TLS) in the credential "
+        "daemon's service settings. Settings in your shell don't reach it."
+    )
+
+    @staticmethod
+    def _daemon_said(kwargs):
+        # The daemon's message ends its sentence here, as end_sentence in
+        # botocore.credential_daemon.text does; that package imports this
+        # module, so it can't be imported here.
+        said = CredentialDaemonError._daemon_said(kwargs).rstrip()
+        if said and not said.endswith(('.', '!', '?')):
+            said += '.'
+        return said
+
+
+class CredentialDaemonCredentialUnusableError(CredentialDaemonError):
+    """The credential daemon can't use the credential: its settings changed
+    since they were approved, the caller's credential daemon configuration
+    doesn't validate, or its stored data can't be checked
+    (``CONFIG_DRIFTED``, ``CONFIG_INVALID``, ``INTEGRITY_UNVERIFIABLE`` or
+    ``CUSTODY_BROKEN``).
+
+    ``profile`` is shown as passed, so it has its control characters removed
+    first.
+    """
+
+    fmt = (
+        "The credential daemon can't use credential '{credential_name}' for "
+        "profile '{profile}': its settings changed, or its stored data can't "
+        "be checked.{daemon_said}"
+    )
+
+
+class CredentialDaemonIdentityMismatchError(CredentialDaemonError):
+    """A sign-in to a credential the credential daemon holds signed in as
+    another account or role than the credential records, or the credential
+    has no record of one, so nothing was saved (``IDENTITY_MISMATCH``).
+    Changing who a credential signs in as replaces it, which needs
+    approval."""
+
+
+class CredentialDaemonRequestRejectedError(CredentialDaemonError):
+    """The credential daemon refused the request with an error the CLI has no
+    name for (the SEP's REQUEST_REJECTED). ``code`` is the credential daemon's
+    own code."""
+
+
+class CredentialDaemonApprovalRequiredError(CredentialDaemonError):
+    """The credential daemon needs approval first, for example to replace a
+    credential another tool created."""
+
+
 class CapacityNotAvailableError(BotoCoreError):
     fmt = 'Insufficient request capacity available.'
 

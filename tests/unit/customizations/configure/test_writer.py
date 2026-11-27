@@ -371,3 +371,166 @@ class TestConfigFileWriter(unittest.TestCase):
             self.config_filename,
         )
         mock_warn.assert_not_called()
+
+
+class TestRemoveEmptySection(unittest.TestCase):
+    KEYS = {'aws_access_key_id': None, 'aws_secret_access_key': None}
+
+    def setUp(self):
+        self.dirname = tempfile.mkdtemp()
+        self.filename = os.path.join(self.dirname, 'credentials')
+        self.writer = ConfigFileWriter()
+
+    def tearDown(self):
+        shutil.rmtree(self.dirname)
+
+    def remove_keys(self, original, section='ci', **kwargs):
+        with open(self.filename, 'w') as f:
+            f.write(original)
+        values = dict(self.KEYS, __section__=section)
+        self.writer.update_config(
+            values, self.filename, remove_empty_section=True, **kwargs
+        )
+        with open(self.filename) as f:
+            return f.read()
+
+    def test_section_goes_with_its_only_keys(self):
+        original = '[ci]\naws_access_key_id = a\naws_secret_access_key = b\n'
+        self.assertEqual(self.remove_keys(original), '')
+
+    def test_section_with_other_keys_stays(self):
+        original = (
+            '[ci]\n'
+            'aws_access_key_id = a\n'
+            'mfa_serial = arn:aws:iam::123456789012:mfa/ci\n'
+            'aws_secret_access_key = b\n'
+        )
+        self.assertEqual(
+            self.remove_keys(original),
+            '[ci]\nmfa_serial = arn:aws:iam::123456789012:mfa/ci\n',
+        )
+
+    def test_neighbours_and_comments_are_unchanged(self):
+        before = '# my keys\n[default]\nregion = us-west-2\n; old ci keys\n\n'
+        after = (
+            '\n[deploy]  # deploy keys\n'
+            '#aws_access_key_id = old\n'
+            'aws_access_key_id = c\n'
+            'aws_secret_access_key = d\n'
+        )
+        original = (
+            before
+            + '[ci]\n# rotated 2024\n'
+            + 'aws_access_key_id = a\naws_secret_access_key = b\n'
+            + after
+        )
+        self.assertEqual(
+            self.remove_keys(original), before + '# rotated 2024\n' + after
+        )
+
+    def test_last_section_without_trailing_newline(self):
+        original = '[a]\nx = 1\n[ci]\naws_access_key_id = a'
+        values = {'aws_access_key_id': None, '__section__': 'ci'}
+        with open(self.filename, 'w') as f:
+            f.write(original)
+        self.writer.update_config(
+            values, self.filename, remove_empty_section=True
+        )
+        with open(self.filename) as f:
+            self.assertEqual(f.read(), '[a]\nx = 1\n')
+
+    def test_comment_after_the_header_stays(self):
+        for comment in ('# ci keys', '; ci keys'):
+            original = (
+                f'[ci]  {comment}\n'
+                'aws_access_key_id = a\n'
+                'aws_secret_access_key = b\n'
+            )
+            self.assertEqual(self.remove_keys(original), f'{comment}\n')
+
+    def test_default_section(self):
+        original = (
+            '[default]\naws_access_key_id = a\naws_secret_access_key = b\n'
+            '[ci]\nregion = us-west-2\n'
+        )
+        self.assertEqual(
+            self.remove_keys(original, section='default'),
+            '[ci]\nregion = us-west-2\n',
+        )
+
+    def test_name_with_a_space(self):
+        for header in ('[my ci]', '[my "ci"]'):
+            original = (
+                f'{header}\n'
+                'aws_access_key_id = a\n'
+                'aws_secret_access_key = b\n'
+                '[deploy]\nregion = us-west-2\n'
+            )
+            self.assertEqual(
+                self.remove_keys(original, section='my ci'),
+                '[deploy]\nregion = us-west-2\n',
+            )
+
+    def test_last_section_of_comments_and_keys_without_trailing_newline(
+        self,
+    ):
+        original = (
+            '[a]\nx = 1\n'
+            '[ci]  # ci keys\n# only comments\n; and this\n'
+            'aws_access_key_id = a\naws_secret_access_key = b'
+        )
+        self.assertEqual(
+            self.remove_keys(original),
+            '[a]\nx = 1\n# ci keys\n# only comments\n; and this\n',
+        )
+
+    def test_colon_separators(self):
+        original = '[ci]\naws_access_key_id: a\naws_secret_access_key:b\n'
+        self.assertEqual(self.remove_keys(original), '')
+
+    def test_crlf_lines_are_written_with_the_platform_line_ending(self):
+        # Every update_config writes the platform's line endings (text
+        # mode), LF outside Windows; this pins it for this path too.
+        with open(self.filename, 'w', newline='') as f:
+            f.write(
+                '[a]\r\nx = 1\r\n'
+                '[ci]\r\naws_access_key_id = a\r\n'
+                'aws_secret_access_key = b\r\n'
+            )
+        self.writer.update_config(
+            dict(self.KEYS, __section__='ci'),
+            self.filename,
+            remove_empty_section=True,
+        )
+        with open(self.filename, 'rb') as f:
+            self.assertEqual(
+                f.read(),
+                b'[a]\nx = 1\n'.replace(b'\n', os.linesep.encode()),
+            )
+
+    def test_a_continuation_line_is_not_the_header(self):
+        # botocore reads "  [ci]" as part of a's x value, so the real [ci]
+        # is the one that goes.
+        original = (
+            '[a]\nx = 1\n  [ci]\n'
+            '[ci]\naws_access_key_id = a\naws_secret_access_key = b\n'
+        )
+        self.assertEqual(self.remove_keys(original), '[a]\nx = 1\n  [ci]\n')
+
+    def test_empty_section_stays_by_default(self):
+        original = '[ci]\naws_access_key_id = a\naws_secret_access_key = b\n'
+        with open(self.filename, 'w') as f:
+            f.write(original)
+        self.writer.update_config(
+            dict(self.KEYS, __section__='ci'), self.filename
+        )
+        with open(self.filename) as f:
+            self.assertEqual(f.read(), '[ci]\n')
+
+    @skip_if_windows('File mode is POSIX only.')
+    def test_file_mode_is_kept(self):
+        with open(self.filename, 'w') as f:
+            f.write('[ci]\naws_access_key_id = a\n')
+        os.chmod(self.filename, 0o600)
+        self.remove_keys('[ci]\naws_access_key_id = a\n')
+        self.assertEqual(os.stat(self.filename).st_mode & 0o777, 0o600)

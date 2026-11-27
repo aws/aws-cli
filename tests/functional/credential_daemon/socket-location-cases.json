@@ -1,0 +1,461 @@
+[
+  {
+    "id": "success-basic",
+    "documentation": "Keys, token, expiry and account ID from credential/get (Calling the daemon).",
+    "platform": "linux",
+    "configContents": "[profile dev]\ncredential_daemon = dev\n",
+    "profile": "dev",
+    "nextProvider": {
+      "accessKeyId": "AKIDNEXTPROVIDER"
+    },
+    "daemon": {
+      "sockets": [
+        "link"
+      ],
+      "exchanges": [
+        {
+          "expectedRequest": {
+            "method": "credential/get",
+            "params": {
+              "credential": "dev"
+            }
+          },
+          "replyLines": [
+            {
+              "jsonrpc": "2.0",
+              "id": "$id",
+              "result": {
+                "credential": "dev",
+                "material": {
+                  "type": "session_credentials",
+                  "access_key_id": "ASIADAEMON",
+                  "secret_access_key": "s3cr3t",
+                  "session_token": "token",
+                  "account_id": "123456789012"
+                },
+                "provenance": "cached_shared",
+                "expires_at": "2026-11-01T00:15:00Z"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    "outcome": {
+      "result": "credentials",
+      "dialed": "link",
+      "source": "daemon",
+      "accessKeyId": "ASIADAEMON",
+      "secretAccessKey": "s3cr3t",
+      "sessionToken": "token",
+      "accountId": "123456789012",
+      "expiresAt": "2026-11-01T00:15:00Z"
+    }
+  },
+  {
+    "id": "not-running",
+    "documentation": "$HOME/.aws/credential-daemon.sock links to a socket that nothing listens on: the not-running error names that path and how to start the daemon. terminal: SDKs whose chain moves on (Errors) assert the error from the provider.",
+    "platform": "linux",
+    "configContents": "[profile dev]\ncredential_daemon = dev\n",
+    "profile": "dev",
+    "nextProvider": {
+      "accessKeyId": "AKIDNEXTPROVIDER"
+    },
+    "daemon": {
+      "sockets": [
+        "link-stale"
+      ]
+    },
+    "outcome": {
+      "result": "error",
+      "errorKind": "notRunning",
+      "terminal": true,
+      "errorCode": "NOT_RUNNING",
+      "dialed": "link",
+      "messageContains": [
+        "daemon",
+        "credential-daemon.sock"
+      ]
+    }
+  },
+  {
+    "id": "linux-env-socket-wins",
+    "documentation": "Linux: AWS_CREDENTIAL_DAEMON_SOCKET is dialed even when $HOME/.aws/credential-daemon.sock exists.",
+    "platform": "linux",
+    "configContents": "[profile dev]\ncredential_daemon = dev\n",
+    "profile": "dev",
+    "nextProvider": {
+      "accessKeyId": "AKIDNEXTPROVIDER"
+    },
+    "daemon": {
+      "sockets": [
+        "link",
+        "env"
+      ],
+      "exchanges": [
+        {
+          "expectedRequest": {
+            "method": "credential/get",
+            "params": {
+              "credential": "dev"
+            }
+          },
+          "replyLines": [
+            {
+              "jsonrpc": "2.0",
+              "id": "$id",
+              "result": {
+                "credential": "dev",
+                "material": {
+                  "type": "session_credentials",
+                  "access_key_id": "ASIADAEMON",
+                  "secret_access_key": "s3cr3t",
+                  "session_token": "token",
+                  "account_id": "123456789012"
+                },
+                "provenance": "cached_shared",
+                "expires_at": "2026-11-01T00:15:00Z"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    "outcome": {
+      "result": "credentials",
+      "dialed": "env",
+      "source": "daemon",
+      "accessKeyId": "ASIADAEMON",
+      "secretAccessKey": "s3cr3t",
+      "sessionToken": "token",
+      "accountId": "123456789012",
+      "expiresAt": "2026-11-01T00:15:00Z"
+    },
+    "environment": {
+      "AWS_CREDENTIAL_DAEMON_SOCKET": "env"
+    }
+  },
+  {
+    "id": "env-socket-not-listening",
+    "documentation": "AWS_CREDENTIAL_DAEMON_SOCKET names a path with no socket: not running, no fallback to $HOME/.aws/credential-daemon.sock.",
+    "platform": "linux",
+    "configContents": "[profile dev]\ncredential_daemon = dev\n",
+    "profile": "dev",
+    "nextProvider": {
+      "accessKeyId": "AKIDNEXTPROVIDER"
+    },
+    "daemon": {
+      "sockets": [
+        "link"
+      ]
+    },
+    "outcome": {
+      "result": "error",
+      "errorKind": "notRunning",
+      "terminal": true,
+      "errorCode": "NOT_RUNNING",
+      "dialed": "env"
+    },
+    "environment": {
+      "AWS_CREDENTIAL_DAEMON_SOCKET": "env"
+    }
+  },
+  {
+    "id": "env-socket-regular-file",
+    "documentation": "AWS_CREDENTIAL_DAEMON_SOCKET names a regular file: the connect fails, so not running, with no fallback to $HOME/.aws/credential-daemon.sock.",
+    "platform": "macos",
+    "configContents": "[profile dev]\ncredential_daemon = dev\n",
+    "profile": "dev",
+    "nextProvider": {
+      "accessKeyId": "AKIDNEXTPROVIDER"
+    },
+    "daemon": {
+      "sockets": [
+        "link",
+        "env-file"
+      ]
+    },
+    "outcome": {
+      "result": "error",
+      "errorKind": "notRunning",
+      "terminal": true,
+      "errorCode": "NOT_RUNNING",
+      "dialed": "env"
+    },
+    "environment": {
+      "AWS_CREDENTIAL_DAEMON_SOCKET": "env"
+    }
+  },
+  {
+    "id": "env-socket-relative",
+    "documentation": "AWS_CREDENTIAL_DAEMON_SOCKET is a relative path: it counts as unset, so the socket at that path isn't dialed and $HOME/.aws/credential-daemon.sock is (Socket location).",
+    "platform": "linux",
+    "configContents": "[profile dev]\ncredential_daemon = dev\n",
+    "profile": "dev",
+    "nextProvider": {
+      "accessKeyId": "AKIDNEXTPROVIDER"
+    },
+    "daemon": {
+      "sockets": [
+        "link",
+        "env"
+      ],
+      "exchanges": [
+        {
+          "expectedRequest": {
+            "method": "credential/get",
+            "params": {
+              "credential": "dev"
+            }
+          },
+          "replyLines": [
+            {
+              "jsonrpc": "2.0",
+              "id": "$id",
+              "result": {
+                "credential": "dev",
+                "material": {
+                  "type": "session_credentials",
+                  "access_key_id": "ASIADAEMON",
+                  "secret_access_key": "s3cr3t",
+                  "session_token": "token",
+                  "account_id": "123456789012"
+                },
+                "provenance": "cached_shared",
+                "expires_at": "2026-11-01T00:15:00Z"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    "outcome": {
+      "result": "credentials",
+      "dialed": "link",
+      "source": "daemon",
+      "accessKeyId": "ASIADAEMON",
+      "secretAccessKey": "s3cr3t",
+      "sessionToken": "token",
+      "accountId": "123456789012",
+      "expiresAt": "2026-11-01T00:15:00Z"
+    },
+    "environment": {
+      "AWS_CREDENTIAL_DAEMON_SOCKET": "relative"
+    }
+  },
+  {
+    "id": "env-socket-empty",
+    "documentation": "AWS_CREDENTIAL_DAEMON_SOCKET is the empty string: it counts as unset, so $HOME/.aws/credential-daemon.sock is dialed (Socket location).",
+    "platform": "macos",
+    "configContents": "[profile dev]\ncredential_daemon = dev\n",
+    "profile": "dev",
+    "nextProvider": {
+      "accessKeyId": "AKIDNEXTPROVIDER"
+    },
+    "daemon": {
+      "sockets": [
+        "link"
+      ],
+      "exchanges": [
+        {
+          "expectedRequest": {
+            "method": "credential/get",
+            "params": {
+              "credential": "dev"
+            }
+          },
+          "replyLines": [
+            {
+              "jsonrpc": "2.0",
+              "id": "$id",
+              "result": {
+                "credential": "dev",
+                "material": {
+                  "type": "session_credentials",
+                  "access_key_id": "ASIADAEMON",
+                  "secret_access_key": "s3cr3t",
+                  "session_token": "token",
+                  "account_id": "123456789012"
+                },
+                "provenance": "cached_shared",
+                "expires_at": "2026-11-01T00:15:00Z"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    "outcome": {
+      "result": "credentials",
+      "dialed": "link",
+      "source": "daemon",
+      "accessKeyId": "ASIADAEMON",
+      "secretAccessKey": "s3cr3t",
+      "sessionToken": "token",
+      "accountId": "123456789012",
+      "expiresAt": "2026-11-01T00:15:00Z"
+    },
+    "environment": {
+      "AWS_CREDENTIAL_DAEMON_SOCKET": ""
+    }
+  },
+  {
+    "id": "no-link",
+    "documentation": "Nothing at $HOME/.aws/credential-daemon.sock and no AWS_CREDENTIAL_DAEMON_SOCKET: no location applies, so nothing is dialed, and the not-running error says to install the daemon or link its socket there, or to set AWS_CREDENTIAL_DAEMON_SOCKET (Socket location).",
+    "platform": "linux",
+    "configContents": "[profile dev]\ncredential_daemon = dev\n",
+    "profile": "dev",
+    "nextProvider": {
+      "accessKeyId": "AKIDNEXTPROVIDER"
+    },
+    "daemon": {
+      "sockets": []
+    },
+    "outcome": {
+      "result": "error",
+      "errorKind": "notRunning",
+      "terminal": true,
+      "errorCode": "NOT_RUNNING",
+      "dialed": "none",
+      "messageContains": [
+        "credential-daemon.sock",
+        "AWS_CREDENTIAL_DAEMON_SOCKET"
+      ]
+    }
+  },
+  {
+    "id": "no-link-home-unset",
+    "documentation": "HOME unset: location 4 isn't absolute, so it is skipped even though a link is at .aws/credential-daemon.sock under the current directory; no location applies, so nothing is dialed (Socket location).",
+    "platform": "linux",
+    "configContents": "[profile dev]\ncredential_daemon = dev\n",
+    "profile": "dev",
+    "nextProvider": {
+      "accessKeyId": "AKIDNEXTPROVIDER"
+    },
+    "daemon": {
+      "sockets": [
+        "link"
+      ]
+    },
+    "outcome": {
+      "result": "error",
+      "errorKind": "notRunning",
+      "terminal": true,
+      "errorCode": "NOT_RUNNING",
+      "dialed": "none",
+      "messageContains": [
+        "AWS_CREDENTIAL_DAEMON_SOCKET"
+      ]
+    },
+    "unsetEnvironment": [
+      "HOME"
+    ]
+  },
+  {
+    "id": "no-link-home-relative",
+    "documentation": "macOS with a relative HOME: location 4 isn't absolute, so it is skipped even though a link is there under the current directory; no location applies, so nothing is dialed (Socket location).",
+    "platform": "macos",
+    "configContents": "[profile dev]\ncredential_daemon = dev\n",
+    "profile": "dev",
+    "nextProvider": {
+      "accessKeyId": "AKIDNEXTPROVIDER"
+    },
+    "daemon": {
+      "sockets": [
+        "link"
+      ]
+    },
+    "outcome": {
+      "result": "error",
+      "errorKind": "notRunning",
+      "terminal": true,
+      "errorCode": "NOT_RUNNING",
+      "dialed": "none",
+      "messageContains": [
+        "AWS_CREDENTIAL_DAEMON_SOCKET"
+      ]
+    },
+    "environment": {
+      "HOME": "relative"
+    }
+  },
+  {
+    "id": "link-dangling",
+    "documentation": "$HOME/.aws/credential-daemon.sock links to a missing path: not running, the error names the link and its target, and no other location is tried (Socket location).",
+    "platform": "linux",
+    "configContents": "[profile dev]\ncredential_daemon = dev\n",
+    "profile": "dev",
+    "nextProvider": {
+      "accessKeyId": "AKIDNEXTPROVIDER"
+    },
+    "daemon": {
+      "sockets": [
+        "link-dangling"
+      ]
+    },
+    "outcome": {
+      "result": "error",
+      "errorKind": "notRunning",
+      "terminal": true,
+      "errorCode": "NOT_RUNNING",
+      "dialed": "link",
+      "messageContains": [
+        "credential-daemon.sock",
+        "missing-daemon.sock"
+      ]
+    }
+  },
+  {
+    "id": "link-is-a-socket",
+    "documentation": "A socket, not a link, at $HOME/.aws/credential-daemon.sock: it is dialed (Socket location).",
+    "platform": "macos",
+    "configContents": "[profile dev]\ncredential_daemon = dev\n",
+    "profile": "dev",
+    "nextProvider": {
+      "accessKeyId": "AKIDNEXTPROVIDER"
+    },
+    "daemon": {
+      "sockets": [
+        "home-socket"
+      ],
+      "exchanges": [
+        {
+          "expectedRequest": {
+            "method": "credential/get",
+            "params": {
+              "credential": "dev"
+            }
+          },
+          "replyLines": [
+            {
+              "jsonrpc": "2.0",
+              "id": "$id",
+              "result": {
+                "credential": "dev",
+                "material": {
+                  "type": "session_credentials",
+                  "access_key_id": "ASIADAEMON",
+                  "secret_access_key": "s3cr3t",
+                  "session_token": "token",
+                  "account_id": "123456789012"
+                },
+                "provenance": "cached_shared",
+                "expires_at": "2026-11-01T00:15:00Z"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    "outcome": {
+      "result": "credentials",
+      "dialed": "home-socket",
+      "source": "daemon",
+      "accessKeyId": "ASIADAEMON",
+      "secretAccessKey": "s3cr3t",
+      "sessionToken": "token",
+      "accountId": "123456789012",
+      "expiresAt": "2026-11-01T00:15:00Z"
+    }
+  }
+]

@@ -111,7 +111,9 @@ class ConfigureGetCommand(BasicCommand):
             config = self._session.get_scoped_config()
             value = config.get(varname)
         else:
-            value = self._get_dotted_config_value(varname)
+            value, profile_name, config_name = self._get_dotted_config_value(
+                varname
+            )
 
         LOG.debug(f'Config value retrieved: {value}')
 
@@ -131,6 +133,10 @@ class ConfigureGetCommand(BasicCommand):
             return 1
 
     def _get_dotted_config_value(self, varname):
+        """Return the value for a dotted ``varname``, the profile it was
+        read from and its name there. The profile and name are None for a
+        predefined section's value, even one read from the profile, and the
+        name is None for a nested setting."""
         parts = varname.split('.')
         num_dots = varname.count('.')
 
@@ -144,7 +150,7 @@ class ConfigureGetCommand(BasicCommand):
                 value = (
                     full_config['profiles'].get(section, {}).get(config_name)
                 )
-            return value
+            return value, None, None
 
         if parts[0] == 'profile':
             profile_name = parts[1]
@@ -176,7 +182,9 @@ class ConfigureGetCommand(BasicCommand):
                 value = value.get(remaining[-1])
             except AttributeError:
                 value = None
-        return value
+        if remaining:
+            config_name = None
+        return value, profile_name, config_name
 
     def _get_subsection_property(self, section_type, section_name, varname):
         full_config = self._session.full_config

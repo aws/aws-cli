@@ -3242,6 +3242,38 @@ class FileWebIdentityTokenLoader:
             return token_file.read()
 
 
+# The config keys that make a profile get SSO role credentials.
+SSO_ROLE_CONFIG_VARS = ('sso_role_name', 'sso_account_id')
+
+
+def sso_token_cache_key(start_url, session_name=None):
+    """Return the cache key of an SSO token.
+
+    The token is keyed by the sso-session name if there is one, otherwise
+    by the start URL.
+    """
+    input_str = start_url
+    if session_name is not None:
+        input_str = session_name
+    return hashlib.sha1(input_str.encode('utf-8')).hexdigest()
+
+
+def sso_registration_cache_key(start_url, region, scopes, session_name):
+    """Return the cache key of an SSO OIDC client registration."""
+    # Registration is unique based on the following properties to ensure
+    # modifications to the registration do not affect the permissions of
+    # tokens derived for other start URLs.
+    args = {
+        'tool': 'botocore',
+        'startUrl': start_url,
+        'region': region,
+        'scopes': scopes,
+        'session_name': session_name,
+    }
+    cache_args = json.dumps(args, sort_keys=True).encode('utf-8')
+    return hashlib.sha1(cache_args).hexdigest()
+
+
 class BaseSSOTokenFetcher:
     """Base class for SSO token fetchers, for functionality
     shared between the device and authorization code grant flows.
@@ -3327,24 +3359,12 @@ class BaseSSOTokenFetcher:
         return f'botocore-client-{str(session_name)}'
 
     def _registration_cache_key(self, start_url, session_name, scopes):
-        # Registration is unique based on the following properties to ensure
-        # modifications to the registration do not affect the permissions of
-        # tokens derived for other start URLs.
-        args = {
-            'tool': 'botocore',
-            'startUrl': start_url,
-            'region': self._sso_region,
-            'scopes': scopes,
-            'session_name': session_name,
-        }
-        cache_args = json.dumps(args, sort_keys=True).encode('utf-8')
-        return hashlib.sha1(cache_args).hexdigest()
+        return sso_registration_cache_key(
+            start_url, self._sso_region, scopes, session_name
+        )
 
     def _token_cache_key(self, start_url, session_name):
-        input_str = start_url
-        if session_name is not None:
-            input_str = session_name
-        return hashlib.sha1(input_str.encode('utf-8')).hexdigest()
+        return sso_token_cache_key(start_url, session_name)
 
 
 class SSOTokenFetcher(BaseSSOTokenFetcher):
@@ -3829,10 +3849,7 @@ class SSOTokenLoader:
         self._cache = cache
 
     def _generate_cache_key(self, start_url, session_name):
-        input_str = start_url
-        if session_name is not None:
-            input_str = session_name
-        return hashlib.sha1(input_str.encode('utf-8')).hexdigest()
+        return sso_token_cache_key(start_url, session_name)
 
     def save_token(self, start_url, token, session_name=None):
         cache_key = self._generate_cache_key(start_url, session_name)

@@ -37,7 +37,13 @@ class ConfigFileWriter:
             )
             raise ValueError(err_msg)
 
-    def update_config(self, new_values, config_filename, check_permissions=False):
+    def update_config(
+        self,
+        new_values,
+        config_filename,
+        check_permissions=False,
+        remove_empty_section=False,
+    ):
         """Update config file with new values.
 
         This method will update a section in a config file with
@@ -66,6 +72,12 @@ class ConfigFileWriter:
         :type check_permissions: bool
         :param check_permissions: If True, warn if the file has
             permissions more permissive than 0o600.
+
+        :type remove_empty_section: bool
+        :param remove_empty_section: If True, and the section has no
+            options left after the update, remove its header too. Comments
+            and blank lines stay where they are, and a comment after the
+            header on its line stays as a line of its own.
 
         """
         section_name = new_values.pop('__section__', 'default')
@@ -111,6 +123,8 @@ class ConfigFileWriter:
         # to find the section in question
         try:
             self._update_section_contents(contents, section_name, new_values)
+            if remove_empty_section:
+                self._remove_section_if_empty(contents, section_name)
             with open(config_filename, 'w') as f:
                 f.write(''.join(contents))
         except SectionNotFoundError:
@@ -224,6 +238,24 @@ class ConfigFileWriter:
                 contents=contents,
                 new_values=new_values,
             )
+
+    def _remove_section_if_empty(self, contents, section_name):
+        start = self._find_section_start(contents, section_name)
+        for entry in contents[start + 1 :]:
+            if self.SECTION_REGEX.search(entry) is not None:
+                break
+            # An entry is a line, a removed line ('') or inserted lines.
+            for line in entry.splitlines():
+                stripped = line.strip()
+                if stripped and not stripped.startswith(('#', ';')):
+                    return
+        header = self.SECTION_REGEX.search(contents[start])
+        rest = contents[start][header.end() :].strip()
+        if rest.startswith(('#', ';')):
+            # Keep a comment that follows the header on its line.
+            contents[start] = f'{rest}\n'
+        else:
+            contents[start] = ''
 
     def _update_subattributes(self, index, contents, values, starting_indent):
         index += 1

@@ -25,6 +25,12 @@ from awscli.customizations.agenttoolkit.hint import (
 )
 from awscli.customizations.commands import BasicCommand
 from awscli.customizations.configure.addmodel import AddModelCommand
+from awscli.customizations.configure.credential_daemon_keys import (
+    NewProfileKeys,
+)
+from awscli.customizations.configure.credentialdaemon import (
+    ConfigureCredentialDaemonCommand,
+)
 from awscli.customizations.configure.exportcreds import (
     ConfigureExportCredentialsCommand,
 )
@@ -39,6 +45,12 @@ from awscli.customizations.configure.sso_commands import (
     ConfigureSSOSessionCommand,
 )
 from awscli.customizations.configure.writer import ConfigFileWriter
+from awscli.customizations.credential_daemon.hint import (
+    print_keys_install_hint,
+)
+from awscli.customizations.credential_daemon.storage.profiles import (
+    profile_or_default,
+)
 from awscli.customizations.utils import load_all_regions
 from awscli.utils import is_a_tty, is_stdin_a_tty
 
@@ -124,6 +136,10 @@ class ConfigureCommand(BasicCommand):
         {'name': 'sso-session', 'command_class': ConfigureSSOSessionCommand},
         {'name': 'mfa-login', 'command_class': ConfigureMFALoginCommand},
         {
+            'name': 'credential-daemon',
+            'command_class': ConfigureCredentialDaemonCommand,
+        },
+        {
             'name': 'export-credentials',
             'command_class': ConfigureExportCredentialsCommand,
         },
@@ -143,7 +159,7 @@ class ConfigureCommand(BasicCommand):
         ('output', "Default output format"),
     ]
 
-    def __init__(self, session, prompter=None, config_writer=None):
+    def __init__(self, session, prompter=None, config_writer=None, keys=None):
         super().__init__(session)
         if prompter is None:
             prompter = InteractivePrompter()
@@ -151,6 +167,9 @@ class ConfigureCommand(BasicCommand):
         if config_writer is None:
             config_writer = ConfigFileWriter()
         self._config_writer = config_writer
+        if keys is None:
+            keys = NewProfileKeys(session, config_writer=config_writer)
+        self._keys = keys
 
     def _needs_session_token(self, new_values):
         """Check if session token is needed based on access key ID."""
@@ -218,11 +237,23 @@ class ConfigureCommand(BasicCommand):
         if new_values:
             region = self._resolve_configured_region(new_values)
             profile = self._session.profile
-            self._write_out_creds_file_values(new_values, profile)
+            temporary = self._has_temporary_keys(new_values, config)
+            saved = self._keys.save(profile, new_values, region)
+            keys_file = self._write_out_creds_file_values(new_values, profile)
+            if saved is not None:
+                new_values.update(saved.values)
             if profile is not None:
                 section = profile_to_section(profile)
                 new_values['__section__'] = section
             self._config_writer.update_config(new_values, config_filename)
+            self._keys.after_write(saved)
+            if keys_file is not None and not temporary:
+                print_keys_install_hint(
+                    self._session,
+                    profile_or_default(profile),
+                    keys_file,
+                    saved.choice if saved is not None else None,
+                )
             if not profile_exists and profile is not None:
                 self._session._profile_map[profile] = {}
             maybe_prompt_agent_toolkit(
@@ -238,11 +269,23 @@ class ConfigureCommand(BasicCommand):
         except ProfileNotFound:
             return None
 
+    def _has_temporary_keys(self, new_values, config):
+        # The profile's keys once written: a session token, or an ASIA key
+        # ID, is temporary.
+        key_id = new_values.get(
+            'aws_access_key_id', config.get('aws_access_key_id')
+        )
+        token = new_values.get(
+            'aws_session_token', config.get('aws_session_token')
+        )
+        return bool(token) or bool(key_id and key_id.startswith('ASIA'))
+
     def _write_out_creds_file_values(self, new_values, profile_name):
         # The access_key/secret_key are now *always* written to the shared
         # credentials file (~/.aws/credentials), see aws/aws-cli#847.
         # post-conditions: ~/.aws/credentials will have the updated credential
         # file values and new_values will have the cred vars removed.
+        # Returns the credentials file if a secret was written to it.
         credential_file_values = {}
         if 'aws_access_key_id' in new_values:
             credential_file_values['aws_access_key_id'] = new_values.pop(
@@ -262,8 +305,15 @@ class ConfigureCommand(BasicCommand):
             shared_credentials_filename = os.path.expanduser(
                 self._session.get_config_variable('credentials_file')
             )
+            # update_config consumes the values.
+            wrote_secret = bool(
+                credential_file_values.get('aws_secret_access_key')
+            )
             self._config_writer.update_config(
                 credential_file_values,
                 shared_credentials_filename,
                 check_permissions=True,
             )
+            if wrote_secret:
+                return shared_credentials_filename
+        return None

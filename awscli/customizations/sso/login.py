@@ -54,7 +54,27 @@ class LoginCommand(BaseSSOCommand):
         sso_config = self._get_sso_config(sso_session=parsed_args.sso_session)
         start_url = sso_config['sso_start_url']
         configured_region = sso_config.get('sso_region')
+        resolved_url, region = self._resolve(
+            parsed_globals, start_url, configured_region
+        )
 
+        on_pending_authorization = None
+        if parsed_args.no_browser:
+            on_pending_authorization = PrintOnlyHandler()
+        self._sign_in(
+            sso_config,
+            parsed_args,
+            parsed_globals,
+            resolved_url,
+            region,
+            on_pending_authorization,
+        )
+        self._after_sign_in(sso_config, configured_region, region, start_url)
+        return 0
+
+    def _resolve(self, parsed_globals, start_url, configured_region):
+        """The start URL to sign in at and its SSO region, as
+        ``(resolved_url, region)``."""
         verify = parsed_globals.verify_ssl
         if verify is None:
             verify = self._session.get_config_variable('ca_bundle')
@@ -68,10 +88,19 @@ class LoginCommand(BaseSSOCommand):
 
         if resolved_url != start_url:
             register_feature_id('SSO_LOGIN_VANITY_URL')
+        return resolved_url, region
 
-        on_pending_authorization = None
-        if parsed_args.no_browser:
-            on_pending_authorization = PrintOnlyHandler()
+    def _sign_in(
+        self,
+        sso_config,
+        parsed_args,
+        parsed_globals,
+        resolved_url,
+        region,
+        on_pending_authorization,
+    ):
+        """Sign in and cache the SSO access token."""
+        start_url = sso_config['sso_start_url']
         do_sso_login(
             session=self._session,
             parsed_globals=parsed_globals,
@@ -86,6 +115,8 @@ class LoginCommand(BaseSSOCommand):
             redirect_port=parsed_args.redirect_port,
         )
 
+    def _after_sign_in(self, sso_config, configured_region, region, start_url):
+        """Save a changed SSO region and say the sign-in worked."""
         # Only rewrite sso_region after successful login.
         if configured_region != region:
             self._write_sso_region(sso_config, region)
@@ -93,7 +124,6 @@ class LoginCommand(BaseSSOCommand):
 
         success_msg = 'Successfully logged into Start URL: %s\n'
         uni_print(success_msg % start_url)
-        return 0
 
     def _write_sso_region(self, sso_config, new_region):
         session_name = sso_config.get('session_name')

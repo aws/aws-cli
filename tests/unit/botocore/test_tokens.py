@@ -383,3 +383,123 @@ def test_scoped_env_token_provider_returns_none_when_signing_name_missing():
     auth_token = provider.load_token()
 
     assert auth_token is None
+
+
+_DAEMON_SSO_CACHE_KEY = "d033e22ae348aeb5660fc2140aec35850c4da997"
+
+
+def _daemon_sso_config(profile):
+    return {
+        "profiles": {"test": dict(profile, sso_session="admin")},
+        "sso_sessions": {
+            "admin": {
+                "sso_region": "us-west-2",
+                "sso_start_url": "https://d-123.awsapps.com/start",
+            }
+        },
+    }
+
+
+def _daemon_sso_session(config, tmp_path, credentials_file_text=""):
+    credentials_file = tmp_path / "credentials"
+    credentials_file.write_text(credentials_file_text)
+    mock_session = mock.Mock(spec=Session)
+    mock_session.full_config = config
+    variables = {
+        "profile": "test",
+        "credentials_file": str(credentials_file),
+        "config_file": str(tmp_path / "config"),
+    }
+    mock_session.get_config_variable.side_effect = variables.get
+    return mock_session
+
+
+def _cached_sso_token():
+    return {
+        "accessToken": "cachedtoken",
+        "expiresAt": "2021-12-25T21:30:00Z",
+    }
+
+
+def _sso_now():
+    return dateutil.parser.parse("2021-12-25T13:30:00Z")
+
+
+def test_sso_token_provider_daemon_profile_with_role_reads_no_token(
+    tmp_path,
+):
+    # SEP rule 4. The sso-session doesn't even need to exist: it isn't
+    # looked at.
+    config = _daemon_sso_config(
+        {
+            "credential_daemon": "sso.admin",
+            "sso_account_id": "123456789012",
+            "sso_role_name": "Admin",
+        }
+    )
+    del config["sso_sessions"]["admin"]
+    token_cache = mock.MagicMock()
+    provider = SSOTokenProvider(
+        _daemon_sso_session(config, tmp_path),
+        token_cache,
+        time_fetcher=_sso_now,
+    )
+
+    auth_token = provider.load_token()
+
+    with pytest.raises(TokenRetrievalError) as error:
+        auth_token.get_frozen_token()
+    message = str(error.value)
+    assert '"test" uses the credential daemon' in message
+    assert 'SSO session "admin"' in message
+    assert "need an SSO session stored in files" in message
+    assert token_cache.mock_calls == []
+
+
+def test_sso_token_provider_daemon_profile_without_role_reads_token(
+    tmp_path,
+):
+    config = _daemon_sso_config({"credential_daemon": "sso.admin"})
+    token_cache = {_DAEMON_SSO_CACHE_KEY: _cached_sso_token()}
+    provider = SSOTokenProvider(
+        _daemon_sso_session(config, tmp_path),
+        token_cache,
+        time_fetcher=_sso_now,
+    )
+
+    assert provider.load_token().get_frozen_token().token == "cachedtoken"
+
+
+def test_sso_token_provider_profile_with_role_reads_token(tmp_path):
+    config = _daemon_sso_config(
+        {"sso_account_id": "123456789012", "sso_role_name": "Admin"}
+    )
+    token_cache = {_DAEMON_SSO_CACHE_KEY: _cached_sso_token()}
+    provider = SSOTokenProvider(
+        _daemon_sso_session(config, tmp_path),
+        token_cache,
+        time_fetcher=_sso_now,
+    )
+
+    assert provider.load_token().get_frozen_token().token == "cachedtoken"
+
+
+def test_sso_token_provider_reads_credential_daemon_from_config_file_only(
+    tmp_path,
+):
+    # As for the credential provider, a credential_daemon in the
+    # credentials file is ignored.
+    config = _daemon_sso_config(
+        {
+            "credential_daemon": "sso.admin",
+            "sso_account_id": "123456789012",
+            "sso_role_name": "Admin",
+        }
+    )
+    token_cache = {_DAEMON_SSO_CACHE_KEY: _cached_sso_token()}
+    session = _daemon_sso_session(
+        config, tmp_path, "[test]\ncredential_daemon = sso.admin\n"
+    )
+    provider = SSOTokenProvider(session, token_cache, time_fetcher=_sso_now)
+
+    assert provider.load_token().get_frozen_token().token == "cachedtoken"

@@ -12,9 +12,12 @@ from awscli.botocore.exceptions import (
     ClientError,
     LoginAuthorizationCodeError,
 )
+from awscli.customizations.exceptions import ConfigurationError
 from awscli.customizations.login.utils import (
     CrossDeviceLoginTokenFetcher,
     SameDeviceLoginTokenFetcher,
+    existing_credentials_error,
+    move_back_keys_error,
 )
 
 ID_TOKEN = (
@@ -360,4 +363,27 @@ def test_authorization_uri_prompt(prompt, expected_prompt_param):
         '&scope=openid'
         '&redirect_uri=http%3A%2F%2F127.0.0.1%3A8080%2Foauth%2Fcallback'
         f'{expected_prompt_param}&code_challenge=challenge'
+    )
+
+
+def test_existing_credentials_error():
+    error = existing_credentials_error('signup', 'dev', 'Access Key')
+    assert isinstance(error, ConfigurationError)
+    assert str(error) == (
+        "Profile 'dev' is already configured with Access Key credentials."
+        "\n\nYou may run 'aws signup --profile new-profile-name' to create "
+        "a new profile with the specified name. Otherwise you must first "
+        "manually remove the existing credentials from 'dev'.\n"
+    )
+
+
+def test_move_back_keys_error_strips_control_characters():
+    error = move_back_keys_error('login', 'ci\x1b[2J')
+    assert isinstance(error, ConfigurationError)
+    assert str(error) == (
+        "Profile 'ci[2J' is already configured with Access Key "
+        "credentials.\n\nTo use files for it, remove credential_daemon from "
+        "the profile and enter its keys with 'aws configure --profile "
+        "ci[2J'. Or run 'aws login --profile new-profile-name' to create a "
+        "new profile.\n"
     )

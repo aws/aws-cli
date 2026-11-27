@@ -33,6 +33,7 @@ from botocore.credentials import (
     AssumeRoleWithWebIdentityProvider,
     BaseAssumeRoleCredentialFetcher,
     ConfigProvider,
+    CredentialDaemonProvider,
     CredentialProvider,
     Credentials,
     EnvProvider,
@@ -43,6 +44,8 @@ from botocore.credentials import (
     SSOCredentialFetcher,
     SSOProvider,
     create_assume_role_refresher,
+    load_sso_profile_config,
+    sso_role_credentials_cache_key,
 )
 from botocore.exceptions import (
     ClientError,
@@ -4243,6 +4246,7 @@ class TestProfileProviderBuilder(unittest.TestCase):
     def test_profile_provider_builder_order(self):
         providers = self.builder.providers('some-profile')
         expected_providers = [
+            CredentialDaemonProvider,
             AssumeRoleWithWebIdentityProvider,
             SSOProvider,
             SharedCredentialProvider,
@@ -4328,6 +4332,50 @@ class TestSSOCredentialFetcher(unittest.TestCase):
             },
         }
         self.assertEqual(self.cache[cache_key], expected_cached_credentials)
+
+    def test_cache_key_matches_public_function(self):
+        self.assertEqual(
+            self.fetcher._create_cache_key(),
+            '048db75bbe50955c16af7aba6ff9c41a3131bb7e',
+        )
+        self.assertEqual(
+            sso_role_credentials_cache_key(
+                self.account_id, self.role_name, start_url=self.start_url
+            ),
+            '048db75bbe50955c16af7aba6ff9c41a3131bb7e',
+        )
+
+    def test_cache_key_with_sso_session(self):
+        fetcher = SSOCredentialFetcher(
+            self.start_url,
+            self.sso_region,
+            self.role_name,
+            self.account_id,
+            self.mock_session.create_client,
+            sso_session_name='dev',
+        )
+        expected = '0dd47fc7db81669b8149d0350b1bd7f6a2d8a9e4'
+        self.assertEqual(fetcher._create_cache_key(), expected)
+        self.assertEqual(
+            sso_role_credentials_cache_key(
+                self.account_id,
+                self.role_name,
+                session_name='dev',
+                start_url=self.start_url,
+            ),
+            expected,
+        )
+
+    def test_cache_key_empty_session_name_uses_start_url(self):
+        self.assertEqual(
+            sso_role_credentials_cache_key(
+                self.account_id,
+                self.role_name,
+                session_name='',
+                start_url=self.start_url,
+            ),
+            '048db75bbe50955c16af7aba6ff9c41a3131bb7e',
+        )
 
     def test_raises_helpful_message_on_unauthorized_exception(self):
         expected_params = {
@@ -4533,6 +4581,77 @@ class TestSSOProvider(unittest.TestCase):
             self.assertEqual(credentials.secret_key, 'bar')
             self.assertEqual(credentials.token, 'baz')
             self.assertEqual(credentials.account_id, '1234567890')
+
+
+class TestLoadSSOProfileConfig(unittest.TestCase):
+    def setUp(self):
+        self.role_config = {
+            'sso_role_name': 'test-role',
+            'sso_account_id': '1234567890',
+        }
+        self.session_config = {
+            'sso_start_url': 'https://d-92671207e4.awsapps.com/start',
+            'sso_region': 'us-east-1',
+        }
+
+    def _load(self, profile_config, sso_sessions=None):
+        loaded_config = {'profiles': {'sso-profile': profile_config}}
+        if sso_sessions is not None:
+            loaded_config['sso_sessions'] = sso_sessions
+        return load_sso_profile_config(loaded_config, 'sso-profile')
+
+    def test_legacy_profile(self):
+        config = dict(self.role_config, **self.session_config)
+        self.assertEqual(self._load(config), config)
+
+    def test_profile_with_sso_session(self):
+        config = dict(self.role_config, sso_session='dev')
+        expected = dict(config, **self.session_config)
+        self.assertEqual(
+            self._load(config, {'dev': self.session_config}), expected
+        )
+
+    def test_profile_without_role_returns_none(self):
+        self.assertIsNone(self._load({'sso_session': 'dev'}))
+        self.assertIsNone(load_sso_profile_config({}, 'missing'))
+
+    def test_missing_config_raises(self):
+        with self.assertRaisesRegex(
+            InvalidConfigError, 'sso_account_id, sso_start_url, sso_region'
+        ):
+            self._load({'sso_role_name': 'test-role'})
+
+    def test_missing_sso_session_raises(self):
+        config = dict(self.role_config, sso_session='dev')
+        with self.assertRaisesRegex(InvalidConfigError, 'does not exist'):
+            self._load(config, {})
+
+    def test_inconsistent_sso_session_raises(self):
+        config = dict(self.role_config, sso_session='dev', sso_region='x')
+        with self.assertRaisesRegex(InvalidConfigError, 'inconsistent'):
+            self._load(config, {'dev': self.session_config})
+
+    def test_provider_delegates(self):
+        loaded_config = {
+            'profiles': {
+                'sso-profile': dict(self.role_config, sso_session='dev')
+            },
+            'sso_sessions': {'dev': self.session_config},
+        }
+        provider = SSOProvider(
+            load_config=lambda: loaded_config,
+            client_creator=None,
+            profile_name='sso-profile',
+            token_cache={},
+        )
+        self.assertEqual(
+            provider._load_sso_config(),
+            load_sso_profile_config(loaded_config, 'sso-profile'),
+        )
+        self.assertEqual(
+            SSOProvider._PROFILE_REQUIRED_CONFIG_VARS,
+            ('sso_role_name', 'sso_account_id'),
+        )
 
 
 @pytest.mark.parametrize(

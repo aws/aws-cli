@@ -31,9 +31,39 @@ from awscrt.crypto import EC
 from botocore import UNSIGNED
 from botocore.compat import compat_shell_split, total_seconds
 from botocore.config import Config
+from botocore.credential_daemon.client import CredentialDaemonClient
+from botocore.credential_daemon.config import (
+    CONFIG_FILE_ONLY_KEYS,
+    CREDENTIAL_DAEMON_KEY,
+    full_config_with_config_file_keys,
+    get_credential_daemon_name,
+    is_sso_profile,
+    is_sso_profile_without_role,
+)
+from botocore.credential_daemon.messages import (
+    USE_FILES_HERE_ENV_HINT,
+    USE_FILES_HERE_HINT,
+    start_hint,
+    unavailable_here_message,
+)
+from botocore.credential_daemon.model import (
+    SocketChecks,
+    Source,
+    find_credential_row,
+)
+from botocore.credential_daemon.text import strip_control_characters
 from botocore.exceptions import (
     ClientError,
     ConfigNotFound,
+    CredentialDaemonCredentialNotFoundError,
+    CredentialDaemonCredentialUnusableError,
+    CredentialDaemonError,
+    CredentialDaemonNotRunningError,
+    CredentialDaemonProtocolError,
+    CredentialDaemonProviderUnavailableError,
+    CredentialDaemonReauthRequiredError,
+    CredentialDaemonUnsupportedMaterialError,
+    CredentialDaemonUnsupportedPlatformError,
     CredentialRetrievalError,
     InfiniteLoopConfigError,
     InvalidConfigError,
@@ -51,6 +81,7 @@ from botocore.exceptions import (
 from botocore.tokens import SSOTokenProvider
 from botocore.useragent import register_feature_id, register_feature_ids
 from botocore.utils import (
+    SSO_ROLE_CONFIG_VARS,
     ArnParser,
     ContainerMetadataFetcher,
     FileWebIdentityTokenLoader,
@@ -65,7 +96,7 @@ from botocore.utils import (
     resolve_imds_endpoint_mode,
 )
 from dateutil.parser import parse
-from dateutil.tz import tzlocal, tzutc
+from dateutil.tz import tzlocal, tzoffset, tzutc
 
 logger = logging.getLogger(__name__)
 ReadOnlyCredentials = namedtuple(
@@ -122,7 +153,7 @@ def create_credential_resolver(session, cache=None, region_name=None):
         session, cache=cache, region_name=region_name
     )
     assume_role_provider = AssumeRoleProvider(
-        load_config=lambda: session.full_config,
+        load_config=lambda: full_config_with_config_file_keys(session),
         client_creator=_get_client_creator(session, region_name),
         cache=cache,
         profile_name=profile_name,
@@ -201,6 +232,7 @@ class ProfileProviderBuilder:
 
     def providers(self, profile_name, disable_env_vars=False):
         return [
+            self._create_credential_daemon_provider(profile_name),
             self._create_web_identity_provider(
                 profile_name,
                 disable_env_vars,
@@ -211,6 +243,14 @@ class ProfileProviderBuilder:
             self._create_process_provider(profile_name),
             self._create_config_provider(profile_name),
         ]
+
+    def _create_credential_daemon_provider(self, profile_name):
+        return CredentialDaemonProvider(
+            load_config=lambda: full_config_with_config_file_keys(
+                self._session
+            ),
+            profile_name=profile_name,
+        )
 
     def _create_process_provider(self, profile_name):
         return ProcessProvider(
@@ -1670,6 +1710,14 @@ class AssumeRoleProvider(CredentialProvider):
             # the order in the credential chain is insufficient as it doesn't
             # prevent the case when we're doing an assume role chain.
             self.WEB_IDENTITY_TOKE_FILE_VAR not in profile
+            # The same goes for the credential daemon, so that a profile with
+            # both credential_daemon and role_arn is an error, not a role. An
+            # SSO profile with no account and no role doesn't use the
+            # credential daemon, so its role is assumed.
+            and (
+                CREDENTIAL_DAEMON_KEY not in profile
+                or is_sso_profile_without_role(profile)
+            )
         )
 
     def _load_creds_via_assume_role(self, profile_name):
@@ -2310,6 +2358,31 @@ class CredentialResolver:
         return None
 
 
+def sso_role_credentials_cache_key(
+    account_id, role_name, session_name=None, start_url=None
+):
+    """Return the cache key of SSO role credentials.
+
+    The credentials are keyed by the account ID, the role name, and the
+    sso-session name if there is one, otherwise the start URL.
+    """
+    args = {
+        'roleName': role_name,
+        'accountId': account_id,
+    }
+    if session_name:
+        args['sessionName'] = session_name
+    else:
+        args['startUrl'] = start_url
+    # NOTE: It would be good to hoist this cache key construction logic
+    # into the CachedCredentialFetcher class as we should be consistent.
+    # Unfortunately, the current assume role fetchers that sub class don't
+    # pass separators resulting in non-minified JSON. In the long term,
+    # all fetchers should use the below caching scheme.
+    args = json.dumps(args, sort_keys=True, separators=(',', ':'))
+    return sha1(args.encode('utf-8')).hexdigest()
+
+
 class SSOCredentialFetcher(CachedCredentialFetcher):
     _UTC_DATE_FORMAT = '%Y-%m-%dT%H:%M:%SZ'
 
@@ -2343,21 +2416,12 @@ class SSOCredentialFetcher(CachedCredentialFetcher):
 
         The cache key is intended to be compatible with file names.
         """
-        args = {
-            'roleName': self._role_name,
-            'accountId': self._account_id,
-        }
-        if self._sso_session_name:
-            args['sessionName'] = self._sso_session_name
-        else:
-            args['startUrl'] = self._start_url
-        # NOTE: It would be good to hoist this cache key construction logic
-        # into the CachedCredentialFetcher class as we should be consistent.
-        # Unfortunately, the current assume role fetchers that sub class don't
-        # pass separators resulting in non-minified JSON. In the long term,
-        # all fetchers should use the below caching scheme.
-        args = json.dumps(args, sort_keys=True, separators=(',', ':'))
-        argument_hash = sha1(args.encode('utf-8')).hexdigest()
+        argument_hash = sso_role_credentials_cache_key(
+            self._account_id,
+            self._role_name,
+            session_name=self._sso_session_name,
+            start_url=self._start_url,
+        )
         return self._make_file_safe(argument_hash)
 
     def _parse_timestamp(self, timestamp_ms):
@@ -2419,10 +2483,7 @@ class SSOProvider(CredentialProvider):
     _SSO_TOKEN_CACHE_DIR = os.path.expanduser(
         os.path.join('~', '.aws', 'sso', 'cache')
     )
-    _PROFILE_REQUIRED_CONFIG_VARS = (
-        'sso_role_name',
-        'sso_account_id',
-    )
+    _PROFILE_REQUIRED_CONFIG_VARS = SSO_ROLE_CONFIG_VARS
     _SSO_REQUIRED_CONFIG_VARS = (
         'sso_start_url',
         'sso_region',
@@ -2453,63 +2514,7 @@ class SSOProvider(CredentialProvider):
         self._feature_ids = set()
 
     def _load_sso_config(self):
-        loaded_config = self._load_config()
-        profiles = loaded_config.get('profiles', {})
-        profile_name = self._profile_name
-        profile_config = profiles.get(self._profile_name, {})
-        sso_sessions = loaded_config.get('sso_sessions', {})
-
-        # Role name & Account ID indicate the cred provider should be used
-        if all(
-            c not in profile_config for c in self._PROFILE_REQUIRED_CONFIG_VARS
-        ):
-            return None
-
-        resolved_config, extra_reqs = self._resolve_sso_session_reference(
-            profile_config, sso_sessions
-        )
-
-        config = {}
-        missing_config_vars = []
-        all_required_configs = self._ALL_REQUIRED_CONFIG_VARS + extra_reqs
-        for config_var in all_required_configs:
-            if config_var in resolved_config:
-                config[config_var] = resolved_config[config_var]
-            else:
-                missing_config_vars.append(config_var)
-
-        if missing_config_vars:
-            missing = ', '.join(missing_config_vars)
-            raise InvalidConfigError(
-                error_msg=(
-                    f'The profile "{profile_name}" is configured to use SSO but is missing '
-                    f'required configuration: {missing}'
-                )
-            )
-        return config
-
-    def _resolve_sso_session_reference(self, profile_config, sso_sessions):
-        sso_session_name = profile_config.get('sso_session')
-        if sso_session_name is None:
-            # No reference to resolve, proceed with legacy flow
-            return profile_config, ()
-
-        if sso_session_name not in sso_sessions:
-            error_msg = f'The specified sso-session does not exist: "{sso_session_name}"'
-            raise InvalidConfigError(error_msg=error_msg)
-
-        config = profile_config.copy()
-        session = sso_sessions[sso_session_name]
-        for config_var, val in session.items():
-            # Validate any keys referenced in both profile and sso_session match
-            if config.get(config_var, val) != val:
-                error_msg = (
-                    f"The value for {config_var} is inconsistent between "
-                    f"profile ({config[config_var]}) and sso-session ({val})."
-                )
-                raise InvalidConfigError(error_msg=error_msg)
-            config[config_var] = val
-        return config, ('sso_session',)
+        return load_sso_profile_config(self._load_config(), self._profile_name)
 
     def load(self):
         sso_config = self._load_sso_config()
@@ -2547,6 +2552,82 @@ class SSOProvider(CredentialProvider):
             method=self.METHOD,
             refresh_using=sso_fetcher.fetch_credentials,
         )
+
+
+def load_sso_profile_config(loaded_config, profile_name):
+    """Return a profile's SSO role configuration, or None.
+
+    ``loaded_config`` is the full config, as from ``Session.full_config``.
+    A profile that references an sso-session gets that session's settings
+    too. Returns None if the profile has neither ``sso_role_name`` nor
+    ``sso_account_id``. Raises ``InvalidConfigError`` if the profile is
+    missing required SSO configuration or its sso-session is missing or
+    inconsistent.
+    """
+    profiles = loaded_config.get('profiles', {})
+    profile_config = profiles.get(profile_name, {})
+    sso_sessions = loaded_config.get('sso_sessions', {})
+
+    # Role name & Account ID indicate the cred provider should be used
+    if all(c not in profile_config for c in SSO_ROLE_CONFIG_VARS):
+        return None
+
+    resolved_config, extra_reqs = _resolve_sso_session_reference(
+        profile_config, sso_sessions
+    )
+
+    config = {}
+    missing_config_vars = []
+    all_required_configs = SSOProvider._ALL_REQUIRED_CONFIG_VARS + extra_reqs
+    for config_var in all_required_configs:
+        if config_var in resolved_config:
+            config[config_var] = resolved_config[config_var]
+        else:
+            missing_config_vars.append(config_var)
+
+    if missing_config_vars:
+        missing = ', '.join(missing_config_vars)
+        raise InvalidConfigError(
+            error_msg=(
+                f'The profile "{profile_name}" is configured to use SSO but is missing '
+                f'required configuration: {missing}'
+            )
+        )
+    return config
+
+
+def _resolve_sso_session_reference(profile_config, sso_sessions):
+    sso_session_name = profile_config.get('sso_session')
+    if sso_session_name is None:
+        # No reference to resolve, proceed with legacy flow
+        return profile_config, ()
+
+    if sso_session_name not in sso_sessions:
+        error_msg = (
+            f'The specified sso-session does not exist: "{sso_session_name}"'
+        )
+        raise InvalidConfigError(error_msg=error_msg)
+
+    config = profile_config.copy()
+    session = sso_sessions[sso_session_name]
+    for config_var, val in session.items():
+        # Validate any keys referenced in both profile and sso_session match.
+        # The CLI's own keys, credential_storage and credential_daemon, aren't
+        # SSO settings, so a different value on the profile isn't a conflict.
+        # aws sso login follows the sso-session's credential_storage for every
+        # profile that uses it. The profile's credential_daemon names its own
+        # credential, and the merged config here never reaches it.
+        if (
+            config_var not in CONFIG_FILE_ONLY_KEYS
+            and config.get(config_var, val) != val
+        ):
+            error_msg = (
+                f"The value for {config_var} is inconsistent between "
+                f"profile ({config[config_var]}) and sso-session ({val})."
+            )
+            raise InvalidConfigError(error_msg=error_msg)
+        config[config_var] = val
+    return config, ('sso_session',)
 
 
 class LoginCredentialFetcher:
@@ -2766,3 +2847,386 @@ class LoginProvider(CredentialProvider):
             refresh_using=fetcher.refresh_credentials,
             time_fetcher=_local_now,
         )
+
+
+class CredentialDaemonProvider(CredentialProvider):
+    """Gets credentials from the credential daemon.
+
+    A profile with ``credential_daemon = <name>`` gets its credentials from
+    that daemon credential. It takes precedence over every other credential
+    setting in the profile, and if the credential daemon fails, the profile
+    fails: nothing else is tried. The one exception is an SSO profile with
+    neither ``sso_account_id`` nor ``sso_role_name``: as in SSOProvider, it's
+    skipped and the next credential source is tried.
+    """
+
+    METHOD = 'credential-daemon'
+
+    def __init__(
+        self, load_config, profile_name, credential_daemon_client=None
+    ):
+        super().__init__()
+        self._load_config = load_config
+        self._profile_name = profile_name
+        self._credential_daemon_client = credential_daemon_client
+
+    def load(self):
+        profiles = self._load_config().get('profiles', {})
+        profile = profiles.get(self._profile_name, {})
+        name = get_credential_daemon_name(self._profile_name, profile)
+        if name is None:
+            return None
+        account_id = None
+        role_name = None
+        if is_sso_profile(profile):
+            # For SSO one daemon credential serves the session, so the daemon
+            # needs the profile's account and role. A bearer-token profile,
+            # such as one for CodeCatalyst, has neither:
+            #   [profile ci]
+            #   sso_session = acme
+            #   credential_daemon = sso.acme
+            # It's skipped as SSOProvider skips it: the daemon has no role to
+            # get credentials for. Other missing settings raise its error.
+            sso_config = load_sso_profile_config(
+                self._load_config(), self._profile_name
+            )
+            if sso_config is None:
+                return None
+            # Only an SSO profile sends its account and role, and only both
+            # together. A login or keys profile ignores stray SSO settings.
+            if (
+                profile.get('sso_account_id') is not None
+                and profile.get('sso_role_name') is not None
+            ):
+                account_id = profile['sso_account_id']
+                role_name = profile['sso_role_name']
+        if self._credential_daemon_client is None:
+            # credential/get sends only a credential's name, so the provider
+            # runs the socket's folder, owner and peer uid checks, but not
+            # the code signature check made before secrets are sent. For
+            # example, `aws s3 ls --profile dev` on macOS makes no Security
+            # framework call, which would cost every process that loads
+            # credentials. The SEP treats the socket's location as the trust
+            # boundary here, and the peer uid check still keeps another
+            # user's socket from serving credentials.
+            self._credential_daemon_client = CredentialDaemonClient(
+                checks=SocketChecks.PEER
+            )
+        fetcher = CredentialDaemonFetcher(
+            client=self._credential_daemon_client,
+            profile_name=self._profile_name,
+            credential_name=name,
+            account_id=account_id,
+            role_name=role_name,
+        )
+        metadata = fetcher.fetch_credentials()
+        # botocore's default refresh windows, as for LoginProvider, until the
+        # CLI adopts the newer refresh rules.
+        return RefreshableCredentials.create_from_metadata(
+            metadata,
+            refresh_using=fetcher.fetch_credentials,
+            method=self.METHOD,
+        )
+
+
+# The command that signs in again, by the source in a credential/list row.
+# Only aws login: in this release aws sso login writes its session to files
+# only. For example, 'aws sso login --profile acme' on a profile with
+# credential_daemon = sso.acme leaves the daemon credential as it was, and
+# the next call fails the same way. SSO rows get _sso_advice instead.
+_SIGN_IN_COMMANDS = {
+    Source.AWS_LOGIN: 'aws login',
+}
+
+
+class CredentialDaemonFetcher:
+    """Fetches one daemon credential's short-lived credentials."""
+
+    def __init__(
+        self,
+        client,
+        profile_name,
+        credential_name,
+        account_id=None,
+        role_name=None,
+    ):
+        # ``account_id`` and ``role_name`` are an SSO profile's, sent
+        # together (CredentialDaemonProvider decides).
+        self._client = client
+        self._profile_name = profile_name
+        self._credential_name = credential_name
+        self._account_id = account_id
+        self._role_name = role_name
+
+    def fetch_credentials(self):
+        """Return the credentials as metadata."""
+        try:
+            result = self._client.get_credentials(
+                self._credential_name,
+                account_id=self._account_id,
+                role_name=self._role_name,
+            )
+        except CredentialDaemonError as e:
+            raise self._explain(e) from e
+        metadata = self._to_metadata(result)
+        # One fetch is one credential/get, so the user agent names only the
+        # provider. A per-source ID would need the credential daemon to
+        # return the source in credential/get.
+        register_feature_id('CREDENTIAL_DAEMON')
+        return metadata
+
+    def _explain(self, error):
+        """Reword the errors a customer can fix, for this profile."""
+        profile = self._shown_profile
+        if isinstance(error, CredentialDaemonUnsupportedPlatformError):
+            # Such as Windows: starting or installing the credential daemon
+            # can't help, so only files can.
+            hint = USE_FILES_HERE_HINT
+            stored = os.environ.get('AWS_CREDENTIAL_STORAGE', '')
+            if stored.strip().lower() == 'daemon':
+                # The variable wins over the profile, so editing the profile
+                # alone would be refused again at the next sign-in.
+                hint = USE_FILES_HERE_ENV_HINT
+            return type(error)(
+                error_msg=unavailable_here_message(
+                    f"profile '{profile}'", hint
+                )
+            )
+        if isinstance(error, CredentialDaemonNotRunningError):
+            # The client's message names the socket and the OS error or
+            # the timeout that fired. A timeout counts as not running too.
+            # In the advisory refresh window, botocore keeps the credentials
+            # it has.
+            # The new error's message holds the hint, so nothing adds
+            # another.
+            hint = start_hint(error)
+            message = f'{error} {hint}' if hint else str(error)
+            return type(error)(error_msg=message, hint='')
+        # The rest keep the credential daemon's code, data and message; each
+        # class's fmt builds the message from its fields.
+        reply = {
+            'code': error.code,
+            'data': error.data,
+            'daemon_message': error.daemon_message,
+        }
+        if isinstance(error, CredentialDaemonReauthRequiredError):
+            return type(error)(advice=self._reauth_message(), **reply)
+        if isinstance(error, CredentialDaemonCredentialNotFoundError):
+            return type(error)(
+                credential_name=self._credential_name,
+                advice=self._not_found_advice(),
+                **reply,
+            )
+        if isinstance(error, CredentialDaemonProviderUnavailableError):
+            return type(error)(**reply)
+        if isinstance(error, CredentialDaemonCredentialUnusableError):
+            return type(error)(
+                credential_name=self._credential_name,
+                profile=profile,
+                **reply,
+            )
+        return error
+
+    @property
+    def _shown_profile(self):
+        # Profile names can hold control characters, so every message
+        # shows the name without them.
+        return strip_control_characters(self._profile_name)
+
+    def _reauth_message(self):
+        """The advice comes only from what the credential holds, as the
+        credential daemon's row says it. When the row can't say, nothing is
+        guessed from the profile's config."""
+        profile = self._shown_profile
+        list_worked, source = self._listed_source()
+        if source == Source.IAM_USER:
+            # Signing in with aws login would put an aws login session
+            # behind a profile that held access keys.
+            return (
+                f"The access keys for profile '{profile}' can't be used. "
+                f'{self._keys_advice()}'
+            )
+        if source == Source.SSO:
+            return (
+                f"Session for profile '{profile}' has ended. "
+                f'{self._sso_advice()}'
+            )
+        command = _SIGN_IN_COMMANDS.get(source)
+        if command is not None:
+            return (
+                f"Session for profile '{profile}' has ended. Run "
+                f"'{command} --profile {profile}'."
+            )
+        # Nothing says what it holds, so it isn't called a session.
+        message = f"The credential for profile '{profile}' can't be used"
+        if not list_worked:
+            message += (
+                ', and the CLI couldn\'t ask the credential daemon how it '
+                'was stored'
+            )
+        return f'{message}. {self._sign_in_again()}'
+
+    def _not_found_advice(self):
+        """As for ``_reauth_message``: the row's source, if the credential
+        daemon still lists one, or every way to sign in."""
+        profile = self._shown_profile
+        source = self._source()
+        if source == Source.IAM_USER:
+            return self._keys_advice()
+        if source == Source.SSO:
+            return self._sso_advice()
+        command = _SIGN_IN_COMMANDS.get(source)
+        if command is not None:
+            return f"Run '{command} --profile {profile}'."
+        return self._sign_in_again()
+
+    def _source(self):
+        """The credential's source from the credential daemon's list, or
+        None if it can't say. Only a failed credential/get asks."""
+        return self._listed_source()[1]
+
+    def _listed_source(self):
+        """Whether the credential daemon's list worked, and the
+        credential's source from it (None if its row is missing or has
+        none)."""
+        try:
+            rows = self._client.list_credentials()
+        except CredentialDaemonError as e:
+            logger.debug('No credential list for the advice: %s', e)
+            return False, None
+        row = find_credential_row(rows, self._credential_name)
+        return True, None if row is None else row.source
+
+    def _keys_advice(self):
+        """How to get a profile whose access keys the credential daemon
+        holds working again.
+
+        In this release aws configure stores keys in the credential daemon
+        only for a new profile. For example, 'aws configure --profile dev'
+        on a profile with credential_daemon = keys.dev writes
+        ~/.aws/credentials, credential_daemon still wins, and the same error
+        comes back. So the advice names only the two ways that work: files
+        once credential_daemon is gone, or a new profile."""
+        profile = self._shown_profile
+        return (
+            'To use files for it, remove credential_daemon from the profile, '
+            f"then enter its keys with 'aws configure --profile {profile}'. "
+            "Or store them in a new profile with 'aws configure --profile "
+            "NEW-NAME'."
+        )
+
+    def _sso_advice(self):
+        """How to get an SSO profile whose credential the credential daemon
+        holds working again.
+
+        In this release the CLI never stores an SSO credential in the
+        credential daemon, so another tool made it, such as sso.acme behind
+        a hand-written profile. aws sso login writes files only, so it helps
+        only once credential_daemon is gone from the profile."""
+        profile = self._shown_profile
+        name = strip_control_characters(self._credential_name)
+        return (
+            'Sign in again with the tool that stored credential '
+            f"'{name}', or remove credential_daemon from the profile and "
+            f"run 'aws sso login --profile {profile}'."
+        )
+
+    def _sign_in_again(self):
+        """Every way to sign in, for when nothing says which one the
+        credential used.
+
+        Only the ways that work in this release: aws login, or files once
+        credential_daemon is gone. For example, a profile with
+        credential_daemon = keys.gone that the credential daemon doesn't
+        have: 'aws configure --profile gone' alone writes
+        ~/.aws/credentials and credential_daemon still wins, and aws sso
+        login writes files only."""
+        profile = self._shown_profile
+        return (
+            f"Sign in again with 'aws login --profile {profile}', or remove "
+            'credential_daemon from the profile and enter its keys with '
+            f"'aws configure --profile {profile}'."
+        )
+
+    def _to_metadata(self, result):
+        # The credential daemon's reply fields (credential/get in the SEP).
+        # A required field is a non-empty string; empty or null counts as
+        # missing. The messages name the field but never its value, which
+        # can be a secret.
+        if not isinstance(result, dict):
+            raise self._bad_reply('result isn\'t an object')
+        material = result.get('material')
+        if not isinstance(material, dict):
+            raise self._bad_reply('material is missing')
+        material_type = material.get('type')
+        if not _is_non_empty_str(material_type):
+            raise self._bad_reply('material.type is missing')
+        if material_type != 'session_credentials':
+            # A newer credential daemon may serve other material, such as a
+            # bearer token, that this CLI can't use.
+            raise CredentialDaemonUnsupportedMaterialError(
+                material_type=strip_control_characters(material_type),
+                credential_name=self._credential_name,
+                code='UNSUPPORTED_MATERIAL',
+            )
+        for field in ('access_key_id', 'secret_access_key'):
+            if not _is_non_empty_str(material.get(field)):
+                raise self._bad_reply(f'material.{field} is missing')
+        expires_at = result.get('expires_at')
+        if not _is_non_empty_str(expires_at):
+            # Credentials without an expiry would be cached for the life of
+            # the process.
+            raise self._bad_reply('expires_at is missing')
+        expiry_time = _parse_expiry(expires_at)
+        if expiry_time is None:
+            raise self._bad_reply('expires_at isn\'t a time with a time zone')
+        return {
+            'access_key': material['access_key_id'],
+            'secret_key': material['secret_access_key'],
+            'token': material.get('session_token') or None,
+            'expiry_time': expiry_time.isoformat(),
+            'account_id': material.get('account_id'),
+        }
+
+    def _bad_reply(self, problem):
+        return CredentialDaemonProtocolError(
+            credential_name=self._credential_name, problem=problem
+        )
+
+
+def _is_non_empty_str(value):
+    return isinstance(value, str) and bool(value)
+
+
+# Longer than any RFC 3339 time, so a huge value isn't parsed at all.
+_MAX_EXPIRY_LENGTH = 64
+
+
+def _expiry_tzinfo(name, offset):
+    # Only a numeric offset or a UTC name (Z, UTC, GMT), which dateutil
+    # gives as offset 0, counts. Any other zone name, such as EST, has no
+    # offset and leaves the time without a zone. dateutil then doesn't
+    # warn, and doesn't read the host's own zone name as local time.
+    if offset is None:
+        return None
+    return tzoffset(name, offset)
+
+
+def _parse_expiry(value):
+    """Return ``expires_at`` as an aware UTC datetime, or None if it isn't a
+    time with a time zone."""
+    # dateutil reads more than RFC 3339, such as "2026-11-25 10:00 UTC",
+    # which is accepted: the credential daemon is trusted to send RFC
+    # 3339, so the format isn't narrowed further. Of the times dateutil
+    # reads, only one with no zone is refused: it could be any zone, so
+    # the refresh time would be a guess.
+    if len(value) > _MAX_EXPIRY_LENGTH:
+        return None
+    try:
+        parsed = dateutil.parser.parse(value, tzinfos=_expiry_tzinfo)
+        if parsed.tzinfo is None:
+            return None
+        # A time near the end of year 9999 can overflow in UTC.
+        return parsed.astimezone(datetime.timezone.utc)
+    except (ValueError, OverflowError):
+        return None

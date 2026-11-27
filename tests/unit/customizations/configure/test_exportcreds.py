@@ -17,6 +17,7 @@ from datetime import datetime, timedelta
 import pytest
 from botocore.credentials import Credentials as StaticCredentials
 from botocore.credentials import ReadOnlyCredentials, RefreshableCredentials
+from botocore.exceptions import CredentialDaemonReauthRequiredError
 from botocore.session import Session
 from dateutil.tz import tzutc
 
@@ -265,6 +266,13 @@ class TestConfigureExportCredentialsCommand(unittest.TestCase):
         with pytest.raises(ConfigurationError) as excinfo:
             self.export_creds_cmd(args=[], parsed_globals=self.global_args)
         self.assertIn('resolution failed', str(excinfo))
+
+    def test_reauth_required_error_is_not_wrapped(self):
+        error = CredentialDaemonReauthRequiredError(error_msg='Sign in again.')
+        self.session.get_credentials.side_effect = error
+        with pytest.raises(CredentialDaemonReauthRequiredError) as excinfo:
+            self.export_creds_cmd(args=[], parsed_globals=self.global_args)
+        self.assertIs(excinfo.value, error)
 
     def test_can_detect_recursive_resolution(self):
         self.os_env['_AWS_CLI_PROFILE_CHAIN'] = 'default'

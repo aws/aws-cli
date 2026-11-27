@@ -22,6 +22,7 @@ from awscli.customizations.agenttoolkit.hint import (
     hint_disabled,
 )
 from awscli.customizations.commands import BasicCommand
+from awscli.customizations.gpg import gpg_keyring
 from awscli.customizations.utils import uni_print
 
 _DOWNLOAD_BASE_URL = 'https://awscli.amazonaws.com'
@@ -266,12 +267,9 @@ class UnixUpdateCommand(BaseUpdateCommand):
             )
         sig_path = script_path + '.sig'
         self._download(self.SCRIPT_URL + '.sig', sig_path)
-        gpghome = os.path.join(tmp, 'gpghome')
-        os.makedirs(gpghome, mode=0o700, exist_ok=True)
-        keyfile = os.path.join(tmp, 'aws-cli.key')
-        with open(keyfile, 'w') as f:
-            f.write(AWS_CLI_PGP_KEY)
-        gpg_opts = [gpg, '--homedir', gpghome, '--batch', '--no-autostart']
+        gpg_opts, keyfile = gpg_keyring(
+            gpg, tmp, AWS_CLI_PGP_KEY, 'aws-cli.key'
+        )
         # Import can exit non-zero on minimal systems even when it succeeds
         # (key-preference warnings, missing agent), so judge success by
         # --verify rather than the import's return code.

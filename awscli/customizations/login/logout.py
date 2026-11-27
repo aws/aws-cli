@@ -10,6 +10,14 @@ from botocore.utils import (
 )
 
 from awscli.customizations.commands import BasicCommand
+from awscli.customizations.login.backends import (
+    ALL_SESSIONS,
+    SignOutBackend,
+    SignOutResult,
+)
+from awscli.customizations.login.credential_daemon_logout import (
+    DaemonSignOut,
+)
 from awscli.customizations.sso.logout import BaseCredentialSweeper
 from awscli.customizations.utils import uni_print
 
@@ -18,15 +26,25 @@ LOG = logging.getLogger(__name__)
 
 class LogoutCommand(BasicCommand):
     NAME = 'logout'
-    DESCRIPTION = 'Clears cached login credentials for the specified profile.'
+    DESCRIPTION = (
+        'Clears cached login credentials for the specified profile. If the '
+        'profile uses the credential daemon (``credential_daemon``), it '
+        'signs the profile\'s session out of the credential daemon '
+        'instead. Every profile that names the same credential is signed '
+        'out with it. With ``--all``, it also signs out every session in '
+        'the credential daemon that the CLI created or signed in. Other '
+        'tools\' sessions are left alone.'
+    )
     ARG_TABLE = [
         {
             'name': 'all',
             'action': 'store_true',
             'help_text': (
                 'Removes cached credentials for all profiles that use '
-                '"aws login". Does not remove credentials from profiles '
-                'configured to use other styles of credentials.'
+                '"aws login", and signs out every session the CLI created in '
+                'the credential daemon. Does not remove access keys or '
+                'credentials from profiles configured to use other styles '
+                'of credentials.'
             ),
         },
     ]
@@ -35,18 +53,76 @@ class LogoutCommand(BasicCommand):
         self,
         session,
         cache_dir=get_login_token_cache_directory(),
+        credential_daemon_client=None,
     ):
         super().__init__(session)
-        self._cache_dir = cache_dir
+        self._credential_daemon = DaemonSignOut(
+            session, cache_dir, client=credential_daemon_client
+        )
+        # Files first: they need no daemon. Then the credential daemon,
+        # whatever happened to the files.
+        self._backends = [
+            FilesSignOut(session, cache_dir, self._credential_daemon),
+            self._credential_daemon,
+        ]
 
     def _run_main(self, parsed_args, parsed_globals):
-        if getattr(parsed_args, 'all', False):
-            return self._logout_all()
-        else:
-            return self._logout_single_profile()
+        # One profile, or every session with --all.
+        profile = ALL_SESSIONS
+        if not getattr(parsed_args, 'all', False):
+            profile = self._resolve_profile_name()
+        results = []
+        for backend in self._backends:
+            for target in backend.sessions(profile):
+                results.append(backend.sign_out(target))
+        return self._report(profile, results)
 
-    def _logout_single_profile(self):
-        profile = self._resolve_profile_name()
+    def _report(self, profile, results):
+        """Exit 1 if any backend left something behind."""
+        # Say nothing was found only when no backend had a session, so it
+        # never contradicts a daemon sign-out or a daemon that couldn't be
+        # checked.
+        if profile is ALL_SESSIONS and all(r.empty for r in results):
+            uni_print("No cached login session tokens found.\n")
+        return 0 if all(r.ok for r in results) else 1
+
+    def _resolve_profile_name(self):
+        profile = self._session.profile
+        return profile if profile is not None else 'default'
+
+
+class FilesSignOut(SignOutBackend):
+    """Signs out of the login token cache: deletes the session files.
+
+    The deletes are unchanged on purpose: a profile that doesn't use the
+    credential daemon sees the same output and exit codes as before.
+    """
+
+    def __init__(self, session, cache_dir, credential_daemon):
+        self._session = session
+        self._cache_dir = cache_dir
+        self._credential_daemon = credential_daemon
+
+    def sessions(self, profile):
+        # A profile in the credential daemon is the credential daemon's,
+        # with any session file an older CLI left beside it.
+        if (
+            profile is not ALL_SESSIONS
+            and self._credential_daemon.credential_name(profile) is not None
+        ):
+            return []
+        return [profile]
+
+    def sign_out(self, target):
+        if target is ALL_SESSIONS:
+            return SignOutResult(
+                ok=True, empty=self._delete_all_session_files()
+            )
+        return SignOutResult(
+            ok=self._sign_out_profile(target) == 0, empty=None
+        )
+
+    def _sign_out_profile(self, profile):
         session_id = self._get_login_session_id(profile)
         if session_id is None:
             msg = f"warning: no login session found for profile '{profile}'\n"
@@ -66,7 +142,9 @@ class LogoutCommand(BasicCommand):
         )
         return 0
 
-    def _logout_all(self):
+    def _delete_all_session_files(self):
+        """Delete every cached login session file. Returns whether there
+        was nothing to delete."""
         sweeper = LoginTokenSweeper()
         deleted_count = sweeper.delete_credentials(self._cache_dir)
         if deleted_count > 0:
@@ -77,13 +155,7 @@ class LogoutCommand(BasicCommand):
                 "access tokens may continue to use them until their "
                 "expiration. Access tokens expire in 15 minutes.\n"
             )
-        else:
-            uni_print("No cached login session tokens found.\n")
-        return 0
-
-    def _resolve_profile_name(self):
-        profile = self._session.profile
-        return profile if profile is not None else 'default'
+        return deleted_count == 0
 
     def _get_login_session_id(self, profile):
         loaded_config = self._session.full_config
@@ -114,6 +186,4 @@ class LoginTokenSweeper(BaseCredentialSweeper):
 
     def _should_delete(self, contents):
         access_token = contents.get('accessToken')
-        return (
-            isinstance(access_token, dict) and 'accessKeyId' in access_token
-        )
+        return isinstance(access_token, dict) and 'accessKeyId' in access_token

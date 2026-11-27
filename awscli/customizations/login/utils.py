@@ -7,14 +7,17 @@ import datetime
 import hashlib
 import json
 import logging
+import os
 import secrets
 import string
+import sys
 import textwrap
 import uuid
 from enum import Enum
 
 from awscrt.crypto import EC, ECExportFormat, ECType
 from botocore.compat import parse_qsl
+from botocore.credential_daemon import strip_control_characters
 from botocore.useragent import register_feature_id
 from dateutil.tz.tz import tzutc
 
@@ -25,10 +28,14 @@ from awscli.botocore.exceptions import (
 from awscli.botocore.utils import (
     ArnParser,
     build_add_dpop_header_handler,
+    generate_login_cache_key,
     get_base_sign_in_uri,
+    get_login_token_cache_directory,
     percent_encode_sequence,
 )
 from awscli.compat import compat_input
+from awscli.customizations.exceptions import ConfigurationError
+from awscli.customizations.utils import uni_print
 
 LOG = logging.getLogger(__name__)
 
@@ -352,3 +359,65 @@ def decode_id_token_payload(id_token):
     if len(parts) != 3:
         raise ValueError('Invalid JWT token - cannot extract payload')
     return json.loads(base64_url_decode(parts[1]))
+
+
+def session_file_path(session_id, cache_dir=None):
+    """The aws login session file for ``session_id``, in ``cache_dir`` or
+    the login token cache folder."""
+    if cache_dir is None:
+        cache_dir = get_login_token_cache_directory()
+    return os.path.join(
+        cache_dir, f'{generate_login_cache_key(session_id)}.json'
+    )
+
+
+def delete_session_file(path):
+    """Delete a session file. Returns False if it wasn't there."""
+    try:
+        os.remove(path)
+    except FileNotFoundError:
+        return False
+    return True
+
+
+def existing_credentials_error(command_name, profile_name, style):
+    """The error for a profile that already has ``style`` credentials."""
+    return ConfigurationError(
+        f'Profile \'{profile_name}\' is already configured '
+        f'with {style} credentials.\n\n'
+        f'You may run \'aws {command_name} --profile new-profile-name\' to '
+        f'create a new profile with the specified name. Otherwise you '
+        f'must first manually remove the existing credentials '
+        f'from \'{profile_name}\'.\n'
+    )
+
+
+def move_back_keys_error(command_name, profile_name):
+    """The refusal for a profile whose credential_daemon credential holds
+    access keys, when it signs in with files. The credential daemon never
+    hands out long-term keys, so they move back only when they're entered
+    again.
+
+    In this release aws configure writes files for a profile that exists,
+    and credential_daemon still wins. For example, after 'aws configure set
+    credential_storage file --profile dev', 'aws configure --profile dev'
+    alone leaves credential_daemon = keys.dev in use. So the advice says to
+    remove credential_daemon first."""
+    profile_name = strip_control_characters(profile_name)
+    return ConfigurationError(
+        f'Profile \'{profile_name}\' is already configured '
+        f'with Access Key credentials.\n\n'
+        f'To use files for it, remove credential_daemon from the profile and '
+        f'enter its keys with \'aws configure --profile {profile_name}\'. '
+        f'Or run \'aws {command_name} --profile new-profile-name\' to '
+        f'create a new profile.\n'
+    )
+
+
+def report_undeleted_file(path, error):
+    reason = error.strerror or error
+    uni_print(
+        f"Couldn't remove the cached login session file {path}: "
+        f"{reason}. Delete it by hand.\n",
+        sys.stderr,
+    )

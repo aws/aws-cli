@@ -55,6 +55,7 @@ from botocore.regions import EndpointResolver, EndpointRulesetResolver
 from botocore.session import Session
 from botocore.stub import Stubber
 from botocore.utils import (
+    SSO_ROLE_CONFIG_VARS,
     ArgumentGenerator,
     ArnParser,
     BadIMDSRequestError,
@@ -103,6 +104,8 @@ from botocore.utils import (
     remove_dot_segments,
     resolve_imds_endpoint_mode,
     set_value_from_jmespath,
+    sso_registration_cache_key,
+    sso_token_cache_key,
     switch_host_s3_accelerate,
     switch_to_virtual_host_style,
     validate_jmespath_for_set,
@@ -3817,6 +3820,73 @@ class TestSSOTokenLoader(unittest.TestCase):
             session_name=self.session_name,
         )
         self.assertEqual(self.cached_token, access_token)
+
+
+class TestSSOCacheKeys(unittest.TestCase):
+    def setUp(self):
+        self.start_url = 'https://d-abc123.awsapps.com/start'
+
+    def test_token_cache_key_uses_start_url(self):
+        self.assertEqual(
+            sso_token_cache_key(self.start_url),
+            '40a89917e3175433e361b710a9d43528d7f1890a',
+        )
+
+    def test_token_cache_key_uses_session_name(self):
+        self.assertEqual(
+            sso_token_cache_key(self.start_url, 'admin'),
+            'd033e22ae348aeb5660fc2140aec35850c4da997',
+        )
+
+    def test_token_cache_key_uses_empty_session_name(self):
+        self.assertEqual(
+            sso_token_cache_key(self.start_url, ''),
+            hashlib.sha1(b'').hexdigest(),
+        )
+
+    def test_registration_cache_key(self):
+        self.assertEqual(
+            sso_registration_cache_key(
+                self.start_url, 'us-west-2', None, None
+            ),
+            'd75f79f67bab3f92a2b1450471c0c2574de0dca4',
+        )
+        self.assertEqual(
+            sso_registration_cache_key(
+                self.start_url, 'us-west-2', ['sso:account:access'], 'admin'
+            ),
+            '4e0b35ce126fbacfad7c16ce93ffe85ce6cafeed',
+        )
+
+    def test_private_methods_match(self):
+        fetcher = SSOTokenFetcher(
+            'us-west-2', client_creator=mock.Mock(), parsed_globals=mock.Mock()
+        )
+        for session_name in (None, '', 'admin'):
+            for scopes in (None, [], ['sso:account:access']):
+                self.assertEqual(
+                    fetcher._registration_cache_key(
+                        self.start_url, session_name, scopes
+                    ),
+                    sso_registration_cache_key(
+                        self.start_url, 'us-west-2', scopes, session_name
+                    ),
+                )
+            self.assertEqual(
+                fetcher._token_cache_key(self.start_url, session_name),
+                sso_token_cache_key(self.start_url, session_name),
+            )
+            self.assertEqual(
+                SSOTokenLoader()._generate_cache_key(
+                    self.start_url, session_name
+                ),
+                sso_token_cache_key(self.start_url, session_name),
+            )
+
+    def test_role_config_vars(self):
+        self.assertEqual(
+            SSO_ROLE_CONFIG_VARS, ('sso_role_name', 'sso_account_id')
+        )
 
 
 class TestOriginalLDLibraryPath(unittest.TestCase):

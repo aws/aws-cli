@@ -144,6 +144,38 @@ class TestConfigureGetCommand(unittest.TestCase):
         self.assertEqual(stream.getvalue(), '')
         self.assertEqual(error_stream.getvalue(), '')
 
+    def test_dotted_value_says_where_it_came_from(self):
+        session = FakeSession({})
+        session.full_config = {
+            'plugins': {'bar': 'true'},
+            'profiles': {
+                'default': {'region': 'us-east-1'},
+                'testing': {
+                    'aws_access_key_id': 'access_key',
+                    's3': {'signature_version': 's3v4'},
+                },
+            },
+        }
+        _, _, config_get = self.create_command(session)
+        cases = [
+            (
+                'profile.testing.aws_access_key_id',
+                ('access_key', 'testing', 'aws_access_key_id'),
+            ),
+            (
+                'testing.aws_access_key_id',
+                ('access_key', 'testing', 'aws_access_key_id'),
+            ),
+            ('default.region', ('us-east-1', 'default', 'region')),
+            ('testing.s3.signature_version', ('s3v4', 'testing', None)),
+            ('s3.signature_version', (None, 'default', None)),
+            ('plugins.bar', ('true', None, None)),
+        ]
+        for varname, expected in cases:
+            self.assertEqual(
+                config_get._get_dotted_config_value(varname), expected
+            )
+
 
 class TestConfigureGetCommandSubSections(unittest.TestCase):
     def create_command(self, session):

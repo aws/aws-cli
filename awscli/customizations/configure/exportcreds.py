@@ -18,6 +18,8 @@ import sys
 from collections import namedtuple
 from datetime import datetime
 
+from botocore.exceptions import CredentialDaemonReauthRequiredError
+
 from awscli.customizations.commands import BasicCommand
 from awscli.customizations.exceptions import ConfigurationError
 
@@ -268,6 +270,16 @@ class ConfigureExportCredentialsCommand(BasicCommand):
         self._update_recursion_barrier()
         try:
             creds = self._session.get_credentials()
+        except CredentialDaemonReauthRequiredError:
+            # Let a "sign in again" error from the credential daemon exit 255
+            # with its advice, the same as an expired aws login or SSO
+            # session in files (those fail later, when the credentials are
+            # read). For example, `aws configure export-credentials
+            # --profile dev` with an expired daemon session exits 255, not
+            # 253: 253 is for refusals, and the daemon's reply doesn't say
+            # whether the session expired or was signed out, so both get
+            # the expired-session code.
+            raise
         except Exception as e:
             original_msg = str(e).strip()
             raise ConfigurationError(

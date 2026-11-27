@@ -26,6 +26,7 @@ is actually needed, improving execution time across most commands.
 
 import logging
 import os
+from collections import namedtuple
 from urllib.parse import urlparse
 
 import colorama
@@ -71,6 +72,17 @@ _CONFIG_EXTRA_INFO = (
     '"Configuring the AWS CLI to use AWS IAM Identity Center" section in the '
     'AWS CLI User Guide:'
     '\n\nhttps://docs.aws.amazon.com/cli/latest/userguide/cli-configure-sso.html'
+)
+
+# What _configure_profile wrote: whether the profile has an account and
+# role, the profile's name, and the region entered for it.
+_Configured = namedtuple(
+    '_Configured',
+    [
+        'has_role',
+        'profile_name',
+        'region',
+    ],
 )
 
 
@@ -130,12 +142,15 @@ class BaseSSOConfigurationCommand(BaseSSOCommand):
             prompter=self._prompter,
         )
 
-    def _write_sso_configuration(self):
+    def _write_sso_configuration(self, extra_values=None):
         self._update_section(
             section_header=get_section_header(
                 'sso-session', self._sso_session_prompter.sso_session
             ),
-            new_values=self._sso_session_prompter.sso_session_config,
+            new_values={
+                **self._sso_session_prompter.sso_session_config,
+                **(extra_values or {}),
+            },
         )
 
     def _update_section(self, section_header, new_values):
@@ -232,6 +247,11 @@ class ConfigureSSOCommand(BaseSSOConfigurationCommand):
 
     def _prompt_for_account(self, sso, sso_token):
         accounts = self._get_all_accounts(sso, sso_token)['accountList']
+        sso_account_id = self._choose_account(accounts)
+        self._new_profile_config_values['sso_account_id'] = sso_account_id
+        return sso_account_id
+
+    def _choose_account(self, accounts):
         if not accounts:
             raise RuntimeError('No AWS accounts are available to you.')
         if len(accounts) == 1:
@@ -239,7 +259,6 @@ class ConfigureSSOCommand(BaseSSOConfigurationCommand):
         else:
             sso_account_id = self._handle_multiple_accounts(accounts)
         uni_print(f'Using the account ID {sso_account_id}\n')
-        self._new_profile_config_values['sso_account_id'] = sso_account_id
         return sso_account_id
 
     def _handle_single_role(self, roles):
@@ -265,6 +284,11 @@ class ConfigureSSOCommand(BaseSSOConfigurationCommand):
 
     def _prompt_for_role(self, sso, sso_token, sso_account_id):
         roles = self._get_all_roles(sso, sso_token, sso_account_id)['roleList']
+        sso_role_name = self._choose_role(roles, sso_account_id)
+        self._new_profile_config_values['sso_role_name'] = sso_role_name
+        return sso_role_name
+
+    def _choose_role(self, roles, sso_account_id):
         if not roles:
             error_msg = 'No roles are available for the account {}'
             raise RuntimeError(error_msg.format(sso_account_id))
@@ -273,7 +297,6 @@ class ConfigureSSOCommand(BaseSSOConfigurationCommand):
         else:
             sso_role_name = self._handle_multiple_roles(roles)
         uni_print(f'Using the role name "{sso_role_name}"\n')
-        self._new_profile_config_values['sso_role_name'] = sso_role_name
         return sso_role_name
 
     def _prompt_for_profile(self, sso_account_id=None, sso_role_name=None):
@@ -334,24 +357,39 @@ class ConfigureSSOCommand(BaseSSOConfigurationCommand):
         sso_registration_args = self._prompt_for_sso_registration_args(
             verify=verify,
         )
-        sso_token = self._sso_login(
+        configured = self._configure_profile(
+            parsed_args,
+            parsed_globals,
+            on_pending_authorization,
+            sso_registration_args,
+        )
+        self._print_conclusion(configured.has_role, configured.profile_name)
+        maybe_prompt_agent_toolkit(
             self._session,
-            parsed_globals=parsed_globals,
-            token_cache=self._sso_token_cache,
-            on_pending_authorization=on_pending_authorization,
-            use_device_code=parsed_args.use_device_code,
-            redirect_port=parsed_args.redirect_port,
-            **sso_registration_args,
+            parsed_globals,
+            # A region just entered at the prompt postdates what the session
+            # resolved, so it wins.
+            region=configured.region or self._resolved_region,
         )
+        return 0
 
-        client_config = Config(
-            signature_version=UNSIGNED,
-            region_name=sso_registration_args['sso_region'],
+    def _configure_profile(
+        self,
+        parsed_args,
+        parsed_globals,
+        on_pending_authorization,
+        sso_registration_args,
+    ):
+        """Sign in, ask for the rest, and write the profile, as a
+        ``_Configured``."""
+        sso_token = self._sign_in(
+            parsed_args,
+            parsed_globals,
+            on_pending_authorization,
+            sso_registration_args,
         )
-        sso = self._session.create_client('sso', config=client_config)
-
-        sso_account_id, sso_role_name = self._prompt_for_sso_account_and_role(
-            sso, sso_token
+        sso_account_id, sso_role_name = self._choose_account_and_role(
+            sso_token, sso_registration_args
         )
         configured_for_aws_credentials = all((sso_account_id, sso_role_name))
 
@@ -361,15 +399,42 @@ class ConfigureSSOCommand(BaseSSOConfigurationCommand):
         profile_name = self._prompt_for_profile(sso_account_id, sso_role_name)
 
         self._write_new_config(profile_name)
-        self._print_conclusion(configured_for_aws_credentials, profile_name)
-        maybe_prompt_agent_toolkit(
-            self._session,
-            parsed_globals,
-            # A region just entered at the prompt postdates what the session
-            # resolved, so it wins.
-            region=region or self._resolved_region,
+        return _Configured(
+            has_role=configured_for_aws_credentials,
+            profile_name=profile_name,
+            region=region,
         )
-        return 0
+
+    def _sign_in(
+        self,
+        parsed_args,
+        parsed_globals,
+        on_pending_authorization,
+        sso_registration_args,
+    ):
+        """Sign in, and return the SSO access token."""
+        sso_token = self._sso_login(
+            self._session,
+            parsed_globals=parsed_globals,
+            token_cache=self._sso_token_cache,
+            on_pending_authorization=on_pending_authorization,
+            use_device_code=parsed_args.use_device_code,
+            redirect_port=parsed_args.redirect_port,
+            **sso_registration_args,
+        )
+        return sso_token
+
+    def _choose_account_and_role(self, sso_token, sso_registration_args):
+        """The account and role for the profile, as
+        ``(sso_account_id, sso_role_name)``. Either is None if they can't
+        be listed."""
+        client_config = Config(
+            signature_version=UNSIGNED,
+            region_name=sso_registration_args['sso_region'],
+        )
+        sso = self._session.create_client('sso', config=client_config)
+
+        return self._prompt_for_sso_account_and_role(sso, sso_token)
 
     def _prompt_for_sso_registration_args(self, verify=None):
         sso_session = self._sso_session_prompter.prompt_for_sso_session(

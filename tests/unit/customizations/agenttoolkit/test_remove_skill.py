@@ -24,7 +24,9 @@ from awscli.customizations.exceptions import ParamValidationError
 from tests.unit.customizations.agenttoolkit.utils import (
     home_relative,
     make_config,
+    make_junction,
     make_skill,
+    requires_junctions,
     requires_symlinks,
     skills_dir_entries,
     unwritable_aws_cli_dir,
@@ -280,6 +282,36 @@ def test_remove_symlinked_skill_only_removes_link(tmp_path):
     assert rc == 0
     assert 'Removed aws-s3 from Agent B' in output
     assert not os.path.lexists(link)
+    assert (target / 'SKILL.md').exists()
+
+
+@requires_junctions
+def test_remove_junctioned_skill_only_removes_junction(tmp_path):
+    make_skill(tmp_path, '.agent-a', 'aws-s3')
+    target = tmp_path / '.agent-a' / 'skills' / 'aws-s3'
+    junction = tmp_path / '.agent-b' / 'skills' / 'aws-s3'
+    junction.parent.mkdir(parents=True)
+    make_junction(junction, target)
+    configs = [
+        make_config(
+            tmp_path,
+            id='a',
+            display_name='Agent A',
+            detection_path=str(tmp_path / '.agent-a'),
+        ),
+        make_config(
+            tmp_path,
+            id='b',
+            display_name='Agent B',
+            detection_path=str(tmp_path / '.agent-b'),
+        ),
+    ]
+    rc, output = _run_remove(
+        configs, ['--skill-name', 'aws-s3', '--agent', 'b']
+    )
+    assert rc == 0
+    assert 'Removed aws-s3 from Agent B' in output
+    assert not os.path.lexists(junction)
     assert (target / 'SKILL.md').exists()
 
 

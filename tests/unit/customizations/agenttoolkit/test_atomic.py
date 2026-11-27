@@ -18,7 +18,11 @@ from unittest.mock import Mock, patch
 import pytest
 
 from awscli.customizations.agenttoolkit import atomic
-from tests.unit.customizations.agenttoolkit.utils import requires_symlinks
+from tests.unit.customizations.agenttoolkit.utils import (
+    make_junction,
+    requires_junctions,
+    requires_symlinks,
+)
 
 
 def _make_dir(path, files):
@@ -383,3 +387,28 @@ def test_write_file_atomic_keeps_newlines(tmp_path):
     path = tmp_path / 'f.json'
     atomic.write_file_atomic(str(path), 'a\r\nb\n', prefix='.f-')
     assert path.read_bytes() == b'a\r\nb\n'
+
+
+def test_is_link_false_for_regular_paths(tmp_path):
+    (tmp_path / 'file').write_text('x')
+    (tmp_path / 'dir').mkdir()
+    assert not atomic.is_link(str(tmp_path / 'file'))
+    assert not atomic.is_link(str(tmp_path / 'dir'))
+    assert not atomic.is_link(str(tmp_path / 'missing'))
+
+
+@requires_symlinks
+def test_is_link_true_for_symlink(tmp_path):
+    (tmp_path / 'target').mkdir()
+    (tmp_path / 'link').symlink_to(
+        tmp_path / 'target', target_is_directory=True
+    )
+    assert atomic.is_link(str(tmp_path / 'link'))
+
+
+@requires_junctions
+def test_is_link_true_for_junction(tmp_path):
+    (tmp_path / 'target').mkdir()
+    make_junction(tmp_path / 'junction', tmp_path / 'target')
+    assert not os.path.islink(tmp_path / 'junction')
+    assert atomic.is_link(str(tmp_path / 'junction'))

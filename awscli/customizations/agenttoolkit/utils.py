@@ -24,12 +24,17 @@ from awscli.customizations.agenttoolkit.agents import (
     AGENT_CONFIGS,
     SKILL_FILENAME,
     SKILL_METADATA_FILENAME,
+    Scope,
+    collapse_home,
     get_detected_agents,
     universal_first,
 )
 from awscli.customizations.agenttoolkit.filelock import file_lock
 from awscli.customizations.exceptions import ParamValidationError
-from awscli.customizations.utils import create_client_from_parsed_globals
+from awscli.customizations.utils import (
+    create_client_from_parsed_globals,
+    uni_print,
+)
 
 LOG = logging.getLogger(__name__)
 MAX_UNCOMPRESSED_SIZE = 10 * 1024 * 1024  # 10 MB
@@ -68,6 +73,57 @@ SKILL_VERSION_ARG = {
     'cli_type_name': 'string',
     'required': False,
 }
+
+PROJECT_ARG = {
+    'name': 'project',
+    'help_text': (
+        'Act only on project-level skills in the current directory.'
+    ),
+    'action': 'store_true',
+    'required': False,
+}
+
+GLOBAL_ARG = {
+    'name': 'global',
+    'help_text': ('Act only on global skills in your home directory.'),
+    'action': 'store_true',
+    'required': False,
+}
+
+SCOPE_ARGS = [PROJECT_ARG, GLOBAL_ARG]
+
+FOLLOW_SYMLINKS_ARG = {
+    'name': 'follow-symlinks',
+    'action': 'store_true',
+    'default': True,
+    'group_name': 'follow_symlinks',
+    'help_text': (
+        'Symbolic links are followed when changing skills, so a skill is '
+        'changed where a linked skills directory or skill points. '
+        '``--no-follow-symlinks`` skips any skill whose directory is a '
+        'symbolic link or Windows directory junction, or is located under '
+        'one, starting at the current directory for ``--project`` or the '
+        'home directory otherwise. '
+        'Symbolic links in the path leading up to that directory are still '
+        'followed. When neither ``--follow-symlinks`` nor '
+        '``--no-follow-symlinks`` is specified, the default is to follow '
+        'symlinks.'
+    ),
+}
+
+NO_FOLLOW_SYMLINKS_ARG = {
+    'name': 'no-follow-symlinks',
+    'action': 'store_false',
+    'dest': 'follow_symlinks',
+    'default': True,
+    'group_name': 'follow_symlinks',
+}
+
+SYMLINK_ARGS = [FOLLOW_SYMLINKS_ARG, NO_FOLLOW_SYMLINKS_ARG]
+
+SYMLINK_SKIP_REASON = (
+    'the path is a symbolic link or junction, or is under one'
+)
 
 AGENT_ARG = {
     'name': 'agent',
@@ -243,15 +299,30 @@ def install_skill(
         skipped = []
         extracted_paths = set()
         targets = [
-            (agent, skill_dir)
+            (agent, skill_dir, agent.can_write(skill_dir))
             for agent in universal_first(agents)
             for skill_dir in agent.skill_dirs(skill_name)
         ]
-        for agent, skill_dir in targets:
+        # Writable paths first, so a directory that is also reached through
+        # a path the CLI may not change is still installed.
+        targets.sort(key=lambda t: not t[2])
+        for agent, skill_dir, is_writable in targets:
             real_dir = os.path.realpath(skill_dir)
             if real_dir in extracted_paths:
                 continue
             extracted_paths.add(real_dir)
+            if not is_writable:
+                # Report the unresolved path, unlike the other skips: the
+                # resolved one would hide the symbolic link that caused it.
+                if stream:
+                    shown_dir = collapse_home(skill_dir)
+                    uni_print(
+                        f'  Skipped {skill_name} at {shown_dir}: '
+                        f'{SYMLINK_SKIP_REASON}.\n',
+                        stream,
+                    )
+                skipped.append((skill_dir, SYMLINK_SKIP_REASON))
+                continue
             try:
                 # Check before locking, so a skill that won't change is
                 # skipped even if its directory isn't writable.
@@ -275,9 +346,10 @@ def install_skill(
             if skip_reason is not None:
                 skipped.append((real_dir, skip_reason))
             elif stream:
-                stream.write(
+                uni_print(
                     f'  {action} {skill_name} ({version})'
-                    f' to {agent.label_for(os.path.dirname(skill_dir))}.\n'
+                    f' to {agent.label_for(os.path.dirname(skill_dir))}.\n',
+                    stream,
                 )
     return skipped
 
@@ -314,15 +386,21 @@ def _skip_reason(skill_name, real_dir, overwrite_existing, stream):
     if os.path.lexists(real_dir) and not os.path.isdir(real_dir):
         reason = 'a file that is not a skill directory is in the way'
         if stream:
-            stream.write(f'  Skipped {skill_name} at {real_dir}: {reason}.\n')
+            uni_print(
+                f'  Skipped {skill_name} at {collapse_home(real_dir)}: '
+                f'{reason}.\n',
+                stream,
+            )
         return reason
     if os.path.isdir(real_dir):
         marker = os.path.join(real_dir, SKILL_METADATA_FILENAME)
         if not os.path.exists(marker):
             reason = 'directory was not installed by the AWS CLI'
             if stream:
-                stream.write(
-                    f'  Skipped {skill_name} at {real_dir}: {reason}.\n'
+                uni_print(
+                    f'  Skipped {skill_name} at {collapse_home(real_dir)}: '
+                    f'{reason}.\n',
+                    stream,
                 )
             return reason
         # Marker is present, but if SKILL.md is missing the previous install
@@ -333,12 +411,13 @@ def _skip_reason(skill_name, real_dir, overwrite_existing, stream):
             installed = read_installed_version(real_dir)
             version_note = f' ({installed})' if installed else ''
             if stream:
-                stream.write(
+                uni_print(
                     f'  {skill_name} is already installed'
-                    f'{version_note} at {real_dir}. Run '
+                    f'{version_note} at {collapse_home(real_dir)}. Run '
                     f'"aws agent-toolkit update-skill '
                     f'--skill-name {skill_name}" to update, '
-                    f'or remove it first to reinstall.\n'
+                    f'or remove it first to reinstall.\n',
+                    stream,
                 )
             return f'already installed{version_note}'
     return None
@@ -361,9 +440,10 @@ def _install_skill_dir(
         return skip_reason
     if os.path.isdir(real_dir) and not overwrite_existing and stream:
         # Not skipped, so the previous install is missing its SKILL.md.
-        stream.write(
-            f'  Reinstalling {skill_name} at {real_dir}: '
-            f'previous install appears incomplete.\n'
+        uni_print(
+            f'  Reinstalling {skill_name} at {collapse_home(real_dir)}: '
+            f'previous install appears incomplete.\n',
+            stream,
         )
 
     os.makedirs(os.path.dirname(real_dir), exist_ok=True)
@@ -402,12 +482,23 @@ def _recover_interrupted_changes(agents):
         os.path.realpath(path)
         for agent in agents
         for path in agent.skills_paths
+        if agent.can_write(path)
     }
     # (parent, skill name), where a name of None means every skill.
     work = [(root, None) for root in sorted(roots)]
     # Changes to a symlinked skill happen at the link's target (see
-    # install_skill), so its leftovers sit next to the target.
-    work += [os.path.split(t) for t in sorted(_symlinked_skill_targets(roots))]
+    # install_skill), so its leftovers sit next to the target. Those are
+    # left alone when symbolic links are not followed.
+    linked_roots = {
+        os.path.realpath(path)
+        for agent in agents
+        if agent.follow_symlinks
+        for path in agent.skills_paths
+    }
+    work += [
+        os.path.split(t)
+        for t in sorted(_symlinked_skill_targets(linked_roots))
+    ]
     for parent, name in work:
         try:
             if not atomic.has_leftovers(parent, name):
@@ -436,7 +527,7 @@ def _symlinked_skill_targets(roots):
             continue
         for entry in entries:
             path = os.path.join(root, entry)
-            if not os.path.islink(path):
+            if not atomic.is_link(path):
                 continue
             target = os.path.realpath(path)
             if os.path.dirname(target) not in roots:
@@ -462,14 +553,108 @@ def find_agent_config(agent_id, agent_configs=None):
     return config
 
 
-def resolve_agents(agent_filter, agent_configs=None):
-    """Resolve agents, optionally filtered by agent id."""
+def resolve_scopes(parsed_args, cwd=None, both_by_default=False):
+    """Return the ``(scope, project_dir)`` pairs chosen by the scope flags.
+
+    Without a flag this is the global scope, or the global scope and then
+    the project scope of ``cwd`` when ``both_by_default`` is set.
+    """
+    project = getattr(parsed_args, 'project', False)
+    is_global = getattr(parsed_args, 'global', False)
+    if project and is_global:
+        raise ParamValidationError(
+            'Cannot use --project together with --global.'
+        )
+    global_scope = (Scope.GLOBAL, None)
+    if is_global or not (project or both_by_default):
+        # Only the global scope, so the current directory isn't needed,
+        # and may not even exist.
+        return [global_scope]
+    if cwd is None:
+        try:
+            cwd = os.getcwd()
+        except OSError as e:
+            if project:
+                raise ParamValidationError(
+                    f'Cannot use --project: the current directory is not '
+                    f'available ({e}).'
+                ) from e
+            return [global_scope]
+    project_scope = (Scope.PROJECT, cwd)
+    if project:
+        return [project_scope]
+    return [global_scope, project_scope]
+
+
+def _detect_agents(
+    agent_filter, agent_configs, scope, project_dir, follow_symlinks
+):
     if agent_configs is None:
         agent_configs = AGENT_CONFIGS
     if agent_filter:
-        agent = find_agent_config(agent_filter, agent_configs).detect()
-        agents = [agent] if agent is not None else []
-    else:
-        agents = get_detected_agents(agent_configs=agent_configs)
+        config = find_agent_config(agent_filter, agent_configs)
+        agent = config.detect(scope, project_dir, follow_symlinks)
+        return [agent] if agent is not None else []
+    return get_detected_agents(
+        agent_configs=agent_configs,
+        scope=scope,
+        project_dir=project_dir,
+        follow_symlinks=follow_symlinks,
+    )
+
+
+def resolve_agents(
+    agent_filter,
+    agent_configs=None,
+    scope=Scope.GLOBAL,
+    project_dir=None,
+    follow_symlinks=True,
+):
+    """Resolve agents in ``scope``, optionally filtered by agent id."""
+    return resolve_agents_in_scopes(
+        agent_filter,
+        agent_configs,
+        [(scope, project_dir)],
+        follow_symlinks,
+    )
+
+
+def resolve_agents_in_scopes(
+    agent_filter, agent_configs, scopes, follow_symlinks=True
+):
+    """Resolve agents in each of ``scopes``, optionally filtered by agent id.
+
+    An agent whose skills directories in a later scope are the same as in
+    an earlier one, as in the home directory when no environment override
+    moves the global directories, is listed once, in the earlier scope.
+    """
+    agents = []
+    seen = set()
+    for scope, project_dir in scopes:
+        for agent in _detect_agents(
+            agent_filter, agent_configs, scope, project_dir, follow_symlinks
+        ):
+            key = (
+                agent.config.id,
+                tuple(
+                    os.path.normcase(os.path.realpath(p))
+                    for p in agent.skills_paths
+                ),
+            )
+            if key in seen:
+                continue
+            seen.add(key)
+            agents.append(agent)
     _recover_interrupted_changes(agents)
     return agents
+
+
+def resolve_agents_for_args(parsed_args, agent_configs, both_by_default=False):
+    """Resolve the agents chosen by ``--agent``, the scope flags, and the
+    symbolic link flags, in each chosen scope."""
+    return resolve_agents_in_scopes(
+        getattr(parsed_args, 'agent', None),
+        agent_configs,
+        resolve_scopes(parsed_args, both_by_default=both_by_default),
+        getattr(parsed_args, 'follow_symlinks', True),
+    )

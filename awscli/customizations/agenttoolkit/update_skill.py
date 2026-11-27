@@ -30,6 +30,7 @@ from awscli.customizations.agenttoolkit.hooks import (
     HOOK_ERROR_MESSAGE,
     format_hook_message,
     format_hook_output,
+    hook_start_dir,
 )
 from awscli.customizations.agenttoolkit.state import (
     StateFileError,
@@ -54,11 +55,13 @@ from awscli.customizations.agenttoolkit.utils import (
     get_skill_download,
     install_skill,
     list_core_skills,
+    project_skill_names,
     read_installed_version,
     resolve_agents_for_args,
     resolve_agents_in_scopes,
     resolve_latest_version,
     resolve_scopes,
+    skill_not_installed_error,
 )
 from awscli.customizations.commands import BasicCommand
 from awscli.customizations.exceptions import ParamValidationError
@@ -282,7 +285,16 @@ class UpdateSkillCommand(BasicCommand):
 
         if update_all:
             return self._update_all_skills(agents, parsed_globals)
-        return self._update_one_skill(agents, parsed_globals, skill_name)
+        # With --global, a skill only in the current directory isn't found,
+        # so point to it there. Without it both scopes are searched.
+        is_in_project = getattr(
+            parsed_args, 'global', False
+        ) and skill_name in project_skill_names(
+            parsed_args, self._agent_configs, agents
+        )
+        return self._update_one_skill(
+            agents, parsed_globals, skill_name, is_in_project
+        )
 
     def _create_client(self, parsed_globals, config=None):
         # Kept so a hook run uses one client for updates and new skills.
@@ -292,11 +304,13 @@ class UpdateSkillCommand(BasicCommand):
             )
         return self._client
 
-    def _update_one_skill(self, agents, parsed_globals, skill_name):
+    def _update_one_skill(
+        self, agents, parsed_globals, skill_name, is_in_project
+    ):
         installed_agents = agents_with_skill(agents, skill_name)
         if not installed_agents:
-            raise ParamValidationError(
-                f'Skill "{skill_name}" is not installed.'
+            raise skill_not_installed_error(
+                skill_name, 'update-skill', 'update', is_in_project
             )
 
         # Build the client only once we know there is something to update, so
@@ -362,13 +376,15 @@ class UpdateSkillCommand(BasicCommand):
         error = None
         due_roots = []
         try:
-            # The hook runs in the directory the agent was started in, so it
-            # also updates that project's skills.
+            # The project skills of the directory the agent session started
+            # in are updated too. Without one from the agent, the hook's own
+            # working directory is used.
+            start_dir = hook_start_dir(agent_id)
             agents, due_roots = self._agents_due_for_check(
                 resolve_agents_in_scopes(
                     agent_id,
                     self._agent_configs,
-                    resolve_scopes(None, both_by_default=True),
+                    resolve_scopes(None, cwd=start_dir, both_by_default=True),
                 )
             )
             if not agents:

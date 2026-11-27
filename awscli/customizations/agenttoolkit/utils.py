@@ -634,6 +634,63 @@ def resolve_agents_in_scopes(
     return agents
 
 
+def project_skill_names(parsed_args, agent_configs, global_agents):
+    """Return the names of the AWS skills in the current directory that a
+    command acting on ``global_agents`` only leaves unchanged.
+
+    Skills in a skills directory of ``global_agents``, as when the current
+    directory is the home directory, are not counted. Empty with
+    ``--project``, or when the current directory is not available.
+    """
+    if getattr(parsed_args, 'project', False):
+        return set()
+    try:
+        cwd = os.getcwd()
+    except OSError:
+        return set()
+    global_roots = {
+        os.path.realpath(path)
+        for agent in global_agents
+        for path in agent.skills_paths
+    }
+    names = set()
+    for agent in _detect_agents(
+        getattr(parsed_args, 'agent', None),
+        agent_configs,
+        Scope.PROJECT,
+        cwd,
+        True,
+    ):
+        for skill in agent.get_installed_skills():
+            skills_root = os.path.dirname(os.path.dirname(skill.path))
+            if os.path.realpath(skills_root) not in global_roots:
+                names.add(skill.name)
+    return names
+
+
+def skill_not_installed_error(skill_name, command, change, is_in_project):
+    """Return the error for ``skill_name`` not being installed, pointing to
+    the current directory when ``is_in_project``."""
+    if not is_in_project:
+        return ParamValidationError(f'Skill "{skill_name}" is not installed.')
+    return ParamValidationError(
+        f'Skill "{skill_name}" is not installed globally. It is installed in '
+        f'the current directory, run "aws agent-toolkit {command} '
+        f'--skill-name {skill_name} --project" to {change} it.'
+    )
+
+
+def format_project_note(command, skill_name, changed, change):
+    """Return a note that ``skill_name`` in the current directory was not
+    ``changed``, and the ``command`` that does ``change`` it."""
+    return (
+        f'Note: {skill_name} is also installed in the current directory '
+        f'and was not {changed}.\n'
+        f'      Run "aws agent-toolkit {command} --skill-name {skill_name} '
+        f'--project" to {change} it.\n'
+    )
+
+
 def resolve_agents_for_args(parsed_args, agent_configs, both_by_default=False):
     """Resolve the agents chosen by ``--agent``, the scope flags, and the
     symbolic link flags, in each chosen scope."""

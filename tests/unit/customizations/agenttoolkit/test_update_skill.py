@@ -1270,6 +1270,21 @@ def test_hook_reinstalls_core_skill_removed_from_project(
     assert (_skill_dir(repo, 'aws-iam') / 'SKILL.md').read_text() == 'new'
 
 
+def test_hook_uses_agent_project_dir_env_var(
+    tmp_path, monkeypatch, auto_update_on
+):
+    repo = tmp_path / 'repo'
+    _install_skill_at_version(tmp_path, '.test-agent', 'aws-s3', 'v1')
+    _install_skill_at_version(repo, '.test-agent', 'aws-s3', 'v1')
+    # Cursor runs hooks from its configuration directory.
+    monkeypatch.chdir(tmp_path / '.test-agent')
+    monkeypatch.setenv('CURSOR_PROJECT_DIR', str(repo))
+    rc, _ = _run_hook(tmp_path, 'cursor', _make_skill_client())
+    assert rc == 0
+    marker = _skill_dir(repo) / SKILL_METADATA_FILENAME
+    assert json.loads(marker.read_text()) == {'version': 'v2'}
+
+
 @pytest.mark.parametrize(
     'agent_id,expected',
     [

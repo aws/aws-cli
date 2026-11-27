@@ -20,8 +20,11 @@ from awscli.customizations.agenttoolkit.agents import (
 )
 from awscli.customizations.agenttoolkit.utils import (
     AGENT_ARG,
+    SCOPE_ARGS,
     SKILL_NAME_ARG,
-    resolve_agents,
+    SYMLINK_ARGS,
+    SYMLINK_SKIP_REASON,
+    resolve_agents_for_args,
     skills_lock,
 )
 from awscli.customizations.commands import BasicCommand
@@ -38,6 +41,8 @@ class RemoveCommand(BasicCommand):
     ARG_TABLE = [
         SKILL_NAME_ARG,
         AGENT_ARG,
+        *SCOPE_ARGS,
+        *SYMLINK_ARGS,
     ]
 
     def __init__(self, session, stream=None, agent_configs=None):
@@ -51,9 +56,8 @@ class RemoveCommand(BasicCommand):
 
     def _run_main(self, parsed_args, parsed_globals):
         skill_name = parsed_args.skill_name
-        agent_filter = getattr(parsed_args, 'agent', None)
 
-        agents = resolve_agents(agent_filter, self._agent_configs)
+        agents = resolve_agents_for_args(parsed_args, self._agent_configs)
 
         matches = []
         for agent in agents:
@@ -68,7 +72,11 @@ class RemoveCommand(BasicCommand):
 
         removed_paths = set()
         ordered = universal_first(matches, get_id=lambda s: s.agent.config.id)
-        for skill in ordered:
+        targets = [(skill, _can_remove(skill)) for skill in ordered]
+        # Writable paths first, so a skill that is also reached through a
+        # path the CLI may not change is still removed.
+        targets.sort(key=lambda t: not t[1])
+        for skill, is_writable in targets:
             skill_dir = os.path.dirname(skill.path)
             # Resolve only the parent so a skills root shared by symlink is
             # removed once, but a symlinked skill dir is not followed.
@@ -78,6 +86,13 @@ class RemoveCommand(BasicCommand):
             )
             if entry in removed_paths:
                 continue
+            if not is_writable:
+                removed_paths.add(entry)
+                self._stream.write(
+                    f'Skipped {skill.name} at {skill_dir}: '
+                    f'{SYMLINK_SKIP_REASON}.\n'
+                )
+                continue
             with skills_lock(os.path.dirname(entry)):
                 # Delete any backup left by an interrupted update, or the
                 # next recovery would restore the removed skill.
@@ -86,7 +101,7 @@ class RemoveCommand(BasicCommand):
                     # Another process removed it after it was listed.
                     removed_paths.add(entry)
                     continue
-                if os.path.islink(entry):
+                if atomic.is_link(entry):
                     # The target may be shared with other agents, so only
                     # remove this agent's link to it.
                     os.unlink(entry)
@@ -98,3 +113,13 @@ class RemoveCommand(BasicCommand):
                 f'{skill.agent.label_for(os.path.dirname(skill_dir))}.\n'
             )
         return 0
+
+
+def _can_remove(skill):
+    """Whether the CLI may remove ``skill``.
+
+    Only its skills directory is checked: a skill that is a symbolic link
+    is removed by deleting the link, which never writes through it.
+    """
+    skills_root = os.path.dirname(os.path.dirname(skill.path))
+    return skill.agent.can_write(skills_root)

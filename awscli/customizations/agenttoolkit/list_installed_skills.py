@@ -12,8 +12,9 @@
 # language governing permissions and limitations under the License.
 from awscli.customizations.agenttoolkit.utils import (
     AGENT_ARG,
+    SCOPE_ARGS,
     collect_installed_skills,
-    resolve_agents,
+    resolve_agents_for_args,
 )
 from awscli.customizations.commands import BasicCommand
 from awscli.formatter import get_formatter
@@ -26,9 +27,12 @@ class ListInstalledSkillsCommand(BasicCommand):
         'List AWS skills that were previously installed by the '
         '``aws agent-toolkit`` commands. Shows the skill name, agent, and file '
         'path for each installation. By default it lists skills from all '
-        'detected agents, use ``--agent`` to filter results to a specific tool.'
+        'detected agents, use ``--agent`` to filter results to a specific tool. '
+        'By default both global skills and project-level skills in the '
+        'current directory are listed, and ``scope`` tells them apart, use '
+        '``--global`` or ``--project`` to list only one of them.'
     )
-    ARG_TABLE = [AGENT_ARG]
+    ARG_TABLE = [AGENT_ARG, *SCOPE_ARGS]
 
     def __init__(
         self, session, agent_configs=None, output_stream_factory=None
@@ -40,13 +44,15 @@ class ListInstalledSkillsCommand(BasicCommand):
         self._output_stream_factory = output_stream_factory
 
     def _run_main(self, parsed_args, parsed_globals):
-        agent_filter = getattr(parsed_args, 'agent', None)
-        agents = resolve_agents(agent_filter, self._agent_configs)
+        agents = resolve_agents_for_args(
+            parsed_args, self._agent_configs, both_by_default=True
+        )
 
         result = {
             'skills': [
                 {
                     'agent': skill.agent.display_name,
+                    'scope': skill.agent.scope.value,
                     'name': skill.name,
                     'path': skill.path,
                 }

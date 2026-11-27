@@ -1180,6 +1180,96 @@ def test_hook_claude_code_output(tmp_path, auto_update_on):
     )
 
 
+def test_hook_updates_global_and_project_skills(
+    tmp_path, monkeypatch, auto_update_on
+):
+    repo = tmp_path / 'repo'
+    _install_skill_at_version(tmp_path, '.test-agent', 'aws-s3', 'v1')
+    _install_skill_at_version(repo, '.test-agent', 'aws-s3', 'v1')
+    monkeypatch.chdir(repo)
+    rc, _ = _run_hook(tmp_path, 'claude-code', _make_skill_client())
+    assert rc == 0
+    for root in (tmp_path, repo):
+        marker = _skill_dir(root) / SKILL_METADATA_FILENAME
+        assert json.loads(marker.read_text()) == {'version': 'v2'}
+    # Each scope's skills directory has its own check record.
+    assert _last_run(tmp_path)['is_successful'] is True
+    assert _last_run(repo)['is_successful'] is True
+
+
+def test_hook_installs_new_core_skills_globally_and_in_project(
+    tmp_path, monkeypatch, auto_update_on
+):
+    repo = tmp_path / 'repo'
+    _install_skill_at_version(tmp_path, '.test-agent', 'aws-s3', 'v2')
+    _install_skill_at_version(repo, '.test-agent', 'aws-s3', 'v2')
+    monkeypatch.chdir(repo)
+    client = _make_skill_client(core_skills=['aws-s3', 'aws-iam'])
+    rc, output = _run_hook(tmp_path, 'claude-code', client)
+    assert rc == 0
+    for root in (tmp_path, repo):
+        marker = _skill_dir(root, 'aws-iam') / SKILL_METADATA_FILENAME
+        assert json.loads(marker.read_text()) == {'version': 'v2'}
+    # Downloaded once for both scopes, and reported once.
+    assert [
+        c.kwargs['name'] for c in client.get_skill_file.call_args_list
+    ] == ['aws-iam']
+    assert 'New AWS core skills installed: aws-iam.' in output
+
+
+def test_hook_installs_new_core_skills_only_in_project_with_aws_skills(
+    tmp_path, monkeypatch, auto_update_on
+):
+    repo = tmp_path / 'repo'
+    _install_skill_at_version(tmp_path, '.test-agent', 'aws-s3', 'v2')
+    # The project has the agent's directory but no AWS skills.
+    (repo / '.test-agent' / 'skills').mkdir(parents=True)
+    monkeypatch.chdir(repo)
+    client = _make_skill_client(core_skills=['aws-s3', 'aws-iam'])
+    rc, _ = _run_hook(tmp_path, 'claude-code', client)
+    assert rc == 0
+    assert (_skill_dir(tmp_path, 'aws-iam') / 'SKILL.md').is_file()
+    assert os.listdir(repo / '.test-agent' / 'skills') == []
+
+
+def test_hook_installs_new_core_skills_in_project_only(
+    tmp_path, monkeypatch, auto_update_on
+):
+    # The agent is set up for the project, but not globally.
+    repo = tmp_path / 'repo'
+    (tmp_path / '.test-agent').mkdir()
+    _install_skill_at_version(repo, '.test-agent', 'aws-s3', 'v2')
+    monkeypatch.chdir(repo)
+    client = _make_skill_client(core_skills=['aws-s3', 'aws-iam'])
+    rc, _ = _run_hook(tmp_path, 'claude-code', client)
+    assert rc == 0
+    assert (_skill_dir(repo, 'aws-iam') / 'SKILL.md').is_file()
+    assert not _skill_dir(tmp_path, 'aws-iam').exists()
+
+
+def test_hook_reinstalls_core_skill_removed_from_project(
+    tmp_path, monkeypatch, auto_update_on
+):
+    repo = tmp_path / 'repo'
+    (tmp_path / '.test-agent').mkdir()
+    _install_skill_at_version(repo, '.test-agent', 'aws-s3', 'v2')
+    _install_skill_at_version(repo, '.test-agent', 'aws-iam', 'v2')
+    monkeypatch.chdir(repo)
+    remove = RemoveCommand(
+        make_session(),
+        stream=StringIO(),
+        agent_configs=_hook_configs(tmp_path),
+    )
+    remove(
+        args=['--skill-name', 'aws-iam', '--project'], parsed_globals=Mock()
+    )
+    assert not _skill_dir(repo, 'aws-iam').exists()
+    client = _make_skill_client(core_skills=['aws-iam'])
+    _, output = _run_hook(tmp_path, 'kiro', client)
+    assert output == 'New AWS core skills installed: aws-iam.\n'
+    assert (_skill_dir(repo, 'aws-iam') / 'SKILL.md').read_text() == 'new'
+
+
 @pytest.mark.parametrize(
     'agent_id,expected',
     [
@@ -1393,7 +1483,8 @@ def test_hook_error_resolving_agents_exits_with_error(
     tmp_path, auto_update_on
 ):
     with patch(
-        'awscli.customizations.agenttoolkit.update_skill.resolve_agents',
+        'awscli.customizations.agenttoolkit.update_skill.'
+        'resolve_agents_in_scopes',
         side_effect=ValueError('bad'),
     ):
         rc, output = _run_hook(tmp_path, 'kiro', _make_skill_client())

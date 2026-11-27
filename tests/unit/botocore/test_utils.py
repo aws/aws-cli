@@ -16,6 +16,7 @@ import datetime
 import hashlib
 import io
 import operator
+import time
 from contextlib import contextmanager
 from sys import getrefcount
 from unittest.mock import Mock
@@ -590,6 +591,39 @@ class TestParseTimestamps(unittest.TestCase):
             parse_timestamp('1222172800'),
             datetime.datetime(2008, 9, 23, 12, 26, 40, tzinfo=tzutc()),
         )
+
+    def test_parse_epoch_uses_system_offset_when_tzlocal_is_stale(self):
+        # dateutil's tzlocal() derives its standard/DST offsets from
+        # time.timezone/time.altzone, which are fixed at the start of the
+        # year. For a zone whose rules changed mid-year (e.g.
+        # America/Vancouver in 2026, tzdata 2026b, where the standard
+        # offset moved from -08:00 to -07:00), tzlocal() keeps reporting
+        # the stale -08:00 offset while the system localtime reports
+        # -07:00. parse_timestamp() must follow the system offset.
+        # See https://github.com/aws/aws-cli/issues/10852
+        epoch = 1793815725  # 2026-11-04 18:08:45 UTC
+        expected = datetime.datetime.fromtimestamp(
+            epoch, datetime.timezone.utc
+        ).astimezone()
+        with mock.patch('time.timezone', 28800):
+            with mock.patch('time.altzone', 25200):
+                with mock.patch('time.daylight', 1):
+                    with mock.patch('time.tzname', ('PST', 'PDT')):
+                        # Compare wall-clock time and offset, not the
+                        # datetime itself: aware datetimes compare equal
+                        # when they represent the same instant, even with
+                        # a wrong offset.
+                        for result in (
+                            parse_timestamp(epoch),
+                            parse_timestamp(str(epoch)),
+                        ):
+                            self.assertEqual(
+                                result.replace(tzinfo=None),
+                                expected.replace(tzinfo=None),
+                            )
+                            self.assertEqual(
+                                result.utcoffset(), expected.utcoffset()
+                            )
 
     def test_parse_rfc822(self):
         self.assertEqual(

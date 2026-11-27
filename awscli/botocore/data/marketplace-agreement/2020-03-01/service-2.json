@@ -660,6 +660,12 @@
       "min":12,
       "pattern":"[0-9]+"
     },
+    "AWSRegion":{
+      "type":"string",
+      "max":50,
+      "min":1,
+      "pattern":"[a-z]{2,3}(-[a-z]+)+-\\d+"
+    },
     "AcceptAgreementApprovalInput":{
       "type":"structure",
       "members":{
@@ -4510,6 +4516,10 @@
         "price":{
           "shape":"BoundedString",
           "documentation":"<p>Per unit price for the product dimension that's used for calculating the amount to be charged.</p>"
+        },
+        "regionalPrices":{
+          "shape":"RegionalPriceList",
+          "documentation":"<p>The per-Region price overrides for the product dimension. When a Regional price is present for an AWS Region, it replaces the default <code>price</code>. This field is absent when the offer doesn't define regional price overrides.</p>"
         }
       },
       "documentation":"<p>Defines the per unit rates for each individual product dimension.</p>"
@@ -4543,6 +4553,30 @@
         }
       },
       "documentation":"<p>Defines a pricing model where customers are charged a fixed recurring price at the end of each billing period.</p>"
+    },
+    "RegionalPrice":{
+      "type":"structure",
+      "required":[
+        "region",
+        "price"
+      ],
+      "members":{
+        "region":{
+          "shape":"AWSRegion",
+          "documentation":"<p>The AWS Region that the price override applies to.</p>"
+        },
+        "price":{
+          "shape":"BoundedString",
+          "documentation":"<p>The per unit price for the product dimension in the specified AWS Region.</p>"
+        }
+      },
+      "documentation":"<p>A per-Region price override for a product dimension in a rate card.</p>"
+    },
+    "RegionalPriceList":{
+      "type":"list",
+      "member":{"shape":"RegionalPrice"},
+      "max":50,
+      "min":1
     },
     "RegistrationToken":{
       "type":"string",

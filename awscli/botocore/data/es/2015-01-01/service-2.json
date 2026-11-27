@@ -1460,6 +1460,46 @@
       "type":"list",
       "member":{"shape":"CancelledChangeProperty"}
     },
+    "CatalogConfiguration":{
+      "type":"structure",
+      "members":{
+        "ServiceManagedS3Tables":{
+          "shape":"ServiceManagedS3TablesCatalog",
+          "documentation":"<p>An Amazon S3 Tables catalog that the service creates and manages for the domain.</p>"
+        }
+      },
+      "documentation":"<p>The catalog that a domain publishes to. Specify exactly one catalog type.</p>",
+      "union":true
+    },
+    "CatalogOptions":{
+      "type":"structure",
+      "required":["Enabled"],
+      "members":{
+        "Enabled":{
+          "shape":"Boolean",
+          "documentation":"<p>Whether the domain publishes data to the catalog. Accepted values true or false</p>"
+        },
+        "Catalog":{
+          "shape":"CatalogConfiguration",
+          "documentation":"<p>The catalog that the domain publishes to.</p>"
+        }
+      },
+      "documentation":"<p>Specifies the configuration for integrating the domain with a data catalog, so that the domain can publish its data as tables. The only supported catalog is an Amazon S3 Tables catalog that the service creates and manages for the domain.</p>"
+    },
+    "CatalogOptionsStatus":{
+      "type":"structure",
+      "members":{
+        "Options":{
+          "shape":"CatalogOptions",
+          "documentation":"<p>The catalog options configured for the domain.</p>"
+        },
+        "Status":{
+          "shape":"OptionStatus",
+          "documentation":"<p>The status of the catalog options for the domain.</p>"
+        }
+      },
+      "documentation":"<p>The configured catalog options for the domain and their current status.</p>"
+    },
     "ChangeProgressDetails":{
       "type":"structure",
       "members":{
@@ -1781,6 +1821,10 @@
         "LogPublishingOptions":{
           "shape":"LogPublishingOptions",
           "documentation":"<p>Map of <code>LogType</code> and <code>LogPublishingOption</code>, each containing options to publish a given type of Elasticsearch log.</p>"
+        },
+        "CatalogOptions":{
+          "shape":"CatalogOptions",
+          "documentation":"<p>Options for publishing the domain's data to a data catalog, such as a service-managed Amazon S3 Tables catalog.</p>"
         },
         "DomainEndpointOptions":{
           "shape":"DomainEndpointOptions",
@@ -3079,6 +3123,10 @@
           "shape":"LogPublishingOptionsStatus",
           "documentation":"<p>Log publishing options for the given domain.</p>"
         },
+        "CatalogOptions":{
+          "shape":"CatalogOptionsStatus",
+          "documentation":"<p>The catalog options configured for the given domain and their current status.</p>"
+        },
         "DomainEndpointOptions":{
           "shape":"DomainEndpointOptionsStatus",
           "documentation":"<p>Specifies the <code>DomainEndpointOptions</code> for the Elasticsearch domain.</p>"
@@ -3203,6 +3251,10 @@
         "LogPublishingOptions":{
           "shape":"LogPublishingOptions",
           "documentation":"<p>Log publishing options for the given domain.</p>"
+        },
+        "CatalogOptions":{
+          "shape":"CatalogOptions",
+          "documentation":"<p>The catalog options for the given domain.</p>"
         },
         "ServiceSoftwareOptions":{
           "shape":"ServiceSoftwareOptions",
@@ -3625,6 +3677,12 @@
     "Issues":{
       "type":"list",
       "member":{"shape":"Issue"}
+    },
+    "KmsKeyArn":{
+      "type":"string",
+      "max":2048,
+      "min":20,
+      "pattern":"^arn:aws[a-zA-Z-]*:kms:[a-z0-9-]+:[0-9]{12}:key/[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$"
     },
     "KmsKeyId":{
       "type":"string",
@@ -4643,6 +4701,20 @@
       "min":3
     },
     "S3Key":{"type":"string"},
+    "S3TablesEncryptionConfiguration":{
+      "type":"structure",
+      "members":{
+        "Enabled":{
+          "shape":"Boolean",
+          "documentation":"<p>Whether to encrypt the tables with the AWS KMS key specified in <code>KmsKeyArn</code>. Accepted values true or false</p>"
+        },
+        "KmsKeyArn":{
+          "shape":"KmsKeyArn",
+          "documentation":"<p>The ARN of the AWS KMS key to encrypt the tables with. Takes the form <code>arn:aws:kms:region:account-id:key/key-id</code>.</p>"
+        }
+      },
+      "documentation":"<p>Specifies the encryption settings for the tables in a service-managed Amazon S3 Tables catalog.</p>"
+    },
     "SAMLEntityId":{
       "type":"string",
       "max":512,
@@ -4773,6 +4845,16 @@
         "MEDIUM",
         "HIGH"
       ]
+    },
+    "ServiceManagedS3TablesCatalog":{
+      "type":"structure",
+      "members":{
+        "EncryptionConfiguration":{
+          "shape":"S3TablesEncryptionConfiguration",
+          "documentation":"<p>Encryption settings for the tables in the catalog.</p>"
+        }
+      },
+      "documentation":"<p>Specifies the configuration for an Amazon S3 Tables catalog that the service creates and manages for the domain.</p>"
     },
     "ServiceSoftwareOptions":{
       "type":"structure",
@@ -5143,6 +5225,10 @@
         "LogPublishingOptions":{
           "shape":"LogPublishingOptions",
           "documentation":"<p>Map of <code>LogType</code> and <code>LogPublishingOption</code>, each containing options to publish a given type of Elasticsearch log.</p>"
+        },
+        "CatalogOptions":{
+          "shape":"CatalogOptions",
+          "documentation":"<p>Options for publishing the domain's data to a data catalog, such as a service-managed Amazon S3 Tables catalog.</p>"
         },
         "DomainEndpointOptions":{
           "shape":"DomainEndpointOptions",

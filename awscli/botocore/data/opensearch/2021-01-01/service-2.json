@@ -2929,6 +2929,46 @@
         "delete_failed"
       ]
     },
+    "CatalogConfiguration":{
+      "type":"structure",
+      "members":{
+        "ServiceManagedS3Tables":{
+          "shape":"ServiceManagedS3TablesCatalog",
+          "documentation":"<p>An Amazon S3 Tables catalog that OpenSearch Service creates and manages for the domain.</p>"
+        }
+      },
+      "documentation":"<p>The catalog that a domain publishes to. Specify exactly one catalog type.</p>",
+      "union":true
+    },
+    "CatalogOptions":{
+      "type":"structure",
+      "required":["Enabled"],
+      "members":{
+        "Enabled":{
+          "shape":"Boolean",
+          "documentation":"<p>Whether the domain publishes data to the catalog.</p>"
+        },
+        "Catalog":{
+          "shape":"CatalogConfiguration",
+          "documentation":"<p>The catalog that the domain publishes to.</p>"
+        }
+      },
+      "documentation":"<p>Container for the parameters that configure the domain's integration with a data catalog, so that the domain can publish its data as tables. The only supported catalog is an Amazon S3 Tables catalog that OpenSearch Service creates and manages for the domain.</p>"
+    },
+    "CatalogOptionsStatus":{
+      "type":"structure",
+      "members":{
+        "Options":{
+          "shape":"CatalogOptions",
+          "documentation":"<p>The catalog options configured for the domain.</p>"
+        },
+        "Status":{
+          "shape":"OptionStatus",
+          "documentation":"<p>The status of the catalog options for the domain.</p>"
+        }
+      },
+      "documentation":"<p>The configured catalog options for the domain and their current status.</p>"
+    },
     "CategoryDiffResult":{
       "type":"structure",
       "members":{
@@ -3532,6 +3572,10 @@
         "LogPublishingOptions":{
           "shape":"LogPublishingOptions",
           "documentation":"<p>Key-value pairs to configure log publishing.</p>"
+        },
+        "CatalogOptions":{
+          "shape":"CatalogOptions",
+          "documentation":"<p>Options for publishing the domain's data to a data catalog, such as a service-managed Amazon S3 Tables catalog.</p>"
         },
         "DomainEndpointOptions":{
           "shape":"DomainEndpointOptions",
@@ -5212,6 +5256,10 @@
           "shape":"LogPublishingOptionsStatus",
           "documentation":"<p>Key-value pairs to configure log publishing.</p>"
         },
+        "CatalogOptions":{
+          "shape":"CatalogOptionsStatus",
+          "documentation":"<p>The catalog options configured for the domain and their current status.</p>"
+        },
         "DomainEndpointOptions":{
           "shape":"DomainEndpointOptionsStatus",
           "documentation":"<p>Additional options for the domain endpoint, such as whether to require HTTPS for all traffic.</p>"
@@ -5642,6 +5690,10 @@
         "LogPublishingOptions":{
           "shape":"LogPublishingOptions",
           "documentation":"<p>Log publishing options for the domain.</p>"
+        },
+        "CatalogOptions":{
+          "shape":"CatalogOptions",
+          "documentation":"<p>The catalog options for the domain.</p>"
         },
         "ServiceSoftwareOptions":{
           "shape":"ServiceSoftwareOptions",
@@ -9492,6 +9544,20 @@
       "max":1024,
       "min":1
     },
+    "S3TablesEncryptionConfiguration":{
+      "type":"structure",
+      "members":{
+        "Enabled":{
+          "shape":"Boolean",
+          "documentation":"<p>Whether to encrypt the tables with the AWS KMS key specified in <code>KmsKeyArn</code>.</p>"
+        },
+        "KmsKeyArn":{
+          "shape":"KmsKeyArn",
+          "documentation":"<p>The ARN of the AWS KMS key to encrypt the tables with. Takes the form <code>arn:aws:kms:region:account-id:key/key-id</code>.</p>"
+        }
+      },
+      "documentation":"<p>Encryption settings for the tables in a service-managed Amazon S3 Tables catalog.</p>"
+    },
     "S3VectorsEngine":{
       "type":"structure",
       "members":{
@@ -9742,6 +9808,16 @@
         }
       },
       "documentation":"<p>Configuration for serverless vector acceleration, which provides <a href=\"https://docs.aws.amazon.com/opensearch-service/latest/developerguide/gpu-acceleration-vector-index.html\">GPU-accelerated</a> vector search capabilities for improved performance on vector workloads.</p>"
+    },
+    "ServiceManagedS3TablesCatalog":{
+      "type":"structure",
+      "members":{
+        "EncryptionConfiguration":{
+          "shape":"S3TablesEncryptionConfiguration",
+          "documentation":"<p>Encryption settings for the tables in the catalog.</p>"
+        }
+      },
+      "documentation":"<p>Configuration for an Amazon S3 Tables catalog that OpenSearch Service creates and manages for the domain.</p>"
     },
     "ServiceOptions":{
       "type":"structure",
@@ -10476,6 +10552,10 @@
         "LogPublishingOptions":{
           "shape":"LogPublishingOptions",
           "documentation":"<p>Options to publish OpenSearch logs to Amazon CloudWatch Logs.</p>"
+        },
+        "CatalogOptions":{
+          "shape":"CatalogOptions",
+          "documentation":"<p>Options for publishing the domain's data to a data catalog, such as a service-managed Amazon S3 Tables catalog.</p>"
         },
         "EncryptionAtRestOptions":{
           "shape":"EncryptionAtRestOptions",

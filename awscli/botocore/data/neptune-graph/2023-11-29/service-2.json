@@ -96,7 +96,7 @@
         {"shape":"ConflictException"},
         {"shape":"InternalServerException"}
       ],
-      "documentation":"<p>Creates a new Neptune Analytics graph.</p>",
+      "documentation":"<p>Creates a new Neptune Analytics graph.</p> <p>Neptune Analytics supports two types of graphs, selected using <code>computeConfiguration</code>:</p> <ul> <li> <p> <i>Provisioned graphs</i> use dedicated compute that is always available. Use provisioned graphs for workloads that require higher memory or predictable latency.</p> </li> <li> <p> <i>Graph sessions</i> use ephemeral compute that is bootstrapped when a query is sent to the graph. The compute is automatically stopped after a few minutes with no traffic. The next query sent to the graph bootstraps the compute again, so queries that bootstrap the compute are subject to cold start latency.</p> </li> </ul>",
       "staticContextParams":{
         "ApiType":{"value":"ControlPlane"}
       }
@@ -139,7 +139,7 @@
         {"shape":"ConflictException"},
         {"shape":"InternalServerException"}
       ],
-      "documentation":"<p>Creates a new Neptune Analytics graph and imports data into it, either from Amazon Simple Storage Service (S3) or from a Neptune database or a Neptune database snapshot.</p> <p>The data can be loaded from files in S3 that in either the <a href=\"https://docs.aws.amazon.com/neptune/latest/userguide/bulk-load-tutorial-format-gremlin.html\">Gremlin CSV format</a> or the <a href=\"https://docs.aws.amazon.com/neptune/latest/userguide/bulk-load-tutorial-format-opencypher.html\">openCypher load format</a>.</p>",
+      "documentation":"<p>Creates a new Neptune Analytics graph and imports data into it, either from Amazon Simple Storage Service (S3) or from a Neptune database or a Neptune database snapshot.</p> <p>The data can be loaded from files in S3 that in either the <a href=\"https://docs.aws.amazon.com/neptune/latest/userguide/bulk-load-tutorial-format-gremlin.html\">Gremlin CSV format</a> or the <a href=\"https://docs.aws.amazon.com/neptune/latest/userguide/bulk-load-tutorial-format-opencypher.html\">openCypher load format</a>.</p> <note> <p>Graph session cannot be created using this API. Create an empty Graph Session using <a href=\"https://docs.aws.amazon.com/neptune-analytics/latest/apiref/API_CreateGraph.html\">CreateGraph</a> or restore a snapshot as Graph Session using <a href=\"https://docs.aws.amazon.com/neptune-analytics/latest/apiref/API_RestoreGraphFromSnapshot.html\">RestoreGraphFromSnapshot</a> and use <a href=\"https://docs.aws.amazon.com/neptune-analytics/latest/userguide/batch-load.html\">neptune.load CALL procedure</a> to load data into the Graph Session instead.</p> </note>",
       "staticContextParams":{
         "ApiType":{"value":"ControlPlane"}
       }
@@ -638,7 +638,7 @@
         {"shape":"InternalServerException"},
         {"shape":"ResourceNotFoundException"}
       ],
-      "documentation":"<p>Starts the specific graph.</p>",
+      "documentation":"<p>Starts the specific graph.</p> <note> <p>Graph sessions are started automatically when a query is sent to the graph. While this API is supported for graph sessions, it isn't required.</p> </note>",
       "staticContextParams":{
         "ApiType":{"value":"ControlPlane"}
       }
@@ -659,7 +659,7 @@
         {"shape":"InternalServerException"},
         {"shape":"ResourceNotFoundException"}
       ],
-      "documentation":"<p>Import data into existing Neptune Analytics graph from Amazon Simple Storage Service (S3). The graph needs to be empty and in the AVAILABLE state.</p>",
+      "documentation":"<p>Import data into existing Neptune Analytics graph from Amazon Simple Storage Service (S3). The graph needs to be empty and in the AVAILABLE state.</p> <note> <p>Graph sessions don't support this API. Use <a href=\"https://docs.aws.amazon.com/neptune-analytics/latest/userguide/batch-load.html\">neptune.load CALL procedure</a> to load data into the Graph Session instead.</p> </note>",
       "staticContextParams":{
         "ApiType":{"value":"ControlPlane"}
       }
@@ -680,7 +680,7 @@
         {"shape":"InternalServerException"},
         {"shape":"ResourceNotFoundException"}
       ],
-      "documentation":"<p>Stops the specific graph.</p>",
+      "documentation":"<p>Stops the specific graph.</p> <note> <p>Graph sessions are stopped automatically after a few minutes with no traffic. While this API is supported for graph sessions, it isn't required.</p> </note>",
       "staticContextParams":{
         "ApiType":{"value":"ControlPlane"}
       }
@@ -920,6 +920,21 @@
         }
       }
     },
+    "ComputeConfiguration":{
+      "type":"structure",
+      "members":{
+        "provisionedGraph":{
+          "shape":"ProvisionedGraphConfiguration",
+          "documentation":"<p>Configuration for a provisioned graph. A provisioned graph uses dedicated compute that is always available. Use provisioned graphs for workloads that require higher memory or predictable latency.</p>"
+        },
+        "graphSession":{
+          "shape":"GraphSessionConfiguration",
+          "documentation":"<p>Configuration for a graph session. A graph session uses ephemeral compute that is bootstrapped when a query is sent to the graph. The compute is automatically stopped after a few minutes with no traffic; the next query bootstraps the compute again. Queries that bootstrap the compute are subject to cold start latency.</p>"
+        }
+      },
+      "documentation":"<p>The compute configuration of a graph. A graph is either a provisioned graph or a graph session.</p>",
+      "union":true
+    },
     "ConflictException":{
       "type":"structure",
       "required":["message"],
@@ -946,10 +961,7 @@
     },
     "CreateGraphInput":{
       "type":"structure",
-      "required":[
-        "graphName",
-        "provisionedMemory"
-      ],
+      "required":["graphName"],
       "members":{
         "graphName":{
           "shape":"GraphName",
@@ -981,7 +993,14 @@
         },
         "provisionedMemory":{
           "shape":"ProvisionedMemory",
-          "documentation":"<p>The provisioned memory-optimized Neptune Capacity Units (m-NCUs) to use for the graph. Min = 16</p>"
+          "documentation":"<p>The provisioned memory-optimized Neptune Capacity Units (m-NCUs) to use for the graph. Min = 16</p> <note> <p>This field is deprecated. We recommend using <code>computeConfiguration</code> instead.</p> </note>",
+          "deprecated":true,
+          "deprecatedMessage":"ProvisionedMemory is deprecated. Use ComputeConfiguration instead.",
+          "deprecatedSince":"2026-11-25"
+        },
+        "computeConfiguration":{
+          "shape":"ComputeConfiguration",
+          "documentation":"<p>The compute configuration for the new graph. Specify <code>provisionedGraph</code> to create a provisioned graph with dedicated, always-available compute, or <code>graphSession</code> to create a graph session that uses ephemeral compute bootstrapped on demand when a query is sent, and is subject to cold start latency.</p>"
         }
       }
     },
@@ -1019,7 +1038,14 @@
         },
         "provisionedMemory":{
           "shape":"ProvisionedMemory",
-          "documentation":"<p>The provisioned memory-optimized Neptune Capacity Units (m-NCUs) to use for the graph.</p> <p>Min = 16</p>"
+          "documentation":"<p>The provisioned memory-optimized Neptune Capacity Units (m-NCUs) to use for the graph.</p> <p>Min = 16</p> <note> <p>This field is deprecated. For backward compatibility, it returns <code>memory</code> for a <code>provisionedGraph</code> and <code>minMemory</code> for a <code>graphSession</code>. Use <code>computeConfiguration</code> instead.</p> </note>",
+          "deprecated":true,
+          "deprecatedMessage":"ProvisionedMemory is deprecated. Refer to ComputeConfiguration instead.",
+          "deprecatedSince":"2026-11-25"
+        },
+        "computeConfiguration":{
+          "shape":"ComputeConfiguration",
+          "documentation":"<p>The compute configuration of the graph: either a provisioned graph or a graph session.</p>"
         },
         "endpoint":{
           "shape":"String",
@@ -1336,7 +1362,14 @@
         },
         "provisionedMemory":{
           "shape":"ProvisionedMemory",
-          "documentation":"<p>The number of memory-optimized Neptune Capacity Units (m-NCUs) allocated to the graph.</p>"
+          "documentation":"<p>The number of memory-optimized Neptune Capacity Units (m-NCUs) allocated to the graph.</p> <note> <p>This field is deprecated. For backward compatibility, it returns <code>memory</code> for a <code>provisionedGraph</code> and <code>minMemory</code> for a <code>graphSession</code>. Use <code>computeConfiguration</code> instead.</p> </note>",
+          "deprecated":true,
+          "deprecatedMessage":"ProvisionedMemory is deprecated. Refer to ComputeConfiguration instead.",
+          "deprecatedSince":"2026-11-25"
+        },
+        "computeConfiguration":{
+          "shape":"ComputeConfiguration",
+          "documentation":"<p>The compute configuration of the graph: either a provisioned graph or a graph session.</p>"
         },
         "endpoint":{
           "shape":"String",
@@ -1346,7 +1379,10 @@
           "shape":"Boolean",
           "documentation":"<p>If <code>true</code>, the graph has a public endpoint, otherwise not.</p>"
         },
-        "vectorSearchConfiguration":{"shape":"VectorSearchConfiguration"},
+        "vectorSearchConfiguration":{
+          "shape":"VectorSearchConfiguration",
+          "documentation":"<p>The vector-search configuration for the graph, which specifies the vector dimension to use in the vector index, if any.</p>"
+        },
         "replicaCount":{
           "shape":"ReplicaCount",
           "documentation":"<p>The number of replicas for the graph.</p>"
@@ -1879,7 +1915,14 @@
         },
         "provisionedMemory":{
           "shape":"ProvisionedMemory",
-          "documentation":"<p>The number of memory-optimized Neptune Capacity Units (m-NCUs) allocated to the graph.</p>"
+          "documentation":"<p>The number of memory-optimized Neptune Capacity Units (m-NCUs) allocated to the graph.</p> <note> <p>This field is deprecated. For backward compatibility, it returns <code>memory</code> for a <code>provisionedGraph</code> and <code>minMemory</code> for a <code>graphSession</code>. Use <code>computeConfiguration</code> instead.</p> </note>",
+          "deprecated":true,
+          "deprecatedMessage":"ProvisionedMemory is deprecated. Refer to ComputeConfiguration instead.",
+          "deprecatedSince":"2026-11-25"
+        },
+        "computeConfiguration":{
+          "shape":"ComputeConfiguration",
+          "documentation":"<p>The compute configuration of the graph: either a provisioned graph or a graph session.</p>"
         },
         "endpoint":{
           "shape":"String",
@@ -1889,7 +1932,10 @@
           "shape":"Boolean",
           "documentation":"<p>If <code>true</code>, the graph has a public endpoint, otherwise not.</p>"
         },
-        "vectorSearchConfiguration":{"shape":"VectorSearchConfiguration"},
+        "vectorSearchConfiguration":{
+          "shape":"VectorSearchConfiguration",
+          "documentation":"<p>The vector-search configuration for the graph, which specifies the vector dimension to use in the vector index, if any.</p>"
+        },
         "replicaCount":{
           "shape":"ReplicaCount",
           "documentation":"<p>The number of replicas for the graph.</p>"
@@ -2235,6 +2281,22 @@
       "min":1,
       "pattern":"(?!g-)[a-z][a-z0-9]*(-[a-z0-9]+)*"
     },
+    "GraphSessionConfiguration":{
+      "type":"structure",
+      "members":{
+        "minMemory":{
+          "shape":"GraphSessionMemory",
+          "documentation":"<p>The minimum Session Neptune Capacity Units (s-NCUs) available to the graph session.</p> <p>A graph session can burst up to 2x the configured min memory. For example, a <code>minMemory</code> of 4 can burst up to 8 s-NCUs, and a <code>minMemory</code> of 8 can burst up to 16 s-NCUs.</p>"
+        }
+      },
+      "documentation":"<p>The compute configuration for a graph session.</p>"
+    },
+    "GraphSessionMemory":{
+      "type":"integer",
+      "box":true,
+      "max":8,
+      "min":4
+    },
     "GraphSnapshotSummary":{
       "type":"structure",
       "required":[
@@ -2320,7 +2382,10 @@
         },
         "provisionedMemory":{
           "shape":"ProvisionedMemory",
-          "documentation":"<p>The number of memory-optimized Neptune Capacity Units (m-NCUs) allocated to the graph.</p>"
+          "documentation":"<p>The number of memory-optimized Neptune Capacity Units (m-NCUs) allocated to the graph.</p> <note> <p>This field is deprecated. For backward compatibility, it returns <code>memory</code> for a <code>provisionedGraph</code> and <code>minMemory</code> for a <code>graphSession</code>. Use <code>computeConfiguration</code> instead.</p> </note>",
+          "deprecated":true,
+          "deprecatedMessage":"ProvisionedMemory is deprecated. Refer to ComputeConfiguration instead.",
+          "deprecatedSince":"2026-11-25"
         },
         "publicConnectivity":{
           "shape":"Boolean",
@@ -2341,6 +2406,10 @@
         "deletionProtection":{
           "shape":"Boolean",
           "documentation":"<p>If <code>true</code>, deletion protection is enabled for the graph.</p>"
+        },
+        "computeConfiguration":{
+          "shape":"ComputeConfiguration",
+          "documentation":"<p>The compute configuration of the graph: either a provisioned graph or a graph session.</p>"
         }
       },
       "documentation":"<p>Summary details about a graph.</p>"
@@ -2891,11 +2960,22 @@
       "type":"list",
       "member":{"shape":"PrivateGraphEndpointSummary"}
     },
+    "ProvisionedGraphConfiguration":{
+      "type":"structure",
+      "required":["memory"],
+      "members":{
+        "memory":{
+          "shape":"ProvisionedMemory",
+          "documentation":"<p>The provisioned memory-optimized Neptune Capacity Units (m-NCUs) to use for the graph.</p>"
+        }
+      },
+      "documentation":"<p>The compute configuration for a provisioned graph.</p>"
+    },
     "ProvisionedMemory":{
       "type":"integer",
       "box":true,
       "max":24576,
-      "min":16
+      "min":1
     },
     "QueryLanguage":{
       "type":"string",
@@ -3011,7 +3091,14 @@
         },
         "provisionedMemory":{
           "shape":"ProvisionedMemory",
-          "documentation":"<p>The number of memory-optimized Neptune Capacity Units (m-NCUs) allocated to the graph.</p>"
+          "documentation":"<p>The number of memory-optimized Neptune Capacity Units (m-NCUs) allocated to the graph.</p> <note> <p>This field is deprecated. For backward compatibility, it returns <code>memory</code> for a <code>provisionedGraph</code> and <code>minMemory</code> for a <code>graphSession</code>. Use <code>computeConfiguration</code> instead.</p> </note>",
+          "deprecated":true,
+          "deprecatedMessage":"ProvisionedMemory is deprecated. Refer to ComputeConfiguration instead.",
+          "deprecatedSince":"2026-11-25"
+        },
+        "computeConfiguration":{
+          "shape":"ComputeConfiguration",
+          "documentation":"<p>The compute configuration of the graph: either a provisioned graph or a graph session.</p>"
         },
         "endpoint":{
           "shape":"String",
@@ -3021,7 +3108,10 @@
           "shape":"Boolean",
           "documentation":"<p>If <code>true</code>, the graph has a public endpoint, otherwise not.</p>"
         },
-        "vectorSearchConfiguration":{"shape":"VectorSearchConfiguration"},
+        "vectorSearchConfiguration":{
+          "shape":"VectorSearchConfiguration",
+          "documentation":"<p>The vector-search configuration for the graph, which specifies the vector dimension to use in the vector index, if any.</p>"
+        },
         "replicaCount":{
           "shape":"ReplicaCount",
           "documentation":"<p>The number of replicas for the graph.</p>"
@@ -3079,7 +3169,14 @@
         },
         "provisionedMemory":{
           "shape":"ProvisionedMemory",
-          "documentation":"<p>The provisioned memory-optimized Neptune Capacity Units (m-NCUs) to use for the graph.</p> <p>Min = 16</p>"
+          "documentation":"<p>The provisioned memory-optimized Neptune Capacity Units (m-NCUs) to use for the graph.</p> <p>Min = 16</p> <note> <p>This field is deprecated. We recommend using <code>computeConfiguration</code> instead.</p> </note>",
+          "deprecated":true,
+          "deprecatedMessage":"ProvisionedMemory is deprecated. Use ComputeConfiguration instead.",
+          "deprecatedSince":"2026-11-25"
+        },
+        "computeConfiguration":{
+          "shape":"ComputeConfiguration",
+          "documentation":"<p>The compute configuration for the restored graph. A snapshot can be restored into either a provisioned graph or a graph session, regardless of the compute type of the source graph. A snapshot taken from a provisioned graph can be restored into a graph session as long as the data in the snapshot fits within the graph session.</p>"
         },
         "deletionProtection":{
           "shape":"Boolean",
@@ -3133,7 +3230,14 @@
         },
         "provisionedMemory":{
           "shape":"ProvisionedMemory",
-          "documentation":"<p>The number of memory-optimized Neptune Capacity Units (m-NCUs) allocated to the graph.</p>"
+          "documentation":"<p>The number of memory-optimized Neptune Capacity Units (m-NCUs) allocated to the graph.</p> <note> <p>This field is deprecated. For backward compatibility, it returns <code>memory</code> for a <code>provisionedGraph</code> and <code>minMemory</code> for a <code>graphSession</code>. Use <code>computeConfiguration</code> instead.</p> </note>",
+          "deprecated":true,
+          "deprecatedMessage":"ProvisionedMemory is deprecated. Refer to ComputeConfiguration instead.",
+          "deprecatedSince":"2026-11-25"
+        },
+        "computeConfiguration":{
+          "shape":"ComputeConfiguration",
+          "documentation":"<p>The compute configuration of the graph: either a provisioned graph or a graph session.</p>"
         },
         "endpoint":{
           "shape":"String",
@@ -3143,7 +3247,10 @@
           "shape":"Boolean",
           "documentation":"<p>If <code>true</code>, the graph has a public endpoint, otherwise not.</p>"
         },
-        "vectorSearchConfiguration":{"shape":"VectorSearchConfiguration"},
+        "vectorSearchConfiguration":{
+          "shape":"VectorSearchConfiguration",
+          "documentation":"<p>The vector-search configuration for the graph, which specifies the vector dimension to use in the vector index, if any.</p>"
+        },
         "replicaCount":{
           "shape":"ReplicaCount",
           "documentation":"<p>The number of replicas for the graph.</p>"
@@ -3184,7 +3291,10 @@
       "type":"structure",
       "required":["message"],
       "members":{
-        "message":{"shape":"String"},
+        "message":{
+          "shape":"String",
+          "documentation":"<p>A message describing the problem.</p>"
+        },
         "resourceId":{
           "shape":"String",
           "documentation":"<p>The identifier of the resource that exceeded quota.</p>"
@@ -3386,7 +3496,14 @@
         },
         "provisionedMemory":{
           "shape":"ProvisionedMemory",
-          "documentation":"<p>The number of memory-optimized Neptune Capacity Units (m-NCUs) allocated to the graph.</p>"
+          "documentation":"<p>The number of memory-optimized Neptune Capacity Units (m-NCUs) allocated to the graph.</p> <note> <p>This field is deprecated. For backward compatibility, it returns <code>memory</code> for a <code>provisionedGraph</code> and <code>minMemory</code> for a <code>graphSession</code>. Use <code>computeConfiguration</code> instead.</p> </note>",
+          "deprecated":true,
+          "deprecatedMessage":"ProvisionedMemory is deprecated. Refer to ComputeConfiguration instead.",
+          "deprecatedSince":"2026-11-25"
+        },
+        "computeConfiguration":{
+          "shape":"ComputeConfiguration",
+          "documentation":"<p>The compute configuration of the graph: either a provisioned graph or a graph session.</p>"
         },
         "endpoint":{
           "shape":"String",
@@ -3396,7 +3513,10 @@
           "shape":"Boolean",
           "documentation":"<p>If <code>true</code>, the graph has a public endpoint, otherwise not.</p>"
         },
-        "vectorSearchConfiguration":{"shape":"VectorSearchConfiguration"},
+        "vectorSearchConfiguration":{
+          "shape":"VectorSearchConfiguration",
+          "documentation":"<p>The vector-search configuration for the graph, which specifies the vector dimension to use in the vector index, if any.</p>"
+        },
         "replicaCount":{
           "shape":"ReplicaCount",
           "documentation":"<p>The number of replicas for the graph.</p>"
@@ -3427,7 +3547,10 @@
         "roleArn"
       ],
       "members":{
-        "importOptions":{"shape":"ImportOptions"},
+        "importOptions":{
+          "shape":"ImportOptions",
+          "documentation":"<p>Contains options for controlling the import process. For example, if the <code>failOnError</code> key is set to <code>false</code>, the import skips problem data and attempts to continue (whereas if set to <code>true</code>, the default, or if omitted, the import operation halts immediately when an error is encountered.</p>"
+        },
         "failOnError":{
           "shape":"Boolean",
           "documentation":"<p>If set to true, the task halts when an import error is encountered. If set to false, the task skips the data that caused the error and continues if possible.</p>"
@@ -3497,7 +3620,10 @@
           "shape":"ImportTaskStatus",
           "documentation":"<p>The status of the import task.</p>"
         },
-        "importOptions":{"shape":"ImportOptions"}
+        "importOptions":{
+          "shape":"ImportOptions",
+          "documentation":"<p>Contains options for controlling the import process. For example, if the <code>failOnError</code> key is set to <code>false</code>, the import skips problem data and attempts to continue (whereas if set to <code>true</code>, the default, or if omitted, the import operation halts immediately when an error is encountered.</p>"
+        }
       }
     },
     "StopGraphInput":{
@@ -3546,7 +3672,14 @@
         },
         "provisionedMemory":{
           "shape":"ProvisionedMemory",
-          "documentation":"<p>The number of memory-optimized Neptune Capacity Units (m-NCUs) allocated to the graph.</p>"
+          "documentation":"<p>The number of memory-optimized Neptune Capacity Units (m-NCUs) allocated to the graph.</p> <note> <p>This field is deprecated. For backward compatibility, it returns <code>memory</code> for a <code>provisionedGraph</code> and <code>minMemory</code> for a <code>graphSession</code>. Use <code>computeConfiguration</code> instead.</p> </note>",
+          "deprecated":true,
+          "deprecatedMessage":"ProvisionedMemory is deprecated. Refer to ComputeConfiguration instead.",
+          "deprecatedSince":"2026-11-25"
+        },
+        "computeConfiguration":{
+          "shape":"ComputeConfiguration",
+          "documentation":"<p>The compute configuration of the graph: either a provisioned graph or a graph session.</p>"
         },
         "endpoint":{
           "shape":"String",
@@ -3556,7 +3689,10 @@
           "shape":"Boolean",
           "documentation":"<p>If true, the graph has a public endpoint, otherwise not.</p>"
         },
-        "vectorSearchConfiguration":{"shape":"VectorSearchConfiguration"},
+        "vectorSearchConfiguration":{
+          "shape":"VectorSearchConfiguration",
+          "documentation":"<p>The vector-search configuration for the graph, which specifies the vector dimension to use in the vector index, if any.</p>"
+        },
         "replicaCount":{
           "shape":"ReplicaCount",
           "documentation":"<p>The number of replicas for the graph.</p>"
@@ -3670,7 +3806,10 @@
         "reason"
       ],
       "members":{
-        "message":{"shape":"String"},
+        "message":{
+          "shape":"String",
+          "documentation":"<p>A message describing the problem.</p>"
+        },
         "reason":{
           "shape":"UnprocessableExceptionReason",
           "documentation":"<p>The reason for the unprocessable exception.</p>"
@@ -3734,7 +3873,14 @@
         },
         "provisionedMemory":{
           "shape":"ProvisionedMemory",
-          "documentation":"<p>The provisioned memory-optimized Neptune Capacity Units (m-NCUs) to use for the graph.</p> <p>Min = 16</p>"
+          "documentation":"<p>The provisioned memory-optimized Neptune Capacity Units (m-NCUs) to use for the graph.</p> <p>Min = 16</p> <note> <p>This field is deprecated. We recommend using <code>computeConfiguration</code> instead.</p> </note>",
+          "deprecated":true,
+          "deprecatedMessage":"ProvisionedMemory is deprecated. Use ComputeConfiguration instead.",
+          "deprecatedSince":"2026-11-25"
+        },
+        "computeConfiguration":{
+          "shape":"ComputeConfiguration",
+          "documentation":"<p>The updated compute configuration for the graph. A graph session can be scaled up to a provisioned graph, and a provisioned graph can be scaled down to a graph session, as long as the data in the graph fits within the graph session.</p>"
         },
         "deletionProtection":{
           "shape":"Boolean",
@@ -3776,7 +3922,14 @@
         },
         "provisionedMemory":{
           "shape":"ProvisionedMemory",
-          "documentation":"<p>The number of memory-optimized Neptune Capacity Units (m-NCUs) allocated to the graph.</p>"
+          "documentation":"<p>The number of memory-optimized Neptune Capacity Units (m-NCUs) allocated to the graph.</p> <note> <p>This field is deprecated. For backward compatibility, it returns <code>memory</code> for a <code>provisionedGraph</code> and <code>minMemory</code> for a <code>graphSession</code>. Use <code>computeConfiguration</code> instead.</p> </note>",
+          "deprecated":true,
+          "deprecatedMessage":"ProvisionedMemory is deprecated. Refer to ComputeConfiguration instead.",
+          "deprecatedSince":"2026-11-25"
+        },
+        "computeConfiguration":{
+          "shape":"ComputeConfiguration",
+          "documentation":"<p>The compute configuration of the graph: either a provisioned graph or a graph session.</p>"
         },
         "endpoint":{
           "shape":"String",
@@ -3786,7 +3939,10 @@
           "shape":"Boolean",
           "documentation":"<p>If <code>true</code>, the graph has a public endpoint, otherwise not.</p>"
         },
-        "vectorSearchConfiguration":{"shape":"VectorSearchConfiguration"},
+        "vectorSearchConfiguration":{
+          "shape":"VectorSearchConfiguration",
+          "documentation":"<p>The vector-search configuration for the graph, which specifies the vector dimension to use in the vector index, if any.</p>"
+        },
         "replicaCount":{
           "shape":"ReplicaCount",
           "documentation":"<p>The number of replicas for the graph.</p>"

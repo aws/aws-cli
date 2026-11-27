@@ -954,8 +954,10 @@ def test_update_all_reports_skipped_with_reason(tmp_path):
         )
     assert rc == 0
     assert '0 updated, 1 skipped, 0 failed, 0 already up to date.' in output
+    # Shown like the agent labels, relative to the home directory.
+    shown = os.path.join('~', '.agent-b', 'skills', 'aws-cdk')
     assert (
-        f'Skipped:\n  aws-cdk at {os.path.realpath(other)}: directory was not '
+        f'Skipped:\n  aws-cdk at {shown}: directory was not '
         'installed by the AWS CLI.\n'
     ) in output
     assert 'add-skill --skill-name <name>' in output

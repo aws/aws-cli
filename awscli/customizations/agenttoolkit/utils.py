@@ -25,6 +25,7 @@ from awscli.customizations.agenttoolkit.agents import (
     SKILL_FILENAME,
     SKILL_METADATA_FILENAME,
     Scope,
+    collapse_home,
     get_detected_agents,
     universal_first,
 )
@@ -311,8 +312,9 @@ def install_skill(
                 # Report the unresolved path, unlike the other skips: the
                 # resolved one would hide the symbolic link that caused it.
                 if stream:
+                    shown_dir = collapse_home(skill_dir)
                     stream.write(
-                        f'  Skipped {skill_name} at {skill_dir}: '
+                        f'  Skipped {skill_name} at {shown_dir}: '
                         f'{SYMLINK_SKIP_REASON}.\n'
                     )
                 skipped.append((skill_dir, SYMLINK_SKIP_REASON))
@@ -379,7 +381,10 @@ def _skip_reason(skill_name, real_dir, overwrite_existing, stream):
     if os.path.lexists(real_dir) and not os.path.isdir(real_dir):
         reason = 'a file that is not a skill directory is in the way'
         if stream:
-            stream.write(f'  Skipped {skill_name} at {real_dir}: {reason}.\n')
+            stream.write(
+                f'  Skipped {skill_name} at {collapse_home(real_dir)}: '
+                f'{reason}.\n'
+            )
         return reason
     if os.path.isdir(real_dir):
         marker = os.path.join(real_dir, SKILL_METADATA_FILENAME)
@@ -387,7 +392,8 @@ def _skip_reason(skill_name, real_dir, overwrite_existing, stream):
             reason = 'directory was not installed by the AWS CLI'
             if stream:
                 stream.write(
-                    f'  Skipped {skill_name} at {real_dir}: {reason}.\n'
+                    f'  Skipped {skill_name} at {collapse_home(real_dir)}: '
+                    f'{reason}.\n'
                 )
             return reason
         # Marker is present, but if SKILL.md is missing the previous install

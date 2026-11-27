@@ -16,6 +16,7 @@ import sys
 from awscli.customizations.agenttoolkit import atomic
 from awscli.customizations.agenttoolkit.agents import (
     AGENT_CONFIGS,
+    collapse_home,
     universal_first,
 )
 from awscli.customizations.agenttoolkit.utils import (
@@ -89,7 +90,7 @@ class RemoveCommand(BasicCommand):
             if not is_writable:
                 removed_paths.add(entry)
                 self._stream.write(
-                    f'Skipped {skill.name} at {skill_dir}: '
+                    f'Skipped {skill.name} at {collapse_home(skill_dir)}: '
                     f'{SYMLINK_SKIP_REASON}.\n'
                 )
                 continue

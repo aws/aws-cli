@@ -24,6 +24,7 @@ from botocore.exceptions import ClientError, HTTPClientError
 from awscli.customizations.agenttoolkit.agents import (
     AGENT_CONFIGS,
     SKILL_METADATA_FILENAME,
+    collapse_home,
 )
 from awscli.customizations.agenttoolkit.filelock import file_lock
 from awscli.customizations.agenttoolkit.hooks import (
@@ -580,7 +581,9 @@ class UpdateSkillCommand(BasicCommand):
             return
         self._stream.write('\nSkipped:\n')
         for skill_name, skill_dir, reason in skipped:
-            self._stream.write(f'  {skill_name} at {skill_dir}: {reason}.\n')
+            self._stream.write(
+                f'  {skill_name} at {collapse_home(skill_dir)}: {reason}.\n'
+            )
         reasons = {reason for _, _, reason in skipped}
         if reasons - {SYMLINK_SKIP_REASON}:
             self._stream.write(

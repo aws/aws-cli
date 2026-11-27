@@ -3548,6 +3548,21 @@ class TestJSONCache(unittest.TestCase):
         self.cache['mykey'] = {'a': 'b'}
         self.assertEqual(self.cache['mykey'], {'a': 'b'})
 
+    def test_unreadable_cache_file_raises_key_error(self):
+        filename = os.path.join(self.tempdir, 'mykey.json')
+        with open(filename, 'wb') as f:
+            f.write(b'\x00' * 100)
+        with self.assertRaises(KeyError):
+            self.cache['mykey']
+
+    def test_failed_write_keeps_existing_value(self):
+        self.cache['mykey'] = {'foo': 'bar'}
+        with mock.patch('os.fsync', side_effect=OSError):
+            with self.assertRaises(OSError):
+                self.cache['mykey'] = {'baz': 'newvalue'}
+        self.assertEqual(self.cache['mykey'], {'foo': 'bar'})
+        self.assertEqual(os.listdir(self.tempdir), ['mykey.json'])
+
     @skip_if_windows('File permissions tests not supported on Windows.')
     def test_permissions_for_file_restricted(self):
         self.cache['mykey'] = {'foo': 'bar'}

@@ -11,6 +11,7 @@
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
 import logging
+import types
 from datetime import datetime
 
 from botocore.compat import json
@@ -27,6 +28,12 @@ LOG = logging.getLogger(__name__)
 
 def is_response_paginated(response):
     return isinstance(response, PageIterator)
+
+
+def is_response_stream(response):
+    # A generator yields several responses, for example one per region
+    # with --multi-regions.
+    return isinstance(response, types.GeneratorType)
 
 
 class Formatter:
@@ -181,7 +188,7 @@ class StreamedYAMLFormatter(Formatter):
                 self._flush_stream(stream)
 
     def _get_response_stream(self, response):
-        if is_response_paginated(response):
+        if is_response_paginated(response) or is_response_stream(response):
             return compat.imap(
                 self._get_transformed_response_for_output, response
             )
@@ -353,6 +360,9 @@ class TextFormatter(Formatter):
                         {'NextToken': {'NextToken': response.resume_token}},
                         stream,
                     )
+            elif is_response_stream(response):
+                for each_response in response:
+                    self._format_response(each_response, stream)
             else:
                 self._remove_request_id(response)
                 self._format_response(response, stream)

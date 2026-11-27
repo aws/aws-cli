@@ -30,6 +30,7 @@ from awscli.customizations.agenttoolkit.utils import (
 )
 from awscli.customizations.commands import BasicCommand
 from awscli.customizations.exceptions import ParamValidationError
+from awscli.customizations.utils import uni_print
 
 
 class RemoveCommand(BasicCommand):
@@ -89,9 +90,10 @@ class RemoveCommand(BasicCommand):
                 continue
             if not is_writable:
                 removed_paths.add(entry)
-                self._stream.write(
+                uni_print(
                     f'Skipped {skill.name} at {collapse_home(skill_dir)}: '
-                    f'{SYMLINK_SKIP_REASON}.\n'
+                    f'{SYMLINK_SKIP_REASON}.\n',
+                    self._stream,
                 )
                 continue
             with skills_lock(os.path.dirname(entry)):
@@ -109,9 +111,10 @@ class RemoveCommand(BasicCommand):
                 else:
                     atomic.remove_dir(entry)
             removed_paths.add(entry)
-            self._stream.write(
+            uni_print(
                 f'Removed {skill.name} from '
-                f'{skill.agent.label_for(os.path.dirname(skill_dir))}.\n'
+                f'{skill.agent.label_for(os.path.dirname(skill_dir))}.\n',
+                self._stream,
             )
         return 0
 

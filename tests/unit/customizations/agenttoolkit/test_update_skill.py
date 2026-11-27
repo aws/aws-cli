@@ -1956,3 +1956,16 @@ def test_missing_core_skill_checks_every_skills_path(tmp_path):
     assert cmd._agents_missing_skill([agent], 'aws-s3', skipped) == []
     assert cmd._agents_missing_skill([agent], 'aws-iam', skipped) == [agent]
     assert skipped == []
+
+
+def test_skipped_path_unencodable_by_stream_is_replaced():
+    # A redirected stdout on Windows uses the locale encoding, like cp1252.
+    buffer = io.BytesIO()
+    stream = io.TextIOWrapper(buffer, encoding='cp1252')
+    cmd = UpdateSkillCommand(make_session(), stream=stream)
+    skill_dir = os.path.join(os.sep, 'repos', '田中', 'aws-s3')
+    cmd._write_skipped([('aws-s3', skill_dir, utils.SYMLINK_SKIP_REASON)])
+    stream.flush()
+    output = buffer.getvalue().decode('cp1252')
+    assert os.path.join(os.sep, 'repos', '??', 'aws-s3') in output
+    assert 'without --no-follow-symlinks' in output

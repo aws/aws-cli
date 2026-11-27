@@ -31,7 +31,10 @@ from awscli.customizations.agenttoolkit.agents import (
 )
 from awscli.customizations.agenttoolkit.filelock import file_lock
 from awscli.customizations.exceptions import ParamValidationError
-from awscli.customizations.utils import create_client_from_parsed_globals
+from awscli.customizations.utils import (
+    create_client_from_parsed_globals,
+    uni_print,
+)
 
 LOG = logging.getLogger(__name__)
 MAX_UNCOMPRESSED_SIZE = 10 * 1024 * 1024  # 10 MB
@@ -313,9 +316,10 @@ def install_skill(
                 # resolved one would hide the symbolic link that caused it.
                 if stream:
                     shown_dir = collapse_home(skill_dir)
-                    stream.write(
+                    uni_print(
                         f'  Skipped {skill_name} at {shown_dir}: '
-                        f'{SYMLINK_SKIP_REASON}.\n'
+                        f'{SYMLINK_SKIP_REASON}.\n',
+                        stream,
                     )
                 skipped.append((skill_dir, SYMLINK_SKIP_REASON))
                 continue
@@ -342,9 +346,10 @@ def install_skill(
             if skip_reason is not None:
                 skipped.append((real_dir, skip_reason))
             elif stream:
-                stream.write(
+                uni_print(
                     f'  {action} {skill_name} ({version})'
-                    f' to {agent.label_for(os.path.dirname(skill_dir))}.\n'
+                    f' to {agent.label_for(os.path.dirname(skill_dir))}.\n',
+                    stream,
                 )
     return skipped
 
@@ -381,9 +386,10 @@ def _skip_reason(skill_name, real_dir, overwrite_existing, stream):
     if os.path.lexists(real_dir) and not os.path.isdir(real_dir):
         reason = 'a file that is not a skill directory is in the way'
         if stream:
-            stream.write(
+            uni_print(
                 f'  Skipped {skill_name} at {collapse_home(real_dir)}: '
-                f'{reason}.\n'
+                f'{reason}.\n',
+                stream,
             )
         return reason
     if os.path.isdir(real_dir):
@@ -391,9 +397,10 @@ def _skip_reason(skill_name, real_dir, overwrite_existing, stream):
         if not os.path.exists(marker):
             reason = 'directory was not installed by the AWS CLI'
             if stream:
-                stream.write(
+                uni_print(
                     f'  Skipped {skill_name} at {collapse_home(real_dir)}: '
-                    f'{reason}.\n'
+                    f'{reason}.\n',
+                    stream,
                 )
             return reason
         # Marker is present, but if SKILL.md is missing the previous install
@@ -404,12 +411,13 @@ def _skip_reason(skill_name, real_dir, overwrite_existing, stream):
             installed = read_installed_version(real_dir)
             version_note = f' ({installed})' if installed else ''
             if stream:
-                stream.write(
+                uni_print(
                     f'  {skill_name} is already installed'
-                    f'{version_note} at {real_dir}. Run '
+                    f'{version_note} at {collapse_home(real_dir)}. Run '
                     f'"aws agent-toolkit update-skill '
                     f'--skill-name {skill_name}" to update, '
-                    f'or remove it first to reinstall.\n'
+                    f'or remove it first to reinstall.\n',
+                    stream,
                 )
             return f'already installed{version_note}'
     return None
@@ -432,9 +440,10 @@ def _install_skill_dir(
         return skip_reason
     if os.path.isdir(real_dir) and not overwrite_existing and stream:
         # Not skipped, so the previous install is missing its SKILL.md.
-        stream.write(
-            f'  Reinstalling {skill_name} at {real_dir}: '
-            f'previous install appears incomplete.\n'
+        uni_print(
+            f'  Reinstalling {skill_name} at {collapse_home(real_dir)}: '
+            f'previous install appears incomplete.\n',
+            stream,
         )
 
     os.makedirs(os.path.dirname(real_dir), exist_ok=True)

@@ -63,6 +63,7 @@ from awscli.customizations.agenttoolkit.utils import (
 )
 from awscli.customizations.commands import BasicCommand
 from awscli.customizations.exceptions import ParamValidationError
+from awscli.customizations.utils import uni_print
 
 LOG = logging.getLogger(__name__)
 
@@ -307,8 +308,9 @@ class UpdateSkillCommand(BasicCommand):
             installed_agents, client, skill_name
         )
         if not outdated:
-            self._stream.write(
-                f'{skill_name} is already up to date ({remote_version}).\n'
+            uni_print(
+                f'{skill_name} is already up to date ({remote_version}).\n',
+                self._stream,
             )
             return 0
 
@@ -400,12 +402,13 @@ class UpdateSkillCommand(BasicCommand):
         else:
             message = f'{message} {HOOK_ERROR_MESSAGE}'.lstrip()
             summary = f'Could not check for updates: {error}'
-        self._stream.write(
+        uni_print(
             format_hook_output(
                 agent_id,
                 message,
                 skills_updated=bool(results.updated or results.installed),
-            )
+            ),
+            self._stream,
         )
         self._record_hook_runs(due_roots, results, error, summary)
         if error is not None or results.failed or results.failed_installs:
@@ -445,14 +448,15 @@ class UpdateSkillCommand(BasicCommand):
         if not self._collect_updates(
             agents, parsed_globals, self._stream, results
         ):
-            self._stream.write('No installed AWS skills found.\n')
+            uni_print('No installed AWS skills found.\n', self._stream)
             return 0
         if not (results.updated or results.skipped or results.failed):
-            self._stream.write(
-                'All installed AWS skills are already up to date.\n'
+            uni_print(
+                'All installed AWS skills are already up to date.\n',
+                self._stream,
             )
             return 0
-        self._stream.write(f'\n{results.summary()}.\n')
+        uni_print(f'\n{results.summary()}.\n', self._stream)
         self._write_skipped(results.skipped)
         self._write_failed(results.failed)
         return 1 if results.failed else 0
@@ -579,35 +583,40 @@ class UpdateSkillCommand(BasicCommand):
     def _write_skipped(self, skipped):
         if not skipped:
             return
-        self._stream.write('\nSkipped:\n')
+        uni_print('\nSkipped:\n', self._stream)
         for skill_name, skill_dir, reason in skipped:
-            self._stream.write(
-                f'  {skill_name} at {collapse_home(skill_dir)}: {reason}.\n'
+            uni_print(
+                f'  {skill_name} at {collapse_home(skill_dir)}: {reason}.\n',
+                self._stream,
             )
         reasons = {reason for _, _, reason in skipped}
         if reasons - {SYMLINK_SKIP_REASON}:
-            self._stream.write(
+            uni_print(
                 'To install the AWS skill there, move the existing path '
                 'aside and run "aws agent-toolkit add-skill --skill-name '
-                '<name>".\n'
+                '<name>".\n',
+                self._stream,
             )
         if SYMLINK_SKIP_REASON in reasons:
-            self._stream.write(
+            uni_print(
                 'To update skills under symbolic links, run the command '
-                'without --no-follow-symlinks.\n'
+                'without --no-follow-symlinks.\n',
+                self._stream,
             )
 
     def _write_failed(self, failed):
         if not failed:
             return
-        self._error_stream.write('\nFailed:\n')
+        uni_print('\nFailed:\n', self._error_stream)
         for skill_name, error in failed:
-            self._error_stream.write(
-                f'  Failed to update {skill_name}: {error}\n'
+            uni_print(
+                f'  Failed to update {skill_name}: {error}\n',
+                self._error_stream,
             )
-        self._error_stream.write(
+        uni_print(
             'To retry, run "aws agent-toolkit update-skill --skill-name '
-            '<name>".\n'
+            '<name>".\n',
+            self._error_stream,
         )
 
     def _find_outdated(self, installed_agents, client, skill_name):

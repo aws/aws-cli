@@ -11,6 +11,7 @@
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
 import hashlib
+import os
 from io import StringIO
 from unittest.mock import Mock, patch
 
@@ -294,7 +295,8 @@ def test_add_skill_already_installed_recommends_update(tmp_path):
     configs = [make_config(tmp_path)]
     rc, output = _run_add(configs, ['--skill-name', 'aws-s3'])
     assert rc == 0
-    assert 'aws-s3 is already installed (v1)' in output
+    shown = os.path.join('~', '.test-agent', 'skills', 'aws-s3')
+    assert f'aws-s3 is already installed (v1) at {shown}.' in output
     assert 'update-skill --skill-name aws-s3' in output
     assert 'Installed aws-s3' not in output
     # Existing content is untouched.
@@ -347,7 +349,10 @@ def test_add_skill_heals_corrupted_install(tmp_path):
     configs = [make_config(tmp_path)]
     rc, output = _run_add(configs, ['--skill-name', 'aws-s3'])
     assert rc == 0
-    assert 'previous install appears incomplete' in output
+    shown = os.path.join('~', '.test-agent', 'skills', 'aws-s3')
+    assert (
+        f'Reinstalling aws-s3 at {shown}: previous install appears incomplete.'
+    ) in output
     assert 'Installed aws-s3 (v1)' in output
     assert (skill_dir / 'SKILL.md').exists()
     assert (skill_dir / SKILL_METADATA_FILENAME).exists()

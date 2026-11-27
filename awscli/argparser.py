@@ -13,7 +13,10 @@
 import argparse
 import copy
 import sys
+import textwrap
 from difflib import get_close_matches
+
+from awscli.arguments import CLIArgument
 
 HELP_BLURB = (
     "To see help text, you can run:\n"
@@ -26,6 +29,19 @@ USAGE = (
     "aws [options] <command> <subcommand> [<subcommand> ...] [parameters]\n"
     f"{HELP_BLURB}"
 )
+
+# Standard CLI options are left out of the list of valid options.
+# Service parameters with these names still need to be listed.
+_STANDARD_OPTIONS = {
+    'cli-input-json',
+    'cli-input-yaml',
+    'generate-cli-skeleton',
+    'starting-token',
+    'page-size',
+    'max-items',
+}
+# Commands with more options than this don't get them all listed.
+_MAX_LISTED_OPTIONS = 20
 
 
 class ArgParseException(Exception):
@@ -51,12 +67,14 @@ def get_option_suggestion_candidates(arg_table, session):
     return candidates
 
 
-def format_unknown_options_error(unknown, candidates):
+def format_unknown_options_error(unknown, candidates, command_options=None):
     """Build the error message for unrecognized options.
 
     :param unknown: The unparsed args, which can include the values
         that followed an unknown option (e.g. ``['--regoin', 'us-west-2']``).
     :param candidates: Valid option names, without the leading ``--``.
+    :param command_options: The command's options to list, as returned by
+        ``get_valid_options``. They're listed only when there are few.
     """
     msg = f"Unknown options: {', '.join(unknown)}"
     suggestions = []
@@ -73,6 +91,16 @@ def format_unknown_options_error(unknown, candidates):
                 suggestions.append(suggestion)
     if suggestions:
         msg += '\n\nMaybe you meant:\n' + '\n'.join(suggestions)
+    if command_options and len(command_options) <= _MAX_LISTED_OPTIONS:
+        msg += '\n\nValid options for this command:\n' + textwrap.fill(
+            ', '.join(command_options),
+            width=79,
+            initial_indent='  ',
+            subsequent_indent='  ',
+            # Keep each option whole; they're full of hyphens.
+            break_on_hyphens=False,
+            break_long_words=False,
+        )
     return msg
 
 
@@ -391,3 +419,30 @@ class FirstPassGlobalArgParser(CLIArgParser):
     def _build(self):
         self.add_argument('--profile', type=str)
         self.add_argument('--debug', action='store_true', default=False)
+
+
+def get_valid_options(arg_table):
+    """Return the options to list when an unknown option is given.
+
+    Leaves out undocumented and standard options, and shows a boolean's
+    ``--x`` and ``--no-x`` as one ``--[no-]x`` entry.
+    """
+    names = [
+        arg.cli_name[2:]
+        for arg in arg_table.values()
+        if arg.cli_name.startswith('--')
+        and not getattr(arg, '_UNDOCUMENTED', False)
+        and (
+            arg.cli_name[2:] not in _STANDARD_OPTIONS
+            or isinstance(arg, CLIArgument)
+        )
+    ]
+    listed = []
+    for name in names:
+        if name.startswith('no-') and name[3:] in names:
+            continue
+        if f'no-{name}' in names:
+            listed.append(f'--[no-]{name}')
+        else:
+            listed.append(f'--{name}')
+    return listed

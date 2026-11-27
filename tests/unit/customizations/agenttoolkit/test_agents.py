@@ -266,7 +266,9 @@ def test_configure_mcp_new_file(tmp_path):
     assert action is McpConfigureAction.CONFIGURED
     data = json.loads(open(path).read())
     assert data['mcpServers']['aws-mcp']['command'] == 'uvx'
-    assert 'mcp-proxy-for-aws@latest' in data['mcpServers']['aws-mcp']['args']
+    assert (
+        'mcp-proxy-for-aws-cli@latest' in data['mcpServers']['aws-mcp']['args']
+    )
 
 
 def test_configure_mcp_already_configured(tmp_path):

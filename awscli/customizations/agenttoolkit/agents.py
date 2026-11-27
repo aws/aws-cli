@@ -41,7 +41,7 @@ class McpConfigureAction(enum.Enum):
 
 
 _AWS_MCP_PROXY_ARGS = [
-    'mcp-proxy-for-aws@latest',
+    'mcp-proxy-for-aws-cli@latest',
     'https://aws-mcp.us-east-1.api.aws/mcp',
     '--metadata',
     'INSTALL_SOURCE=aws-cli',

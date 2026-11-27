@@ -15,6 +15,7 @@ import hashlib
 import io
 import json
 import os
+import sys
 import tempfile
 import zipfile
 from unittest.mock import Mock, patch
@@ -44,6 +45,20 @@ requires_symlinks = pytest.mark.skipif(
     not _can_create_symlinks(),
     reason='Creating symlinks is not permitted for this user.',
 )
+
+
+# Directory junctions are Windows only, and need no special rights.
+requires_junctions = pytest.mark.skipif(
+    sys.platform != 'win32', reason='Directory junctions are Windows only.'
+)
+
+
+def make_junction(link, target):
+    """Create a Windows directory junction at ``link`` pointing at
+    ``target``, like ``mklink /J``."""
+    import _winapi
+
+    _winapi.CreateJunction(str(target), str(link))
 
 
 def make_parsed_globals(output='json'):

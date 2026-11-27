@@ -19,6 +19,8 @@ import shutil
 import subprocess
 from typing import Optional
 
+from awscli.customizations.agenttoolkit import atomic
+
 SKILL_FILENAME = 'SKILL.md'
 SKILL_METADATA_FILENAME = '.aws-skill-metadata'
 AWS_MCP_SERVER_KEY = 'aws-mcp'
@@ -48,13 +50,14 @@ def _relative_path_within(path, directory):
 
 def _has_symlink_below(root, relative):
     """Whether a path component of ``relative``, joined to ``root`` one at
-    a time, is a symbolic link. ``root`` itself is not checked."""
+    a time, is a symbolic link or junction. ``root`` itself is not
+    checked."""
     if relative == os.curdir:
         return False
     current = root
     for part in relative.split(os.sep):
         current = os.path.join(current, part)
-        if os.path.islink(current):
+        if atomic.is_link(current):
             return True
     return False
 
@@ -292,7 +295,8 @@ class DetectedAgent:
         """Whether the CLI may change ``path``.
 
         Symbolic links are followed unless ``follow_symlinks`` is off. Then
-        a path that is a symbolic link, or is under one, is refused,
+        a path that is a symbolic link or Windows directory junction, or is
+        under one, is refused,
         starting below the scope's root: the project directory, or the home
         directory for global skills. Links above the root are still
         followed.
@@ -304,7 +308,7 @@ class DetectedAgent:
             relative = _relative_path_within(path, root)
             if relative is not None:
                 return not _has_symlink_below(root, relative)
-        return not os.path.islink(path)
+        return not atomic.is_link(path)
 
     def _symlink_check_roots(self):
         """Roots that symbolic links are checked below. The first root

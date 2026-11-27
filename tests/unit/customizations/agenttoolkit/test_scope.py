@@ -41,9 +41,11 @@ from awscli.customizations.agenttoolkit.update_skill import (
 from awscli.customizations.exceptions import ParamValidationError
 from tests.unit.customizations.agenttoolkit.utils import (
     make_config,
+    make_junction,
     make_parsed_globals,
     make_session,
     make_skill_zip,
+    requires_junctions,
     requires_symlinks,
 )
 
@@ -569,6 +571,23 @@ def test_can_write_refuses_path_under_symlink_when_not_following(
     )
     assert not agent.can_write(str(repo / '.test-agent' / 'skills' / 'aws-s3'))
     assert agent.can_write(str(repo / '.other' / 'skills' / 'aws-s3'))
+
+
+@requires_junctions
+def test_can_write_refuses_path_under_junction_when_not_following(
+    tmp_path, repo
+):
+    outside = tmp_path / 'outside'
+    outside.mkdir()
+    (repo / '.test-agent').mkdir()
+    make_junction(repo / '.test-agent' / 'skills', outside)
+    skill_dir = str(repo / '.test-agent' / 'skills' / 'aws-s3')
+    agent = make_config(tmp_path).detect(Scope.PROJECT, str(repo))
+    assert agent.can_write(skill_dir)
+    agent = make_config(tmp_path).detect(
+        Scope.PROJECT, str(repo), follow_symlinks=False
+    )
+    assert not agent.can_write(skill_dir)
 
 
 @requires_symlinks

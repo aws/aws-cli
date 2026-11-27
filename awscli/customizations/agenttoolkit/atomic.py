@@ -55,6 +55,23 @@ _RENAME_EXCHANGE = 2  # Linux
 _RENAME_SWAP = 0x2  # macOS
 
 
+def is_link(path):
+    """Whether ``path`` is a symbolic link or, on Windows, a directory
+    junction.
+
+    ``os.path.islink`` is False for junctions, which ``mklink /J`` creates
+    without the admin rights or Developer Mode that symbolic links need.
+    """
+    if os.path.islink(path):
+        return True
+    try:
+        tag = os.lstat(path).st_reparse_tag
+    except (OSError, AttributeError):
+        # st_reparse_tag only exists on Windows.
+        return False
+    return tag == stat.IO_REPARSE_TAG_MOUNT_POINT
+
+
 @functools.cache
 def _load_exchange():
     if is_windows:
@@ -227,7 +244,7 @@ def _find_leftovers(parent):
         if not match:
             continue
         path = os.path.join(parent, entry)
-        if not os.path.isdir(path) or os.path.islink(path):
+        if not os.path.isdir(path) or is_link(path):
             continue
         to_delete, backups = leftovers.setdefault(
             match.group('name'), ([], [])

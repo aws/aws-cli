@@ -97,8 +97,9 @@ FOLLOW_SYMLINKS_ARG = {
         'Symbolic links are followed when changing skills, so a skill is '
         'changed where a linked skills directory or skill points. '
         '``--no-follow-symlinks`` skips any skill whose directory is a '
-        'symbolic link, or is located under one, starting at the current '
-        'directory for ``--project`` or the home directory otherwise. '
+        'symbolic link or Windows directory junction, or is located under '
+        'one, starting at the current directory for ``--project`` or the '
+        'home directory otherwise. '
         'Symbolic links in the path leading up to that directory are still '
         'followed. When neither ``--follow-symlinks`` nor '
         '``--no-follow-symlinks`` is specified, the default is to follow '
@@ -116,7 +117,9 @@ NO_FOLLOW_SYMLINKS_ARG = {
 
 SYMLINK_ARGS = [FOLLOW_SYMLINKS_ARG, NO_FOLLOW_SYMLINKS_ARG]
 
-SYMLINK_SKIP_REASON = 'the path is a symbolic link or is under one'
+SYMLINK_SKIP_REASON = (
+    'the path is a symbolic link or junction, or is under one'
+)
 
 AGENT_ARG = {
     'name': 'agent',
@@ -509,7 +512,7 @@ def _symlinked_skill_targets(roots):
             continue
         for entry in entries:
             path = os.path.join(root, entry)
-            if not os.path.islink(path):
+            if not atomic.is_link(path):
                 continue
             target = os.path.realpath(path)
             if os.path.dirname(target) not in roots:

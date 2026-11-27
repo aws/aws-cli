@@ -101,7 +101,7 @@ class RemoveCommand(BasicCommand):
                     # Another process removed it after it was listed.
                     removed_paths.add(entry)
                     continue
-                if os.path.islink(entry):
+                if atomic.is_link(entry):
                     # The target may be shared with other agents, so only
                     # remove this agent's link to it.
                     os.unlink(entry)

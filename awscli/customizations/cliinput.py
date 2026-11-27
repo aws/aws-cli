@@ -11,6 +11,7 @@
 # ANY KIND, either express or implied. See the License for the specific
 # language governing permissions and limitations under the License.
 import json
+import sys
 
 from ruamel.yaml import YAML
 from ruamel.yaml.error import YAMLError
@@ -85,6 +86,11 @@ class CliInputArgument(OverrideRequiredArgsArgument):
                 'Only one --cli-input- parameter may be specified.'
             )
 
+        # Read from stdin when '-' is passed, consistent with
+        # 'aws s3 cp - s3://bucket/key'.
+        if arg_value == '-':
+            return sys.stdin.read()
+
         # If the value starts with file:// or fileb://, return the contents
         # from the file.
         paramfile_data = get_paramfile(arg_value, LOCAL_PREFIX_MAP)
@@ -122,7 +128,8 @@ class CliInputJSONArgument(CliInputArgument):
             'will override the JSON-provided values. It is not possible to '
             'pass arbitrary binary values using a JSON-provided value as the '
             'string will be taken literally. This may not be specified along '
-            'with ``--cli-input-yaml``.'
+            'with ``--cli-input-yaml``. If the value is ``-``, the JSON '
+            'string will be read from standard input.'
         ),
     }
 
@@ -143,7 +150,8 @@ class CliInputYAMLArgument(CliInputArgument):
             '``--generate-cli-skeleton yaml-input``. '
             'If other arguments are provided on the command line, those '
             'values will override the YAML-provided values. This may not be '
-            'specified along with ``--cli-input-json``.'
+            'specified along with ``--cli-input-json``. If the value is '
+            '``-``, the YAML string will be read from standard input.'
         ),
     }
 

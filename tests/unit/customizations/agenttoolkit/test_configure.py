@@ -12,7 +12,9 @@
 # language governing permissions and limitations under the License.
 import json
 import os
+import sys
 from io import StringIO
+from types import SimpleNamespace
 from unittest.mock import MagicMock, patch
 
 import pytest
@@ -25,6 +27,7 @@ from awscli.customizations.agenttoolkit.agents import (
 from awscli.customizations.agenttoolkit.configure import (
     AUTO_UPDATE_KEEP_PROMPT,
     AUTO_UPDATE_PROMPT,
+    PROJECT_SCOPE_PROMPT,
     ConfigureAgentToolkitCommand,
 )
 from awscli.customizations.agenttoolkit.hooks import (
@@ -38,7 +41,10 @@ from awscli.customizations.agenttoolkit.hooks import (
     hook_shell_command,
 )
 from awscli.customizations.agenttoolkit.utils import AgentToolkitServiceError
-from awscli.customizations.exceptions import ConfigurationError
+from awscli.customizations.exceptions import (
+    ConfigurationError,
+    ParamValidationError,
+)
 from tests.unit.customizations.agenttoolkit.utils import (
     home_relative,
     make_config,
@@ -83,6 +89,17 @@ def _make_client(skills=None):
     return client
 
 
+def _parsed_args(yes=False, no_auto_update=False, project=False, **kwargs):
+    # ``global`` is a keyword, so it is passed as ``**{'global': True}``.
+    return SimpleNamespace(
+        yes=yes,
+        no_auto_update=no_auto_update,
+        project=project,
+        **{'global': kwargs.pop('global', False)},
+        **kwargs,
+    )
+
+
 def _run(
     agent_configs,
     yes_no_return=True,
@@ -90,6 +107,7 @@ def _run(
     yes=False,
     prompts=None,
     no_auto_update=False,
+    **scope_args,
 ):
     stream = StringIO()
     session = make_session()
@@ -98,9 +116,9 @@ def _run(
     cmd = ConfigureAgentToolkitCommand(
         session, stream=stream, agent_configs=agent_configs, client=client
     )
-    parsed_args = MagicMock()
-    parsed_args.yes = yes
-    parsed_args.no_auto_update = no_auto_update
+    parsed_args = _parsed_args(
+        yes=yes, no_auto_update=no_auto_update, **scope_args
+    )
     with (
         patch(
             'awscli.customizations.agenttoolkit.configure.multiselect_choice',
@@ -291,9 +309,7 @@ def test_yes_skips_all_prompts(tmp_path):
             agent_configs=configs,
             client=client,
         )
-        parsed_args = MagicMock()
-        parsed_args.yes = True
-        parsed_args.no_auto_update = False
+        parsed_args = _parsed_args(yes=True, no_auto_update=False)
         cmd._run_main(parsed_args, None)
     multiselect_mock.assert_not_called()
     yes_no_mock.assert_not_called()
@@ -339,7 +355,10 @@ def _make_agent_with_skill(tmp_path):
 
 
 def test_auto_update_prompt_mentions_core_skills():
-    assert 'new core AWS skills' in AUTO_UPDATE_PROMPT
+    assert (
+        'new core AWS skills are added wherever AWS skills are already '
+        'installed'
+    ) in AUTO_UPDATE_PROMPT
 
 
 def test_auto_update_enabled_on_yes(tmp_path, state_file):
@@ -507,9 +526,7 @@ def test_auto_update_not_prompted_when_no_agents_selected(
         agent_configs=configs,
         client=MagicMock(),
     )
-    parsed_args = MagicMock()
-    parsed_args.yes = False
-    parsed_args.no_auto_update = False
+    parsed_args = _parsed_args(yes=False, no_auto_update=False)
     with (
         patch(
             'awscli.customizations.agenttoolkit.configure.multiselect_choice',
@@ -627,9 +644,7 @@ def _run_selecting(configs, selected_ids, yes_no_return=True):
         agent_configs=configs,
         client=_make_client(),
     )
-    parsed_args = MagicMock()
-    parsed_args.yes = False
-    parsed_args.no_auto_update = False
+    parsed_args = _parsed_args(yes=False, no_auto_update=False)
     with (
         patch(
             'awscli.customizations.agenttoolkit.configure.multiselect_choice',
@@ -918,3 +933,236 @@ def test_no_auto_update_flag_without_hooks_prints_nothing(
     _, stream = _run(configs, yes=True, no_auto_update=True)
     assert 'hook' not in stream.getvalue()
     assert not _hook_file(tmp_path, 'claude-code').exists()
+
+
+@pytest.fixture
+def repo(tmp_path, monkeypatch):
+    """A project directory, below the home directory, that is the current
+    directory."""
+    repo = tmp_path / 'repo'
+    repo.mkdir()
+    monkeypatch.chdir(repo)
+    return repo
+
+
+def _project_configs(tmp_path, **overrides):
+    configs = _make_agent_configs(tmp_path, count=1)
+    configs[0].project_mcp_config_path = overrides.pop(
+        'project_mcp_config_path', '.agent-0-mcp.json'
+    )
+    return configs
+
+
+def _run_answering(configs, answer, client=None, **scope_args):
+    """Run the wizard, answering the project prompt with ``answer`` and
+    every other prompt with yes."""
+    stream = StringIO()
+    cmd = ConfigureAgentToolkitCommand(
+        make_session(),
+        stream=stream,
+        agent_configs=configs,
+        client=client or _make_client(),
+    )
+    prompts = []
+
+    def yes_no(prompt, default=None):
+        prompts.append(prompt)
+        if prompt.startswith(PROJECT_SCOPE_PROMPT.split('{}')[0]):
+            assert default is False
+            return answer
+        return True
+
+    with (
+        patch(
+            'awscli.customizations.agenttoolkit.configure.multiselect_choice',
+            side_effect=lambda msg, items, **kw: items,
+        ),
+        patch(
+            'awscli.customizations.agenttoolkit.configure.yes_no_choice',
+            side_effect=yes_no,
+        ),
+    ):
+        cmd._run_main(_parsed_args(**scope_args), None)
+    return stream.getvalue(), prompts
+
+
+def _install_one_skill(configs, **kwargs):
+    zip_bytes, checksum = make_skill_zip()
+    client = _make_client(skills=[{'name': 'aws-serverless'}])
+    with patch(
+        'awscli.customizations.agenttoolkit.configure.get_skill_download',
+        return_value=(zip_bytes, checksum, 'v1'),
+    ):
+        return _run_answering(configs, client=client, **kwargs)
+
+
+def test_project_installs_skills_into_current_directory(tmp_path, repo):
+    configs = _project_configs(tmp_path)
+    output, _ = _install_one_skill(configs, answer=True, project=True)
+    project_skill = repo / '.agent-0' / 'skills' / 'aws-serverless'
+    assert (project_skill / 'SKILL.md').exists()
+    assert not (tmp_path / '.agent-0' / 'skills' / 'aws-serverless').exists()
+    assert f'Setting up the agent toolkit for {_collapse(repo)}.' in output
+    assert '--project' in output
+
+
+def test_project_configures_project_mcp_config(tmp_path, repo):
+    configs = _project_configs(tmp_path)
+    output, _ = _run_answering(configs, answer=True, project=True)
+    data = json.loads((repo / '.agent-0-mcp.json').read_text())
+    assert data['mcpServers']['aws-mcp']['command'] == 'uvx'
+    assert not (tmp_path / '.agent-0' / 'mcp.json').exists()
+    assert f'{_collapse(repo / ".agent-0-mcp.json")}: updated' in output
+
+
+def test_project_skips_mcp_without_project_config(tmp_path, repo):
+    configs = _project_configs(tmp_path, project_mcp_config_path=None)
+    output, _ = _run_answering(configs, answer=True, project=True)
+    assert (
+        'MCP setup not available in the current directory for the '
+        'following agents.\n'
+        "  ✗ Agent 0 (no project-level MCP config; run 'aws configure "
+        "agent-toolkit --global' to configure it globally)\n"
+    ) in output
+    assert 'manual setup instructions' not in output
+    assert not (tmp_path / '.agent-0' / 'mcp.json').exists()
+
+
+def test_project_does_not_run_global_mcp_shell_command(tmp_path, repo):
+    configs = _project_configs(tmp_path, project_mcp_config_path=None)
+    configs[0].mcp_shell_command = ['true']
+    with patch('subprocess.run') as run:
+        output, _ = _run_answering(configs, answer=True, project=True)
+    run.assert_not_called()
+    assert 'no project-level MCP config' in output
+
+
+def test_project_installs_hooks_only_globally(tmp_path, repo):
+    configs = _hook_agent_configs(tmp_path, ['claude-code'])
+    configs[0].project_mcp_config_path = '.mcp.json'
+    make_skill(repo, '.claude-code', 'aws-serverless')
+    output, _ = _run_answering(configs, answer=True, project=True)
+    hook_path = _hook_file(tmp_path, 'claude-code')
+    assert hook_command('claude-code') in hook_path.read_text()
+    assert f'{_collapse(hook_path)}: hook installed' in output
+    # Only skills and MCP config are written to the project.
+    assert sorted(os.listdir(repo)) == ['.claude-code', '.mcp.json']
+    assert os.listdir(repo / '.claude-code') == ['skills']
+
+
+def test_project_and_global_are_mutually_exclusive(tmp_path, repo):
+    configs = _project_configs(tmp_path)
+    with pytest.raises(ParamValidationError, match='--project together'):
+        _run_answering(configs, answer=True, project=True, **{'global': True})
+
+
+def test_project_fails_without_current_directory(tmp_path, repo):
+    configs = _project_configs(tmp_path)
+    with patch('os.getcwd', side_effect=FileNotFoundError('gone')):
+        with pytest.raises(ParamValidationError, match='--project'):
+            _run_answering(configs, answer=True, project=True)
+
+
+@pytest.mark.parametrize('answer', [True, False])
+def test_no_scope_flag_asks_for_scope(tmp_path, repo, answer):
+    configs = _project_configs(tmp_path)
+    output, prompts = _install_one_skill(configs, answer=answer)
+    assert prompts[0] == PROJECT_SCOPE_PROMPT.format(_collapse(repo))
+    project_skill = repo / '.agent-0' / 'skills' / 'aws-serverless'
+    global_skill = tmp_path / '.agent-0' / 'skills' / 'aws-serverless'
+    assert project_skill.exists() is answer
+    assert global_skill.exists() is not answer
+
+
+def test_global_flag_does_not_ask_for_scope(tmp_path, repo):
+    configs = _project_configs(tmp_path)
+    _, prompts = _install_one_skill(configs, answer=True, **{'global': True})
+    assert PROJECT_SCOPE_PROMPT.format(_collapse(repo)) not in prompts
+    assert (tmp_path / '.agent-0' / 'skills' / 'aws-serverless').exists()
+    assert not (repo / '.agent-0').exists()
+
+
+def test_yes_without_scope_flag_sets_up_globally(tmp_path, repo):
+    configs = _project_configs(tmp_path)
+    _, prompts = _install_one_skill(configs, answer=True, yes=True)
+    assert prompts == []
+    assert (tmp_path / '.agent-0' / 'skills' / 'aws-serverless').exists()
+    assert not (repo / '.agent-0').exists()
+
+
+def test_yes_with_project_sets_up_project(tmp_path, repo):
+    configs = _project_configs(tmp_path)
+    _, prompts = _install_one_skill(
+        configs, answer=True, yes=True, project=True
+    )
+    assert prompts == []
+    assert (repo / '.agent-0' / 'skills' / 'aws-serverless').exists()
+
+
+def test_scope_not_asked_in_home_directory(tmp_path):
+    # The current directory is the home directory, where project-level
+    # skills are the global ones.
+    configs = _project_configs(tmp_path)
+    output, prompts = _install_one_skill(configs, answer=True)
+    assert not any('current directory' in p for p in prompts)
+    assert 'Setting up the agent toolkit for' not in output
+    assert (tmp_path / '.agent-0' / 'mcp.json').exists()
+
+
+def test_project_in_home_directory_is_global(tmp_path):
+    configs = _project_configs(tmp_path)
+    output, _ = _install_one_skill(configs, answer=True, project=True)
+    assert 'Setting up the agent toolkit for' not in output
+    assert (tmp_path / '.agent-0' / 'mcp.json').exists()
+    assert not (tmp_path / '.agent-0-mcp.json').exists()
+
+
+@pytest.mark.skipif(
+    sys.platform == 'win32',
+    reason='The current directory cannot be deleted on Windows.',
+)
+def test_no_scope_flag_without_current_directory_sets_up_globally(
+    tmp_path, repo
+):
+    configs = _project_configs(tmp_path)
+    with patch('os.getcwd', side_effect=FileNotFoundError('gone')):
+        output, prompts = _install_one_skill(configs, answer=True)
+    assert not any('current directory' in p for p in prompts)
+    assert (tmp_path / '.agent-0' / 'skills' / 'aws-serverless').exists()
+    assert not (repo / '.agent-0').exists()
+
+
+def test_project_asks_same_auto_update_prompt(tmp_path, repo):
+    configs = _project_configs(tmp_path)
+    _, prompts = _install_one_skill(configs, answer=True, project=True)
+    assert AUTO_UPDATE_PROMPT in prompts
+
+
+def test_project_not_found_agent_shows_no_global_path(tmp_path, repo):
+    configs = _project_configs(tmp_path)
+    configs.append(
+        make_config(
+            tmp_path,
+            id='missing',
+            display_name='Missing Agent',
+            detection_path=str(tmp_path / '.missing'),
+        )
+    )
+    output, _ = _run_answering(configs, answer=True, project=True)
+    assert '  ✗ Missing Agent (not found)\n' in output
+    assert f'  ✓ Agent 0 — {_collapse(repo / ".agent-0" / "skills")}' in output
+
+
+def test_project_reports_agent_without_mcp_support(tmp_path, repo):
+    configs = _project_configs(tmp_path, project_mcp_config_path=None)
+    configs[0].mcp_config_path = None
+    output, _ = _run_answering(configs, answer=True, project=True)
+    assert '  ✗ Agent 0 (MCP not supported)\n' in output
+
+
+def test_global_skipped_mcp_message_unchanged(tmp_path, repo):
+    configs = _project_configs(tmp_path)
+    configs[0].mcp_config_path = None
+    output, _ = _run_answering(configs, answer=True, **{'global': True})
+    assert 'for manual setup instructions.\n' in output
+    assert '  ✗ Agent 0 (no automated setup)\n' in output
